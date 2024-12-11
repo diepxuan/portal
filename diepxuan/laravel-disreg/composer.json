@@ -1,0 +1,36 @@
+{
+    "name": "diepxuan/laravel-disreg",
+    "description": "Disable Laravel registration",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tran Ngoc Duc",
+            "email": "ductn@diepxuan.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Diepxuan\\DisableRegistration\\Providers\\DisableRegistrationServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "require": {},
+    "autoload": {
+        "files": [],
+        "psr-4": {
+            "Diepxuan\\DisableRegistration\\": "src/",
+            "Diepxuan\\DisableRegistration\\Database\\Factories\\": "database/factories/",
+            "Diepxuan\\DisableRegistration\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Diepxuan\\DisableRegistration\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

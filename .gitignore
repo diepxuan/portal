@@ -21,3 +21,8 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+.php-cs-fixer.cache
+composer.lock
+package-lock.json
+laravel.code-workspace
