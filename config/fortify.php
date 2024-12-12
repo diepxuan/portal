@@ -1,9 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * @copyright  © 2019 Dxvn, Inc.
+ *
+ * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
+ *
+ * @lastupdate 2024-12-12 11:29:43
+ */
+
 use Laravel\Fortify\Features;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Fortify Guard
@@ -115,7 +125,7 @@ return [
     */
 
     'limiters' => [
-        'login' => 'login',
+        'login'      => 'login',
         'two-factor' => 'two-factor',
     ],
 
@@ -144,16 +154,15 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Features::registration(),
         Features::resetPasswords(),
         // Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
         Features::twoFactorAuthentication([
-            'confirm' => true,
+            'confirm'         => true,
             'confirmPassword' => true,
             // 'window' => 0,
         ]),
     ],
-
 ];
