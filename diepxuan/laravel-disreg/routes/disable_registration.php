@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-11 23:43:06
+ * @lastupdate 2024-12-12 10:23:19
  */
 
 use Illuminate\Support\Facades\Route;
