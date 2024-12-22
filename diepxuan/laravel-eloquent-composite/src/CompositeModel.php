@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-05-23 17:35:38
+ * @lastupdate 2024-12-22 11:51:58
  */
 
 namespace Diepxuan\Database\Eloquent;
 
-use Database\Eloquent\Traits\HasCompositePrimaryKey;
+use Diepxuan\Database\Eloquent\Traits\HasCompositePrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 
 class CompositeModel extends Model
