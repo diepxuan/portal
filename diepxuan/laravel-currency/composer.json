@@ -1,0 +1,19 @@
+{
+  "name": "diepxuan/laravel-currency",
+  "description": "A Laravel package for formatting currency in Blade.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tran Ngoc Duc",
+      "email": "ductn@diepxuan.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Diepxuan\\Currency\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {}
+  }
+}
