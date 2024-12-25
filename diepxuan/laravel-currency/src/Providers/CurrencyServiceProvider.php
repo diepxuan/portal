@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-24 22:07:20
+ * @lastupdate 2024-12-25 11:51:52
  */
 
 namespace Diepxuan\Currency\Providers;
 
-use Diepxuan\Currency\Formatter;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class CurrencyServiceProvider extends ServiceProvider
@@ -23,11 +23,7 @@ class CurrencyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::directive('currency', static function ($price) {
-            $price = Formatter::format($price);
-
-            return "<?php echo {$price}; ?>";
-        });
+        Blade::directive('currency', static fn ($price) => "<?php echo \\Diepxuan\\Currency\\Formatter::format({$price}); ?>");
     }
 
     /**
