@@ -14,9 +14,16 @@
     }
   },
   "extra": {
-    "laravel": {}
+    "laravel": {
+      "providers": [
+        "Diepxuan\\Currency\\Providers\\CurrencyServiceProvider"
+      ],
+      "aliases": {}
+    }
   },
-  "require": {},
+  "require": {
+    "symfony/intl": "*"
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }
