@@ -13,9 +13,7 @@
       "homepage": "https://github.com/kenny-ngo/vietnamese-converter"
     }
   ],
-  "require": {
-    "diepxuan/laravel-core": "*"
-  },
+  "require": {},
   "autoload": {
     "files": [
       "helpers.php",
