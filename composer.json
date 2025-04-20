@@ -12,6 +12,7 @@
     "php": "^8.2",
     "diepxuan/laravel-catalog": "*",
     "diepxuan/laravel-disreg": "dev-main",
+    "diepxuan/laravel-scavenger": "dev-main",
     "laravel/framework": "^11.31",
     "laravel/jetstream": "^5.3",
     "laravel/sanctum": "^4.0",
