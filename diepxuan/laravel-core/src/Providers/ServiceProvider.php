@@ -8,19 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:16:38
+ * @lastupdate 2025-04-21 08:49:50
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
-use Illuminate\Support\Collection;
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class ServiceProvider extends BaseServiceProvider
+class ServiceProvider extends AbstractServiceProvider
 {
-    protected $packages;
-
     /**
      * Bootstrap the application services.
      */
@@ -60,24 +56,22 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * List packages.
-     */
-    protected function packages(): Collection
-    {
-        if ($this->packages) {
-            return $this->packages;
-        }
-        $this->packages = Package::list();
-
-        return $this->packages;
-    }
-
-    /**
      * Register Commands.
      */
     protected function registerCommands()
     {
+        if (!$this->app->runningInConsole()) {
+            return $this;
+        }
+        //     $this->commands([
+        //         CatalogSync::class,
+        //         EnvTest::class,
+        //         Scavenger::class,
+        //     ]);
+        // }
         $this->commands([]);
+
+        dd($this->packages());
 
         return $this;
     }

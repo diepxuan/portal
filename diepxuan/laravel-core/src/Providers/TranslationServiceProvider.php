@@ -8,15 +8,14 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-07-04 22:35:46
+ * @lastupdate 2025-04-21 08:49:37
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
-use Illuminate\Support\ServiceProvider;
 
-class TranslationServiceProvider extends ServiceProvider
+class TranslationServiceProvider extends AbstractServiceProvider
 {
     /**
      * Called before routes are registered.
@@ -33,7 +32,7 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Package::list()->map(function (string $package, string $code): void {
+        $this->packages()->map(function (string $package, string $code): void {
             $langPath = resource_path('lang/modules/' . $code);
 
             if (is_dir($langPath)) {

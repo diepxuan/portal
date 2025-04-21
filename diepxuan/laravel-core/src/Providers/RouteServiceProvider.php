@@ -8,16 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-01 08:13:40
+ * @lastupdate 2025-04-21 08:48:38
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
-class RouteServiceProvider extends ServiceProvider
+class RouteServiceProvider extends AbstractServiceProvider
 {
     /**
      * Called before routes are registered.
@@ -34,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
-        Package::list()->map(static function (string $package, string $code) {
+        $this->packages()->map(static function (string $package, string $code) {
             if ((new \SplFileInfo($file = Package::path($package, '/routes/web.php')))->isFile()) {
                 Route::middleware('web')->group($file);
             }

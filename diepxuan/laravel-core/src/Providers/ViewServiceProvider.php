@@ -8,16 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-13 09:08:30
+ * @lastupdate 2025-04-21 08:49:58
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
 
-class ViewServiceProvider extends ServiceProvider
+class ViewServiceProvider extends AbstractServiceProvider
 {
     /**
      * Called before routes are registered.
