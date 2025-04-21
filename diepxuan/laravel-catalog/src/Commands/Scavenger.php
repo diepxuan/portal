@@ -8,12 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 09:08:00
+ * @lastupdate 2025-04-21 10:18:47
  */
 
 namespace Diepxuan\Catalog\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Console\Scheduling\Schedule;
 
 class Scavenger extends Command
 {
@@ -44,8 +45,8 @@ class Scavenger extends Command
         $this->output->writeln('[i] Starting scavenger products');
     }
 
-    public function schedule(Schedule $schedule): void
+    public static function schedule(Schedule $schedule): void
     {
-        $schedule->command($this::class)->everyMinute();
+        $schedule->command(static::class)->everyMinute();
     }
 }
