@@ -8,12 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 09:55:30
+ * @lastupdate 2025-04-21 10:18:41
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
+use Illuminate\Console\Scheduling\Schedule;
 
 class ServiceProvider extends AbstractServiceProvider
 {
@@ -83,10 +84,26 @@ class ServiceProvider extends AbstractServiceProvider
      */
     protected function registerCommandSchedules()
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        $this->app->booted(function (): void {
+            $schedule = $this->app->make(Schedule::class);
+
+            $this->packages()
+                ->map(static function (string $package, string $code) {
+                    // @todo: check if package has command
+                    return Package::getCommands($code);
+                })
+                ->flatten()
+                ->filter()
+                ->each(static function (string $command) use ($schedule): void {
+                    if (method_exists($command, 'schedule') && \is_callable([$command, 'schedule'])) {
+                        $command::schedule($schedule);
+                    }
+                })
+            ;
+
+            // schedule
+            // $schedule->command('inspire')->hourly();
+        });
 
         return $this;
     }
