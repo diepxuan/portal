@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:49:50
+ * @lastupdate 2025-04-21 09:55:30
  */
 
 namespace Diepxuan\Core\Providers;
@@ -63,15 +63,17 @@ class ServiceProvider extends AbstractServiceProvider
         if (!$this->app->runningInConsole()) {
             return $this;
         }
-        //     $this->commands([
-        //         CatalogSync::class,
-        //         EnvTest::class,
-        //         Scavenger::class,
-        //     ]);
-        // }
-        $this->commands([]);
 
-        dd($this->packages());
+        $this->commands(
+            $this->packages()
+                ->map(static function (string $package, string $code) {
+                    // @todo: check if package has command
+                    return Package::getCommands($code);
+                })
+                ->flatten()
+                ->filter()
+                ->toArray() // @todo: filter out empty commands
+        );
 
         return $this;
     }

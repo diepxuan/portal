@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:49:58
+ * @lastupdate 2025-04-21 09:37:22
  */
 
 namespace Diepxuan\Core\Providers;
@@ -25,7 +25,7 @@ class ViewServiceProvider extends AbstractServiceProvider
      */
     public function boot(): void
     {
-        Package::list()->map(static function (string $package, string $code): void {
+        $this->packages()->map(static function (string $package, string $code): void {
             Package::livewireComponentNamespace($code);
         });
     }
@@ -35,7 +35,7 @@ class ViewServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        Package::list()->map(function (string $package, string $code): void {
+        $this->packages()->map(function (string $package, string $code): void {
             $viewPath   = resource_path('views/modules/' . $code);
             $sourcePath = Package::path($package, 'resources/views');
 
