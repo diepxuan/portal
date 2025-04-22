@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:48:34
+ * @lastupdate 2025-04-22 15:18:44
  */
 
 namespace Diepxuan\Core\Providers;
@@ -17,9 +17,10 @@ use Diepxuan\Core\Models\Package;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
-class RegisterServiceProvider extends AbstractServiceProvider
+class RegisterServiceProvider extends ServiceProvider
 {
     /**
      * The application instance.
@@ -56,7 +57,7 @@ class RegisterServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        $this->packages()->where(static fn (string $package) => !Str::of($package)
+        Package::list()->where(static fn (string $package) => !Str::of($package)
             ->is('diepxuan/laravel-core'))
             ->map(function (string $package, string $code) {
                 $composer = new \SplFileInfo(Package::path($package, '/composer.json'));

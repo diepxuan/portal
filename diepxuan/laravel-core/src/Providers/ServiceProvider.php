@@ -8,15 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 10:18:41
+ * @lastupdate 2025-04-22 15:19:46
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class ServiceProvider extends AbstractServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -66,7 +67,7 @@ class ServiceProvider extends AbstractServiceProvider
         }
 
         $this->commands(
-            $this->packages()
+            Package::list()
                 ->map(static function (string $package, string $code) {
                     // @todo: check if package has command
                     return Package::getCommands($code);
@@ -87,7 +88,7 @@ class ServiceProvider extends AbstractServiceProvider
         $this->app->booted(function (): void {
             $schedule = $this->app->make(Schedule::class);
 
-            $this->packages()
+            Package::list()
                 ->map(static function (string $package, string $code) {
                     // @todo: check if package has command
                     return Package::getCommands($code);

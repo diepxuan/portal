@@ -8,14 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:48:21
+ * @lastupdate 2025-04-22 15:17:06
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Http\Kernel;
+use Illuminate\Support\ServiceProvider;
 
-class MiddlewareServiceProvider extends AbstractServiceProvider
+class MiddlewareServiceProvider extends ServiceProvider
 {
     /**
      * Called before routes are registered.
