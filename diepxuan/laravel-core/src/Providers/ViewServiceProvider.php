@@ -8,15 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 09:37:22
+ * @lastupdate 2025-04-22 15:24:26
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 
-class ViewServiceProvider extends AbstractServiceProvider
+class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Called before routes are registered.
@@ -25,7 +26,7 @@ class ViewServiceProvider extends AbstractServiceProvider
      */
     public function boot(): void
     {
-        $this->packages()->map(static function (string $package, string $code): void {
+        Package::list()->map(static function (string $package, string $code): void {
             Package::livewireComponentNamespace($code);
         });
     }
@@ -35,7 +36,7 @@ class ViewServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        $this->packages()->map(function (string $package, string $code): void {
+        Package::list()->map(function (string $package, string $code): void {
             $viewPath   = resource_path('views/modules/' . $code);
             $sourcePath = Package::path($package, 'resources/views');
 

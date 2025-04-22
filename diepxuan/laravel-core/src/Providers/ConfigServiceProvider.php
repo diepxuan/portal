@@ -8,14 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:48:16
+ * @lastupdate 2025-04-22 15:16:33
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
+use Illuminate\Support\ServiceProvider;
 
-class ConfigServiceProvider extends AbstractServiceProvider
+class ConfigServiceProvider extends ServiceProvider
 {
     /**
      * Called before routes are registered.
@@ -32,7 +33,7 @@ class ConfigServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        $this->packages()->map(function (string $package, string $code): void {
+        Package::list()->map(function (string $package, string $code): void {
             if ((new \SplFileInfo(Package::path($package, '/config/config.php')))->isFile()) {
                 $this->publishes([Package::path($package, 'config/config.php') => config_path($code . '.php')], 'config');
                 $this->mergeConfigFrom(Package::path($package, 'config/config.php'), $code);

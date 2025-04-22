@@ -8,14 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-21 08:48:27
+ * @lastupdate 2025-04-22 15:17:46
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
+use Illuminate\Support\ServiceProvider;
 
-class MigrationServiceProvider extends AbstractServiceProvider
+class MigrationServiceProvider extends ServiceProvider
 {
     /**
      * Called before routes are registered.
@@ -32,7 +33,7 @@ class MigrationServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        $this->packages()->map(function (string $package, string $code): void {
+        Package::list()->map(function (string $package, string $code): void {
             $this->loadMigrationsFrom(Package::path($package, 'database/migrations'));
         });
     }
