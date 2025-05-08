@@ -1,0 +1,21 @@
+{
+  "name": "diepxuan/laravel-gmail",
+  "description": "Custom Gmail client for Laravel",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tran Ngoc Duc",
+      "email": "ductn@diepxuan.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Diepxuan\\Gmail\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": []
+    }
+  }
+}
