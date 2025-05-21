@@ -45,6 +45,7 @@
             <!-- System information -->
             <div class="max-w-7xl mx-auto pb-6 px-4 sm:px-6 lg:px-8">
                 <x-catalog::sys-language />
+                <x-catalog::sys-user-info />
             </div>
         </header>
 
