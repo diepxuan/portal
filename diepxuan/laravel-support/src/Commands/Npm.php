@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-21 11:21:18
+ * @lastupdate 2025-05-21 12:04:57
  */
 
-namespace Diepxuan\Catalog\Commands;
+namespace Diepxuan\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
@@ -59,7 +59,7 @@ class Npm extends Command
         }
 
         // === Check if watch.pid exists and process is still running ===
-        $pidFile = __DIR__ . '/watch.pid';
+        $pidFile = storage_path('watch.pid');
         if (file_exists($pidFile)) {
             $pid = trim(file_get_contents($pidFile));
             if (is_numeric($pid) && posix_kill((int) $pid, 0)) {
