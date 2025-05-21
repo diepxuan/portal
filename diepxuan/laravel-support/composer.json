@@ -1,0 +1,27 @@
+{
+  "name": "diepxuan/laravel-support",
+  "description": "Specifies a brief summary of the PHP package, indicating its purpose as a support tool for developers.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tran Ngoc Duc",
+      "email": "ductn@diepxuan.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "files": [],
+    "psr-4": {
+      "Diepxuan\\Support\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Diepxuan\\Support\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {}
+  }
+}
