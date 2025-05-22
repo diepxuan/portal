@@ -8,13 +8,14 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-21 22:04:41
+ * @lastupdate 2025-05-22 10:32:54
  */
 
 namespace Diepxuan\Catalog\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Diepxuan\Catalog\Models\SysUserInfo;
+use Diepxuan\Catalog\Models\User;
 use Diepxuan\Simba\Models\System;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -28,11 +29,14 @@ class SystemUserController extends Controller
      */
     public function index(): View
     {
-        $users = SysUserInfo::all();
+        $sysUsers = SysUserInfo::all();
+        $users    = User::all();
+        $options  = $users->mapWithKeys(static fn ($user) => [$user->id => "{$user->name} ({$user->email})"])->toArray();
 
         // diepxuan/laravel-catalog/resources/views/system/user/index.blade.php
         return view('catalog::system.user.index', [
-            'users' => $users,
+            'sysUsers' => $sysUsers,
+            'users'    => $options,
         ]);
     }
 
