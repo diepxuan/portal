@@ -1,5 +1,5 @@
-<x-catalog::app-layout>
-    <x-catalog::head-title>{{ __('Hệ Thống') }}</x-catalog::head-title>
+<x-app-layout>
+    <x-head-title>{{ __('Hệ Thống') }}</x-head-title>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Hệ Thống') }}
@@ -14,18 +14,22 @@
             <th>Quản trị</th>
             <th>Không sử dụng</th>
         </tr>
-        @foreach ($users as $user)
+        @foreach ($sysUsers as $sysUser)
             <tr class="border border-gray-200">
-                <td>{{ $user->username }}</td>
-                <td>{{ $user->fullname }}</td>
+                <td>{{ $sysUser->username }}</td>
+                <td>{{ $sysUser->fullname }}</td>
                 <td class="text-center">
-                    <input class="appearance-none" type="checkbox" {{ $user->isadmin ? 'checked' : '' }} />
+                    <x-checkbox :checked="$sysUser->isadmin" />
                 </td>
                 <td class="text-center">
-                    <input class="appearance-none" type="checkbox" {{ $user->disabled ? 'checked' : '' }} />
+                    <x-checkbox :checked="$sysUser->disabled" />
+                </td>
+                <td class="text-center">
+                    <x-select :placeholder="__('Select User')" :options="$users" />
+                    {{-- <x-catalog::select :placeholder="__('Select User')" :options="$users" /> --}}
+                    {{-- :selected="$sysUser->id"  --}}
                 </td>
             </tr>
         @endforeach
     </table>
-
-</x-catalog::app-layout>
+</x-app-layout>
