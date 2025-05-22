@@ -8,14 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-22 16:21:14
+ * @lastupdate 2025-05-22 23:24:17
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
@@ -29,24 +28,6 @@ class ViewServiceProvider extends ServiceProvider
     {
         Package::list()->map(static function (string $package, string $code): void {
             Package::livewireComponentNamespace($code);
-
-            if (File::isDirectory($componentsPath = Package::path($package, 'resources/views/components'))) {
-                collect(File::files($componentsPath))
-                    ->mapWithKeys(static function ($file, $key) use ($code) {
-                        // $filename = $file->getFilenameWithoutExtension();
-                        $filename = basename($file->getFilename(), '.blade.php');
-
-                        // return ["components.{$filename}" => "{$code}::components.{$filename}"];
-                        return [$filename => "{$code}::components.{$filename}"];
-                    })
-                    ->each(static function ($component, $key): void {
-                        // $component = str_replace('catalog::', "{$code}::", $component);
-                        // Blade::component('catalog::components.button', 'catalog-button');
-                        Blade::component($component, $key);
-                    })
-                    // ->dd()
-                ;
-            }
         });
     }
 
@@ -55,34 +36,22 @@ class ViewServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Package::list()->map(function (string $package, string $code): void {
-            $viewPath   = resource_path('views/modules/' . $code);
-            $sourcePath = Package::path($package, 'resources/views');
+        Package::list()
+            ->each(function (string $package, string $code): void {
+                $viewPath   = resource_path('views/modules/' . $code);
+                $sourcePath = Package::path($package, 'resources/views');
 
-            $this->publishes([$sourcePath => $viewPath], ['views', $code . '-module-views']);
+                $this->publishes([$sourcePath => $viewPath], ['views', $code . '-module-views']);
 
-            $this->loadViewsFrom(array_merge($this->getPublishableViewPaths($code), [$sourcePath]), $code);
+                $this->loadViewsFrom([$sourcePath, $viewPath], $code);
 
-            $componentNamespace = config("{$code}.namespace");
-            Blade::componentNamespace("{$componentNamespace}\\View\\Components", $code);
-        });
-    }
-
-    /**
-     * @param mixed $moduleCode
-     *
-     * @return array<string>
-     */
-    private function getPublishableViewPaths($moduleCode = ''): array
-    {
-        $paths      = [];
-        $moduleCode = "/{$moduleCode}";
-        foreach (config('view.paths') as $path) {
-            if (is_dir("{$path}/diepxuan{$moduleCode}")) {
-                $paths[] = "{$path}/diepxuan{$moduleCode}";
-            }
-        }
-
-        return $paths;
+                $componentNamespace = config("{$code}.namespace");
+                Blade::componentNamespace("{$componentNamespace}\\View\\Components", $code);
+            })
+            ->each(static function (string $package, string $code): void {
+                Package::bladeComponentNamespace($code);
+                // Package::livewireComponentNamespace($code);
+            })
+        ;
     }
 }

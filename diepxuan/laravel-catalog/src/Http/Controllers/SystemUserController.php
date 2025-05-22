@@ -45,7 +45,7 @@ class SystemUserController extends Controller
      */
     public function create()
     {
-        return view('catalog::system.website.index');
+        return view('catalog::system.user.index');
     }
 
     /**
@@ -55,7 +55,7 @@ class SystemUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        return Redirect::route('systemwebsite.index');
+        return Redirect::route('system.user.index');
     }
 
     /**
@@ -65,7 +65,7 @@ class SystemUserController extends Controller
      */
     public function show(System $hethong)
     {
-        return view('catalog::system.website.index');
+        return view('catalog::system.user.index');
     }
 
     /**
@@ -75,7 +75,7 @@ class SystemUserController extends Controller
      */
     public function edit(System $hethong)
     {
-        return view('catalog::system.website.index');
+        return view('catalog::system.user.index');
     }
 
     /**
@@ -85,7 +85,7 @@ class SystemUserController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        return Redirect::route('systemwebsite.index');
+        return Redirect::route('system.user.index');
     }
 
     /**
@@ -95,6 +95,6 @@ class SystemUserController extends Controller
      */
     public function destroy(System $hethong): RedirectResponse
     {
-        return Redirect::route('systemwebsite.index');
+        return Redirect::route('system.user.index');
     }
 }
