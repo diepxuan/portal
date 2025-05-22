@@ -8,13 +8,14 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-04-22 15:24:26
+ * @lastupdate 2025-05-22 16:21:14
  */
 
 namespace Diepxuan\Core\Providers;
 
 use Diepxuan\Core\Models\Package;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 
 class ViewServiceProvider extends ServiceProvider
@@ -28,6 +29,24 @@ class ViewServiceProvider extends ServiceProvider
     {
         Package::list()->map(static function (string $package, string $code): void {
             Package::livewireComponentNamespace($code);
+
+            if (File::isDirectory($componentsPath = Package::path($package, 'resources/views/components'))) {
+                collect(File::files($componentsPath))
+                    ->mapWithKeys(static function ($file, $key) use ($code) {
+                        // $filename = $file->getFilenameWithoutExtension();
+                        $filename = basename($file->getFilename(), '.blade.php');
+
+                        // return ["components.{$filename}" => "{$code}::components.{$filename}"];
+                        return [$filename => "{$code}::components.{$filename}"];
+                    })
+                    ->each(static function ($component, $key): void {
+                        // $component = str_replace('catalog::', "{$code}::", $component);
+                        // Blade::component('catalog::components.button', 'catalog-button');
+                        Blade::component($component, $key);
+                    })
+                    // ->dd()
+                ;
+            }
         });
     }
 
