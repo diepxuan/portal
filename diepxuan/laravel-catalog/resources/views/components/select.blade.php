@@ -1,7 +1,7 @@
-@props(['name' => null, 'options' => [], 'selected' => null, 'placeholder' => null, 'id' => null, 'class' => ''])
+@props(['options' => [], 'selected' => null, 'placeholder' => null, 'class' => ''])
 
-<select {{ $name ?? "name='$name'" }} {{ $id ?? "id='$id'" }} {!! $attributes->merge([
-    'class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm',
+<select {!! $attributes->merge([
+    'class' => "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm $class",
 ]) !!}>
     @if ($placeholder)
         <option value="">{{ $placeholder }}</option>
