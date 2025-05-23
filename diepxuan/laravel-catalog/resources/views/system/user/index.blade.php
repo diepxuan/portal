@@ -11,8 +11,8 @@
         <tr class="border border-gray-200">
             <th class="px-4">Tên đăng nhập</th>
             <th class="px-4">Tên đầy đủ</th>
-            <th class="px-4">Quản trị</th>
-            <th class="px-4">Không sử dụng</th>
+            <th class="text-center px-4">Quản trị</th>
+            <th class="text-center px-4">Không sử dụng</th>
         </tr>
         @foreach ($sysUsers as $sysUser)
             <tr class="border border-gray-200">
@@ -25,9 +25,8 @@
                     <x-checkbox :checked="$sysUser->disabled" />
                 </td>
                 <td class="text-center">
-                    <x-select :placeholder="__('None')" :options="$users" class="py-1" />
-                    {{-- <x-catalog::select :placeholder="__('Select User')" :options="$users" /> --}}
-                    {{-- :selected="$sysUser->id"  --}}
+                    {{-- diepxuan/laravel-catalog/src/Http/Livewire/System/User/Link.php --}}
+                    @livewire('catalog::system.user.link', ['sysUser' => $sysUser, 'users' => $users])
                 </td>
             </tr>
         @endforeach
