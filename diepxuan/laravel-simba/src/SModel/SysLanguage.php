@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-24 11:47:21
+ * @lastupdate 2025-05-24 18:41:57
  */
 
 namespace Diepxuan\Simba\SModel;
@@ -58,30 +58,11 @@ class SysLanguage extends SModel
     /**
      * The attributes that are mass assignable.
      *
-     * @var string
-     */
-    public static function updateCurrentCultureInfo(string $name): bool
-    {
-        $name ??= self::DEFAULT;
-
-        if (self::where('Name', $name)->exists()) {
-            self::where('Name', '!=', $name)->update(['selected' => 0]);
-            self::where('Name', $name)->update(['selected' => 1]);
-        } else {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * The attributes that are mass assignable.
-     *
      * @var array
      *
      * @deprecated
      */
-    public static function updateCurrentCultureInfoOld(string $name): bool
+    public static function updateCurrentCultureInfo(string $name): bool
     {
         $name     = $name ?: self::DEFAULT;
         $affected = DB::affectingStatement('CALL asUpdCurentCultureInfo(:pName)', [
