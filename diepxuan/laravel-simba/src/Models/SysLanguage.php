@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-24 21:19:49
+ * @lastupdate 2025-05-24 21:31:35
  */
 
 namespace Diepxuan\Simba\Models;
@@ -17,6 +17,23 @@ use Diepxuan\Simba\SModel\SysLanguage as Model;
 
 class SysLanguage extends Model
 {
+    public function resx()
+    {
+        return $this->hasMany(SysCompanyResx::class, 'language', 'Name');
+    }
+
+    public function companies()
+    {
+        return $this->belongsToMany(
+            SysCompany::class,
+            'sysCompanyResx',
+            'language',  // Foreign key on pivot (trỏ tới user)
+            'ma_cty',    // Foreign key on pivot (trỏ tới company)
+            'Name',  // Local key on this model
+            'ma_cty'     // Local key on SysCompany
+        );
+    }
+
     /**
      * is Enable scope.
      *
