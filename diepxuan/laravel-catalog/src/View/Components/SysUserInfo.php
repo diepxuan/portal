@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-21 17:47:59
+ * @lastupdate 2025-05-24 07:59:39
  */
 
 namespace Diepxuan\Catalog\View\Components;
@@ -26,15 +26,10 @@ class SysUserInfo extends Component
      */
     public function render(): string|View
     {
-        $user      = Auth::user();
-        $simbaUser = $user->getSimbaUser();
-
-        if (null === $simbaUser) {
-            return '';
-        }
+        $simbaUser = optional(Auth::user()->getSimbaUser())->username;
 
         return <<<HTML
-                <span>{$simbaUser->username}</span>
+                <span>{$simbaUser}</span>
             HTML;
     }
 }
