@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-20 11:43:30
+ * @lastupdate 2025-05-24 21:19:49
  */
 
 namespace Diepxuan\Simba\Models;
@@ -35,5 +35,24 @@ class SysLanguage extends Model
     public function scopeCurrent($query)
     {
         return $query->where('Selected', 1);
+    }
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var string
+     */
+    public static function updateCurrentCultureInfo(string $name): bool
+    {
+        $name ??= self::DEFAULT;
+
+        if (self::where('Name', $name)->exists()) {
+            self::where('Name', '!=', $name)->update(['selected' => 0]);
+            self::where('Name', $name)->update(['selected' => 1]);
+        } else {
+            return false;
+        }
+
+        return true;
     }
 }
