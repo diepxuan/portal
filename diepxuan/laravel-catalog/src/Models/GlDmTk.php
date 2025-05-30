@@ -8,11 +8,28 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-27 18:08:14
+ * @lastupdate 2025-05-30 11:38:30
  */
 
 namespace Diepxuan\Catalog\Models;
 
 use Diepxuan\Simba\Models\GlDmTk as Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Carbon;
 
-class GlDmTk extends Model {}
+class GlDmTk extends Model
+{
+    protected function cdate(): Attribute
+    {
+        return Attribute::get(
+            static fn ($value, array $attributes) => $value ? Carbon::parse($value)->format('d/m/Y') : null
+        );
+    }
+
+    protected function ldate(): Attribute
+    {
+        return Attribute::get(
+            static fn ($value, array $attributes) => $value ? Carbon::parse($value)->format('d/m/Y') : null
+        );
+    }
+}
