@@ -18,6 +18,8 @@ use Livewire\Component;
 
 class Phieuthu extends Component
 {
+    public $pTk_List = '111';
+
     public function mount(): void
     {
         // \Debugbar::info($this->timer);
