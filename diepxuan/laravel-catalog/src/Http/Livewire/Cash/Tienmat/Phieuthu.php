@@ -8,15 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-27 08:08:39
+ * @lastupdate 2025-05-30 12:29:37
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuthu;
+namespace Diepxuan\Catalog\Http\Livewire\Cash\Tienmat;
 
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Dashboard extends Component
+class Phieuthu extends Component
 {
     public function mount(): void
     {
@@ -35,7 +35,7 @@ class Dashboard extends Component
      */
     public function render()
     {
-        // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuthu/dashboard.blade.php
-        return view('catalog::cash.tienmat.phieuthu.dashboard');
+        // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuthu.blade.php
+        return view('catalog::cash.tienmat.phieuthu')->layout('catalog::layouts.app');
     }
 }
