@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-27 18:07:12
+ * @lastupdate 2025-05-30 11:37:15
  */
 
 namespace Diepxuan\Simba\Models;
@@ -21,7 +21,7 @@ class GlDmTk extends Model
     protected function tenTk(): Attribute
     {
         return Attribute::make(
-            get: static fn (mixed $value, array $attributes) => str_repeat(' ', max(0, ($attributes['bac_tk'] - 1) * 3)) . $attributes['tk'],
+            get: static fn (mixed $value, array $attributes) => $attributes['ten_tk'],
         );
     }
 

@@ -8,19 +8,23 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-27 19:43:13
+ * @lastupdate 2025-05-28 12:51:49
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Gl;
 
+use Diepxuan\Catalog\Models\GlDmTk;
 use Illuminate\View\View;
 use Livewire\Component;
 
 class Taikhoan extends Component
 {
+    public $glDmTks;
+
     public function mount(): void
     {
         // \Debugbar::info($this->timer);
+        $this->glDmTks = GlDmTk::all();
     }
 
     public function updated($property): void
@@ -35,7 +39,7 @@ class Taikhoan extends Component
      */
     public function render()
     {
-        // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuthu/dashboard.blade.php
+        // diepxuan/laravel-catalog/resources/views/gl/taikhoan.blade.php
         return view('catalog::gl.taikhoan')->layout('catalog::layouts.app');
     }
 }
