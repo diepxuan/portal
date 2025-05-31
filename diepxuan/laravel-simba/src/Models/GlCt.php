@@ -8,12 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-30 13:31:59
+ * @lastupdate 2025-05-31 10:05:14
  */
 
 namespace Diepxuan\Simba\Models;
 
 use Diepxuan\Simba\SModel\GlCt as Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -25,12 +26,44 @@ use Illuminate\Support\Facades\DB;
  */
 class GlCt extends Model
 {
+    /** Filter theo danh sách tài khoản */
+    public function scopeFilterByTkList(Builder $query, ?string $list): Builder
+    {
+        return $query->filterLikeList('tk', $list);
+    }
+
+    /** Filter theo danh sách tài khoản đối ứng */
+    public function scopeFilterByTkduList(Builder $query, ?string $list): Builder
+    {
+        return $query->filterLikeList('tk_du', $list);
+    }
+
+    /** Filter theo mã bộ phận */
+    public function scopeFilterByMaBp(Builder $query, ?string $maBp): Builder
+    {
+        if (!empty($maBp)) {
+            return $query->where('ma_bp', $maBp);
+        }
+
+        return $query;
+    }
+
+    /** Filter theo mã tiền tệ */
+    public function scopeFilterByMaNt(Builder $query, ?string $maNt): Builder
+    {
+        if (!empty($maNt)) {
+            return $query->where('ma_nt', $maNt);
+        }
+
+        return $query;
+    }
+
     /**
      * Gọi stored procedure asGLRptNKC03 để lấy dữ liệu sổ nhật ký thu/chi.
      */
     public static function getNKC03Report(array $params): Collection
     {
-        return collect(DB::select('EXEC asGLRptNKC03
+        return collect(DB::connection((new static())->getConnectionName())->select('EXEC asGLRptNKC03
             @pMa_Cty = :pMa_Cty,
             @pNgay_Ct1 = :pNgay_Ct1,
             @pNgay_Ct2 = :pNgay_Ct2,
