@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-31 15:14:04
+ * @lastupdate 2025-06-01 13:17:19
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Tienmat;
@@ -19,8 +19,10 @@ use Livewire\Component;
 
 class Phieuchi extends Component
 {
-    public $pTk_List = '111';
-    public $pMa_Nt   = 'VND';
+    public $pTk_List   = '';
+    public $pTkdu_List = '111';
+    public $pMa_Nt     = 'VND';
+    public $pMa_Bp;
     protected $glCts;
 
     public function mount(): void
@@ -36,13 +38,13 @@ class Phieuchi extends Component
 
     public function submit(): void
     {
-        $this->glCts = GlCt::getNKThu([
+        $this->glCts = GlCt::getNKThuChi([
             'ma_cty'    => \CatalogService::company()->id,
             'ngay_ct1'  => \CatalogService::timerFrom(),
             'ngay_ct2'  => \CatalogService::timerTo(),
             'tk_list'   => $this->pTk_List,
-            'tkdu_list' => '',
-            'ma_bp'     => '',
+            'tkdu_list' => $this->pTkdu_List,
+            'ma_bp'     => $this->pMa_Bp ?? '',
             'ma_nt'     => 'VND',
         ])->get();
     }
