@@ -63,7 +63,7 @@
                 <td class="border border-gray-300 px-1">{{ $glCt->so_ct }}</td>
                 {{-- <td class="border border-gray-300 px-1">{{ $glCt->ngay_lct }}</td> --}}
                 <td class="border border-gray-300 px-1"><pre>{{ $glCt->dien_giai }}</pre></td>
-                <td class="border border-gray-300 px-1">{{ $glCt->arDmKh->ten_kh }}</td>
+                <td class="border border-gray-300 px-1">{{ $glCt->arDmKh?->ten_kh }}</td>
                 <td class="border border-gray-300 px-1">{{ $glCt->tk }}</td>
                 <td class="border border-gray-300 px-1">{{ $glCt->tk_du }}</td>
                 <td class="border border-gray-300 px-1 text-right">@currency($glCt->ps_no)</td>
