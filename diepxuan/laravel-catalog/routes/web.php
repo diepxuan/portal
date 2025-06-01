@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-31 15:13:02
+ * @lastupdate 2025-06-01 17:07:31
  */
 
 use Diepxuan\Catalog\Http\Controllers\CatalogController;
@@ -18,6 +18,7 @@ use Diepxuan\Catalog\Http\Controllers\SellController;
 use Diepxuan\Catalog\Http\Controllers\SystemController;
 use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
+use Diepxuan\Catalog\Http\Livewire\Banhang\Khachhang;
 use Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuchi;
 use Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuthu;
 use Diepxuan\Catalog\Http\Livewire\Gl\Taikhoan;
@@ -48,6 +49,7 @@ Route::domain('portal.diepxuan.io.vn')->middleware(['clearcache', 'auth'])->grou
 
     Route::resource('banhang/hoadonbanhang', SellController::class)->names('sell');
     Route::resource('banhang/bangkebanhang', SellController::class)->names('sell.list');
+    Route::get('/banhang/khachhang', Khachhang::class)->name('ar.khachhang');
 
     Route::resource('khohang/sanpham', CatalogController::class)->names('catalog');
     Route::resource('khohang/nhomsanpham', CategoryController::class)->names('catalog.category');
