@@ -1,5 +1,5 @@
 <div class="phieuthu-container w-full">
-    <x-head-title>{{ 'Tiền tệ' }}</x-head-title>
+    <x-head-title>{{ 'Phiếu chi - Tiền tệ' }}</x-head-title>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ 'Tiền mặt' }}
