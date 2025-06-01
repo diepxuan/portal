@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-02 00:42:11
+ * @lastupdate 2025-06-02 00:43:32
  */
 
 use Diepxuan\Catalog\Http\Controllers\CatalogController;
