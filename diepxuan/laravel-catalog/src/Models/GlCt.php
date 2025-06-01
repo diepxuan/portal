@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-31 12:35:23
+ * @lastupdate 2025-06-01 19:57:12
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -48,6 +48,11 @@ class GlCt extends Model
             // ->where('ps_no', '<>', 0)
             ->orderBy('ngay_ct')->orderBy('ma_ct')->orderBy('so_ct')
         ;
+    }
+
+    public function arDmKh()
+    {
+        return $this->belongsTo(ArDmKh::class, 'ma_kh', 'ma_kh');
     }
 
     protected function ngayCt(): Attribute
