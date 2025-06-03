@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-03 17:20:27
+ * @lastupdate 2025-06-03 22:55:24
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
@@ -41,7 +41,7 @@ class Tienmat extends Component
             'ngay_Ct1' => \CatalogService::timerFrom(),
             'ngay_Ct2' => \CatalogService::timerTo(),
             'tk'       => $this->pTk,
-            'ma_Nt'    => 'VND',
+            'ma_Nt'    => \CatalogService::ma_Nt(),
         ])->get();
     }
 
