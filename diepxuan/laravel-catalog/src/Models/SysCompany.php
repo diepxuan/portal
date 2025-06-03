@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-31 09:33:17
+ * @lastupdate 2025-06-03 22:45:23
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -18,6 +18,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class SysCompany extends Model
 {
+    public function siSetup(): HasOne
+    {
+        return $this->hasOne(SiSetup::class, 'ma_cty', 'ma_cty');
+    }
+
     protected function id(): Attribute
     {
         return Attribute::get(
