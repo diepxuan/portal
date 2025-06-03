@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-03 16:13:35
+ * @lastupdate 2025-06-03 17:20:27
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
@@ -36,7 +36,7 @@ class Tienmat extends Component
 
     public function submit(): void
     {
-        $this->glCts = GlCt::getCARptTMNH01([
+        $this->glCts = GlCt::getCARptTMNH([
             'ma_Cty'   => \CatalogService::company()->id,
             'ngay_Ct1' => \CatalogService::timerFrom(),
             'ngay_Ct2' => \CatalogService::timerTo(),
