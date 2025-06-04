@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-03 22:55:24
+ * @lastupdate 2025-06-04 10:24:49
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
@@ -25,8 +25,9 @@ class Tienmat extends Component
 
     public function mount(): void
     {
-        \Debugbar::info(\CatalogService::timerFrom());
-        \Debugbar::info(\CatalogService::timerTo());
+        // \Debugbar::info(\CatalogService::timerFrom());
+        // \Debugbar::info(\CatalogService::timerTo());
+        // \Debugbar::info(\CatalogService::company()->siSetup);
     }
 
     public function updated($property): void
