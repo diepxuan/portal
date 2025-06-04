@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-03 22:56:00
+ * @lastupdate 2025-06-04 10:21:23
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -133,6 +133,6 @@ class CatalogService
 
     public function ma_Nt()
     {
-        return $this->company()->ma_nt0 ?? 'VND';
+        return $this->company()->siSetup->ma_nt0 ?? 'VND';
     }
 }
