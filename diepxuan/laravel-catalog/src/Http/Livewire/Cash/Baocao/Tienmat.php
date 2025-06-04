@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-04 10:24:49
+ * @lastupdate 2025-06-04 11:35:42
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
@@ -27,7 +27,11 @@ class Tienmat extends Component
     {
         // \Debugbar::info(\CatalogService::timerFrom());
         // \Debugbar::info(\CatalogService::timerTo());
-        // \Debugbar::info(\CatalogService::company()->siSetup);
+        // \Debugbar::info(\CatalogService::company()->siSetup->ngay_dntc);
+        \Debugbar::info(\CatalogFunctions::afNamTC([
+            'ma_cty' => \CatalogService::company()->ma_cty,
+            'ngay'   => \CatalogService::timerFrom(),
+        ]));
     }
 
     public function updated($property): void
