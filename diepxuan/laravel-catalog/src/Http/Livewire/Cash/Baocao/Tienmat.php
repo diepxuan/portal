@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-04 11:35:42
+ * @lastupdate 2025-06-05 14:50:16
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
@@ -31,6 +31,10 @@ class Tienmat extends Component
         \Debugbar::info(\CatalogFunctions::afNamTC([
             'ma_cty' => \CatalogService::company()->ma_cty,
             'ngay'   => \CatalogService::timerFrom(),
+        ]));
+        \Debugbar::info(\CatalogFunctions::afDuDauTk([
+            'pMaCty' => \CatalogService::company()->ma_cty,
+            'pNgay'  => \CatalogService::timerFrom(),
         ]));
     }
 
