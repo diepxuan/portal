@@ -8,8 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-11 23:32:30
+ * @lastupdate 2025-06-05 15:10:49
  */
+
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 if (!function_exists('import_url')) {
     function import_url($url)
@@ -26,8 +28,17 @@ if (!function_exists('import_url')) {
     }
 }
 
-date_default_timezone_set('Asia/Ho_Chi_Minh');
-$config = import_url('https://raw.githubusercontent.com/diepxuan/php/main/.php-cs-fixer.dist.php');
-$config = str_replace('<?php', '', $config);
+$cacheFile = __DIR__ . '/.php-cs-fixer.cache.php';
+$sourceUrl = 'https://raw.githubusercontent.com/diepxuan/php/main/.php-cs-fixer.dist.php';
+$expire    = 3_600 * 24; // Cache 1 ngày
 
-return eval($config);
+// Nếu chưa có cache hoặc cache hết hạn
+if (!file_exists($cacheFile) || time() - filemtime($cacheFile) > $expire) {
+    $config = import_url($sourceUrl);
+    file_put_contents($cacheFile, "{$config}");
+    // $config = str_replace('<?php', '', $config);
+    // file_put_contents($cacheFile, "<?php\n{$config}");
+}
+
+return require $cacheFile;
+// return eval($config);
