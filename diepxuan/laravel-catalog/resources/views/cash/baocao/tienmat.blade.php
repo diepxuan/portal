@@ -50,11 +50,11 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>Tổng phát sinh</td>
+                <td>Dư đầu kỳ</td>
                 <td></td>
-                <td class="border border-gray-200 px-1 text-right">@currency($glCts->sum('ps_no'))</td>
-                <td class="border border-gray-200 px-1 text-right">@currency($glCts->sum('ps_co'))</td>
                 <td></td>
+                <td></td>
+                <td class="border border-gray-200 px-1 text-right">@currency($glCtDk->du_no)</td>
                 <td></td>
             </tr>
             @foreach ($glCts??[] as $glCt)
@@ -67,6 +67,7 @@
                 <td class="border border-gray-200 px-1">{{ $glCt->arDmKh?->ten_kh }}</td>
                 <td class="border border-gray-200 px-1 text-right">@currency($glCt->ps_no)</td>
                 <td class="border border-gray-200 px-1 text-right">@currency($glCt->ps_co)</td>
+                <td class="border border-gray-200 px-1 text-right">@currency($glCt->ton)</td>
                 <td class="border border-gray-200 px-1">{{ $glCt->ma_ct }}</td>
             </tr>
             @endforeach
@@ -79,6 +80,17 @@
                 <td class="border border-gray-200 px-1 text-right">@currency($glCts->sum('ps_no'))</td>
                 <td class="border border-gray-200 px-1 text-right">@currency($glCts->sum('ps_co'))</td>
                 <td></td>
+                <td></td>
+            </tr>
+            <tr class="text-blue-700 hover:bg-sky-100 border border-gray-200">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Dư cuối kỳ</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="border border-gray-200 px-1 text-right">@currency($duCk)</td>
                 <td></td>
             </tr>
         </tbody>
