@@ -81,4 +81,4 @@ jobs:
             WWWUSER=1000
             WWWGROUP=1000
           # QUAN TRỌNG: Thêm dòng này để build cho cả 2 kiến trúc
-          platforms: linux/amd64,linux/arm64
+          # platforms: linux/amd64,linux/arm64
