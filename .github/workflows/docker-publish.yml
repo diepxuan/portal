@@ -34,7 +34,9 @@ jobs:
           coverage: none
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          ls -la ./vendor/laravel/sail/runtimes/8.2/
 
       # Bước 2: Đăng nhập vào GitHub Container Registry (ghcr.io)
       - name: Log in to the Container registry
