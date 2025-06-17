@@ -56,10 +56,17 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }} # ghcr.io/diepxuan/portal
           tags: |
-            # type=semver: tự động lấy phiên bản từ git tag
+            # type=semver: tạo tag phiên bản khi push git tag, ví dụ: v1.2.3
             type=semver,pattern={{version}}
             # type=edge: tạo tag 'latest' khi push lên branch 'main'
             type=edge,branch=main
+            
+            # type=ref,event=branch: tạo tag theo tên branch, ví dụ: main
+            type=ref,event=branch
+            
+            # QUAN TRỌNG: Ghi đè để tạo tag 'latest' khi push lên branch 'main'
+            # (branch mặc định của repo)
+            type=raw,value=latest,enable={{is_default_branch}}
 
       # Bước 4: Build và push Docker image
       - name: Build and push Docker image
