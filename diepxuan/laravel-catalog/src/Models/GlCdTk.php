@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-05 16:57:30
+ * @lastupdate 2025-06-07 13:26:48
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -41,15 +41,23 @@ class GlCdTk extends Model
             ->when(
                 $params['pMa_Nt'] === \CatalogService::ma_Nt(),
                 static fn ($query) => $query
-                    ->selectRaw('SUM(du_no - du_co) as du_no')
-                    ->selectRaw('0 as du_co')
-                    ->selectRaw('SUM(du_no_nt - du_co_nt) as du_no_nt')
-                    ->selectRaw('0 as du_co_nt'),
+                    // ->selectRaw('SUM(du_no - du_co) as du_no')
+                    // ->selectRaw('0 as du_co')
+                    // ->selectRaw('SUM(du_no_nt - du_co_nt) as du_no_nt')
+                    // ->selectRaw('0 as du_co_nt'),
+                    ->selectRaw('SUM(du_no) as du_no')
+                    ->selectRaw('SUM(du_co) as du_co')
+                    ->selectRaw('SUM(du_no_nt) as du_no_nt')
+                    ->selectRaw('SUM(du_co_nt) as du_co_nt'),
                 static fn ($query) => $query
-                    ->selectRaw('SUM(du_no00 - du_co00) as du_no')
-                    ->selectRaw('0 as du_co')
-                    ->selectRaw('SUM(du_no_nt00 - du_co_nt00) as du_no_nt')
-                    ->selectRaw('0 as du_co_nt')
+                    // ->selectRaw('SUM(du_no00 - du_co00) as du_no')
+                    // ->selectRaw('0 as du_co')
+                    // ->selectRaw('SUM(du_no_nt00 - du_co_nt00) as du_no_nt')
+                    // ->selectRaw('0 as du_co_nt')
+                    ->selectRaw('SUM(du_no00) as du_no')
+                    ->selectRaw('SUM(du_co00) as du_co')
+                    ->selectRaw('SUM(du_no_nt00) as du_no_nt')
+                    ->selectRaw('SUM(du_co_nt00) as du_co_nt')
             )
             ->filterByMaCty($params['pMa_Cty'])
             ->filterByTkList($params['pTk'] ?? '')

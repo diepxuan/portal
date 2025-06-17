@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 10:22:29
+ * @lastupdate 2025-06-14 15:25:35
  */
 
 use Illuminate\Support\Str;
@@ -108,7 +108,7 @@ return [
 
         'sqlsrv' => [
             'driver'         => 'sqlsrv',
-            'url'            => env('SQLSRV_URL', env('DB_URL', 'localhost')),
+            'url'            => env('SQLSRV_URL'),
             'host'           => env('SQLSRV_HOST', env('DB_HOST', 'localhost')),
             'port'           => env('SQLSRV_PORT', env('DB_PORT', '1433')),
             'database'       => env('SQLSRV_DATABASE', env('DB_DATABASE', 'laravel')),
@@ -117,8 +117,12 @@ return [
             'charset'        => env('DB_CHARSET', 'utf8'),
             'prefix'         => '',
             'prefix_indexes' => true,
-            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
-            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+            // 'encrypt'                  => env('DB_ENCRYPT', 'no'),
+            'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'true'),
+            // 'options'                  => [
+            //     PDO::ATTR_EMULATE_PREPARES => true, // GIÁ TRỊ ĐÚNG
+            //     PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION,
+            // ],
         ],
     ],
 

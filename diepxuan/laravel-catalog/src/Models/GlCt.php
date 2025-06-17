@@ -56,25 +56,6 @@ class GlCt extends Model
             ->where('Ngay_ct', '<', $params['pNgay'])
             ->groupBy('ma_cty', 'tk', 'ma_nt')
         ;
-
-        return $query
-            ->select(
-                'ma_cty',
-                'tk',
-                DB::raw("{$params['pMa_Nt']} as ma_nt"),
-                DB::raw('SUM(ps_no-ps_co) as du_no'),
-                DB::raw('0 as du_co'),
-                DB::raw('SUM(ps_no_nt-ps_co_nt) as du_no_nt'),
-                DB::raw('0 as du_co_nt')
-            )
-            ->where('ma_cty', $params['pMa_Cty'])
-            ->whereBetween('Ngay_ct', [$Ngay_DNTC, $pNgay])
-            ->where('Ngay_ct', '<', $pNgay)
-            ->when('' !== $pTk, static function ($q) use ($pTk): void {
-                $q->where('tk', 'like', $pTk . '%');
-            })
-            ->groupBy('ma_cty', 'tk')
-        ;
     }
 
     /**

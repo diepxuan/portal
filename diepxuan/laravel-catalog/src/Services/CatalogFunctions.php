@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-05 16:58:33
+ * @lastupdate 2025-06-08 20:32:32
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -30,7 +30,7 @@ class CatalogFunctions
         $params->pMaNt ??= \CatalogService::ma_Nt();
         $params->pNamTc ??= static::afNamTC($params);
         $params->pNgayDnTc ??= static::afNgay_DNTC($params);
-        \Debugbar::info($params);
+        // \Debugbar::info($params);
 
         // Theo đồng tiền hạch toán
         $du_dau_nam = GlCdTk::afDuDauTk([
@@ -50,30 +50,30 @@ class CatalogFunctions
             'pNgayDnTc' => $params->pNgayDnTc,
         ]);
 
-        $rows = $ps_dau_ky->toBase()->unionAll($du_dau_nam->toBase())
+        $glCtDk = $ps_dau_ky->toBase()->unionAll($du_dau_nam->toBase())
         // ->select('ma_cty', 'tk', 'ma_nt', DB::raw('SUM(du_no) as du_no'), DB::raw('SUM(du_co) as du_co'), DB::raw('SUM(du_no_nt) as du_no_nt'), DB::raw('SUM(du_co_nt) as du_co_nt'))
         // ->where(static function ($q): void {
         //     $q->where('du_no', '<>', 0)->orWhere('du_no_nt', '<>', 0);
         // })
         // ->groupBy('ma_cty', 'tk', 'ma_nt')
             ->get()
+            ->map(static function ($glCt) use ($params) {
+                $glCt->tk       = $params->pTk;
+                $glCt->du_no    = (float) $glCt->du_no;
+                $glCt->du_co    = (float) $glCt->du_co;
+                $glCt->du_no_nt = (float) $glCt->du_no_nt;
+                $glCt->du_co_nt = (float) $glCt->du_co_nt;
+
+                return $glCt;
+            })
         ;
-        // dd($rows->get());
 
-        // Xử lý dư có/dư nợ âm chuyển đổi
-        foreach ($rows as $row) {
-            if ($row->du_no < 0) {
-                $row->du_co = -$row->du_no;
-                $row->du_no = 0;
-            }
-            if ($row->du_no_nt < 0) {
-                $row->du_co_nt = -$row->du_no_nt;
-                $row->du_no_nt = 0;
-            }
-            $result[] = (array) $row;
-        }
-
-        return $rows;
+        return (object) [
+            'du_no'    => $glCtDk->sum(static fn ($i) => (float) $i->du_no - (float) $i->du_co),
+            'du_co'    => $glCtDk->sum(static fn ($i) => 0),
+            'du_no_nt' => $glCtDk->sum(static fn ($i) => (float) $i->du_no_nt - (float) $i->du_co_nt),
+            'du_co_nt' => $glCtDk->sum(static fn ($i) => 0),
+        ];
     }
 
     public function afNamTC(array|Params $params)
