@@ -48,7 +48,19 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: . # Sử dụng context là thư mục gốc của repo
+          # QUAN TRỌNG: `context` là thư mục gốc của project Laravel của bạn
+          # vì Dockerfile của Sail có thể tham chiếu đến các file từ thư mục gốc.
+          context: .
+          
+          # QUAN TRỌNG: Chỉ định đường dẫn chính xác đến Dockerfile
+          file: ./vendor/laravel/sail/runtimes/8.2/Dockerfile
+
           push: true # Đẩy image sau khi build thành công
           tags: ${{ steps.meta.outputs.tags }} # Sử dụng các tag đã tạo ở bước trên
           labels: ${{ steps.meta.outputs.labels }} # Gắn các label đã tạo ở bước trên
+          
+          # Nếu Dockerfile của bạn cần build args, bạn có thể thêm chúng ở đây.
+          # Ví dụ:
+          # build-args: |
+          #   WWWUSER=1000
+          #   WWWGROUP=1000
