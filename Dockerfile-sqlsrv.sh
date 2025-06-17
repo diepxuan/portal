@@ -21,10 +21,8 @@ PHPSQLSRV_INSTALL=$(
     # Install PHP extensions for SQL Server \\
     && pecl install sqlsrv \\
     && pecl install pdo_sqlsrv \\
-    && su \\
     && printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini \\
     && printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini \\
-    && exit \\
     && phpenmod sqlsrv pdo_sqlsrv \\
 EOF
 )
