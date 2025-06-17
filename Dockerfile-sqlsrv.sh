@@ -5,12 +5,12 @@ DOCKERFILE_SQLSRV=${2:-"./vendor/laravel/sail/runtimes/8.2/Dockerfile_sqlsrv"}
 SQLSRV_INSTALL=$(
     cat <<EOF
     && curl -sSL -O https://packages.microsoft.com/config/ubuntu/\$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb \\
-    && sudo dpkg -i packages-microsoft-prod.deb \\
+    && dpkg -i packages-microsoft-prod.deb \\
     && rm packages-microsoft-prod.deb \\
 
-    && sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 \\
-    && sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 \\
-    && sudo apt-get install -y unixodbc-dev \\
+    && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \\
+    && ACCEPT_EULA=Y apt-get install -y mssql-tools18 \\
+    && apt-get install -y unixodbc-dev \\
 
 EOF
 )
@@ -18,13 +18,13 @@ EOF
 PHPSQLSRV_INSTALL=$(
     cat <<EOF
     # Install PHP extensions for SQL Server \\
-    && sudo pecl install sqlsrv \\
-    && sudo pecl install pdo_sqlsrv \\
-    && sudo su \\
+    && pecl install sqlsrv \\
+    && pecl install pdo_sqlsrv \\
+    && su \\
     && printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini \\
     && printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini \\
     && exit \\
-    && sudo phpenmod sqlsrv pdo_sqlsrv \\
+    && phpenmod sqlsrv pdo_sqlsrv \\
 EOF
 )
 
