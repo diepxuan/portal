@@ -126,6 +126,7 @@ in
     "vue.volar"
     "ms-vscode.sublime-keybindings"
     "junstyle.php-cs-fixer"
+    "foxundermoon.shell-format"
   ];
   idx.previews = {
     enable = true;
