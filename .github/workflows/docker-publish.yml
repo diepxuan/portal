@@ -54,7 +54,7 @@ jobs:
           # Install deps & add Microsoft repo \
           \t&& apt-get install -y gnupg curl apt-transport-https lsb-release \\
           \t&& curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \| gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \\
-          \t&& curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \\
+          \t&& curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/prod.list \> /etc/apt/sources.list.d/mssql-release.list \\
           \t&& apt-get update \\
           # Install ODBC and SQL Server Driver \
           \t&& ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 \\' $DOCKERFILE_PATH
