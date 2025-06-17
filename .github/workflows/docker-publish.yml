@@ -62,7 +62,7 @@ jobs:
         with:
           # QUAN TRỌNG: `context` là thư mục gốc của project Laravel của bạn
           # vì Dockerfile của Sail có thể tham chiếu đến các file từ thư mục gốc.
-          context: .
+          context: ./vendor/laravel/sail/runtimes/8.2
           
           # QUAN TRỌNG: Chỉ định đường dẫn chính xác đến Dockerfile
           file: ./vendor/laravel/sail/runtimes/8.2/Dockerfile
