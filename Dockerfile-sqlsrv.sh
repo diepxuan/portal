@@ -4,27 +4,33 @@ DOCKERFILE_SQLSRV=${2:-"./vendor/laravel/sail/runtimes/8.2/Dockerfile_sqlsrv"}
 
 SQLSRV_INSTALL=$(
     cat <<EOF
-    # Install deps & add Microsoft repo
-    && apt-get install -y gnupg curl apt-transport-https lsb-release \\
-    && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \\
-    && curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \\
-    && apt-get update \\
-    # Install ODBC and SQL Server Driver
-    && ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 \\
+    && curl -sSL -O https://packages.microsoft.com/config/ubuntu/\$(grep VERSION_ID /etc/os-release | cut -d '"' -f 2)/packages-microsoft-prod.deb \\
+    && sudo dpkg -i packages-microsoft-prod.deb \\
+    && rm packages-microsoft-prod.deb \\
+
+    && sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 \\
+    && sudo ACCEPT_EULA=Y apt-get install -y mssql-tools18 \\
+    && sudo apt-get install -y unixodbc-dev \\
+
 EOF
 )
 
 PHPSQLSRV_INSTALL=$(
     cat <<EOF
     # Install PHP extensions for SQL Server \\
-    \t&& apt-get install sqlsrv pdo_sqlsrv \\
-    # \t&& pecl install sqlsrv pdo_sqlsrv \\
+    && sudo pecl install sqlsrv \\
+    && sudo pecl install pdo_sqlsrv \\
+    && sudo su \\
+    && printf "; priority=20\nextension=sqlsrv.so\n" > /etc/php/8.2/mods-available/sqlsrv.ini \\
+    && printf "; priority=30\nextension=pdo_sqlsrv.so\n" > /etc/php/8.2/mods-available/pdo_sqlsrv.ini \\
+    && exit \\
+    && sudo phpenmod sqlsrv pdo_sqlsrv \\
 EOF
 )
 
 # echo "--- Dockerfile before modification ---"
 # cat $DOCKERFILE_PATH
-ORIGINAL_CONTENT=$(cat "$DOCKERFILE_PATH")
+# ORIGINAL_CONTENT=$(cat "$DOCKERFILE_PATH")
 
 while IFS= read -r line; do
     echo "$line"
@@ -32,16 +38,5 @@ while IFS= read -r line; do
         echo "$SQLSRV_INSTALL"
         echo "$PHPSQLSRV_INSTALL"
     fi
-    # if [[ "$line" == *"&& apt-get install -y postgresql-client-"* ]]; then
-    #     echo "$SQLSRV_INSTALL"
-    # fi
     # done <"$DOCKERFILE_PATH"
 done <"$DOCKERFILE_PATH" >"$DOCKERFILE_SQLSRV"
-
-# # Lệnh này tìm dòng `&& docker-php-ext-enable redis igbinary msgpack \\` và chèn lệnh kích hoạt.
-# sed -i '/&& docker-php-ext-enable redis igbinary msgpack \\/a \
-# # Enable PHP extensions for SQL Server \
-# \t&& docker-php-ext-enable sqlsrv pdo_sqlsrv \\' $DOCKERFILE_PATH
-
-# echo "--- Dockerfile after modification ---"
-# cat $DOCKERFILE_PATH
