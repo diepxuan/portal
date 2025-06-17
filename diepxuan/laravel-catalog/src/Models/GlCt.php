@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-03 17:27:55
+ * @lastupdate 2025-06-05 15:57:43
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -21,6 +21,62 @@ use Illuminate\Support\Collection;
 
 class GlCt extends Model
 {
+    /**
+     * Gọi function afDuDauTk để lấy dữ liệu đầu kỳ.
+     *
+     * @return array
+     */
+    public function scopeAfDuDauTk(Builder $query, array $params): Builder
+    {
+        $params = [
+            'pMaCty' => $params['pMaCty'] ?? '111',
+            'pTk'    => $params['pTk'] ?? '111',
+            'pNgay'  => $params['pNgay'] ?? '2020-01-01',
+            'pMaNt'  => $params['pMaNt'] ?? 'VND',
+            'pNam'   => $params['pNam'] ?? \CatalogFunctions::afNamTC([
+                'pMaCty' => $params['pMaCty'] ?? '111',
+                'pNgay'  => $params['pNgay'] ?? '2020-01-01',
+            ]),
+            'pNgayDnTc' => $params['pNgayDnTc'] ?? \CatalogFunctions::afNgay_DNTC([
+                'pMaCty' => $params['pMaCty'] ?? '111',
+                'pNam'   => $params['pNam'] ?? '2020',
+            ]),
+        ];
+
+        return $query
+            ->select('ma_cty', 'tk', 'ma_nt')
+            ->selectRaw('SUM(ps_no - ps_co) as du_no')
+            ->selectRaw('0 as du_co')
+            ->selectRaw('SUM(ps_no_nt - ps_co_nt) as du_no_nt')
+            ->selectRaw('0 as du_co_nt')
+            ->filterByMaCty($params['pMaCty'])
+            ->filterByTkList($params['pTk'] ?? '')
+            ->filterByMaNt($params['pMaNt'] ?? '')
+            ->whereBetween('Ngay_ct', [$params['pNgayDnTc'], $params['pNgay']])
+            ->where('Ngay_ct', '<', $params['pNgay'])
+            ->groupBy('ma_cty', 'tk', 'ma_nt')
+        ;
+
+        return $query
+            ->select(
+                'ma_cty',
+                'tk',
+                DB::raw("{$params['pMa_Nt']} as ma_nt"),
+                DB::raw('SUM(ps_no-ps_co) as du_no'),
+                DB::raw('0 as du_co'),
+                DB::raw('SUM(ps_no_nt-ps_co_nt) as du_no_nt'),
+                DB::raw('0 as du_co_nt')
+            )
+            ->where('ma_cty', $params['pMa_Cty'])
+            ->whereBetween('Ngay_ct', [$Ngay_DNTC, $pNgay])
+            ->where('Ngay_ct', '<', $pNgay)
+            ->when('' !== $pTk, static function ($q) use ($pTk): void {
+                $q->where('tk', 'like', $pTk . '%');
+            })
+            ->groupBy('ma_cty', 'tk')
+        ;
+    }
+
     /**
      * Gọi stored procedure asCARptTMNH01 để lấy dữ liệu báo cáo tiền mặt ngân hàng.
      *

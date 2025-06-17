@@ -8,14 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-05 14:58:52
+ * @lastupdate 2025-06-05 16:58:33
  */
 
 namespace Diepxuan\Catalog\Services;
 
 use Diepxuan\Catalog\Models\GlCdTk;
+use Diepxuan\Catalog\Models\GlCt;
 use Diepxuan\Catalog\Models\Params;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CatalogFunctions
 {
@@ -27,120 +29,36 @@ class CatalogFunctions
         $params->pNgay ??= '2020-01-01';
         $params->pMaNt ??= \CatalogService::ma_Nt();
         $params->pNamTc ??= static::afNamTC($params);
-        $params->pNgayDnTc ??= $this->afNgay_DNTC($params);
+        $params->pNgayDnTc ??= static::afNgay_DNTC($params);
         \Debugbar::info($params);
 
-        $result = [];
-        dd(GlCdTk::afDuDauTk([
+        // Theo đồng tiền hạch toán
+        $du_dau_nam = GlCdTk::afDuDauTk([
             'pMa_Cty' => $params->pMaCty,
             'pTk'     => $params->pTk,
             'pNgay'   => $params->pNgay,
             'pMa_Nt'  => $params->pMaNt,
             'pNam'    => $params->pNamTc,
-        ])->get());
+        ]);
 
-        if ($params->pMaNt === \CatalogService::ma_Nt()) {
-            // Theo đồng tiền hạch toán
-            $du_dau_nam = DB::table('glcdtk')
-                ->select(
-                    'ma_cty',
-                    'tk',
-                    DB::raw("{$params->pMaNt} as ma_nt"),
-                    DB::raw('SUM(du_no-du_co) as du_no'),
-                    DB::raw('0 as du_co'),
-                    DB::raw('SUM(du_no_nt-du_co_nt) as du_no_nt'),
-                    DB::raw('0 as du_co_nt')
-                )
-                ->where('ma_cty', $pMa_cty)
-                ->where('nam', $Nam_TC)
-                ->when('' !== $pTk, static function ($q) use ($pTk): void {
-                    $q->where('tk', 'like', $pTk . '%');
-                })
-                ->groupBy('ma_cty', 'tk')
-            ;
+        $ps_dau_ky = GlCt::afDuDauTk([
+            'pMaCty'    => $params->pMaCty,
+            'pTk'       => $params->pTk,
+            'pNgay'     => $params->pNgay,
+            'pMaNt'     => $params->pMaNt,
+            'pNam'      => $params->pNamTc,
+            'pNgayDnTc' => $params->pNgayDnTc,
+        ]);
 
-            $ps_dau_ky = DB::table('glct')
-                ->select(
-                    'ma_cty',
-                    'tk',
-                    DB::raw("{$pMa_Nt} as ma_nt"),
-                    DB::raw('SUM(ps_no-ps_co) as du_no'),
-                    DB::raw('0 as du_co'),
-                    DB::raw('SUM(ps_no_nt-ps_co_nt) as du_no_nt'),
-                    DB::raw('0 as du_co_nt')
-                )
-                ->where('ma_cty', $pMa_cty)
-                ->whereBetween('Ngay_ct', [$Ngay_DNTC, $pNgay])
-                ->where('Ngay_ct', '<', $pNgay)
-                ->when('' !== $pTk, static function ($q) use ($pTk): void {
-                    $q->where('tk', 'like', $pTk . '%');
-                })
-                ->groupBy('ma_cty', 'tk')
-            ;
-
-            // UNION ALL 2 query lại
-            $rows = DB::table(DB::raw("({$du_dau_nam->toSql()} UNION ALL {$ps_dau_ky->toSql()}) as dutmp"))
-                ->mergeBindings($du_dau_nam)->mergeBindings($ps_dau_ky)
-                ->select('ma_cty', 'tk', 'ma_nt', DB::raw('SUM(du_no) as du_no'), DB::raw('SUM(du_co) as du_co'), DB::raw('SUM(du_no_nt) as du_no_nt'), DB::raw('SUM(du_co_nt) as du_co_nt'))
-                ->where(static function ($q): void {
-                    $q->where('du_no', '<>', 0)->orWhere('du_no_nt', '<>', 0);
-                })
-                ->groupBy('ma_cty', 'tk', 'ma_nt')
-                ->get()
-            ;
-        } else {
-            // Theo mã ngoại tệ
-            $du_dau_nam = DB::table('glcdtk')
-                ->select(
-                    'ma_cty',
-                    'tk',
-                    'ma_nt',
-                    DB::raw('SUM(du_no00-du_co00) as du_no'),
-                    DB::raw('0 as du_co'),
-                    DB::raw('SUM(du_no_nt00-du_co_nt00) as du_no_nt'),
-                    DB::raw('0 as du_co_nt')
-                )
-                ->where('ma_cty', $pMa_cty)
-                ->where('nam', $Nam_TC)
-                ->when('' !== $pTk, static function ($q) use ($pTk): void {
-                    $q->where('tk', 'like', $pTk . '%');
-                })
-                ->where('ma_nt', 'like', $pMa_Nt . '%')
-                ->groupBy('ma_cty', 'tk', 'ma_nt')
-            ;
-
-            $ps_dau_ky = DB::table('glct')
-                ->select(
-                    'ma_cty',
-                    'tk',
-                    'ma_nt',
-                    DB::raw('SUM(ps_no-ps_co) as du_no'),
-                    DB::raw('0 as du_co'),
-                    DB::raw('SUM(ps_no_nt-ps_co_nt) as du_no_nt'),
-                    DB::raw('0 as du_co_nt')
-                )
-                ->where('ma_cty', $pMa_cty)
-                ->where('nam', $Nam_TC)
-                ->whereBetween('Ngay_ct', [$Ngay_DNTC, $pNgay])
-                ->where('Ngay_ct', '<', $pNgay)
-                ->when('' !== $pTk, static function ($q) use ($pTk): void {
-                    $q->where('tk', 'like', $pTk . '%');
-                })
-                ->where('ma_nt', 'like', $pMa_Nt . '%')
-                ->groupBy('ma_cty', 'tk', 'ma_nt')
-            ;
-
-            // UNION ALL 2 query lại
-            $rows = DB::table(DB::raw("({$du_dau_nam->toSql()} UNION ALL {$ps_dau_ky->toSql()}) as dutmp"))
-                ->mergeBindings($du_dau_nam)->mergeBindings($ps_dau_ky)
-                ->select('ma_cty', 'tk', 'ma_nt', DB::raw('SUM(du_no) as du_no'), DB::raw('SUM(du_co) as du_co'), DB::raw('SUM(du_no_nt) as du_no_nt'), DB::raw('SUM(du_co_nt) as du_co_nt'))
-                ->where(static function ($q): void {
-                    $q->where('du_no', '<>', 0)->orWhere('du_no_nt', '<>', 0);
-                })
-                ->groupBy('ma_cty', 'tk', 'ma_nt')
-                ->get()
-            ;
-        }
+        $rows = $ps_dau_ky->toBase()->unionAll($du_dau_nam->toBase())
+        // ->select('ma_cty', 'tk', 'ma_nt', DB::raw('SUM(du_no) as du_no'), DB::raw('SUM(du_co) as du_co'), DB::raw('SUM(du_no_nt) as du_no_nt'), DB::raw('SUM(du_co_nt) as du_co_nt'))
+        // ->where(static function ($q): void {
+        //     $q->where('du_no', '<>', 0)->orWhere('du_no_nt', '<>', 0);
+        // })
+        // ->groupBy('ma_cty', 'tk', 'ma_nt')
+            ->get()
+        ;
+        // dd($rows->get());
 
         // Xử lý dư có/dư nợ âm chuyển đổi
         foreach ($rows as $row) {
@@ -155,7 +73,7 @@ class CatalogFunctions
             $result[] = (array) $row;
         }
 
-        return $result;
+        return $rows;
     }
 
     public function afNamTC(array|Params $params)
