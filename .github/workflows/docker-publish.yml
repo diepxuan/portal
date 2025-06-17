@@ -38,6 +38,46 @@ jobs:
           composer install --prefer-dist --no-interaction --no-progress
           ls -la ./vendor/laravel/sail/runtimes/8.2/
 
+      # --- PHẦN CHỈNH SỬA DOCKERFILE TẠM THỜI ---
+      - name: Temporarily modify Dockerfile to install SQL Server drivers
+        run: |
+          # Đường dẫn đến Dockerfile gốc trong vendor
+          DOCKERFILE_PATH="./vendor/laravel/sail/runtimes/8.2/Dockerfile"
+
+          echo "--- Dockerfile before modification ---"
+          cat $DOCKERFILE_PATH
+          
+          # Sử dụng `sed` để thêm các lệnh cài đặt driver vào Dockerfile
+          # Lệnh này tìm dòng `&& apt-get install -y \` và chèn các lệnh của chúng ta vào ngay sau đó.
+          # `\` dùng để xuống dòng, `\t` để thụt lề cho đẹp.
+          sed -i '/&& apt-get install -y \\/a \
+          # Install deps & add Microsoft repo \
+          \t&& apt-get install -y gnupg curl apt-transport-https lsb-release \\
+          \t&& curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \\
+          \t&& curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \\
+          \t&& apt-get update \\
+          # Install ODBC and SQL Server Driver \
+          \t&& ACCEPT_EULA=Y apt-get install -y --no-install-recommends unixodbc-dev msodbcsql18 \\' $DOCKERFILE_PATH
+
+          # Sử dụng `sed` để thêm các lệnh cài đặt và kích hoạt extension PHP
+          # Lệnh này tìm dòng `&& pecl install redis igbinary msgpack \\` và chèn lệnh của chúng ta vào ngay sau.
+          sed -i '/&& pecl install redis igbinary msgpack \\/a \
+          # Install PHP extensions for SQL Server \
+          \t&& pecl install sqlsrv pdo_sqlsrv \\' $DOCKERFILE_PATH
+          
+          # Lệnh này tìm dòng `&& docker-php-ext-enable redis igbinary msgpack \\` và chèn lệnh kích hoạt.
+          sed -i '/&& docker-php-ext-enable redis igbinary msgpack \\/a \
+          # Enable PHP extensions for SQL Server \
+          \t&& docker-php-ext-enable sqlsrv pdo_sqlsrv \\' $DOCKERFILE_PATH
+
+          echo "--- Dockerfile after modification ---"
+          cat $DOCKERFILE_PATH
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       # Bước 2: Đăng nhập vào GitHub Container Registry (ghcr.io)
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -58,6 +98,7 @@ jobs:
           tags: |
             # type=semver: tạo tag phiên bản khi push git tag, ví dụ: v1.2.3
             type=semver,pattern={{version}}
+            
             # type=edge: tạo tag 'latest' khi push lên branch 'main'
             type=edge,branch=main
             
