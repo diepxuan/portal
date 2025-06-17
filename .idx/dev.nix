@@ -76,6 +76,10 @@ in
 {
   channel = "stable-24.11";
   # channel = "unstable";
+
+  # Bật Docker daemon
+  services.docker.enable = true;
+
   packages = [
     pkgs.nodejs_20
     # pkgs.php
@@ -94,6 +98,9 @@ in
 
     # pkgs.cloudflared
     pkgs.foreman
+    pkgs.docker
+    pkgs.docker-client # Thêm Docker CLI để có thể tương tác
+    pkgs.docker-compose # Rất hữu ích nếu bạn muốn quản lý nhiều container
 
     # --- Drivers và Thư viện Hệ thống sqlsrv ---
     pkgs.unixODBC
@@ -107,7 +114,7 @@ in
     #   odbcDrivers = [ 
     #     # Sử dụng package driver chính thức, không phải từ unixODBCDrivers
     #     pkgs.unixODBCDrivers.msodbcsql18 
-    #   ];
+    #   
     # })
     # unixODBC-with-mssql
     # pkgs-with-unfree.unixODBC                     # Trình quản lý ODBC, msodbcsql18 phụ thuộc vào nó
@@ -133,7 +140,6 @@ in
         manager = "web";
         env = {
           PORT = "$PORT";
-          USER = "$USER";
         };
       };
       # web = {

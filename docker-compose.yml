@@ -1,0 +1,101 @@
+# docker-compose.yml
+# version: '3.8'
+
+services:
+  tailscale-gateway:
+    # Sử dụng image Tailscale chính thức
+    image: tailscale/tailscale:latest
+    container_name: ts-gateway
+    # Tên host của container, quan trọng để Tailscale nhận diện
+    hostname: idx-tailscale-gateway
+    env_file:
+      - .idx/.tailscale_authkey
+    environment:
+      # - TS_AUTHKEY=tskey-auth-aaaa-bbbb
+
+      # TS_EXTRA_ARGS: Các tham số cho `tailscale up`
+      # --accept-dns=true: Quan trọng! Chấp nhận DNS do mạng Tailscale đẩy xuống.
+      # --reset: Xóa các cấu hình DNS cũ của hệ thống (bên trong container)
+      # - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_EXTRA_ARGS=--accept-routes --accept-dns=true --reset
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    
+    # Ánh xạ cổng:
+    # Mở cổng 1433 của môi trường IDX (bên trái)
+    # và trỏ nó vào cổng 1433 bên trong container này (bên phải)
+    ports:
+      # - "1433:1433"
+      - '${APP_PORT:-9000}:80'
+      - '${VITE_PORT:-5173}:5173'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+      
+    # Truyền file auth key vào bên trong container
+    volumes:
+      # Tạo một volume để lưu trạng thái của tailscale, tránh kết nối lại liên tục
+      - tailscale_state:/var/lib/tailscale
+      
+    # Cần quyền đặc biệt để thao tác với mạng
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    # Cần thiết để tailscaled có thể tạo thiết bị tun/tap
+    devices:
+      - /dev/net/tun
+    restart: unless-stopped
+  laravel.test:
+    build:
+      context: ./vendor/laravel/sail/runtimes/8.2
+      dockerfile: Dockerfile
+      args:
+        WWWUSER: '${WWWUSER}'
+        WWWGROUP: '${WWWGROUP}'
+    
+    # # Thêm thuộc tính `user` để chạy với quyền root
+    # user: 'root'
+    
+    # # Sửa lại entrypoint để chạy script sửa quyền trước
+    # entrypoint: |
+    #   bash -c '
+    #     chown -R sail:sail /var/www/html/storage /var/www/html/bootstrap/cache &&
+    #     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache &&
+    #     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    #   '
+    # command: |
+    #   bash -c "
+    #     while true; do
+    #       chown sail:sail /var/www/html -R
+    #       sleep 60;
+    #     done
+    #   "
+
+    image: sail-8.2/app
+    # extra_hosts:
+      # - 'host.docker.internal:host-gateway'
+    # ports:
+    #   - '${APP_PORT:-9000}:80'
+    #   - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      # XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      # XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      # IGNITION_EDITOR: 'vs-code'
+      # IGNITION_REMOTE_SITES_PATH: '${PWD}'
+    volumes:
+      - '.:/var/www/html'
+      # File này sẽ GHI ĐÈ lên file supervisord.conf mặc định trong image.
+      - './docker/8.2/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf'
+    
+    # Đặt gateway mặc định của container này là container tailscale
+    # Điều này buộc mọi traffic đi ra từ Laravel phải đi qua Tailscale
+    network_mode: "service:tailscale-gateway"
+
+    # Phụ thuộc vào tailscale, đảm bảo tailscale khởi động trước
+    restart: unless-stopped
+    depends_on:
+      - tailscale-gateway
+
+volumes:
+  tailscale_state:
