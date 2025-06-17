@@ -71,8 +71,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }} # Sử dụng các tag đã tạo ở bước trên
           labels: ${{ steps.meta.outputs.labels }} # Gắn các label đã tạo ở bước trên
           
-          # Nếu Dockerfile của bạn cần build args, bạn có thể thêm chúng ở đây.
-          # Ví dụ:
-          # build-args: |
-          #   WWWUSER=1000
-          #   WWWGROUP=1000
+          # Dockerfile build args
+          build-args: |
+            WWWUSER=1000
+            WWWGROUP=1000
