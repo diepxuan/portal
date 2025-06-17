@@ -8,6 +8,7 @@ SQLSRV_INSTALL=$(
     && dpkg -i packages-microsoft-prod.deb \\
     && rm packages-microsoft-prod.deb \\
 
+    && apt-get update \\
     && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \\
     && ACCEPT_EULA=Y apt-get install -y mssql-tools18 \\
     && apt-get install -y unixodbc-dev \\
