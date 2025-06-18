@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-25 18:01:23
+ * @lastupdate 2025-06-19 00:15:49
  */
 
 namespace Diepxuan\Currency;
@@ -25,6 +25,10 @@ class Formatter
      */
     public static function format($amount, $currency = 'VND')
     {
+        if (null === $amount || !is_numeric($amount)) {
+            return '';
+        }
+
         // $locale = App::getLocale();
         $formatter = new \NumberFormatter('vi_VN', \NumberFormatter::CURRENCY);
 
