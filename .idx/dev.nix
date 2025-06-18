@@ -127,6 +127,11 @@ in
     "ms-vscode.sublime-keybindings"
     "junstyle.php-cs-fixer"
     "foxundermoon.shell-format"
+    "esbenp.prettier-vscode"
+    "rexshi.phpdoc-comment-vscode-plugin"
+    "EditorConfig.EditorConfig"
+    "dawidd6.debian-vscode"
+    "redhat.vscode-xml"
   ];
   idx.previews = {
     enable = true;
