@@ -2,5 +2,11 @@
     "IDX.aI.enableInlineCompletion": true,
     "IDX.aI.enableCodebaseIndexing": true,
     "editor.trimAutoWhitespace": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "Laravel.phpEnvironment": "local",
+    "[blade]": {
+        "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+    },
+    "bladeFormatter.format.noMultipleEmptyLines": true,
+    "bladeFormatter.format.sortTailwindcssClasses": true
 }
