@@ -39,6 +39,7 @@
     "dawidd6.debian-vscode"
     "redhat.vscode-xml"
     "laravel.vscode-laravel"
+    "shufo.vscode-blade-formatter"
   ];
   idx.previews = {
     enable = true;
@@ -63,7 +64,6 @@
       npm-install = "npm install";
       composer-install = "composer install";
     };
-    onStart = {
-    };
+    onStart = { };
   };
 }
