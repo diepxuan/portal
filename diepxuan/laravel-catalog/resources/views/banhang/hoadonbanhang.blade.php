@@ -46,7 +46,9 @@
 
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <label class="text-right">Hình thức thanh toán</label>
-                    <input class="col-span-2 rounded-md border-gray-300 py-1 shadow-sm" wire:model="pTk" />
+                    <div class="col-span-2">
+                        <livewire:catalog::component.input-taikhoan wire:model="pTk" />
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
