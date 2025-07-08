@@ -5,8 +5,10 @@
     "editor.formatOnSave": true,
     "Laravel.phpEnvironment": "local",
     "[blade]": {
-        "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+        "editor.defaultFormatter": "shufo.vscode-blade-formatter",
+        "editor.wordWrap": "off"
     },
     "bladeFormatter.format.noMultipleEmptyLines": true,
-    "bladeFormatter.format.sortTailwindcssClasses": true
+    "bladeFormatter.format.sortTailwindcssClasses": true,
+    "bladeFormatter.format.wrapLineLength": 800
 }
