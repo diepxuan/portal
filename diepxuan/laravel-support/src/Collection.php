@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-07-12 23:23:50
+ * @lastupdate 2025-07-16 13:27:06
  */
 
 namespace Diepxuan\Support;
@@ -47,7 +47,7 @@ class Collection extends BaseCollection
                     'string'  => (string) str_replace('|', '\|', $rawValue),
                     default   => (string) "{$rawValue}",
                 };
-                $stringValue = Str::squish($stringValue);
+                // $stringValue = Str::squish($stringValue);
 
                 $columnWidths[$key] = max(Str::of($headerText)->length(), Str::of($stringValue)->length(), $columnWidths[$key] ?? 0);
             }
@@ -84,7 +84,7 @@ class Collection extends BaseCollection
                     'string'  => (string) str_replace('|', '\|', $rawValue),
                     default   => (string) $rawValue,
                 };
-                $stringValue = Str::squish($stringValue);
+                // $stringValue = Str::squish($stringValue);
 
                 $rowValues[$key] = Str::of($stringValue)->padRight($columnWidths[$key]);
             }
