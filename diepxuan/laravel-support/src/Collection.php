@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-07-16 13:27:06
+ * @lastupdate 2025-08-01 15:37:28
  */
 
 namespace Diepxuan\Support;
@@ -85,8 +85,12 @@ class Collection extends BaseCollection
                     default   => (string) $rawValue,
                 };
                 // $stringValue = Str::squish($stringValue);
-
-                $rowValues[$key] = Str::of($stringValue)->padRight($columnWidths[$key]);
+                $rowValues[$key] = match ($key) {
+                    'iteration' => Str::of($stringValue)->padLeft($columnWidths[$key]),
+                    'so_luong'  => Str::of($stringValue)->padLeft($columnWidths[$key]),
+                    'tien_fm'   => Str::of($stringValue)->padLeft($columnWidths[$key]),
+                    default     => Str::of($stringValue)->padRight($columnWidths[$key]),
+                };
             }
             $markdown .= '| ' . implode(' | ', $rowValues) . " |\n";
         }
