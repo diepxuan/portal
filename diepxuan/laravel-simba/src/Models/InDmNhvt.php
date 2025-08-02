@@ -8,18 +8,20 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-04 18:42:34
+ * @lastupdate 2025-08-02 20:04:36
  */
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\InDmNhvt;
+use Diepxuan\Simba\SModel\InDmNhvt as Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class Category extends InDmNhvt
+class InDmNhvt extends Model
 {
     public const ROOT = 'PRODUCT';
 
@@ -72,6 +74,24 @@ class Category extends InDmNhvt
         }
 
         return $query;
+    }
+
+    /**
+     * Gọi stored procedure asINGetDMNHVT để lấy dữ Danh sách nhóm vật tư - hàng hóa.
+     *
+     * @return array
+     */
+    public static function getAsINGetDMNHVT(array $params): Collection
+    {
+        return collect(DB::connection((new static())->getConnectionName())->select('EXECUTE asINGetDMNHVT
+            @pMa_Cty = :pMa_Cty,
+            @pMa_nhvt = :pMa_nhvt,
+            @pStruct = :pStruct
+        ', [
+            'pMa_Cty'  => $params['pMa_Cty'] ?? '',
+            'pMa_nhvt' => $params['pMa_nhvt'] ?? null,
+            'pStruct'  => $params['pStruct'] ?? null,
+        ]));
     }
 
     /**
