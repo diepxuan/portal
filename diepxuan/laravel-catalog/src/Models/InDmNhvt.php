@@ -8,17 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-04 18:37:05
+ * @lastupdate 2025-08-02 19:17:42
  */
 
 namespace Diepxuan\Catalog\Models;
 
 use Diepxuan\Catalog\Models\Casts\CategoryMagento;
-use Diepxuan\Catalog\Observers\CategoryObserver;
-use Diepxuan\Simba\Models\Category as SCategory;
+use Diepxuan\Simba\Models\InDmNhvt as Model;
+use Illuminate\Support\Collection;
 
-#[ObservedBy([CategoryObserver::class])]
-class Category extends SCategory
+class InDmNhvt extends Model
 {
     /**
      * The attributes that should be cast to native types.
@@ -28,6 +27,16 @@ class Category extends SCategory
     protected $casts = [
         'magento' => CategoryMagento::class,
     ];
+
+    /**
+     * Gọi stored procedure asINGetDMNHVT để lấy dữ Danh sách nhóm vật tư - hàng hóa.
+     *
+     * @return array
+     */
+    public static function getAsINGetDMNHVT(array $params): Collection
+    {
+        return self::hydrate(parent::getAsINGetDMNHVT($params)->toArray());
+    }
 
     /**
      * Get the attributes that should be cast.
