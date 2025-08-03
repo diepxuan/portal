@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
+const plugin = require("tailwindcss/plugin");
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -20,5 +21,18 @@ export default {
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [
+        forms,
+        typography,
+        plugin(function ({ addVariant, e, postcss }) {
+            addVariant("print", ({ container, separator }) => {
+                const rule = postcss.atRule({ name: "media", params: "print" });
+                rule.append(container.nodes);
+                container.append(rule);
+                rule.walkRules((r) => {
+                    r.selector = `.${e(`print${separator}${r.selector.slice(1)}`)}`;
+                });
+            });
+        }),
+    ],
 };
