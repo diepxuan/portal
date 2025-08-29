@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-08-18 22:36:29
+ * @lastupdate 2025-08-24 22:10:29
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -82,19 +82,51 @@ class CatalogService
             $this->menus = null;
         }
 
-        return $this->menus ??= NavigationMenu::all();
+        $this->menus ??= NavigationMenu::all();
+
+        // if ($forceReload) {
+        //     $this->reorderChildren();
+        // }
+
+        return $this->menus;
     }
 
     public function menuTree($parentId = null)
     {
         return $this->menus()
             ->where('parent_id', $parentId)
-            ->map(function ($menu) {
-                $menu['children'] = $this->menuTree($menu['id']);
+            ->sortBy('order')
+            ->values()
+            ->map(function ($menu, $index) {
+                if ($menu->order !== $index) {
+                    $menu->order = $index;
+                    $menu->save();
+                }
+
+                $this->menus = $this->menus->map(static fn ($m) => $m->id === $menu->id ? $menu : $m);
+
+                $menu->setRelation('children', $this->menuTree($menu->id));
 
                 return $menu;
             })
+        ;
+    }
+
+    public function reorderChildren($parentId = null): void
+    {
+        $this->menus()
+            ->where('parent_id', $parentId)
+            ->orderBy('order')
             ->values()
+            // ->dd()
+            ->map(function ($menu, $index) {
+                $menu->order = $index;
+                $menu->save();
+
+                $menu->children = $this->reorderChildren($menu->id);
+
+                return $menu;
+            })
         ;
     }
 
