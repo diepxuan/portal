@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-08-24 22:10:29
+ * @lastupdate 2025-08-30 18:10:06
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -151,8 +151,8 @@ class CatalogService
         $to     = \is_array($time) && !empty($time['to']) ? Carbon::parse($time['to']) : session('timeEnd');
 
         // Default fallback nếu null
-        $from ??= now()->setYear($year)->startOfYear();
-        $to   ??= now()->setYear($year)->endOfYear();
+        $from ??= now()->setYear($year)->startOfMonth();
+        $to   ??= (clone $from)->endOfMonth();
 
         // Xử lý timeId logic
         $monthList   = collect(range(1, 12))->map(static fn ($m) => 't' . str_pad("{$m}", 2, '0', STR_PAD_LEFT))->toArray();
@@ -179,9 +179,10 @@ class CatalogService
             $from ??= now()->startOfMonth();
             $to   ??= now()->endOfMonth();
         } else {
-            $timeId = 'y';
-            $from   = now()->setYear($year)->startOfYear();
-            $to     = (clone $from)->endOfYear();
+            $month  = (int) now()->month;
+            $timeId = 't' . str_pad("{$month}", 2, '0', STR_PAD_LEFT);
+            $from   = now()->setYear($year)->startOfMonth();
+            $to     = (clone $from)->endOfMonth();
         }
         session([
             'timeId'    => $timeId,
