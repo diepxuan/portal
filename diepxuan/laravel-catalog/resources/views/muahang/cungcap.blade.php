@@ -9,8 +9,8 @@
 
     <p class="whitespace-pre font-mono text-xs leading-tight">{!! $arDmKhs->toMarkdownTable(
         [
-            'ma_kh' => 'Mã khách hàng',
-            'ten_kh' => 'Tên khách hàng',
+            'ma_kh' => 'Mã',
+            'ten_kh' => 'Tên nhà cung cấp',
             'dia_chi' => 'Địa chỉ',
             'dien_thoai' => 'Điện thoại',
             'nguoi_gd' => 'Người giao dịch',

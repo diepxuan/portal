@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-08-01 15:37:28
+ * @lastupdate 2025-10-25 22:55:49
  */
 
 namespace Diepxuan\Support;
@@ -48,6 +48,8 @@ class Collection extends BaseCollection
                     default   => (string) "{$rawValue}",
                 };
                 // $stringValue = Str::squish($stringValue);
+                // $stringValue = vn_convert_encoding($stringValue);
+                $stringValue = normalize_to_utf8($stringValue);
 
                 $columnWidths[$key] = max(Str::of($headerText)->length(), Str::of($stringValue)->length(), $columnWidths[$key] ?? 0);
             }
@@ -85,6 +87,8 @@ class Collection extends BaseCollection
                     default   => (string) $rawValue,
                 };
                 // $stringValue = Str::squish($stringValue);
+                // $stringValue = vn_convert_encoding($stringValue);
+                $stringValue     = normalize_to_utf8($stringValue);
                 $rowValues[$key] = match ($key) {
                     'iteration' => Str::of($stringValue)->padLeft($columnWidths[$key]),
                     'so_luong'  => Str::of($stringValue)->padLeft($columnWidths[$key]),
