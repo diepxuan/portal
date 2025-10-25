@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-05-09 15:05:03
+ * @lastupdate 2025-10-25 22:55:07
  */
 
 namespace Diepxuan\Charset;
@@ -31,7 +31,7 @@ class VnEncoding extends \stdClass
      */
     public function __construct(string $string, $from = 'unicode', $to = 'ascii')
     {
-        $this->converter = new \vn_charset_conversion($string);
+        $this->converter = new \vn_charset_conversion(normalize_to_utf8($string));
     }
 
     /**
