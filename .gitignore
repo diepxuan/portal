@@ -28,3 +28,4 @@ composer.lock
 package-lock.json
 laravel.code-workspace
 docker
+watch.log
