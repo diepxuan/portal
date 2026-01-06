@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-11 23:39:39
+ * @lastupdate 2026-01-06 15:27:33
  */
 
 namespace Diepxuan\DisableRegistration\Providers;
 
-use Diepxuan\DisableRegistration\Middleware\DisableRegistrationMiddleware;
+use Diepxuan\DisableRegistration\Http\Middleware\DisableRegistrationMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class DisableRegistrationServiceProvider extends ServiceProvider

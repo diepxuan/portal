@@ -10,5 +10,6 @@
     },
     "bladeFormatter.format.noMultipleEmptyLines": true,
     "bladeFormatter.format.sortTailwindcssClasses": true,
-    "bladeFormatter.format.wrapLineLength": 800
+    "bladeFormatter.format.wrapLineLength": 800,
+    "laravel.sail.enabled": false,
 }
