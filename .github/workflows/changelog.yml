@@ -1,0 +1,60 @@
+# .github/workflows/changelog.yml
+name: Auto Generate Changelog
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Lấy toàn bộ lịch sử git
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Generate CHANGELOG with conventional-changelog
+        run: |
+          # Cài đặt conventional-changelog-cli
+          npm install -g conventional-changelog-cli
+
+          # Tạo CHANGELOG.md
+          npx conventional-changelog -p angular -i CHANGELOG.md -s
+
+          # Hoặc tạo từ commit cuối cùng
+          # npx conventional-changelog -p angular -r 1 -o CHANGELOG.md
+
+      - name: Generate detailed release notes
+        run: |
+          # Tạo release notes chi tiết
+          echo "# Release Notes $(date +'%Y-%m-%d')" > RELEASE_NOTES.md
+          echo "\n## Changes since last release\n" >> RELEASE_NOTES.md
+
+          # Lấy commits từ tag cuối
+          if git describe --tags --abbrev=0 2>/dev/null; then
+            LAST_TAG=$(git describe --tags --abbrev=0)
+            git log --oneline --no-merges $LAST_TAG..HEAD >> RELEASE_NOTES.md
+          else
+            git log --oneline --no-merges -20 >> RELEASE_NOTES.md
+          fi
+
+      - name: Commit CHANGELOG
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add CHANGELOG.md RELEASE_NOTES.md
+          git commit -m "docs: update CHANGELOG [skip ci]" || echo "No changes to commit"
+          git push
