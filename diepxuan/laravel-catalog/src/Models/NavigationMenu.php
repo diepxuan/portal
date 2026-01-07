@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-01-07 08:27:52
+ * @lastupdate 2026-01-07 09:50:38
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -38,11 +38,17 @@ class NavigationMenu extends Model
         'icon',
     ];
 
+    /**
+     * Get the parent menu.
+     */
     public function parent()
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /**
+     * Get the children menus.
+     */
     public function children()
     {
         return $this->hasMany(self::class, 'parent_id');
@@ -96,21 +102,43 @@ class NavigationMenu extends Model
         });
 
         return $menus;
-        // return $menus->merge(static::getDefaultMenus());
     }
 
-    public static function getDefaultMenus(): Collection
+    /**
+     * Get all menus with default menus merged.
+     *
+     * @return Collection<int, NavigationMenu>
+     */
+    public static function withDefaultMenus(): Collection
     {
-        $menus = collect([
-            ['name' => 'Hệ thống', 'route' => 'system.*', 'order' => 999],
-            ['name' => 'Menu', 'route' => 'system.menu', 'order' => 999],
-        ])->mapInto(static::class);
+        $menus   = static::all();
+        $default = static::getDefaultMenus();
 
-        return collect([]);
+        $default->each(static function ($defaultMenu) use ($menus): void {
+            if (!$menus->contains('route', $defaultMenu->route)) {
+                $menus->push($defaultMenu);
+            }
+        });
 
         return $menus;
     }
 
+    /**
+     * Get the default menus.
+     *
+     * @return Collection<int, NavigationMenu>
+     */
+    public static function getDefaultMenus(): Collection
+    {
+        return collect([
+            ['name' => 'Hệ thống', 'route' => 'system', 'order' => 999],
+            ['name' => 'Menu', 'route' => 'system.menu', 'order' => 999],
+        ])->mapInto(static::class);
+    }
+
+    /**
+     * Boot the model.
+     */
     protected static function booted(): void
     {
         static::addGlobalScope('order', static function ($query): void {
