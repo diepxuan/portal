@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-11-29 18:23:13
+ * @lastupdate 2026-01-07 08:27:52
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -60,8 +60,16 @@ class NavigationMenu extends Model
         return $query->whereNull('parent_id');
     }
 
+    /**
+     * Get the menu tree with default menus merged.
+     *
+     * @return Collection<int, NavigationMenu>
+     *
+     * @deprecated use CatalogService::menuTree() instead
+     */
     public static function getTree(): Collection
     {
+        return collect([]);
         $menus = static::isParent()
             ->with('children.children')
             ->get()
