@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-01-06 15:59:04
+ * @lastupdate 2026-01-07 09:44:48
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -85,17 +85,10 @@ class CatalogService
     public function menus($forceReload = false)
     {
         if ($forceReload) {
-            $this->menus = NavigationMenu::all();
+            $this->menus = NavigationMenu::withDefaultMenus();
         }
 
-        $this->menus ??= NavigationMenu::all();
-        $this->menus = $this->menus->merge(NavigationMenu::getDefaultMenus());
-
-        // $this->menus = $forceReload ? NavigationMenu::all() : ($this->menus ?? NavigationMenu::all());
-
-        // if ($forceReload) {
-        //     $this->reorderChildren();
-        // }
+        $this->menus ??= NavigationMenu::withDefaultMenus();
 
         return $this->menus;
     }
