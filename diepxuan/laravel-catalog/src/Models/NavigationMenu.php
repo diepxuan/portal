@@ -8,13 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-01-07 09:50:38
+ * @lastupdate 2026-01-11 11:05:40
  */
 
 namespace Diepxuan\Catalog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class NavigationMenu extends Model
 {
@@ -141,8 +143,61 @@ class NavigationMenu extends Model
      */
     protected static function booted(): void
     {
+        static::creating(static function ($model): void {
+            $model->validateData();
+        });
+
+        static::updating(static function ($model): void {
+            $model->validateData();
+        });
+
+        static::saving(static function (self $model): void {
+            $model->validateData();
+        });
+
         static::addGlobalScope('order', static function ($query): void {
             $query->orderBy('order');
         });
+    }
+
+    /**
+     * Validate model data before saving.
+     *
+     * @throws ValidationException
+     */
+    protected function validateData(): void
+    {
+        $data = $this->getAttributes();
+
+        $rules = [
+            'name'      => ['required', 'string', 'max:255'],
+            'order'     => ['nullable', 'integer', 'min:0'],
+            'route'     => ['nullable', 'string', 'max:255'],
+            'icon'      => ['nullable', 'string', 'max:255'],
+            'parent_id' => ['nullable', 'exists:menus,id'],
+        ];
+
+        Validator::make($data, $rules)->after(function ($validator) use ($data): void {
+            // ❗ Cấm parent_id = chính nó
+            if (
+                isset($data['parent_id'], $this->id)
+                && (int) $data['parent_id'] === (int) $this->id
+            ) {
+                $validator->errors()->add(
+                    'parent_id',
+                    'Parent menu cannot be the menu itself.'
+                );
+            }
+        })->validate();
+
+        // $rules = [
+        //     'name'      => 'required|string|max:255',
+        //     'order'     => 'nullable|integer|min:0',
+        //     'route'     => 'nullable|string|max:255',
+        //     'icon'      => 'nullable|string|max:255',
+        //     'parent_id' => 'nullable|exists:menus,id|different:id',
+        // ];
+
+        // Validator::make($this->attributes, $rules)->validate();
     }
 }
