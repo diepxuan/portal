@@ -4,11 +4,12 @@ Mục đích: tài liệu này cung cấp hướng dẫn ngắn gọn, chính x�
 
 ---
 
-## 1. Phạm vi công việc
+## 1. Phạm vi công việc (BẮT BUỘC)
 
-- **Ưu tiên:** Chỉ thay đổi và tạo file bên trong thư mục `diepxuan/` và các phụ thư mục của nó (trừ khi có chỉ định khác).
-- **Có thể sửa:** Các file ngoài `diepxuan/` (như `app/`, `routes/`, `config/`, …) nếu nhiệm vụ yêu cầu rõ ràng.
-- **Không được sửa:** Các file hệ thống (`.git`, `.github/workflows/`, `.env`, …) trừ khi được phép đặc biệt.
+- **CHỈ** được tạo mới hoặc chỉnh sửa file trong `diepxuan/` và các thư mục con của `diepxuan/`.
+- **KHÔNG** được sửa bất kỳ file nào ngoài phạm vi này, bao gồm nhưng không giới hạn: `app/`, `routes/`, `config/`, `database/`, `.github/`, `resources/`, v.v.
+- Chỉ được sửa ngoài phạm vi khi có chỉ dẫn rõ ràng bằng văn bản từ người dùng.
+- Nếu yêu cầu nằm ngoài phạm vi `diepxuan/`, AI phải dừng lại và báo lại thay vì tự ý sửa.
 
 ## 2. Ngữ cảnh nhanh
 
@@ -112,7 +113,24 @@ Nếu thay đổi không có hiệu lực:
 - **Phát hiện bug không liên quan đến task hiện tại?** → Ghi note trong PR description, không sửa ngoài phạm vi.
 - **Cần thay đổi file ngoài `diepxuan/`?** → Phải được phép rõ ràng trong yêu cầu task.
 
-## 8. Tổng kết quy trình AI Agent
+## 8. Nguyên tắc an toàn
+
+Khi không chắc chắn một thay đổi có an toàn hay không:
+
+- **Không tự ý đoán** → dừng lại và xác nhận.
+- **Đề xuất hỏi maintainer** hoặc mở issue trước.
+- **Ưu tiên an toàn và tính ổn định** hơn tốc độ.
+- **Tránh phá vỡ backward compatibility**: không thay đổi public API (tên class, namespace, interface, method signature) nếu không được phép rõ ràng.
+
+## 9. Tóm tắt cho AI (TL;DR)
+
+- **Chỉ làm việc trong `diepxuan/`** – không sửa file ngoài phạm vi này trừ khi được chỉ định rõ ràng.
+- **Coi mỗi thư mục con là một package độc lập** với cấu trúc Laravel chuẩn.
+- **Không phá public API** nếu không được phép.
+- **Nhắc chạy `composer dump-autoload`** khi thay đổi liên quan autoload.
+- **Không chắc thì dừng và hỏi** – an toàn trên hết.
+
+## 10. Tổng kết quy trình AI Agent
 
 1. **Nhận task** → hiểu rõ phạm vi, package nào cần sửa.
 2. **Pull main** → `git checkout main && git pull origin main`
