@@ -149,3 +149,48 @@ Tài liệu này liệt kê các stored procedure thuộc nhóm IN (Inventory) �
 - **Mô tả:** Thêm thông tin từ điển.
 - **Tham số:** Xem chi tiết trong class.
 
+
+## asINUpdDMBARCODE
+
+- **Class:** AsINUpdDMBARCODE
+- **Parameters:** pMa_cty, pMa_vt, pMa_vach, pKsd, pLUser
+- **Description:** 
+- **SQL File:** `asINUpdDMBARCODE.sql`
+
+## asINInsPH6
+
+- **Class:** AsINInsPH6
+- **Parameters:** pMa_cty, pStt_rec, pMa_ct, pMa_gd, pNgay_ct, pNgay_lct, pSo_ct, pNgay_ctn, pSo_ctn, pMa_kh, pNguoi_gd, pDien_giai, pPN_GTB, pPX_GDD, pTk_vt_lrtd, pTk_lrtd, pT_so_luong, pMa_nt, pTy_gia, pT_tien_nt, pT_tien, pPost2gl, pPost2in, pLUser
+- **Description:** 
+- **SQL File:** `asINInsPH6.sql`
+
+## asInsRightgroupCompany
+
+- **Class:** AsInsRightgroupCompany
+- **Parameters:** pGroupName, pMa_cty, pActive
+- **Description:** 
+- **SQL File:** `asInsRightgroupCompany.sql`
+
+## asINGetDMKHO
+
+- **Class:** AsINGetDMKHO
+- **Parameters:** 
+- **Description:** 
+- **SQL File:** `asINGetDMKHO.sql`
+
+## asINInsPH1
+
+- **Class:** AsINInsPH1
+- **Parameters:** pMa_cty, pStt_rec, pMa_ct, pMa_gd, pNgay_ct, pNgay_lct, pSo_ct, pMa_kh, pTen_kh, pDia_chi, pNguoi_gd, pDien_giai, pMa_nx, pMa_nt, pTy_gia, pT_tien_nt, pT_tien, pT_so_luong, pPN_GTB, pTrang_thai, pPost2gl, pPost2in, pGia_thanh, pLUser
+- **Description:** 
+- **SQL File:** `asINInsPH1.sql`
+
+## asINGetDMBARCODE
+
+- **Class:** AsINGetDMBARCODE
+- **Parameters:** pMa_cty, pMa_vt
+- **Description:** 
+- **SQL File:** `asINGetDMBARCODE.sql`
+
+
+

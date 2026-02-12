@@ -35,3 +35,11 @@ Danh sách các stored procedure trong nhóm Sales & Inventory (asSI*) đã đư
 - Giá trị mặc định của tham số được thiết lập theo logic của stored procedure gốc.
 - Tất cả class đều nằm trong namespace `Diepxuan\Simba\StoredProcedures`.
 - Method `call` trả về `Illuminate\Support\Collection` (trừ một số trường hợp đặc biệt).
+
+## asSIGetDMBP
+
+- **Class:** AsSIGetDMBP
+- **Parameters:** pMa_cty, pMa_bp, pStruct
+- **Description:** 
+- **SQL File:** `asSIGetDMBP.sql`
+
