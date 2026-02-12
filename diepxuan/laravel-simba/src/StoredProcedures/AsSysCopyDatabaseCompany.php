@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-11 11:13:00
+ * @lastupdate 2026-02-12 00:00:00
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -23,9 +23,9 @@ class AsSysCopyDatabaseCompany
         $connection = (new SModel())->getConnectionName();
 
         return ProcedureCaller::call('asSysCopyDatabaseCompany', [
-            'SourceDB' => $params['SourceDB'] ?? null,
-            'DestDB'   => $params['DestDB'] ?? null,
-            'Ma_CTy'   => $params['Ma_CTy'] ?? SModel::CTY,
+            'SourceDB'  => $params['SourceDB'] ?? null,
+            'DestDB'  => $params['DestDB'] ?? null,
+            'Ma_CTy'  => $params['Ma_CTy'] ?? null,
         ], $connection);
     }
 }

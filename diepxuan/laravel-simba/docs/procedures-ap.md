@@ -24,7 +24,7 @@ Các stored procedures nhóm Accounts Payable (asAP*) đã được chuyển đ�
 | asAPRptBK02 | AsAPRptBK02 | pMa_cty, pNgay1, pHan_Ky1, pHan_Ky2, pHan_Ky3, pMa_NCC, pMa_NhNCC, pSap_xep, pTat_toan, pMa_nt | Bảng kê hóa đơn theo hạn thanh toán |
 | asAPRptBK03 | AsAPRptBK03 | pMa_cty, pNgay1, pNgay2, pMa_gd, pSoct1, pSoct2, pMa_kh, pMa_nhkh, pMa_plkh1, pMa_plkh2, pMa_plkh3, pSap_xep, pTat_toan, pMa_NT | Bảng kê phiếu chi thanh toán tiền hàng |
 
-**Tổng số:** 18 procedures đã chuyển đổi.
+**Tổng số:** 41 procedures đã chuyển đổi.
 
 > Lưu ý: Các tham số có hậu tố `(output)` không cần truyền vào khi gọi PHP class, hệ thống tự xử lý.
 
@@ -46,3 +46,10 @@ Còn lại khoảng 23 procedures asAP* chưa được chuyển đổi. Danh sá
 - asAPUpdTt_SoDuPo6.sql
 - ... (còn tiếp)
 
+
+## asApGetPH4
+
+- **Class:** AsApGetPH4
+- **Parameters:** pMa_cty, pStt_rec, pMa_ct, pStruct
+- **Description:** 
+- **SQL File:** `asApGetPH4.sql`
