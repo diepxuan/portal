@@ -25,10 +25,13 @@ Tài liệu cần đọc cho lập trình viên và AI agents làm việc trên 
 
 2. **Cấu hình Database**: Cập nhật file `.env` với thông tin kết nối database của bạn.
 
-3. **Chạy Dev Server**:
+3. **Chạy Dev Server** (Recommended - dùng serve:dev commands):
    ```bash
-   php artisan serve
-   npm run dev
+   # Start development environment với 1 command
+   ./portal-dev.sh start
+   
+   # Hoặc dùng artisan command trực tiếp
+   php artisan serve:dev
    ```
 
 ## 🧩 Cấu trúc dự án
