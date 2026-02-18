@@ -9,6 +9,7 @@ use Diepxuan\Support\Commands\ServeDevStop;
 use Diepxuan\Support\Commands\ServeDevStatus;
 use Diepxuan\Support\Commands\ServeDevHealth;
 use Diepxuan\Support\Commands\ServeDevService;
+use Diepxuan\Support\Commands\ServeDevLogs;
 use Illuminate\Support\ServiceProvider;
 
 class SupportServiceProvider extends ServiceProvider
@@ -27,6 +28,7 @@ class SupportServiceProvider extends ServiceProvider
             ServeDevStatus::class,
             ServeDevHealth::class,
             ServeDevService::class,
+            ServeDevLogs::class,
         ]);
     }
 
