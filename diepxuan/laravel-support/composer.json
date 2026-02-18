@@ -25,6 +25,10 @@
     }
   },
   "extra": {
-    "laravel": {}
+    "laravel": {
+      "providers": [
+        "Diepxuan\\Laravel\\Support\\SupportServiceProvider"
+      ]
+    }
   }
 }
