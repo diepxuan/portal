@@ -41,20 +41,24 @@ class ServeDevStop extends Command
             unlink($portalPidFile);
         }
 
-        // Stop Vite server
+        // Stop Vite server - kill entire process group
         if (file_exists($vitePidFile)) {
             $pid = (int) file_get_contents($vitePidFile);
             if ($pid > 0) {
-                Process::run("kill {$pid} 2>/dev/null");
+                // Kill the entire process group
+                Process::run("pkill -g {$pid} 2>/dev/null");
+                Process::run("kill -9 -{$pid} 2>/dev/null");
                 $this->info("✅ Vite server stopped (PID: {$pid})");
             }
             unlink($vitePidFile);
         }
 
-        // Kill any remaining processes
+        // Kill any remaining processes - aggressive cleanup
         Process::run('pkill -f "artisan serve" 2>/dev/null');
-        Process::run('pkill -f "vite" 2>/dev/null');
-        Process::run('pkill -f "npm run dev" 2>/dev/null');
+        Process::run('pkill -9 -f "vite" 2>/dev/null');
+        Process::run('pkill -9 -f "npm run dev" 2>/dev/null');
+        Process::run('pkill -9 -f "esbuild" 2>/dev/null');
+        Process::run('pkill -9 node 2>/dev/null');
 
         $this->info('✅ All development servers stopped');
         
