@@ -15,6 +15,7 @@
     "diepxuan/laravel-gmail": "dev-main",
     "diepxuan/laravel-scavenger": "dev-main",
     "diepxuan/laravel-support": "*",
+    "doctrine/dbal": "*",
     "laravel/framework": "^11.31",
     "laravel/jetstream": "^5.3",
     "laravel/sanctum": "^4.0",
