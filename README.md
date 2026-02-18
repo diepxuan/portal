@@ -10,7 +10,6 @@ Tài liệu cần đọc cho lập trình viên và AI agents làm việc trên 
 - **[Tổng quan kiến trúc](ARCHITECTURE.md)**: Hướng dẫn toàn diện về kiến trúc hệ thống, luồng dữ liệu và các thành phần cốt lõi.
 - **[Hệ thống Package](PACKAGES.md)**: Chi tiết về 14 package nội bộ (trong thư mục `diepxuan/`) và cách hệ thống module hoạt động.
 - **[Thiết lập môi trường phát triển](DEVELOPMENT.md)**: Hướng dẫn từng bước để cài đặt môi trường development trên máy local.
-- **[Serve:Dev Commands Documentation](SERVE-DEV-COMMANDS-DOCS.md)**: Hướng dẫn đầy đủ về serve:dev commands ecosystem cho development.
 
 ## 🚀 Bắt đầu nhanh
 
@@ -26,13 +25,10 @@ Tài liệu cần đọc cho lập trình viên và AI agents làm việc trên 
 
 2. **Cấu hình Database**: Cập nhật file `.env` với thông tin kết nối database của bạn.
 
-3. **Chạy Dev Server** (Recommended - dùng serve:dev commands):
+3. **Chạy Dev Server**:
    ```bash
-   # Start development environment với 1 command
-   ./portal-dev.sh start
-   
-   # Hoặc dùng artisan command trực tiếp
-   php artisan serve:dev
+   php artisan serve
+   npm run dev
    ```
 
 ## 🧩 Cấu trúc dự án
@@ -40,26 +36,6 @@ Tài liệu cần đọc cho lập trình viên và AI agents làm việc trên 
 - **`app/`**: Logic ứng dụng Laravel chuẩn.
 - **`diepxuan/`**: **Core Business Logic (Nghiệp vụ cốt lõi)**. Chứa 14 modular packages (được symlink qua Composer). **Hầu hết việc phát triển diễn ra ở đây.**
 - **`resources/`**: Views và assets.
-
-## 🔧 Development Tools
-
-### **Portal Development Manager (`portal-dev.sh`)**
-Wrapper đơn giản cho tất cả development tasks:
-```bash
-./portal-dev.sh start          # Start development
-./portal-dev.sh status         # Check status
-./portal-dev.sh stop           # Stop servers
-./portal-dev.sh health --fix   # Health check + auto-recovery
-./portal-dev.sh service install # Install as systemd service
-```
-
-### **Serve:Dev Commands Ecosystem**
-Tích hợp hoàn toàn trong laravel-support package:
-- `php artisan serve:dev` - Start Laravel + Vite servers
-- `php artisan serve:dev:status` - Check status
-- `php artisan serve:dev:stop` - Stop servers
-- `php artisan serve:dev:health --fix` - Health check với auto-recovery
-- `php artisan serve:dev:service install` - Systemd service management
 
 ## 🤝 Đóng góp (Contributing)
 
