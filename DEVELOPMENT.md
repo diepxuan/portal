@@ -104,28 +104,64 @@ php artisan db:seed
 php artisan key:generate
 ```
 
-### 5.2. Chạy development server
-**Cách 1: Dùng Laravel dev server (PHP artisan)**
+### 5.2. Chạy development server với serve:dev commands (Recommended)
+**Cách 1: Dùng portal-dev.sh wrapper (đơn giản nhất)**
+```bash
+# Start development environment
+./portal-dev.sh start
+
+# Check status
+./portal-dev.sh status
+
+# Stop everything
+./portal-dev.sh stop
+
+# Health check with auto-recovery
+./portal-dev.sh health --fix
+
+# Install as systemd service
+sudo ./portal-dev.sh start --service
+```
+
+**Cách 2: Dùng artisan commands trực tiếp**
+```bash
+# Start Laravel + Vite servers
+php artisan serve:dev
+
+# Check status
+php artisan serve:dev:status
+
+# Stop servers
+php artisan serve:dev:stop
+
+# Health check
+php artisan serve:dev:health --fix
+
+# Systemd service management
+sudo php artisan serve:dev:service install
+```
+
+**Cách 3: Dùng Laravel dev server truyền thống**
 ```bash
 php artisan serve --port=8000
 ```
 
-**Cách 2: Dùng Docker (Laravel Sail)**
+**Cách 4: Dùng Docker (Laravel Sail)**
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-**Cách 3: Dùng docker‑compose có sẵn** (có tailscale gateway)
+**Cách 5: Dùng docker‑compose có sẵn** (có tailscale gateway)
 ```bash
 docker-compose up -d
 ```
 
-### 5.3. Chạy Vite dev server (frontend)
+### 5.3. Chạy Vite dev server (frontend) - nếu dùng cách 3
 ```bash
 npm run dev
 ```
 
-**Lưu ý:** Cần chạy cả PHP server và Vite server để có đầy đủ assets.
+**Lưu ý:** Cách 1 và 2 (serve:dev commands) tự động chạy cả PHP server và Vite server.
 
 ## 6. Cài đặt các service hỗ trợ (optional)
 
@@ -246,4 +282,4 @@ Tuân thủ quy trình trong [AI_AGENT_GUIDE.md](AI_AGENT_GUIDE.md):
 5. Tạo Pull Request trên GitHub.
 
 ---
-*Hướng dẫn này dựa trên cấu hình môi trường dev hiện tại (2026‑02‑11).*
+*Hướng dẫn này dựa trên cấu hình môi trường dev hiện tại (2026‑02‑18).*
