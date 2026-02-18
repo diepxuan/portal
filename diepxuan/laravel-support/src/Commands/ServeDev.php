@@ -218,7 +218,9 @@ class ServeDev extends Command
 
         $vitePort = $this->option('vite-port');
         $outputFile = storage_path('logs/vite-server.log');
-        $command = "cd " . base_path() . " && nohup npm run dev -- --port={$vitePort} > {$outputFile} 2>&1 & echo $!";
+        
+        // Start Vite in a process group for proper cleanup
+        $command = "cd " . base_path() . " && setsid npm run dev -- --port={$vitePort} > {$outputFile} 2>&1 & echo $!";
         
         exec($command, $output, $returnVar);
         
