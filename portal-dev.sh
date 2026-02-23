@@ -31,6 +31,7 @@ show_help() {
     echo "  health      Health check (serve:dev:health)"
     echo "  service     Manage systemd service (serve:dev:service)"
     echo "  vite        Start Vite server (serve:dev:vite)"
+    echo "  logs        View logs real-time (serve:dev:logs)"
     echo "  help        Show this help"
     echo ""
     echo "Advanced Options:"
@@ -101,6 +102,10 @@ case "$CMD" in
         else
             cd "$PORTAL_DIR" && npm run dev
         fi
+        ;;
+    logs)
+        echo "📋 Viewing logs..."
+        php "$ARTISAN" serve:dev:logs "$@"
         ;;
     help|--help|-h)
         show_help

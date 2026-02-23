@@ -29,3 +29,26 @@ package-lock.json
 laravel.code-workspace
 docker
 watch.log
+
+# PID files for development servers
+/storage/app/portal.pid
+/storage/app/vite.pid
+/storage/app/portal-service.pid
+*.pid
+pidfiles/
+
+# Development logs
+/storage/logs/vite-server.log
+/storage/logs/health-check.log
+
+# Systemd service files (generated)
+portal.service
+portal-health.service
+portal-health.timer
+portal-fixed.service
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+/temp/
