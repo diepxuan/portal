@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2024-12-12 22:48:51
  */
 
-use Diepxuan\Log;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -23,6 +23,6 @@ use Diepxuan\Log;
  */
 
 return [
-    'name'      => 'diepxuan/laravel-log',
-    'namespace' => Log::class,
+    'name'      => 'diepxuan/laravel-gmail',
+    '    'namespace' => 'Diepxuan\Gmail',
 ];

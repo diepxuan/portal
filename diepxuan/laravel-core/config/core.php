@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-05-21 11:56:25
+ * @lastupdate 2024-12-12 22:46:33
  */
 
-use Diepxuan\Support;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -23,6 +23,6 @@ use Diepxuan\Support;
  */
 
 return [
-    'name'      => 'diepxuan/laravel-support',
-    'namespace' => Support::class,
+    'name'      => 'diepxuan/laravel-core',
+    '    'namespace' => 'Diepxuan\Core',
 ];

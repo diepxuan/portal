@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:46:33
+ * @lastupdate 2024-12-12 22:48:51
  */
 
-use Diepxuan\Core;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -19,10 +19,10 @@ use Diepxuan\Core;
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:14:08
+ * @lastupdate 2024-12-12 22:19:01
  */
 
 return [
-    'name'      => 'diepxuan/laravel-core',
-    'namespace' => Core::class,
+    'name'      => 'diepxuan/laravel-log',
+    '    'namespace' => 'Diepxuan\Log',
 ];

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2024-12-12 22:47:13
  */
 
-use Diepxuan\Simba;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -24,7 +24,7 @@ use Diepxuan\Simba;
 
 return [
     'name'      => 'diepxuan/laravel-simba',
-    'namespace' => Simba::class,
+    '    'namespace' => 'Diepxuan\Simba',
 
     /*
     |--------------------------------------------------------------------------
