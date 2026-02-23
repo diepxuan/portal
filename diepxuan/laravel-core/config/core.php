@@ -24,5 +24,5 @@ declare(strict_types=1);
 
 return [
     'name'      => 'diepxuan/laravel-core',
-    '    'namespace' => 'Diepxuan\Core',
+    'namespace' => 'Diepxuan\\Core',
 ];
