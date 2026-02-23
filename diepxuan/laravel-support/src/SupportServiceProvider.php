@@ -2,14 +2,6 @@
 
 namespace Diepxuan\Laravel\Support;
 
-use Diepxuan\Support\Commands\Dev;
-use Diepxuan\Support\Commands\Npm;
-use Diepxuan\Support\Commands\ServeDev;
-use Diepxuan\Support\Commands\ServeDevStop;
-use Diepxuan\Support\Commands\ServeDevStatus;
-use Diepxuan\Support\Commands\ServeDevHealth;
-use Diepxuan\Support\Commands\ServeDevService;
-use Diepxuan\Support\Commands\ServeDevLogs;
 use Illuminate\Support\ServiceProvider;
 
 class SupportServiceProvider extends ServiceProvider
@@ -19,17 +11,9 @@ class SupportServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Register commands
-        $this->commands([
-            Dev::class,
-            Npm::class,
-            ServeDev::class,
-            ServeDevStop::class,
-            ServeDevStatus::class,
-            ServeDevHealth::class,
-            ServeDevService::class,
-            ServeDevLogs::class,
-        ]);
+        // Commands are auto-registered by Diepxuan\Core\Providers\ServiceProvider
+        // via Package::getCommands() mechanism
+        // No need for manual registration here
     }
 
     /**
