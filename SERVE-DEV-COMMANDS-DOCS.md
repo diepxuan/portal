@@ -100,6 +100,41 @@ php artisan serve:dev:service status
 sudo php artisan serve:dev:service start
 ```
 
+### **6. serve:dev:logs** - View logs real-time
+```bash
+php artisan serve:dev:logs [type]
+```
+**Arguments:**
+- `type` - Type of logs (laravel, vite, health, all) - default: all
+
+**Options:**
+- `-f, --follow` - Follow log output (tail -f)
+- `-l, --lines=50` - Number of lines to show
+- `-c, --clear` - Clear log file after viewing
+
+**Examples:**
+```bash
+# View all logs (last 50 lines)
+php artisan serve:dev:logs
+
+# Follow Laravel logs real-time
+php artisan serve:dev:logs laravel --follow
+
+# View Vite logs with 100 lines
+php artisan serve:dev:logs vite --lines=100
+
+# View and clear health logs
+php artisan serve:dev:logs health --clear
+
+# Follow all logs
+php artisan serve:dev:logs all --follow
+```
+
+**Log files:**
+- `storage/logs/laravel.log` - Laravel application logs
+- `storage/logs/vite-server.log` - Vite server logs
+- `storage/logs/health-check.log` - Health check logs
+
 ## 🔧 Portal-dev.sh Wrapper
 
 `portal-dev.sh` là wrapper cho tất cả commands:
