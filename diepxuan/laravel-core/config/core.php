@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:48:07
+ * @lastupdate 2024-12-12 22:46:33
  */
 
-use Diepxuan\RonaldJack;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -19,10 +19,10 @@ use Diepxuan\RonaldJack;
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:15:20
+ * @lastupdate 2024-12-12 22:14:08
  */
 
 return [
-    'name'      => 'diepxuan/laravel-ronaldjack',
-    'namespace' => RonaldJack::class,
+    'name'      => 'diepxuan/laravel-core',
+    'namespace' => 'Diepxuan\\Core',
 ];

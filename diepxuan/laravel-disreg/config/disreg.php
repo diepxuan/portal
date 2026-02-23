@@ -11,9 +11,9 @@ declare(strict_types=1);
  * @lastupdate 2024-12-12 22:49:55
  */
 
-use Diepxuan\DisableRegistration;
+
 
 return [
     'name'      => 'diepxuan/laravel-disreg',
-    'namespace' => DisableRegistration::class,
+    'namespace' => 'Diepxuan\DisableRegistration',
 ];
