@@ -8,12 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:49:55
+ * @lastupdate 2024-12-12 22:19:44
  */
 
-use Diepxuan\DisableRegistration;
-
 return [
-    'name'      => 'diepxuan/laravel-disreg',
-    'namespace' => DisableRegistration::class,
+    'name'      => 'diepxuan/laravel-catalog',
+    'namespace' => 'Diepxuan\Catalog',
 ];

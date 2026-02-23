@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2024-12-12 22:19:25
  */
 
-use Diepxuan\Magento;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -24,7 +24,7 @@ use Diepxuan\Magento;
 
 return [
     'name'      => 'diepxuan/laravel-magento',
-    'namespace' => Magento::class,
+    '    'namespace' => 'Diepxuan\Magento',
 
     /*
     |--------------------------------------------------------------------------

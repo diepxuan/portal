@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:19:44
+ * @lastupdate 2024-12-12 22:48:07
  */
 
-use Diepxuan\Catalog;
+
 
 /*
  * @copyright  © 2019 Dxvn, Inc.
@@ -19,10 +19,10 @@ use Diepxuan\Catalog;
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2024-12-12 22:15:55
+ * @lastupdate 2024-12-12 22:15:20
  */
 
 return [
-    'name'      => 'diepxuan/laravel-catalog',
-    'namespace' => Catalog::class,
+    'name'      => 'diepxuan/laravel-ronaldjack',
+    '    'namespace' => 'Diepxuan\Ronaldjack',
 ];
