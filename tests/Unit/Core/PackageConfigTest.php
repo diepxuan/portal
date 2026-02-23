@@ -1,9 +1,9 @@
 <?php
 
-namespace Diepxuan\Core\Tests\Unit;
+namespace Tests\Unit\Core;
 
 use Diepxuan\Core\Models\Package;
-use Diepxuan\Core\Tests\TestCase;
+use Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 
 class PackageConfigTest extends TestCase

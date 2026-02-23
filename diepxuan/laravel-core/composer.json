@@ -16,11 +16,6 @@
       "Diepxuan\\Core\\": "src/"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Diepxuan\\Core\\Tests\\": "tests/"
-    }
-  },
   "extra": {
     "laravel": {
       "providers": [
