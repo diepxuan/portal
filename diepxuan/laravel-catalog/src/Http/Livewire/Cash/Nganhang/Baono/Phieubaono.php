@@ -29,6 +29,17 @@ class Phieubaono extends Component
     public $pNgay_Ct;
     public $pSo_Ct;
     public $pNgay_Lap;
+    public $pDia_Chi = '';
+    public $pNguoi_Gd = '';
+    public $pMa_Nt = 'VND';
+    public $pTy_Gia = 1;
+    public $pT_Tien_Nt = 0;
+    public $pT_Thue = 0;
+    public $pT_TT = 0;
+    public $pT_Thue_Nt = 0;
+    public $pT_TT_Nt = 0;
+    public $pTrang_Thai = '1';
+    public $pPost2Gl = '0';
     public Collection $pCts;
     public $pSoDu;
     public $pTong_Ps_No = 0;
@@ -37,14 +48,30 @@ class Phieubaono extends Component
         'pMa_Kh'       => 'required',
         'pTk_Co'       => 'required',
         'pNgay_Ct'     => 'required|date',
+        'pNgay_Lap'    => 'required|date',
+        'pDia_Chi'     => 'nullable|string|max:255',
+        'pNguoi_Gd'    => 'nullable|string|max:30',
+        'pMa_Nt'       => 'required|string|size:3',
+        'pTy_Gia'      => 'required|numeric|min:0',
         'pCts.*.ma_tk' => 'required',
         'pCts.*.ps_no' => 'required|numeric|min:0',
+        'pCts.*.ps_co' => 'nullable|numeric|min:0',
+        'pCts.*.ps_no_nt' => 'nullable|numeric|min:0',
+        'pCts.*.ps_co_nt' => 'nullable|numeric|min:0',
+        'pCts.*.ma_kh' => 'nullable|string|max:20',
+        'pCts.*.ma_hd' => 'nullable|string|max:20',
+        'pCts.*.ma_bp' => 'nullable|string|max:20',
+        'pCts.*.ma_phi' => 'nullable|string|max:20',
+        'pCts.*.ma_spct' => 'nullable|string|max:20',
+        'pCts.*.ma_lo' => 'nullable|string|max:20',
+        'pCts.*.ma_ku' => 'nullable|string|max:20',
     ];
 
     public function mount(): void
     {
         $this->pNgay_Ct  = now()->toDateString();
         $this->pNgay_Lap = now()->toDateString();
+        $this->pNguoi_Gd = \Auth::user()->name ?? '';
         $this->pCts      = collect();
         $this->addRow();
         
@@ -70,6 +97,11 @@ class Phieubaono extends Component
 
         if (str_contains($property, 'pCts')) {
             $this->calculateTotal();
+            $this->calculateForeignCurrency();
+        }
+
+        if (in_array($property, ['pTong_Ps_No', 'pTy_Gia', 'pT_Thue'])) {
+            $this->calculateForeignCurrency();
         }
         
         \Debugbar::info('updated');
@@ -80,6 +112,24 @@ class Phieubaono extends Component
     {
         $this->pTong_Ps_No = $this->pCts->sum(function ($item) {
             return (float) ($item['ps_no'] ?? 0);
+        });
+        
+        // Tính tổng thanh toán = Tổng phát sinh nợ + Thuế
+        $this->pT_TT = $this->pTong_Ps_No + $this->pT_Thue;
+    }
+
+    public function calculateForeignCurrency(): void
+    {
+        // Tính tiền ngoại tệ
+        $this->pT_Tien_Nt = $this->pTong_Ps_No * $this->pTy_Gia;
+        $this->pT_Thue_Nt = $this->pT_Thue * $this->pTy_Gia;
+        $this->pT_TT_Nt = $this->pT_TT * $this->pTy_Gia;
+        
+        // Cập nhật ps_no_nt và ps_co_nt cho từng dòng
+        $this->pCts = $this->pCts->map(function ($row) {
+            $row['ps_no_nt'] = ($row['ps_no'] ?? 0) * $this->pTy_Gia;
+            $row['ps_co_nt'] = ($row['ps_co'] ?? 0) * $this->pTy_Gia;
+            return $row;
         });
     }
 
@@ -113,20 +163,32 @@ class Phieubaono extends Component
             
             // 1. Save Header (CaPh3)
             $caPh3 = new \Diepxuan\Catalog\Models\CaPh3();
-            $caPh3->stt_rec   = $stt_rec;
-            $caPh3->ma_ct     = 'CA4';
-            $caPh3->ngay_ct   = $this->pNgay_Ct;
-            $caPh3->ngay_lct  = $this->pNgay_Lap;
-            $caPh3->so_ct     = $this->pSo_Ct;
-            $caPh3->ma_kh     = $this->pMa_Kh;
-            $caPh3->dien_giai = $this->pDien_Giai;
-            $caPh3->tk_co     = $this->pTk_Co;
-            $caPh3->t_tien    = $this->pTong_Ps_No;
-            $caPh3->ma_nt     = 'VND'; 
-            $caPh3->ty_gia    = 1;
-            $caPh3->ma_cty    = \CatalogService::company()->id ?? '001';
-            $caPh3->status    = '1'; // Active?
-            // Add other required fields
+            $caPh3->stt_rec     = $stt_rec;
+            $caPh3->ma_ct       = 'CA4';
+            $caPh3->so_ct       = $this->pSo_Ct;
+            $caPh3->ngay_ct     = $this->pNgay_Ct;
+            $caPh3->ngay_lct    = $this->pNgay_Lap;
+            $caPh3->kht_tain    = 0; // Default
+            $caPh3->ma_kh       = $this->pMa_Kh;
+            $caPh3->dia_chi     = $this->pDia_Chi;
+            $caPh3->nguoi_gd    = $this->pNguoi_Gd;
+            $caPh3->dien_giai   = $this->pDien_Giai;
+            $caPh3->tk_co       = $this->pTk_Co;
+            $caPh3->ma_nt       = $this->pMa_Nt;
+            $caPh3->ty_gia      = $this->pTy_Gia;
+            $caPh3->t_tien_nt   = $this->pT_Tien_Nt;
+            $caPh3->t_tien      = $this->pTong_Ps_No;
+            $caPh3->t_thue      = $this->pT_Thue;
+            $caPh3->t_tt        = $this->pT_TT;
+            $caPh3->t_thue_nt   = $this->pT_Thue_Nt;
+            $caPh3->t_tt_nt     = $this->pT_TT_Nt;
+            $caPh3->trang_thai  = $this->pTrang_Thai;
+            $caPh3->post2gl     = $this->pPost2Gl;
+            $caPh3->cdate       = now();
+            $caPh3->cuser       = \Auth::user()->name ?? '';
+            $caPh3->ldate       = now();
+            $caPh3->luser       = \Auth::user()->name ?? '';
+            $caPh3->ma_cty      = \CatalogService::company()->id ?? '001';
             $caPh3->save();
 
             // 2. Save Details (CaCt3)
@@ -134,16 +196,25 @@ class Phieubaono extends Component
                 if (empty($row['ma_tk']) || empty($row['ps_no'])) continue;
 
                 $caCt3 = new \Diepxuan\Catalog\Models\CaCt3();
-                $caCt3->stt_rec   = $stt_rec;
-                $caCt3->stt_rec0  = str_pad((string)$index, 3, '0', STR_PAD_LEFT); 
-                $caCt3->ma_ct     = 'CA4';
-                $caCt3->ngay_ct   = $this->pNgay_Ct;
-                $caCt3->ma_cty    = $caPh3->ma_cty;
-                $caCt3->tk        = $row['ma_tk'];
-                $caCt3->ps_no     = $row['ps_no'];
-                $caCt3->ps_no_nt  = $row['ps_no']; // Assuming VND
-                $caCt3->dien_giai = $row['dien_giai'] ?? $this->pDien_Giai;
-                // Add other fields
+                $caCt3->stt_rec      = $stt_rec;
+                $caCt3->stt_rec0     = str_pad((string)($index + 1), 3, '0', STR_PAD_LEFT); 
+                $caCt3->stt_rec_pc   = '';
+                $caCt3->stt_rec0_pc  = '';
+                $caCt3->so_pc        = '';
+                $caCt3->ma_cty       = $caPh3->ma_cty;
+                $caCt3->tk           = $row['ma_tk'];
+                $caCt3->ps_no        = $row['ps_no'] ?? 0;
+                $caCt3->ps_co        = $row['ps_co'] ?? 0;
+                $caCt3->ps_no_nt     = $row['ps_no_nt'] ?? 0;
+                $caCt3->ps_co_nt     = $row['ps_co_nt'] ?? 0;
+                $caCt3->dien_giai    = $row['dien_giai'] ?? $this->pDien_Giai;
+                $caCt3->ma_kh        = $row['ma_kh'] ?? $this->pMa_Kh;
+                $caCt3->ma_hd        = $row['ma_hd'] ?? '';
+                $caCt3->ma_bp        = $row['ma_bp'] ?? '';
+                $caCt3->ma_phi       = $row['ma_phi'] ?? '';
+                $caCt3->ma_spct      = $row['ma_spct'] ?? '';
+                $caCt3->ma_lo        = $row['ma_lo'] ?? '';
+                $caCt3->ma_ku        = $row['ma_ku'] ?? '';
                 $caCt3->save();
             }
 
@@ -158,17 +229,29 @@ class Phieubaono extends Component
         session()->flash('message', 'Phiếu báo nợ đã được lưu thành công.');
         
         // Reset form
-        $this->reset(['pDien_Giai', 'pCts', 'pSo_Ct', 'pTong_Ps_No']);
+        $this->reset([
+            'pDien_Giai', 'pCts', 'pSo_Ct', 'pTong_Ps_No',
+            'pDia_Chi', 'pNguoi_Gd', 'pMa_Nt', 'pTy_Gia',
+            'pT_Tien_Nt', 'pT_Thue', 'pT_TT', 'pT_Thue_Nt', 'pT_TT_Nt'
+        ]);
         $this->mount();
     }
 
     public function updateKhachHang(): void
     {
-        $this->pKh   = ArDmKh::where('ma_kh', $this->pMa_Kh)->first();
+        $this->pKh = ArDmKh::where('ma_kh', $this->pMa_Kh)->first();
         if ($this->pKh) {
-             $this->pDien_Giai = 'Thu tiền khách hàng ' . $this->pKh->ten_kh;
-             // Update So Du if needed
-             // $this->pSoDu = ...
+            $this->pDien_Giai = 'Thu tiền khách hàng ' . $this->pKh->ten_kh;
+            $this->pDia_Chi = $this->pKh->dia_chi ?? '';
+            
+            // Auto-fill mã khách hàng vào các dòng chi tiết
+            $this->pCts = $this->pCts->map(function ($row) {
+                $row['ma_kh'] = $this->pMa_Kh;
+                return $row;
+            });
+            
+            // Update So Du if needed
+            // $this->pSoDu = ...
         }
         \Debugbar::info('updateKhachHang');
     }
@@ -181,9 +264,19 @@ class Phieubaono extends Component
     public function addRow(): void
     {
         $this->pCts->push([
-            'ma_tk'     => '',
-            'dien_giai' => $this->pDien_Giai,
-            'ps_no'     => 0,
+            'ma_tk'      => '',
+            'dien_giai'  => $this->pDien_Giai,
+            'ps_no'      => 0,
+            'ps_co'      => 0,
+            'ps_no_nt'   => 0,
+            'ps_co_nt'   => 0,
+            'ma_kh'      => $this->pMa_Kh ?? '',
+            'ma_hd'      => '',
+            'ma_bp'      => '',
+            'ma_phi'     => '',
+            'ma_spct'    => '',
+            'ma_lo'      => '',
+            'ma_ku'      => '',
         ]);
     }
 
