@@ -1,6 +1,6 @@
 <?php
 
-namespace Diepxuan\Laravel\Support;
+namespace Diepxuan\Support;
 
 use Diepxuan\Support\Commands\Dev;
 use Diepxuan\Support\Commands\Npm;
