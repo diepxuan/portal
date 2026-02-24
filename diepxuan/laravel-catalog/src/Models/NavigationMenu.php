@@ -86,15 +86,35 @@ class NavigationMenu extends Model
 
     public function isDescendantOf(int $parentId): bool
     {
-        $parent = self::find($parentId);
-        while ($parent) {
-            if ($parent->id === $this->id) {
+        // Check if this menu is a descendant of the given parent
+        $current = $this;
+        while ($current && $current->parent_id) {
+            if ($current->parent_id === $parentId) {
                 return true;
             }
-            $parent = $parent->parent;
+            $current = self::find($current->parent_id);
         }
-
+        
         return false;
+    }
+
+    /**
+     * Check if this menu would create a circular reference if set as parent of another menu.
+     */
+    public function wouldCreateCircularReference(int $potentialChildId): bool
+    {
+        // A menu cannot be parent of itself
+        if ($this->id === $potentialChildId) {
+            return true;
+        }
+        
+        // Check if the potential child is already an ancestor of this menu
+        $potentialChild = self::find($potentialChildId);
+        if (!$potentialChild) {
+            return false;
+        }
+        
+        return $potentialChild->isDescendantOf($this->id);
     }
 
     /**
@@ -246,7 +266,7 @@ class NavigationMenu extends Model
 
                 if (
                     isset($data['parent_id'], $this->id)
-                    && $this->isDescendantOf($data['parent_id'])
+                    && $this->isDescendantOf((int) $data['parent_id'])
                 ) {
                     $validator->errors()->add(
                         'parent_id',
