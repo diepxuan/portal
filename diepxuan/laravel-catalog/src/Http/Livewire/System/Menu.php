@@ -66,14 +66,11 @@ class Menu extends Component
 
     public function updateMenu($id, $parentId, $preId): void
     {
-        // \Debugbar::info($id, $parentId, $preId);
-
         $menu = \CatalogService::menus()->where('id', $id)->first()
             ?? NavigationMenu::findOrFail($id);
 
         if (!$menu) {
             $this->refreshTree();
-
             return;
         }
 
@@ -84,8 +81,6 @@ class Menu extends Component
                 ?? NavigationMenu::findOrFail($preId);
             $order = $preMenu->order + 0.5;
         }
-
-        // \Debugbar::info($id, $menu, $parentId, $preId, $order);
 
         $menu->parent_id = $parentId;
         $menu->order     = $order;

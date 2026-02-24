@@ -46,8 +46,6 @@ class Item extends Component
 
     public function updateMenu(): void
     {
-        // \Debugbar::info($this->parentId);
-        // \Debugbar::info($this->menu);
         if ($this->menu->id === $this->parentId) {
             return;
         }
