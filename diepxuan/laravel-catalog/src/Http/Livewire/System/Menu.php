@@ -234,46 +234,112 @@ class Menu extends Component
     }
 
     /**
-     * Reorder root menus manually.
+     * Reorder menu (works for both root and child menus).
      */
-    public function reorderRootMenu(int $menuId, string $direction): void
+    public function reorderMenu(int $menuId, string $direction): void
     {
         $menu = $this->nodes->firstWhere('id', $menuId);
-        if (!$menu || $menu->parent_id !== null) {
-            return; // Not a root menu
-        }
-
-        $rootMenus = $this->nodes->where('parent_id', null)->sortBy('order')->values();
-        $currentIndex = $rootMenus->search(function ($item) use ($menuId) {
-            return $item->id === $menuId;
-        });
-
-        if ($currentIndex === false) {
+        if (!$menu) {
             return;
         }
 
-        if ($direction === 'up' && $currentIndex > 0) {
-            $targetIndex = $currentIndex - 1;
-        } elseif ($direction === 'down' && $currentIndex < $rootMenus->count() - 1) {
-            $targetIndex = $currentIndex + 1;
+        $this->nodeSaving[$menuId] = true;
+
+        try {
+            if ($menu->parent_id === null) {
+                // Root menu reordering
+                $rootMenus = $this->nodes->where('parent_id', null)->sortBy('order')->values();
+                $currentIndex = $rootMenus->search(function ($item) use ($menuId) {
+                    return $item->id === $menuId;
+                });
+
+                if ($currentIndex === false) {
+                    return;
+                }
+
+                if ($direction === 'up' && $currentIndex > 0) {
+                    $targetIndex = $currentIndex - 1;
+                } elseif ($direction === 'down' && $currentIndex < $rootMenus->count() - 1) {
+                    $targetIndex = $currentIndex + 1;
+                } else {
+                    return;
+                }
+
+                // Swap orders
+                $currentMenu = $rootMenus[$currentIndex];
+                $targetMenu = $rootMenus[$targetIndex];
+
+                $tempOrder = $currentMenu->order;
+                $currentMenu->order = $targetMenu->order;
+                $targetMenu->order = $tempOrder;
+
+                // Save both menus
+                $this->treeBuilder->updateRootMenuOrder($currentMenu->id, $currentMenu->order);
+                $this->treeBuilder->updateRootMenuOrder($targetMenu->id, $targetMenu->order);
+            } else {
+                // Child menu reordering
+                $this->treeBuilder->reorderChildMenu($menuId, $direction);
+            }
+
+            $this->refreshTree();
+            $this->dispatch('refresh-menu');
+        } finally {
+            unset($this->nodeSaving[$menuId]);
+        }
+    }
+
+    /**
+     * Check if menu can be moved up.
+     */
+    public function canMoveUp(int $menuId): bool
+    {
+        $menu = $this->nodes->firstWhere('id', $menuId);
+        if (!$menu) {
+            return false;
+        }
+
+        if ($menu->parent_id === null) {
+            // Root menu: can move up if order > 0
+            $rootMenus = $this->nodes->where('parent_id', null)->sortBy('order')->values();
+            $currentIndex = $rootMenus->search(function ($item) use ($menuId) {
+                return $item->id === $menuId;
+            });
+            return $currentIndex > 0;
         } else {
-            return;
+            // Child menu: check if there's a sibling before
+            $siblings = $this->nodes->where('parent_id', $menu->parent_id)->sortBy('order')->values();
+            $currentIndex = $siblings->search(function ($item) use ($menuId) {
+                return $item->id === $menuId;
+            });
+            return $currentIndex > 0;
+        }
+    }
+
+    /**
+     * Check if menu can be moved down.
+     */
+    public function canMoveDown(int $menuId): bool
+    {
+        $menu = $this->nodes->firstWhere('id', $menuId);
+        if (!$menu) {
+            return false;
         }
 
-        // Swap orders
-        $currentMenu = $rootMenus[$currentIndex];
-        $targetMenu = $rootMenus[$targetIndex];
-
-        $tempOrder = $currentMenu->order;
-        $currentMenu->order = $targetMenu->order;
-        $targetMenu->order = $tempOrder;
-
-        // Save both menus
-        $this->treeBuilder->updateRootMenuOrder($currentMenu->id, $currentMenu->order);
-        $this->treeBuilder->updateRootMenuOrder($targetMenu->id, $targetMenu->order);
-
-        $this->refreshTree();
-        $this->dispatch('refresh-menu');
+        if ($menu->parent_id === null) {
+            // Root menu: can move down if not last
+            $rootMenus = $this->nodes->where('parent_id', null)->sortBy('order')->values();
+            $currentIndex = $rootMenus->search(function ($item) use ($menuId) {
+                return $item->id === $menuId;
+            });
+            return $currentIndex !== false && $currentIndex < $rootMenus->count() - 1;
+        } else {
+            // Child menu: check if there's a sibling after
+            $siblings = $this->nodes->where('parent_id', $menu->parent_id)->sortBy('order')->values();
+            $currentIndex = $siblings->search(function ($item) use ($menuId) {
+                return $item->id === $menuId;
+            });
+            return $currentIndex !== false && $currentIndex < $siblings->count() - 1;
+        }
     }
 
     public function deleteNode(int $nodeId): void
