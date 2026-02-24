@@ -12,14 +12,12 @@
             <input class="rounded-md border-gray-300 py-0 shadow-sm" wire:model="newMenu.name" placeholder="Tên menu" />
             <input class="rounded-md border-gray-300 py-0 shadow-sm" wire:model="newMenu.route" placeholder="Đường dẫn" />
 
-            <input type="text" class="rounded-md border-gray-300 py-0 shadow-sm" list="parent_id-suggestions"
-                placeholder="Parent id" wire:model="newMenu.parent_id" />
-
-            <datalist id="parent_id-suggestions">
+            <select class="rounded-md border-gray-300 py-0 shadow-sm" wire:model="newMenu.parent_id">
+                <option value="">-- Chọn menu cha (nếu có) --</option>
                 @foreach ($menus as $menu)
-                    <option value="{{ $menu->id }}">{{ $menu->name }}</option>
+                    <option value="{{ $menu->id }}">{{ $menu->name }} @if($menu->route) ({{ $menu->route }}) @endif</option>
                 @endforeach
-            </datalist>
+            </select>
 
             <div class="inline-flex items-center">
                 <x-button-loading class="rounded-md bg-blue-600 px-2 py-0 text-white hover:bg-blue-700" type="submit">
