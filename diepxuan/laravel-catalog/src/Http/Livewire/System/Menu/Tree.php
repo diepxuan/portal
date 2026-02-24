@@ -240,14 +240,14 @@ class Tree extends Component
         }
     }
 
-    private function findNode(Collection $tree, int $nodeId): ?array
+    private function findNode(Collection $tree, int $nodeId): ?object
     {
         foreach ($tree as $node) {
-            if ($node['id'] === $nodeId) {
+            if ($node->id === $nodeId) {
                 return $node;
             }
-            if (!empty($node['children'])) {
-                $found = $this->findNode($node['children'], $nodeId);
+            if (!empty($node->children)) {
+                $found = $this->findNode($node->children, $nodeId);
                 if ($found) {
                     return $found;
                 }
