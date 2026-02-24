@@ -51,25 +51,17 @@
     
     <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
         <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-gray-800">Danh sách menu</h3>
+            <h3 class="text-lg font-semibold text-gray-800">Danh sách menu (Tree View)</h3>
             <div class="text-sm text-gray-500">
-                {{ count($menus) }} menu
+                {{ count($menus) }} menu • 
+                <button type="button" 
+                        class="text-blue-600 hover:text-blue-800"
+                        onclick="alert('Tất cả menu đã được mở rộng. Click vào icon ▶ để thu gọn.')">
+                    Tất cả đã mở rộng
+                </button>
             </div>
         </div>
         
-        <div class="space-y-2">
-            @foreach ($rootIds as $id)
-                @livewire('catalog::system.menu.item', ['menuId' => $id], key($id))
-            @endforeach
-            
-            @if(empty($rootIds))
-                <div class="rounded-md border border-dashed border-gray-300 p-8 text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <p class="mt-2 text-sm text-gray-500">Chưa có menu nào. Hãy thêm menu đầu tiên!</p>
-                </div>
-            @endif
-        </div>
+        @livewire('catalog::system.menu.tree')
     </div>
 </div>
