@@ -216,7 +216,7 @@ class Tree extends Component
         return false;
     }
 
-    private function clearDragState(): void
+    public function clearDragState(): void
     {
         $this->draggingNodeId = null;
         $this->dropTargetId = null;
