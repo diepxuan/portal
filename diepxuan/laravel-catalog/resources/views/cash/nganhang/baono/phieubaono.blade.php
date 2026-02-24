@@ -23,7 +23,6 @@
                 </div>
             </div>
         </div>
-        @endif
 
         <div class="grid grid-cols-4 items-center gap-4 pt-1">
             <label class="text-right">Diễn giải</label>
