@@ -207,6 +207,14 @@ class Menu extends Component
                 }
             }
 
+            // Special case: dropping to root level (null parent)
+            if ($this->dropTargetId === null) {
+                $newParentId = null;
+                // Find max order among root menus
+                $maxOrder = $this->nodes->where('parent_id', null)->max('order') ?? -1;
+                $newOrder = $maxOrder + 1;
+            }
+
             // Update menu position in database
             $updated = $this->treeBuilder->updateMenuPosition(
                 $this->draggingNodeId,
@@ -223,6 +231,49 @@ class Menu extends Component
             $this->isSaving = false;
             $this->clearDragState();
         }
+    }
+
+    /**
+     * Reorder root menus manually.
+     */
+    public function reorderRootMenu(int $menuId, string $direction): void
+    {
+        $menu = $this->nodes->firstWhere('id', $menuId);
+        if (!$menu || $menu->parent_id !== null) {
+            return; // Not a root menu
+        }
+
+        $rootMenus = $this->nodes->where('parent_id', null)->sortBy('order')->values();
+        $currentIndex = $rootMenus->search(function ($item) use ($menuId) {
+            return $item->id === $menuId;
+        });
+
+        if ($currentIndex === false) {
+            return;
+        }
+
+        if ($direction === 'up' && $currentIndex > 0) {
+            $targetIndex = $currentIndex - 1;
+        } elseif ($direction === 'down' && $currentIndex < $rootMenus->count() - 1) {
+            $targetIndex = $currentIndex + 1;
+        } else {
+            return;
+        }
+
+        // Swap orders
+        $currentMenu = $rootMenus[$currentIndex];
+        $targetMenu = $rootMenus[$targetIndex];
+
+        $tempOrder = $currentMenu->order;
+        $currentMenu->order = $targetMenu->order;
+        $targetMenu->order = $tempOrder;
+
+        // Save both menus
+        $this->treeBuilder->updateRootMenuOrder($currentMenu->id, $currentMenu->order);
+        $this->treeBuilder->updateRootMenuOrder($targetMenu->id, $targetMenu->order);
+
+        $this->refreshTree();
+        $this->dispatch('refresh-menu');
     }
 
     public function deleteNode(int $nodeId): void
