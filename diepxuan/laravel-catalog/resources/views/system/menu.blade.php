@@ -146,8 +146,16 @@
                         @endif
 
                         <!-- Node Container -->
-                        <div class="group relative flex items-center rounded-lg border transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 {{ $isRecentlyUpdated ? 'border-green-300 bg-green-50' : 'border-gray-200' }} {{ $isDragging ? 'opacity-50' : '' }} {{ $isDropTarget && $dropPosition === 'inside' ? 'border-2 border-dashed border-blue-400 bg-blue-50' : '' }}"
+                        <div class="group relative flex items-center rounded-lg border transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 {{ $isRecentlyUpdated ? 'border-green-300 bg-green-50' : 'border-gray-200' }} {{ $isDragging ? 'opacity-50' : '' }} {{ $isDropTarget && $dropPosition === 'inside' ? 'border-2 border-dashed border-blue-400 bg-blue-100' : '' }}"
                              draggable="true"
+                             @dragover="if ($wire.draggingNodeId && $wire.draggingNodeId !== {{ $nodeId }}) { 
+                                 $wire.setDropTarget({{ $nodeId }}, 'inside'); 
+                                 event.dataTransfer.dropEffect = 'move'; 
+                                 event.preventDefault(); 
+                             }"
+                             @dragleave="if ($wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside') { 
+                                 $wire.clearDropTarget(); 
+                             }"
                              @dragstart="$wire.startDrag({{ $nodeId }})"
                              @dragend="$wire.clearDragState()"
                              @dragover="if ($wire.draggingNodeId && $wire.draggingNodeId !== {{ $nodeId }} && $hasChildren) { 
@@ -352,7 +360,7 @@
                         @endif
 
                         <!-- Drop Zone Inside (children area) -->
-                        @if($hasChildren && $isExpanded && !$isDragging)
+                        @if($isExpanded && !$isDragging)
                         <div class="ml-{{ $node->level * 6 + 8 }} my-1 rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 p-2 transition-all duration-200"
                              @dragover="if ($wire.draggingNodeId && $wire.draggingNodeId !== {{ $nodeId }}) { 
                                  $wire.setDropTarget({{ $nodeId }}, 'inside'); 
