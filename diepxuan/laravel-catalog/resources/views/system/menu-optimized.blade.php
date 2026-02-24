@@ -64,10 +64,10 @@
         <!-- Tree Header -->
         <div class="border-b border-gray-200 bg-gray-50 px-4 py-3">
             <div class="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
-                <div class="col-span-6">Tên menu</div>
+                <div class="col-span-5">Tên menu</div>
                 <div class="col-span-4">Route</div>
                 <div class="col-span-1 text-center">ID</div>
-                <div class="col-span-1 text-center">Thứ tự</div>
+                <div class="col-span-2 text-center">Thứ tự (root)</div>
             </div>
         </div>
 
@@ -150,7 +150,7 @@
                             <!-- Node Content -->
                             <div class="flex flex-1 items-center px-3 py-2">
                                 <!-- Name Column -->
-                                <div class="col-span-6 w-1/2">
+                                <div class="col-span-5 w-5/12">
                                     @if($isEditing)
                                         <div class="flex items-center space-x-2">
                                             <input type="text"
@@ -195,7 +195,7 @@
                                 </div>
 
                                 <!-- Route Column -->
-                                <div class="col-span-4 w-1/3">
+                                <div class="col-span-4 w-4/12">
                                     @if($isEditing)
                                         <input type="text"
                                                class="w-full rounded-md border-gray-300 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -218,10 +218,37 @@
                                 </div>
 
                                 <!-- Order Column -->
-                                <div class="col-span-1 w-16 text-center">
-                                    <span class="text-sm font-medium text-gray-700">
-                                        {{ $node->order }}
-                                    </span>
+                                <div class="col-span-1 w-24 text-center">
+                                    @if($node->parent_id === null)
+                                        <div class="flex items-center justify-center space-x-1">
+                                            <button type="button"
+                                                    class="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 {{ $node->order === 0 ? 'opacity-30 cursor-not-allowed' : '' }}"
+                                                    wire:click="reorderRootMenu({{ $nodeId }}, 'up')"
+                                                    title="Di chuyển lên"
+                                                    {{ $node->order === 0 ? 'disabled' : '' }}>
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                                </svg>
+                                            </button>
+                                            
+                                            <span class="text-sm font-medium text-gray-700">
+                                                {{ $node->order }}
+                                            </span>
+                                            
+                                            <button type="button"
+                                                    class="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                                                    wire:click="reorderRootMenu({{ $nodeId }}, 'down')"
+                                                    title="Di chuyển xuống">
+                                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <span class="text-sm font-medium text-gray-700">
+                                            {{ $node->order }}
+                                        </span>
+                                    @endif
                                 </div>
 
                                 <!-- Actions -->

@@ -25,8 +25,8 @@ class MenuTreeBuilder
      */
     public function buildFlattenedTree(): Collection
     {
-        $allMenus = NavigationMenu::orderBy('parent_id')
-            ->orderBy('order')
+        $allMenus = NavigationMenu::orderBy('order')
+            ->orderBy('parent_id')
             ->get();
 
         // Build parent-child mapping
@@ -36,7 +36,26 @@ class MenuTreeBuilder
 
         // Build flattened tree with level information
         $result = collect();
-        $this->flattenTreeRecursive($childrenMap, null, 0, $result);
+        
+        // First add root menus (parent_id = null) sorted by order
+        $rootMenus = $childrenMap->get(null, collect());
+        foreach ($rootMenus as $rootMenu) {
+            $result->push((object) [
+                'id'           => $rootMenu->id,
+                'parent_id'    => $rootMenu->parent_id,
+                'name'         => $rootMenu->name,
+                'route'        => $rootMenu->route,
+                'order'        => $rootMenu->order,
+                'level'        => 0,
+                'has_children' => $childrenMap->has($rootMenu->id),
+                'is_expanded'  => true,
+            ]);
+
+            // Add children if expanded
+            if (true) { // Will implement lazy expand later
+                $this->flattenTreeRecursive($childrenMap, $rootMenu->id, 1, $result);
+            }
+        }
         
         return $result;
     }
@@ -118,6 +137,7 @@ class MenuTreeBuilder
 
     /**
      * Reorder siblings to maintain consistent order.
+     * Handles both root menus (parent_id = null) and child menus.
      */
     private function reorderSiblings(?int $parentId): void
     {
@@ -133,6 +153,35 @@ class MenuTreeBuilder
             }
             $order++;
         }
+    }
+
+    /**
+     * Get root menus sorted by order.
+     */
+    public function getRootMenus(): Collection
+    {
+        return NavigationMenu::whereNull('parent_id')
+            ->orderBy('order')
+            ->get();
+    }
+
+    /**
+     * Update order for root menus.
+     */
+    public function updateRootMenuOrder(int $menuId, int $newOrder): void
+    {
+        $menu = NavigationMenu::findOrFail($menuId);
+        
+        // Ensure it's a root menu
+        if ($menu->parent_id !== null) {
+            throw new \InvalidArgumentException('Menu is not a root menu.');
+        }
+
+        $menu->order = $newOrder;
+        $menu->save();
+
+        // Reorder all root menus
+        $this->reorderSiblings(null);
     }
 
     /**
