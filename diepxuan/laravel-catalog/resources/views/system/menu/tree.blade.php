@@ -68,7 +68,7 @@
                  @dragover="if ($wire.draggingNodeId) { $wire.setDropTarget(null, 'after'); }"
                  @dragleave="if ($wire.dropTargetId === null) { $wire.clearDropTarget(); }"
                  :class="{ 'border-2 border-dashed border-blue-400 bg-blue-50': $wire.dropTargetId === null && $wire.draggingNodeId }">
-                @if($wire->dropTargetId === null && $wire->draggingNodeId)
+                @if($this->dropTargetId === null && $this->draggingNodeId)
                     <div class="p-4 text-center text-sm text-blue-600">
                         Thả vào đây để chuyển thành menu gốc
                     </div>

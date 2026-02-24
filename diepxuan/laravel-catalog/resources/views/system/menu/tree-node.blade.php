@@ -1,12 +1,12 @@
 @php
     $nodeId = $node['id'];
-    $isEditing = $wire('editingNodeId') === $nodeId;
-    $isDragging = $wire('draggingNodeId') === $nodeId;
-    $isDropTarget = $wire('dropTargetId') === $nodeId;
-    $dropPosition = $wire('dropPosition');
-    $isRecentlyUpdated = $wire('recentlyUpdated')[$nodeId] ?? false;
+    $isEditing = $this->editingNodeId === $nodeId;
+    $isDragging = $this->draggingNodeId === $nodeId;
+    $isDropTarget = $this->dropTargetId === $nodeId;
+    $dropPosition = $this->dropPosition;
+    $isRecentlyUpdated = $this->recentlyUpdated[$nodeId] ?? false;
     $hasChildren = !empty($node['children']);
-    $isExpanded = $wire->isExpanded($nodeId);
+    $isExpanded = $this->isExpanded($nodeId);
 @endphp
 
 <!-- Drop Zone Before -->
@@ -172,7 +172,7 @@
                  $wire.clearDropTarget(); 
              }"
              :class="{ 'border-blue-400 bg-blue-50': $wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside' }">
-            @if($wire->dropTargetId === $nodeId && $wire->dropPosition === 'inside')
+            @if($this->dropTargetId === $nodeId && $this->dropPosition === 'inside')
                 <div class="text-center text-sm text-blue-600">
                     Thả vào đây để chuyển thành menu con
                 </div>
