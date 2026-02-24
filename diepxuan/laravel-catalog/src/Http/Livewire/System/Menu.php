@@ -205,6 +205,12 @@ class Menu extends Component
                         $newOrder++;
                     }
                 }
+            } elseif ($this->dropPosition === 'inside') {
+                // Dropping inside a menu (as child)
+                $newParentId = $this->dropTargetId;
+                // Find max order among children of this parent
+                $maxChildOrder = $this->nodes->where('parent_id', $newParentId)->max('order') ?? -1;
+                $newOrder = $maxChildOrder + 1;
             }
 
             // Special case: dropping to root level (null parent)
@@ -213,6 +219,12 @@ class Menu extends Component
                 // Find max order among root menus
                 $maxOrder = $this->nodes->where('parent_id', null)->max('order') ?? -1;
                 $newOrder = $maxOrder + 1;
+            }
+
+            // Prevent dropping a menu inside itself or its own descendants
+            if ($newParentId && $this->isDescendant($newParentId, $this->draggingNodeId)) {
+                $this->dispatch('show-error', message: 'Không thể di chuyển menu vào chính nó hoặc menu con của nó.');
+                return;
             }
 
             // Update menu position in database
@@ -227,10 +239,33 @@ class Menu extends Component
             
             // Dispatch event for other components
             $this->dispatch('refresh-menu');
+            
+            // Auto-expand parent if dropping inside
+            if ($this->dropPosition === 'inside' && $newParentId) {
+                if (!in_array($newParentId, $this->expandedNodes)) {
+                    $this->expandedNodes[] = $newParentId;
+                    $this->updateVisibleNodes();
+                }
+            }
         } finally {
             $this->isSaving = false;
             $this->clearDragState();
         }
+    }
+
+    /**
+     * Check if a menu is descendant of another.
+     */
+    private function isDescendant(int $potentialParentId, int $nodeId): bool
+    {
+        $node = $this->nodes->firstWhere('id', $nodeId);
+        while ($node && $node->parent_id) {
+            if ($node->parent_id === $potentialParentId) {
+                return true;
+            }
+            $node = $this->nodes->firstWhere('id', $node->parent_id);
+        }
+        return false;
     }
 
     /**

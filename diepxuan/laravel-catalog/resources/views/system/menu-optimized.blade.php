@@ -1,4 +1,11 @@
 <div class="space-y-6" x-data="{
+    errorMessage: null,
+    showError(message) {
+        this.errorMessage = message;
+        setTimeout(() => {
+            this.errorMessage = null;
+        }, 5000);
+    },
     init() {
         // Clear highlight after delay
         Livewire.on('clear-highlight', (event) => {
@@ -6,9 +13,31 @@
                 this.$wire.set('recentlyUpdated.' + event.nodeId, false);
             }, 2000);
         });
+        
+        // Error notification
+        Livewire.on('show-error', (event) => {
+            this.showError(event.message);
+        });
     }
 }">
     <x-head-title>{{ 'Quản lý Menu' }}</x-head-title>
+    
+    <!-- Error Notification -->
+    <div x-show="errorMessage" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-2"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-2"
+         class="rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">
+        <div class="flex items-center">
+            <svg class="mr-3 h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span x-text="errorMessage"></span>
+        </div>
+    </div>
     
     <!-- Add Menu Form -->
     <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
@@ -121,12 +150,19 @@
                              draggable="true"
                              @dragstart="$wire.startDrag({{ $nodeId }})"
                              @dragend="$wire.clearDragState()"
+                             @dragover="if ($wire.draggingNodeId && $wire.draggingNodeId !== {{ $nodeId }} && $hasChildren) { 
+                                 $wire.setDropTarget({{ $nodeId }}, 'inside'); 
+                                 event.dataTransfer.dropEffect = 'move';
+                             }"
+                             @dragleave="if ($wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside') { 
+                                 $wire.clearDropTarget(); 
+                             }"
                              style="padding-left: {{ $node->level * 24 }}px">
                             
                             <!-- Expand/Collapse Toggle -->
                             @if($hasChildren)
                                 <button type="button"
-                                        class="ml-2 flex h-6 w-6 items-center justify-center text-gray-500 hover:text-gray-700"
+                                        class="ml-2 flex h-6 w-6 items-center justify-center text-gray-500 hover:text-gray-700 {{ $isDropTarget && $dropPosition === 'inside' ? 'text-blue-500' : '' }}"
                                         wire:click="toggleNode({{ $nodeId }})">
                                     <svg class="h-4 w-4 transition-transform duration-200 {{ $isExpanded ? 'rotate-90' : '' }}" 
                                          fill="none" 
@@ -312,6 +348,26 @@
                                  $wire.clearDropTarget(); 
                              }"
                              :class="{ 'border-t-2 border-blue-400': $wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'after' }">
+                        </div>
+                        @endif
+
+                        <!-- Drop Zone Inside (children area) -->
+                        @if($hasChildren && $isExpanded && !$isDragging)
+                        <div class="ml-{{ $node->level * 6 + 8 }} my-1 rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 p-2 transition-all duration-200"
+                             @dragover="if ($wire.draggingNodeId && $wire.draggingNodeId !== {{ $nodeId }}) { 
+                                 $wire.setDropTarget({{ $nodeId }}, 'inside'); 
+                                 event.dataTransfer.dropEffect = 'move';
+                             }"
+                             @dragleave="if ($wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside') { 
+                                 $wire.clearDropTarget(); 
+                             }"
+                             :class="{ 'opacity-100': $wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside', 'opacity-0': !($wire.dropTargetId === {{ $nodeId }} && $wire.dropPosition === 'inside') }">
+                            <div class="text-center text-sm text-blue-600">
+                                <svg class="mx-auto mb-1 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Thả vào đây để làm menu con
+                            </div>
                         </div>
                         @endif
                     @endif
