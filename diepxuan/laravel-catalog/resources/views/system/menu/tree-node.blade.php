@@ -1,11 +1,11 @@
 @php
-    $nodeId = $node['id'];
+    $nodeId = $node->id;
     $isEditing = $this->editingNodeId === $nodeId;
     $isDragging = $this->draggingNodeId === $nodeId;
     $isDropTarget = $this->dropTargetId === $nodeId;
     $dropPosition = $this->dropPosition;
     $isRecentlyUpdated = $this->recentlyUpdated[$nodeId] ?? false;
-    $hasChildren = !empty($node['children']);
+    $hasChildren = !empty($node->children);
     $isExpanded = $this->isExpanded($nodeId);
 @endphp
 
@@ -89,7 +89,7 @@
                 <button type="button"
                         class="text-left font-medium text-gray-900 hover:text-blue-600"
                         wire:click="startEdit({{ $nodeId }})">
-                    {{ $node['name'] }}
+                    {{ $node->name }}
                 </button>
             @endif
         </div>
@@ -105,7 +105,7 @@
                        placeholder="route.name" />
             @else
                 <span class="text-sm text-gray-600">
-                    {{ $node['route'] ?? '—' }}
+                    {{ $node->route ?? '—' }}
                 </span>
             @endif
         </div>
@@ -120,7 +120,7 @@
         <!-- Order Column -->
         <div class="col-span-1 w-16 text-center">
             <span class="text-sm font-medium text-gray-700">
-                {{ $node['order'] ?? 0 }}
+                {{ $node->order ?? 0 }}
             </span>
         </div>
 
@@ -152,7 +152,7 @@
 <!-- Children -->
 @if($hasChildren && $isExpanded)
     <div class="space-y-1">
-        @foreach($node['children'] as $child)
+        @foreach($node->children as $child)
             @include('catalog::system.menu.tree-node', [
                 'node' => $child,
                 'level' => $level + 1,

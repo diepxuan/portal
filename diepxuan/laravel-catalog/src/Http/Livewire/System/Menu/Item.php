@@ -84,7 +84,7 @@ class Item extends Component
         $result = [];
 
         foreach ($menus as $menu) {
-            $result[] = [
+            $result[] = (object) [
                 'id'       => $menu->id,
                 'name'     => $menu->name,
                 'route'    => $menu->route,
