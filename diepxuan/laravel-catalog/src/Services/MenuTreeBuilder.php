@@ -185,6 +185,59 @@ class MenuTreeBuilder
     }
 
     /**
+     * Reorder child menu within its parent.
+     */
+    public function reorderChildMenu(int $menuId, string $direction): array
+    {
+        $menu = NavigationMenu::findOrFail($menuId);
+        
+        if ($menu->parent_id === null) {
+            throw new \InvalidArgumentException('Menu is a root menu. Use reorderRootMenu instead.');
+        }
+
+        $siblings = NavigationMenu::where('parent_id', $menu->parent_id)
+            ->orderBy('order')
+            ->get();
+
+        $currentIndex = $siblings->search(function ($item) use ($menuId) {
+            return $item->id === $menuId;
+        });
+
+        if ($currentIndex === false) {
+            throw new \RuntimeException('Menu not found in siblings list.');
+        }
+
+        if ($direction === 'up' && $currentIndex > 0) {
+            $targetIndex = $currentIndex - 1;
+        } elseif ($direction === 'down' && $currentIndex < $siblings->count() - 1) {
+            $targetIndex = $currentIndex + 1;
+        } else {
+            throw new \InvalidArgumentException('Cannot move menu in that direction.');
+        }
+
+        // Swap orders
+        $currentMenu = $siblings[$currentIndex];
+        $targetMenu = $siblings[$targetIndex];
+
+        $tempOrder = $currentMenu->order;
+        $currentMenu->order = $targetMenu->order;
+        $targetMenu->order = $tempOrder;
+
+        // Save both menus
+        $currentMenu->save();
+        $targetMenu->save();
+
+        // Reorder all siblings to ensure consistency
+        $this->reorderSiblings($menu->parent_id);
+
+        return [
+            'current_id' => $currentMenu->id,
+            'target_id' => $targetMenu->id,
+            'new_order' => $currentMenu->order,
+        ];
+    }
+
+    /**
      * Update menu name and route.
      */
     public function updateMenu(int $menuId, string $name, ?string $route): array
