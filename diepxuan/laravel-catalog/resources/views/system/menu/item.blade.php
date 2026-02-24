@@ -2,6 +2,7 @@
 
     <div class="flex items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-1 hover:bg-gray-50">
         <div class="flex items-center space-x-2">
+            <span class="text-xs text-gray-400 font-mono" title="ID">{{ $menu->id }}</span>
             @if ($menu->route == 'space')
                 <span class="text-xs text-gray-500">{{ $menu->name }}</span>
             @else
@@ -19,7 +20,8 @@
                 @include('catalog::system.menu.option-tree', ['items' => $availableParents])
             </select>
             
-            <span class="text-xs text-gray-400">#{{ $menu->order ?? 0 }}</span>
+            <span class="text-xs text-gray-400" title="ID">ID:{{ $menu->id }}</span>
+            <span class="text-xs text-gray-400" title="Order">#{{ $menu->order ?? 0 }}</span>
             
             <button wire:click="deleteMenu" 
                     onclick="return confirm('Xóa menu này?')"
