@@ -261,9 +261,9 @@ class Tree extends Component
         $ids = collect();
         
         foreach ($tree as $node) {
-            $ids->push($node['id']);
-            if (!empty($node['children'])) {
-                $ids = $ids->merge($this->getAllNodeIds($node['children']));
+            $ids->push($node->id);
+            if (!empty($node->children)) {
+                $ids = $ids->merge($this->getAllNodeIds($node->children));
             }
         }
         
