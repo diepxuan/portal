@@ -545,14 +545,23 @@ class Phieubaono extends Component
                         $firstItem = $soDuResult->first();
                         \Debugbar::info('First item:', $firstItem);
                         
-                        if (is_object($firstItem) && property_exists($firstItem, 'so_du')) {
-                            $this->pSoDu = (float) $firstItem->so_du;
-                            \Debugbar::info('Lấy so_du từ object: ' . $this->pSoDu);
-                        } elseif (is_array($firstItem) && isset($firstItem['so_du'])) {
-                            $this->pSoDu = (float) $firstItem['so_du'];
-                            \Debugbar::info('Lấy so_du từ array: ' . $this->pSoDu);
-                        } else {
-                            $this->pSoDu = null;
+                        if (is_object($firstItem)) {
+                            // Thử tìm SoDu (chữ S hoa) trước, sau đó mới tìm so_du
+                            $soDuValue = null;
+                            if (property_exists($firstItem, 'SoDu')) {
+                                $soDuValue = (float) $firstItem->SoDu;
+                                \Debugbar::info('Lấy SoDu (chữ S hoa) từ object: ' . $soDuValue);
+                            } elseif (property_exists($firstItem, 'so_du')) {
+                                $soDuValue = (float) $firstItem->so_du;
+                                \Debugbar::info('Lấy so_du từ object: ' . $soDuValue);
+                            }
+                            
+                            if ($soDuValue !== null) {
+                                $this->pSoDu = $soDuValue;
+                            } else {
+                                $this->pSoDu = null;
+                                \Debugbar::info('Không tìm thấy SoDu hoặc so_du trong first item');
+                            }
                             \Debugbar::info('Không tìm thấy so_du trong first item');
                         }
                     } else {
@@ -567,14 +576,23 @@ class Phieubaono extends Component
                         $firstItem = $soDuResult[0];
                         \Debugbar::info('First item:', $firstItem);
                         
-                        if (is_object($firstItem) && property_exists($firstItem, 'so_du')) {
-                            $this->pSoDu = (float) $firstItem->so_du;
-                            \Debugbar::info('Lấy so_du từ object: ' . $this->pSoDu);
-                        } elseif (is_array($firstItem) && isset($firstItem['so_du'])) {
-                            $this->pSoDu = (float) $firstItem['so_du'];
-                            \Debugbar::info('Lấy so_du từ array: ' . $this->pSoDu);
-                        } else {
-                            $this->pSoDu = null;
+                        if (is_object($firstItem)) {
+                            // Thử tìm SoDu (chữ S hoa) trước, sau đó mới tìm so_du
+                            $soDuValue = null;
+                            if (property_exists($firstItem, 'SoDu')) {
+                                $soDuValue = (float) $firstItem->SoDu;
+                                \Debugbar::info('Lấy SoDu (chữ S hoa) từ object: ' . $soDuValue);
+                            } elseif (property_exists($firstItem, 'so_du')) {
+                                $soDuValue = (float) $firstItem->so_du;
+                                \Debugbar::info('Lấy so_du từ object: ' . $soDuValue);
+                            }
+                            
+                            if ($soDuValue !== null) {
+                                $this->pSoDu = $soDuValue;
+                            } else {
+                                $this->pSoDu = null;
+                                \Debugbar::info('Không tìm thấy SoDu hoặc so_du trong first item');
+                            }
                             \Debugbar::info('Không tìm thấy so_du trong first item');
                         }
                     } else {
@@ -646,10 +664,10 @@ class Phieubaono extends Component
                         
                         if ($soDuResult->isNotEmpty()) {
                             $firstItem = $soDuResult->first();
-                            if (is_object($firstItem) && property_exists($firstItem, 'so_du')) {
+                            if (is_object($firstItem)) {
                                 $soDuValue = (float) $firstItem->so_du;
                                 \Debugbar::info('Lấy so_du từ object dòng ' . $index . ': ' . $soDuValue);
-                            } elseif (is_array($firstItem) && isset($firstItem['so_du'])) {
+                            } elseif (is_array($firstItem)) {
                                 $soDuValue = (float) $firstItem['so_du'];
                                 \Debugbar::info('Lấy so_du từ array dòng ' . $index . ': ' . $soDuValue);
                             } else {
@@ -665,10 +683,10 @@ class Phieubaono extends Component
                         
                         if (!empty($soDuResult)) {
                             $firstItem = $soDuResult[0];
-                            if (is_object($firstItem) && property_exists($firstItem, 'so_du')) {
+                            if (is_object($firstItem)) {
                                 $soDuValue = (float) $firstItem->so_du;
                                 \Debugbar::info('Lấy so_du từ object dòng ' . $index . ': ' . $soDuValue);
-                            } elseif (is_array($firstItem) && isset($firstItem['so_du'])) {
+                            } elseif (is_array($firstItem)) {
                                 $soDuValue = (float) $firstItem['so_du'];
                                 \Debugbar::info('Lấy so_du từ array dòng ' . $index . ': ' . $soDuValue);
                             } else {
