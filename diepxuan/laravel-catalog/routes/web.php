@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-09-26 21:44:06
+ * @lastupdate 2026-02-25 17:33:38
  */
 
 use Diepxuan\Catalog\Http\Controllers\SellController;
@@ -31,6 +31,7 @@ use Diepxuan\Catalog\Http\Livewire\In\Dmkho;
 use Diepxuan\Catalog\Http\Livewire\In\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Dmvt;
 use Diepxuan\Catalog\Http\Livewire\Muahang\Cungcap;
+use Diepxuan\Catalog\Http\Livewire\System\Dashboard;
 use Diepxuan\Catalog\Http\Livewire\System\Menu;
 use Illuminate\Support\Facades\Route;
 
@@ -69,7 +70,8 @@ Route::middleware(['clearcache', 'auth'])->group(static function (): void {
     Route::get('khohang/khohang', Dmkho::class)->name('in.khohang');
     Route::get('khohang/tonkho', Tonkho::class)->name('in.tonkho');
 
-    Route::resource('hethong/dashboard', SystemController::class)->names('system');
+    Route::get('hethong/dashboard', Dashboard::class)->name('system.dashboard');
+    // Route::resource('hethong/dashboard', SystemController::class)->names('system.dashboard');
     Route::resource('hethong/user', SystemUserController::class)->names('system.user');
     Route::resource('hethong/website', SystemWebsiteController::class)->names('system.website');
     Route::get('hethong/menu', Menu::class)->name('system.menu');
