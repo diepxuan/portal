@@ -15,6 +15,16 @@ use Diepxuan\Catalog\Http\Controllers\SellController;
 use Diepxuan\Catalog\Http\Controllers\SystemController;
 use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\Index as BalanceIndex;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountOpening;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\Transfer;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountsReceivable;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountsPayable;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\InventoryOpening;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\InventoryOpeningNtxt;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\InventoryTransfer;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\WorkInProgress;
+use Diepxuan\Catalog\Http\Livewire\System\Balance\CumulativeTransactions;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Khachhang;
 use Diepxuan\Catalog\Http\Livewire\Cash\Baocao\Chi;
@@ -75,6 +85,20 @@ Route::middleware(['clearcache', 'auth'])->group(static function (): void {
     Route::resource('hethong/user', SystemUserController::class)->names('system.user');
     Route::resource('hethong/website', SystemWebsiteController::class)->names('system.website');
     Route::get('hethong/menu', Menu::class)->name('system.menu');
+
+    // Balance Management Routes - Livewire Components
+    Route::prefix('hethong/balance')->name('system.balance.')->group(function () {
+        Route::get('/', BalanceIndex::class)->name('index');
+        Route::get('/account-opening', AccountOpening::class)->name('account-opening');
+        Route::get('/transfer', Transfer::class)->name('transfer');
+        Route::get('/accounts-receivable', AccountsReceivable::class)->name('accounts-receivable');
+        Route::get('/accounts-payable', AccountsPayable::class)->name('accounts-payable');
+        Route::get('/inventory-opening', InventoryOpening::class)->name('inventory-opening');
+        Route::get('/inventory-opening-ntxt', InventoryOpeningNtxt::class)->name('inventory-opening-ntxt');
+        Route::get('/inventory-transfer', InventoryTransfer::class)->name('inventory-transfer');
+        Route::get('/work-in-progress', WorkInProgress::class)->name('work-in-progress');
+        Route::get('/cumulative-transactions', CumulativeTransactions::class)->name('cumulative-transactions');
+    });
 
     // Route::get('/', [SystemController::class, 'index']);
     Route::get('/', static fn () => view('catalog::dashboard'))->name('home');
