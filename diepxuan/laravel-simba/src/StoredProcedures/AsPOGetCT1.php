@@ -8,11 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-26 12:02:16
+ * @lastupdate 2026-02-26 12:05:52
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
 
+use Diepxuan\Simba\SModel\SModel;
 use Illuminate\Support\Collection;
 
 /**
@@ -67,7 +68,7 @@ class AsPOGetCT1 extends StoredProcedure
     public static function call(array $params): Collection
     {
         return parent::call(array_merge([
-            'pMa_cty'   => $params['pMa_cty'] ?? null,
+            'pMa_cty'   => $params['pMa_cty'] ?? SModel::CTY,
             'pStt_rec'  => $params['pStt_rec'] ?? null,
             'pStt_rec0' => $params['pStt_rec0'] ?? null,
             'pStruct'   => $params['pStruct'] ?? null,
