@@ -8,12 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-25 23:56:07
+ * @lastupdate 2026-02-26 11:27:32
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
 
 use Diepxuan\Simba\SModel\SModel;
+use Illuminate\Support\Collection;
 
 /**
  * Class AsGLCrtKC1.
@@ -110,8 +111,10 @@ use Diepxuan\Simba\SModel\SModel;
  * - Bảng tạm và cursor được sử dụng có thể ảnh hưởng hiệu năng với dữ liệu lớn.
  * - Kết chuyển thue GTGT có logic riêng liên quan đến tài khoản 133 và 333.
  */
-class AsGLCrtKC1
+class AsGLCrtKC1 extends StoredProcedure
 {
+    public const NAME = 'asGLCrtKC1';
+
     /**
      * Gọi stored procedure asGLCrtKC1.
      *
@@ -119,8 +122,26 @@ class AsGLCrtKC1
      *
      * @return mixed kết quả trả về từ procedure (không có resultset)
      */
-    public static function call(array $params = [])
+    public static function call(array $params): Collection
     {
-        return ProcedureCaller::call('asGLCrtKC1', $params);
+        return parent::call(array_merge([
+            'pma_cty'   => $params['pma_cty'] ?? SModel::CTY,
+            'pstt'      => $params['pstt'] ?? 1,
+            'ptk'       => $params['ptk'] ?? null,
+            'ptk_du'    => $params['ptk_du'] ?? null,
+            'pten_bt'   => $params['pten_bt'] ?? null,
+            'pkc_bp'    => $params['pkc_bp'] ?? '0',
+            'pkc_hd'    => $params['pkc_hd'] ?? '0',
+            'pkc_spct'  => $params['pkc_spct'] ?? '0',
+            'pkc_phi'   => $params['pkc_phi'] ?? '0',
+            'ploai_kc'  => $params['ploai_kc'] ?? '1',
+            'pkc_dt_ps' => $params['pkc_dt_ps'] ?? '0',
+            'pngay1'    => $params['pngay1'] ?? date('Y-m-01'),
+            'pngay2'    => $params['pngay2'] ?? date('Y-m-t'),
+            'pstt_rec'  => $params['pstt_rec'] ?? null,
+            'pma_ct'    => $params['pma_ct'] ?? null,
+            'pso_ct'    => $params['pso_ct'] ?? null,
+            'puser'     => $params['puser'] ?? null,
+        ], $params));
     }
 }
