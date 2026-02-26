@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * @copyright  © 2019 Dxvn, Inc.
+ *
+ * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
+ *
+ * @lastupdate 2026-02-26 23:12:30
+ */
+
 namespace Diepxuan\Support;
 
-use Diepxuan\Support\Commands\Dev;
-use Diepxuan\Support\Commands\Npm;
-use Diepxuan\Support\Commands\ServeDev;
-use Diepxuan\Support\Commands\ServeDevStop;
-use Diepxuan\Support\Commands\ServeDevStatus;
-use Diepxuan\Support\Commands\ServeDevHealth;
-use Diepxuan\Support\Commands\ServeDevService;
-use Diepxuan\Support\Commands\ServeDevLogs;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class SupportServiceProvider extends ServiceProvider
@@ -17,31 +21,15 @@ class SupportServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
-        // Register commands
-        $this->commands([
-            Dev::class,
-            Npm::class,
-            ServeDev::class,
-            ServeDevStop::class,
-            ServeDevStatus::class,
-            ServeDevHealth::class,
-            ServeDevService::class,
-            ServeDevLogs::class,
-        ]);
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap services.
      */
     public function boot(): void
     {
-        // Publish configuration if needed
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/support.php' => config_path('support.php'),
-            ], 'support-config');
+        if (!app()->runningInConsole()) {
+            URL::forceScheme('https');
         }
     }
 }
