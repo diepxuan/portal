@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-26 14:41:18
+ * @lastupdate 2026-02-26 23:33:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System\Balance;
@@ -29,6 +29,10 @@ class Transfer extends Component
     public $isProcessing = false;
     public $previewData  = [];
 
+    // helper bounds
+    public $minYear;
+    public $maxYear;
+
     protected $rules = [
         'currentYear'  => 'required|integer|min:2000|max:2100',
         'newYear'      => 'required|integer|min:2000|max:2100',
@@ -38,14 +42,33 @@ class Transfer extends Component
 
     public function mount(): void
     {
-        $this->currentYear  = date('Y');
-        $this->newYear      = date('Y') + 1;
-        $this->transferDate = date('Y-12-31');
+        $this->maxYear      = (int) date('Y');
+        $this->minYear      = $this->maxYear - 9;
+        $this->currentYear  = $this->maxYear;
+        $this->newYear      = $this->currentYear + 1;
+        $this->transferDate = $this->currentYear . '-12-31';
         $this->note         = 'Chuyển số dư từ năm ' . $this->currentYear . ' sang năm ' . $this->newYear;
 
         // Load preview data
         $this->loadPreviewData();
-        \Debugbar::info($this->currentYear);
+    }
+
+    /**
+     * When user changes currentYear (from select) update dependent fields
+     */
+    public function updatedCurrentYear($value): void
+    {
+        $year = (int) $value;
+        if ($year < $this->minYear) {
+            $year = $this->minYear;
+        }
+        if ($year > $this->maxYear) {
+            $year = $this->maxYear;
+        }
+
+        $this->currentYear  = $year;
+        $this->newYear      = $year + 1;
+        $this->transferDate = $year . '-12-31';
     }
 
     /**
@@ -88,6 +111,18 @@ class Transfer extends Component
      */
     public function executeTransfer(): void
     {
+        // Ensure currentYear within allowed range
+        if ($this->currentYear < $this->minYear || $this->currentYear > $this->maxYear) {
+            $this->message     = 'Năm hiện tại không hợp lệ';
+            $this->messageType = 'error';
+
+            return;
+        }
+
+        // Force transferDate to be 31/12/<currentYear>
+        $this->transferDate = $this->currentYear . '-12-31';
+        $this->newYear      = $this->currentYear + 1;
+
         $this->validate();
 
         // Check if new year is greater than current year
@@ -100,7 +135,7 @@ class Transfer extends Component
 
         // Check if transfer date is end of current year
         $transferYear = date('Y', strtotime($this->transferDate));
-        if ($transferYear !== $this->currentYear) {
+        if ($transferYear !== (string) $this->currentYear) {
             $this->message     = 'Ngày chuyển phải là ngày cuối năm hiện tại (' . $this->currentYear . '-12-31)';
             $this->messageType = 'error';
 
@@ -117,33 +152,13 @@ class Transfer extends Component
                 'pMa_cty'   => catalog()->company()->id, // Default company code
                 'pNgay_cnt' => $this->transferDate . ' 23:59:59', // End of year datetime
             ];
-            // dd($params);
 
             \Debugbar::log($params);
 
             // Call the stored procedure
             // $result = AsGLChuyenSdTk::call($params);
 
-            // Check the result
-            // if ($result instanceof Collection) {
-            //     $retValue = $result->get('pRet', -1);
-
-            //     if (0 === $retValue) {
-            //         $this->message     = 'Chuyển số dư thành công từ năm ' . $this->currentYear . ' sang năm ' . $this->newYear;
-            //         $this->messageType = 'success';
-
-            //         // Update preview data for new year
-            //         $this->loadPreviewData();
-            //     } else {
-            //         // Handle specific error codes
-            //         $errorMessage      = $this->getErrorMessage($retValue);
-            //         $this->message     = 'Lỗi khi chuyển số dư: ' . $errorMessage . ' (Mã lỗi: ' . $retValue . ')';
-            //         $this->messageType = 'error';
-            //     }
-            // } else {
-            //     $this->message     = 'Lỗi không xác định khi gọi stored procedure';
-            //     $this->messageType = 'error';
-            // }
+            // Handling result left commented to avoid accidental execution in dev
         } catch (\Exception $e) {
             $this->message     = 'Lỗi hệ thống: ' . $e->getMessage();
             $this->messageType = 'error';
