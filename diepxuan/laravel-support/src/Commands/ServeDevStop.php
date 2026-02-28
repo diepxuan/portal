@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-28 14:48:11
+ * @lastupdate 2026-02-28 14:23:05
  */
 
 namespace Diepxuan\Support\Commands;
@@ -112,7 +112,7 @@ class ServeDevStop extends Command
         }
     }
 
-    // Kill any remaining processes - aggressive cleanup
+    // Kill any remaining processes and clean up ports
     public function stopAnotherProcess(): void
     {
         Process::run('pkill -f "artisan serve" 2>/dev/null');
@@ -122,9 +122,9 @@ class ServeDevStop extends Command
         Process::run('pkill -9 node 2>/dev/null');
 
         $this->info('All development servers stopped');
-
-        // Check if ports are still in use
-        $this->checkPortsAfterStop();
+        
+        // Check and kill any processes still holding development ports
+        $this->cleanupPortProcesses();
     }
 
     /**
@@ -155,9 +155,10 @@ class ServeDevStop extends Command
     }
 
     /**
-     * Check if development ports are still in use after stop.
+     * Check and kill any processes still holding development ports.
+     * Combines port checking and aggressive cleanup.
      */
-    private function checkPortsAfterStop(): void
+    private function cleanupPortProcesses(): void
     {
         $ports = [
             8_000 => 'Laravel development server',
@@ -169,12 +170,40 @@ class ServeDevStop extends Command
         foreach ($ports as $port => $service) {
             $result = Process::run("ss -tuln 2>/dev/null | grep ':{$port}'");
             if ('' !== trim($result->output())) {
-                $this->warn("Port {$port} ({$service}) is still in use after stop command.");
-                // Show which process is using it
-                $lsof = Process::run("lsof -ti:{$port} 2>/dev/null | head -5");
-                if ('' !== trim($lsof->output())) {
-                    $pids = trim($lsof->output());
-                    $this->warn("  PIDs still holding port: {$pids}");
+                $this->warn("Port {$port} ({$service}) is still in use. Killing processes...");
+                
+                // Get PIDs holding the port
+                $lsof = Process::run("lsof -ti:{$port} 2>/dev/null");
+                $pids = trim($lsof->output());
+                
+                if ('' !== $pids) {
+                    $pidList = explode("\n", $pids);
+                    foreach ($pidList as $pid) {
+                        $pid = trim($pid);
+                        if (is_numeric($pid) && $pid > 0) {
+                            // Try graceful kill first
+                            Process::run("kill {$pid} 2>/dev/null");
+                            $killed = $this->waitForProcessExit((int)$pid, 2);
+                            if (!$killed) {
+                                // Force kill
+                                Process::run("kill -9 {$pid} 2>/dev/null");
+                                $this->info("  Force killed PID {$pid} holding port {$port}");
+                            } else {
+                                $this->info("  Stopped PID {$pid} holding port {$port}");
+                            }
+                        }
+                    }
+                    $this->info("  Cleaned up port {$port} ({$service})");
+                } else {
+                    $this->warn("  Could not identify PIDs for port {$port}");
+                }
+                
+                // Double-check port is free now
+                $check = Process::run("ss -tuln 2>/dev/null | grep ':{$port}'");
+                if ('' === trim($check->output())) {
+                    $this->info("Port {$port} ({$service}) is now free.");
+                } else {
+                    $this->error("Port {$port} ({$service}) is STILL in use after cleanup.");
                 }
             } else {
                 $this->info("Port {$port} ({$service}) is free.");
