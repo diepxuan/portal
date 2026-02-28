@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * @copyright  © 2019 Dxvn, Inc.
+ *
+ * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
+ *
+ * @lastupdate 2026-02-28 10:12:41
+ */
+
 namespace Diepxuan\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
-use Illuminate\Support\Str;
 
 class ServeDev extends Command
 {
@@ -16,7 +26,7 @@ class ServeDev extends Command
     protected $signature = 'serve:dev
         {--host=0.0.0.0 : The host address to serve the application on}
         {--port=8000 : The port to serve the application on}
-        {--vite-port=5173 : The port for Vite development server}
+        {--vite-port=8073 : The port for Vite development server}
         {--no-vite : Do not start Vite development server}
         {--foreground : Run in foreground (do not daemonize)}
         {--service : Install as systemd service}
@@ -42,13 +52,14 @@ class ServeDev extends Command
     public function handle()
     {
         $this->portalPidFile = storage_path('app/portal.pid');
-        $this->vitePidFile = storage_path('app/vite.pid');
+        $this->vitePidFile   = storage_path('app/vite.pid');
 
         $this->info('🚀 Starting Laravel development environment with Vite...');
 
         // Check if already running
         if ($this->isProcessRunning($this->portalPidFile)) {
             $this->error('Portal server is already running.');
+
             return 1;
         }
 
@@ -94,7 +105,7 @@ class ServeDev extends Command
     {
         $this->info('🔧 Checking Vite manifest...');
 
-        $buildPath = public_path('build');
+        $buildPath  = public_path('build');
         $assetsPath = public_path('build/assets');
 
         // Create directories
@@ -110,13 +121,13 @@ class ServeDev extends Command
         if (!file_exists($manifestPath)) {
             $manifest = [
                 'resources/css/app.css' => [
-                    'file' => 'assets/app-dev.css',
-                    'src' => 'resources/css/app.css',
+                    'file'    => 'assets/app-dev.css',
+                    'src'     => 'resources/css/app.css',
                     'isEntry' => true,
                 ],
                 'resources/js/app.js' => [
-                    'file' => 'assets/app-dev.js',
-                    'src' => 'resources/js/app.js',
+                    'file'    => 'assets/app-dev.js',
+                    'src'     => 'resources/js/app.js',
                     'isEntry' => true,
                 ],
             ];
@@ -172,28 +183,29 @@ class ServeDev extends Command
         $this->info("🌐 Starting Laravel server on {$host}:{$port}...");
 
         $serveCommand = "php artisan serve --host={$host} --port={$port}";
-        
+
         // Run in background using exec
         $outputFile = storage_path('logs/portal-server.log');
-        $command = "nohup {$serveCommand} > {$outputFile} 2>&1 & echo $!";
-        
+        $command    = "nohup {$serveCommand} > {$outputFile} 2>&1 & echo $!";
+
         exec($command, $output, $returnVar);
-        
-        if ($returnVar !== 0 || empty($output[0])) {
+
+        if (0 !== $returnVar || empty($output[0])) {
             $this->error('Failed to start Laravel server');
+
             return false;
         }
-        
+
         $pid = (int) trim($output[0]);
 
         file_put_contents($this->portalPidFile, $pid);
-        
+
         // Wait a bit for server to start
         sleep(2);
-        
+
         $this->info("✅ Laravel server started (PID: {$pid})");
         $this->info("   URL: http://{$host}:{$port}");
-        
+
         return true;
     }
 
@@ -207,6 +219,7 @@ class ServeDev extends Command
         // Check package.json
         if (!file_exists(base_path('package.json'))) {
             $this->warn('⚠️ package.json not found, skipping Vite');
+
             return;
         }
 
@@ -216,26 +229,27 @@ class ServeDev extends Command
             Process::run('npm install', base_path());
         }
 
-        $vitePort = $this->option('vite-port');
+        $vitePort   = $this->option('vite-port');
         $outputFile = storage_path('logs/vite-server.log');
-        
+
         // Start Vite in a process group for proper cleanup
-        $command = "cd " . base_path() . " && setsid npm run dev -- --port={$vitePort} > {$outputFile} 2>&1 & echo $!";
-        
+        $command = 'cd ' . base_path() . " && setsid npm run dev -- --port={$vitePort} > {$outputFile} 2>&1 & echo $!";
+
         exec($command, $output, $returnVar);
-        
-        if ($returnVar !== 0 || empty($output[0])) {
+
+        if (0 !== $returnVar || empty($output[0])) {
             $this->warn('Failed to start Vite server');
+
             return;
         }
-        
+
         $pid = (int) trim($output[0]);
 
         file_put_contents($this->vitePidFile, $pid);
-        
+
         // Wait a bit for server to start
         sleep(3);
-        
+
         $this->info("✅ Vite server started (PID: {$pid})");
         $this->info("   URL: http://localhost:{$vitePort}");
     }
@@ -249,8 +263,8 @@ class ServeDev extends Command
         $this->info('📊 Development Environment Status');
         $this->info('================================');
 
-        $host = $this->option('host');
-        $port = $this->option('port');
+        $host     = $this->option('host');
+        $port     = $this->option('port');
         $vitePort = $this->option('vite-port');
 
         // Check Laravel server
@@ -284,16 +298,17 @@ class ServeDev extends Command
     protected function installSystemdService(): void
     {
         $this->info('🔧 Installing as systemd service...');
-        
+
         // Check if running as root
-        if (posix_getuid() !== 0) {
+        if (0 !== posix_getuid()) {
             $this->warn('⚠️ Please run as root (sudo) to install systemd service');
             $this->info('   Command: sudo php artisan serve:dev --service');
+
             return;
         }
-        
+
         $this->call('serve:dev:service', [
-            'action' => 'install',
+            'action'     => 'install',
             '--interval' => $this->option('health-interval'),
         ]);
     }
@@ -304,17 +319,17 @@ class ServeDev extends Command
     protected function enableHealthCheck(): void
     {
         $this->info('🩺 Enabling health check...');
-        
+
         // Create health check cron or systemd timer
         $interval = $this->option('health-interval');
-        
-        if (posix_getuid() === 0) {
+
+        if (0 === posix_getuid()) {
             // If running as root, use systemd timer
             $this->info("   Health check will run every {$interval} seconds via systemd timer");
         } else {
             // Otherwise, suggest manual health check
-            $this->info("   Run health check manually: php artisan serve:dev:health --fix");
-            $this->info("   Or schedule with cron: */{$interval} * * * * cd " . base_path() . " && php artisan serve:dev:health --fix --log");
+            $this->info('   Run health check manually: php artisan serve:dev:health --fix');
+            $this->info("   Or schedule with cron: */{$interval} * * * * cd " . base_path() . ' && php artisan serve:dev:health --fix --log');
         }
     }
 
@@ -327,6 +342,7 @@ class ServeDev extends Command
         while (true) {
             if (!$this->isProcessRunning($this->portalPidFile)) {
                 $this->error('Laravel server stopped unexpectedly');
+
                 break;
             }
             sleep(5);
