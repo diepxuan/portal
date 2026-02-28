@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * @copyright  © 2019 Dxvn, Inc.
+ *
+ * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
+ *
+ * @lastupdate 2026-02-28 10:15:53
+ */
+
 namespace Diepxuan\Support\Commands;
 
 use Illuminate\Console\Command;
@@ -14,7 +25,7 @@ class ServeDevStatus extends Command
      */
     protected $signature = 'serve:dev:status
         {--port=8000 : Laravel server port to check}
-        {--vite-port=5173 : Vite server port to check}';
+        {--vite-port=8073 : Vite server port to check}';
 
     /**
      * The console command description.
@@ -32,24 +43,24 @@ class ServeDevStatus extends Command
         $this->info('=============================');
 
         $portalPidFile = storage_path('app/portal.pid');
-        $vitePidFile = storage_path('app/vite.pid');
+        $vitePidFile   = storage_path('app/vite.pid');
 
         $laravelPort = $this->option('port');
-        $vitePort = $this->option('vite-port');
+        $vitePort    = $this->option('vite-port');
 
         // Check Laravel server
         $this->info('');
         $this->info('🌐 Laravel Server:');
-        
+
         if (file_exists($portalPidFile)) {
             $pid = (int) file_get_contents($portalPidFile);
             if ($pid > 0 && $this->isProcessRunning($pid)) {
                 $this->info("   Status:  ✅ RUNNING (PID: {$pid})");
-                
+
                 // Check port
                 if ($this->isPortListening($laravelPort)) {
                     $this->info("   Port:    ✅ {$laravelPort} LISTENING");
-                    
+
                     // Check HTTP response
                     $response = $this->checkHttpResponse('localhost', $laravelPort);
                     $this->info("   HTTP:    {$response}");
@@ -67,12 +78,12 @@ class ServeDevStatus extends Command
         // Check Vite server
         $this->info('');
         $this->info('⚡ Vite Server:');
-        
+
         if (file_exists($vitePidFile)) {
             $pid = (int) file_get_contents($vitePidFile);
             if ($pid > 0 && $this->isProcessRunning($pid)) {
                 $this->info("   Status:  ✅ RUNNING (PID: {$pid})");
-                
+
                 // Check port
                 if ($this->isPortListening($vitePort)) {
                     $this->info("   Port:    ✅ {$vitePort} LISTENING");
@@ -90,13 +101,13 @@ class ServeDevStatus extends Command
         // Check ports directly
         $this->info('');
         $this->info('🔍 Port Status:');
-        
+
         if ($this->isPortListening($laravelPort)) {
             $this->info("   Port {$laravelPort}: ✅ LISTENING (Laravel)");
         } else {
             $this->info("   Port {$laravelPort}: ❌ NOT LISTENING");
         }
-        
+
         if ($this->isPortListening($vitePort)) {
             $this->info("   Port {$vitePort}: ✅ LISTENING (Vite)");
         } else {
@@ -122,27 +133,35 @@ class ServeDevStatus extends Command
 
     /**
      * Check if port is listening.
+     *
+     * @param mixed $port
      */
-    protected function isPortListening(int $port): bool
+    protected function isPortListening($port): bool
     {
+        $port   = (int) $port;
         $result = Process::run("ss -tln 2>/dev/null | grep :{$port} || netstat -tln 2>/dev/null | grep :{$port}");
+
         return $result->successful() && !empty(trim($result->output()));
     }
 
     /**
      * Check HTTP response.
+     *
+     * @param mixed $port
      */
-    protected function checkHttpResponse(string $host, int $port): string
+    protected function checkHttpResponse(string $host, $port): string
     {
+        $port   = (int) $port;
         $result = Process::run("curl -s -o /dev/null -w '%{http_code}' http://{$host}:{$port} 2>/dev/null || echo 'TIMEOUT'");
-        $code = trim($result->output());
-        
-        if (in_array($code, ['200', '301', '302', '304'])) {
+        $code   = trim($result->output());
+
+        if (\in_array($code, ['200', '301', '302', '304'], true)) {
             return "✅ {$code} OK";
-        } elseif ($code === 'TIMEOUT') {
-            return "❌ TIMEOUT";
-        } else {
-            return "⚠️ {$code}";
         }
+        if ('TIMEOUT' === $code) {
+            return '❌ TIMEOUT';
+        }
+
+        return "⚠️ {$code}";
     }
 }
