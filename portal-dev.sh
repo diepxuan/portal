@@ -32,6 +32,7 @@ show_help() {
     echo "  service     Manage systemd service (serve:dev:service)"
     echo "  vite        Start Vite server (serve:dev:vite)"
     echo "  logs        View logs real-time (serve:dev:logs)"
+    echo "  format      Format code with PHP-CS-Fixer (code:format)"
     echo "  help        Show this help"
     echo ""
     echo "Advanced Options:"
@@ -106,6 +107,10 @@ case "$CMD" in
     logs)
         echo "📋 Viewing logs..."
         php "$ARTISAN" serve:dev:logs "$@"
+        ;;
+    format)
+        echo "🎨 Formatting code with PHP-CS-Fixer..."
+        php "$ARTISAN" code:format "$@"
         ;;
     help|--help|-h)
         show_help
