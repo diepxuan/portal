@@ -81,7 +81,7 @@
                             <livewire:catalog::component.input-taikhoan
                                 wire:model="pCts.{{ $index }}.ma_tk"
                                 :key="'tk-no-' . $index"
-                                class="py-1" />
+                                placeholder="Chọn TK..." />
                         </td>
                         <td class="px-3 py-2">
                             <input type="text"
