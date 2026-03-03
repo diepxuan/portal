@@ -1,0 +1,38 @@
+#!/bin/bash
+
+echo "Running pre-commit checks..."
+
+# PHP files
+if command -v php-cs-fixer &> /dev/null; then
+    echo "Formatting PHP files..."
+    git diff --cached --name-only --diff-filter=ACM | grep -E '\.php$' | while read file; do
+        if [ -f "$file" ]; then
+            php-cs-fixer fix "$file" --quiet
+            git add "$file"
+        fi
+    done
+fi
+
+# JavaScript/TypeScript files
+if command -v npx &> /dev/null; then
+    echo "Formatting JS/TS files..."
+    git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|jsx|tsx)$' | while read file; do
+        if [ -f "$file" ]; then
+            npx prettier --write "$file"
+            git add "$file"
+        fi
+    done
+fi
+
+# Python files
+if command -v black &> /dev/null; then
+    echo "Formatting Python files..."
+    git diff --cached --name-only --diff-filter=ACM | grep -E '\.py$' | while read file; do
+        if [ -f "$file" ]; then
+            black --quiet "$file"
+            git add "$file"
+        fi
+    done
+fi
+
+echo "Pre-commit checks completed."
