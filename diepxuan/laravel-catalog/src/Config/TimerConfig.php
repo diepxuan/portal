@@ -6,8 +6,9 @@ declare(strict_types=1);
  * @copyright  © 2019 Dxvn, Inc.
  *
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-06
+ * @lastupdate 2026-03-06 01:25:27
  */
 
 namespace Diepxuan\Catalog\Config;
@@ -26,18 +27,18 @@ namespace Diepxuan\Catalog\Config;
 class TimerConfig
 {
     /** Time period prefixes */
-    public const PREFIX_MONTH = 't';
-    public const PREFIX_QUARTER = 'q';
+    public const PREFIX_MONTH     = 't';
+    public const PREFIX_QUARTER   = 'q';
     public const PREFIX_HALF_YEAR = 'h';
-    public const PREFIX_YEAR = 'y';
-    public const PREFIX_CUSTOM = 'c';
+    public const PREFIX_YEAR      = 'y';
+    public const PREFIX_CUSTOM    = 'c';
 
     /** Valid time IDs */
-    public const TIME_MONTHS = ['t01', 't02', 't03', 't04', 't05', 't06', 't07', 't08', 't09', 't10', 't11', 't12'];
-    public const TIME_QUARTERS = ['q1', 'q2', 'q3', 'q4'];
+    public const TIME_MONTHS     = ['t01', 't02', 't03', 't04', 't05', 't06', 't07', 't08', 't09', 't10', 't11', 't12'];
+    public const TIME_QUARTERS   = ['q1', 'q2', 'q3', 'q4'];
     public const TIME_HALF_YEARS = ['h1', 'h2'];
-    public const TIME_YEAR = 'y';
-    public const TIME_CUSTOM = 'c';
+    public const TIME_YEAR       = 'y';
+    public const TIME_CUSTOM     = 'c';
 
     /**
      * Get all available timer options with labels.
@@ -74,7 +75,13 @@ class TimerConfig
             'c' => 'Từ ... đến ...',
         ];
 
-        return array_merge($months, $quarters, $halfYears, $year, $custom);
+        return[
+            ...$months,
+            ...$quarters,
+            ...$halfYears,
+            ...$year,
+            ...$custom,
+        ];
     }
 
     /**
