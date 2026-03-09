@@ -8,18 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-08 00:40:00
+ * @lastupdate 2026-03-09 19:25:00
  */
 
 namespace Diepxuan\Catalog\Config;
 
 use Diepxuan\Catalog\Services\CatalogService;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * Timer configuration constants and helpers.
+ * Timer configuration utility class.
  *
  * Defines time period identifiers for report filtering:
  * - t01-t12: Tháng 01 đến Tháng 12
@@ -29,7 +27,7 @@ use Illuminate\Support\Carbon;
  * - y: Cả năm
  * - c: Custom (từ ... đến ...)
  */
-class TimerConfig extends Model
+class TimerConfig
 {
     /** Time period prefixes */
     public const PREFIX_MONTH     = 't';
@@ -46,31 +44,63 @@ class TimerConfig extends Model
     public const TIME_CUSTOM     = 'c';
 
     /**
-     * The attributes that are mass assignable.
+     * Get/set timer settings.
      *
-     * @var array
+     * @param array{id?: string, from?: string, to?: string}|null $time Timer settings (null = read only)
+     *
+     * @return array{id: string, from: string, to: string}
      */
-    protected $fillable = [
-        'id',
-        'from',
-        'to',
-    ];
-
-    public function __construct(array $attributes = [])
+    public static function timer(?array $time = null): array
     {
-        return parent::__construct([
-            ...[
-                'id'   => session('timeId', 't' . str_pad((string) now()->month, 2, '0', STR_PAD_LEFT)),
-                'from' => session('timeStart'),
-                'to'   => session('timeEnd'),
-            ],
-            ...$attributes,
+        // Read mode: không có params
+        if ($time === null) {
+            $timeId = session('timeId', self::getDefaultTimeId());
+            $from   = session('timeStart');
+            $to     = session('timeEnd');
+
+            // Nếu chưa có session, tính toán mặc định
+            if (!$from || !$to) {
+                $result = self::calculateTimeRange($timeId);
+                $from   = $result['from'];
+                $to     = $result['to'];
+            }
+
+            return [
+                'id'   => $timeId,
+                'from' => $from->toDateString(),
+                'to'   => $to->toDateString(),
+            ];
+        }
+
+        // Write mode: có params
+        $timeId = $time['id'] ?? session('timeId', self::getDefaultTimeId());
+        $from   = $time['from'] ?? null;
+        $to     = $time['to'] ?? null;
+
+        // Tính toán date range dựa trên timeId (trừ khi là custom)
+        if (self::isCustom($timeId)) {
+            // Custom mode: sử dụng from/to được cung cấp
+            $from = $from ? Carbon::parse($from) : now()->startOfMonth();
+            $to   = $to ? Carbon::parse($to) : now()->endOfMonth();
+        } else {
+            // Predefined mode: tính toán từ timeId, ignore from/to
+            $result = self::calculateTimeRange($timeId);
+            $from   = $result['from'];
+            $to     = $result['to'];
+        }
+
+        // Lưu session
+        session([
+            'timeId'    => $timeId,
+            'timeStart' => $from,
+            'timeEnd'   => $to,
         ]);
-    }
 
-    public static function timer($attributes = []): self
-    {
-        return new self($attributes);
+        return [
+            'id'   => $timeId,
+            'from' => $from->toDateString(),
+            'to'   => $to->toDateString(),
+        ];
     }
 
     /**
@@ -122,7 +152,7 @@ class TimerConfig extends Model
             'c' => 'Từ ... đến ...',
         ];
 
-        return[
+        return [
             ...$months,
             ...$quarters,
             ...$halfYears,
@@ -224,70 +254,6 @@ class TimerConfig extends Model
     }
 
     /**
-     * Get current timer settings from session.
-     *
-     * @return array{id: string, from: string, to: string}
-     */
-    public static function getTimer(): array
-    {
-        $timeId = session('timeId', self::getDefaultTimeId());
-        $from   = session('timeStart');
-        $to     = session('timeEnd');
-
-        // Nếu chưa có session, tính toán mặc định
-        if (!$from || !$to) {
-            $result = self::calculateTimeRange($timeId);
-            $from   = $result['from'];
-            $to     = $result['to'];
-        }
-
-        return [
-            'id'   => $timeId,
-            'from' => $from->toDateString(),
-            'to'   => $to->toDateString(),
-        ];
-    }
-
-    /**
-     * Set timer settings and update session.
-     *
-     * @param array{id?: string, from?: string, to?: string} $time Timer settings
-     *
-     * @return array{id: string, from: string, to: string}
-     */
-    public static function setTimer(array $time = []): array
-    {
-        $timeId = $time['id'] ?? session('timeId', self::getDefaultTimeId());
-        $from   = $time['from'] ?? null;
-        $to     = $time['to'] ?? null;
-
-        // Tính toán date range dựa trên timeId (trừ khi là custom)
-        if (self::isCustom($timeId)) {
-            // Custom mode: sử dụng from/to được cung cấp
-            $from = $from ? Carbon::parse($from) : now()->startOfMonth();
-            $to   = $to ? Carbon::parse($to) : now()->endOfMonth();
-        } else {
-            // Predefined mode: tính toán từ timeId, ignore from/to
-            $result = self::calculateTimeRange($timeId);
-            $from   = $result['from'];
-            $to     = $result['to'];
-        }
-
-        // Lưu session
-        session([
-            'timeId'    => $timeId,
-            'timeStart' => $from,
-            'timeEnd'   => $to,
-        ]);
-
-        return [
-            'id'   => $timeId,
-            'from' => $from->toDateString(),
-            'to'   => $to->toDateString(),
-        ];
-    }
-
-    /**
      * Get default timeId (current month).
      */
     public static function getDefaultTimeId(): string
@@ -350,37 +316,5 @@ class TimerConfig extends Model
             'from' => $from,
             'to'   => $to,
         ];
-    }
-
-    /**
-     * Get timer from date.
-     */
-    public static function timerFrom(): string
-    {
-        return self::timer()->from;
-    }
-
-    /**
-     * Get timer to date.
-     */
-    public static function timerTo(): string
-    {
-        return self::timer()->to;
-    }
-
-    protected function id(): Attribute
-    {
-        return Attribute::make(
-            get: static fn (string $timeId) => \array_key_exists($timeId, self::options()) ? $timeId : 'y',
-            set: static fn (string $timeId) => \array_key_exists($timeId, self::options()) ? $timeId : 'y',
-        );
-    }
-
-    protected function month(): Attribute
-    {
-        return Attribute::make(
-            get: static fn () => \in_array($this->id, self::TIME_MONTHS, true) ? (int) substr($this->id, 1) : 0,
-            set: fn (int $month) => $month >= 1 && $month <= 12 && ($this->id = 't' . str_pad("{$month}", 2, '0', STR_PAD_LEFT)) ? $month : 0,
-        );
     }
 }

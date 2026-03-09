@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-07 23:51:18
+ * @lastupdate 2026-03-09 19:25:00
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -154,7 +154,7 @@ class CatalogService
             default          => ['id' => $time],
         };
 
-        return TimerConfig::timer($time)->toArray();
+        return TimerConfig::timer($time ?: null);
     }
 
     /**
@@ -162,7 +162,7 @@ class CatalogService
      */
     public static function timerFrom(): string
     {
-        return TimerConfig::timerFrom();
+        return TimerConfig::timer()['from'];
     }
 
     /**
@@ -170,7 +170,7 @@ class CatalogService
      */
     public static function timerTo(): string
     {
-        return TimerConfig::timerTo();
+        return TimerConfig::timer()['to'];
     }
 
     public function ma_Nt()
