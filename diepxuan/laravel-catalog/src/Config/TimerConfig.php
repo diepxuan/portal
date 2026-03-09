@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-09 19:25:00
+ * @lastupdate 2026-03-09 19:30:00
  */
 
 namespace Diepxuan\Catalog\Config;
@@ -276,38 +276,38 @@ class TimerConfig
         // Month (t01-t12)
         if (self::isMonth($timeId)) {
             $month = self::getMonthFromTimeId($timeId);
-            $from  = $now->setYear($year)->setMonth($month)->startOfMonth();
+            $from  = (clone $now)->setYear($year)->setMonth($month)->startOfMonth();
             $to    = (clone $from)->endOfMonth();
         }
         // Quarter (q1-q4)
         elseif (self::isQuarter($timeId)) {
             $quarter = self::getQuarterFromTimeId($timeId);
-            $from    = $now->setYear($year)->setMonth(($quarter - 1) * 3 + 1)->startOfQuarter();
-            $to      = (clone $from)->addMonths(2)->endOfQuarter();
+            $from    = (clone $now)->setYear($year)->setMonth(($quarter - 1) * 3 + 1)->startOfQuarter();
+            $to      = (clone $from)->endOfQuarter();
         }
         // Half year (h1, h2)
         elseif (self::isHalfYear($timeId)) {
             if ('h1' === $timeId) {
-                $from = $now->setYear($year)->setMonth(1)->startOfMonth();
-                $to   = $now->setYear($year)->setMonth(6)->endOfMonth();
+                $from = (clone $now)->setYear($year)->setMonth(1)->startOfMonth();
+                $to   = (clone $now)->setYear($year)->setMonth(6)->endOfMonth();
             } else { // h2
-                $from = $now->setYear($year)->setMonth(7)->startOfMonth();
-                $to   = $now->setYear($year)->setMonth(12)->endOfMonth();
+                $from = (clone $now)->setYear($year)->setMonth(7)->startOfMonth();
+                $to   = (clone $now)->setYear($year)->setMonth(12)->endOfMonth();
             }
         }
         // Year (y)
         elseif (self::isYear($timeId)) {
-            $from = $now->setYear($year)->startOfYear();
-            $to   = $now->setYear($year)->endOfYear();
+            $from = (clone $now)->setYear($year)->startOfYear();
+            $to   = (clone $now)->setYear($year)->endOfYear();
         }
         // Custom (c) - default to current month
         elseif (self::isCustom($timeId)) {
-            $from = $now->setYear($year)->startOfMonth();
+            $from = (clone $now)->setYear($year)->startOfMonth();
             $to   = (clone $from)->endOfMonth();
         }
         // Invalid timeId - fallback to current month
         else {
-            $from   = $now->setYear($year)->startOfMonth();
+            $from   = (clone $now)->setYear($year)->startOfMonth();
             $to     = (clone $from)->endOfMonth();
             $timeId = 't' . str_pad("{$now->month}", 2, '0', STR_PAD_LEFT);
         }
