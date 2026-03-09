@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-07 21:41:57
+ * @lastupdate 2026-03-09 19:25:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
