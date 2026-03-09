@@ -8,14 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-08 00:40:00
+ * @lastupdate 2026-03-07 22:04:20
  */
 
-namespace Diepxuan\Catalog\Config;
+namespace Diepxuan\Catalog\Models\Service;
 
 use Diepxuan\Catalog\Services\CatalogService;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,7 +27,7 @@ use Illuminate\Support\Carbon;
  * - y: Cả năm
  * - c: Custom (từ ... đến ...)
  */
-class TimerConfig extends Model
+class Timer
 {
     /** Time period prefixes */
     public const PREFIX_MONTH     = 't';
@@ -44,46 +42,6 @@ class TimerConfig extends Model
     public const TIME_HALF_YEARS = ['h1', 'h2'];
     public const TIME_YEAR       = 'y';
     public const TIME_CUSTOM     = 'c';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id',
-        'from',
-        'to',
-    ];
-
-    public function __construct(array $attributes = [])
-    {
-        return parent::__construct([
-            ...[
-                'id'   => session('timeId', 't' . str_pad((string) now()->month, 2, '0', STR_PAD_LEFT)),
-                'from' => session('timeStart'),
-                'to'   => session('timeEnd'),
-            ],
-            ...$attributes,
-        ]);
-    }
-
-    public static function timer($attributes = []): self
-    {
-        return new self($attributes);
-    }
-
-    /**
-     * Check if a timeId is valid.
-     *
-     * @param string $timeId Time period identifier
-     *
-     * @return bool True if valid, false otherwise
-     */
-    public static function isValid(string $timeId): bool
-    {
-        return \array_key_exists($timeId, self::options());
-    }
 
     /**
      * Get all available timer options with labels.
@@ -129,6 +87,18 @@ class TimerConfig extends Model
             ...$year,
             ...$custom,
         ];
+    }
+
+    /**
+     * Check if a timeId is valid.
+     *
+     * @param string $timeId Time period identifier
+     *
+     * @return bool True if valid, false otherwise
+     */
+    public static function isValid(string $timeId): bool
+    {
+        return \array_key_exists($timeId, self::options());
     }
 
     /**
@@ -350,37 +320,5 @@ class TimerConfig extends Model
             'from' => $from,
             'to'   => $to,
         ];
-    }
-
-    /**
-     * Get timer from date.
-     */
-    public static function timerFrom(): string
-    {
-        return self::timer()->from;
-    }
-
-    /**
-     * Get timer to date.
-     */
-    public static function timerTo(): string
-    {
-        return self::timer()->to;
-    }
-
-    protected function id(): Attribute
-    {
-        return Attribute::make(
-            get: static fn (string $timeId) => \array_key_exists($timeId, self::options()) ? $timeId : 'y',
-            set: static fn (string $timeId) => \array_key_exists($timeId, self::options()) ? $timeId : 'y',
-        );
-    }
-
-    protected function month(): Attribute
-    {
-        return Attribute::make(
-            get: static fn () => \in_array($this->id, self::TIME_MONTHS, true) ? (int) substr($this->id, 1) : 0,
-            set: fn (int $month) => $month >= 1 && $month <= 12 && ($this->id = 't' . str_pad("{$month}", 2, '0', STR_PAD_LEFT)) ? $month : 0,
-        );
     }
 }
