@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-11 18:45:00
+ * @lastupdate 2026-03-11 20:06:58
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
@@ -39,8 +39,6 @@ class InputKhachhang extends Component
 {
     /**
      * Mode lọc đối tượng.
-     *
-     * @var string
      */
     public string $mode = 'khachhang';
 
@@ -82,8 +80,8 @@ class InputKhachhang extends Component
      */
     public function mount(?string $value = null, string $mode = 'khachhang'): void
     {
-        $this->value = $value;
-        $this->mode  = $mode;
+        $this->value       = $value;
+        $this->mode        = $mode;
         $this->placeholder = $this->getPlaceholderByMode();
 
         // Load tên đối tượng nếu có value
@@ -201,6 +199,14 @@ class InputKhachhang extends Component
     }
 
     /**
+     * Render component.
+     */
+    public function render(): View
+    {
+        return view('catalog::components.input-khachhang');
+    }
+
+    /**
      * Lấy placeholder theo mode.
      */
     protected function getPlaceholderByMode(): string
@@ -211,7 +217,7 @@ class InputKhachhang extends Component
         $modes     = array_map('trim', explode($separator, $this->mode));
 
         // Nếu có nhiều mode hoặc all → placeholder chung
-        if (count($modes) > 1 || in_array('all', $modes, true)) {
+        if (\count($modes) > 1 || \in_array('all', $modes, true)) {
             return 'Chọn đối tượng...';
         }
 
@@ -222,13 +228,5 @@ class InputKhachhang extends Component
             'nhanvien'   => 'Chọn nhân viên...',
             default      => 'Chọn đối tượng...',
         };
-    }
-
-    /**
-     * Render component.
-     */
-    public function render(): View
-    {
-        return view('catalog::components.input-khachhang');
     }
 }
