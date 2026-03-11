@@ -8,14 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-11 22:20:00
+ * @lastupdate 2026-03-11 23:16:49
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -32,9 +31,9 @@ use Livewire\Component;
  *     wire:model="pMa_Kho"
  * />
  *
- * @property string $model   Model class name (e.g., InDmKho, InDmVt, SiDmBp, SiDmNt)
- * @property string $field   Field name for value (e.g., ma_kho, ma_vt, ma_bp, ma_nt)
- * @property string $label   Field name for display (e.g., ten_kho, ten_vt, ten_bp, ten_nt)
+ * @property string $model       Model class name (e.g., InDmKho, InDmVt, SiDmBp, SiDmNt)
+ * @property string $field       Field name for value (e.g., ma_kho, ma_vt, ma_bp, ma_nt)
+ * @property string $label       Field name for display (e.g., ten_kho, ten_vt, ten_bp, ten_nt)
  * @property string $placeholder Placeholder text
  */
 class InputDonVi extends Component
@@ -90,7 +89,7 @@ class InputDonVi extends Component
      * @param string      $model       Model class name
      * @param string      $field       Field name for value
      * @param string      $label       Field name for display
-     * @param string|null $value       Initial value
+     * @param null|string $value       Initial value
      * @param string      $placeholder Placeholder text
      */
     public function mount(
@@ -140,7 +139,8 @@ class InputDonVi extends Component
         $this->results = $modelClass::query()
             ->where(static function (Builder $q) use ($search, $field, $label): void {
                 $q->where($field, 'like', "%{$search}%")
-                    ->orWhere($label, 'like', "%{$search}%");
+                    ->orWhere($label, 'like', "%{$search}%")
+                ;
             })
             ->limit(10)
             ->get()
@@ -189,6 +189,14 @@ class InputDonVi extends Component
     }
 
     /**
+     * Render component.
+     */
+    public function render(): View
+    {
+        return view('catalog::components.input-donvi');
+    }
+
+    /**
      * Get model class name.
      */
     protected function getModelClass(): string
@@ -202,7 +210,7 @@ class InputDonVi extends Component
         $namespaces = [
             "Diepxuan\\Catalog\\Models\\{$this->model}",
             "Diepxuan\\Simba\\Models\\{$this->model}",
-            "Diepxuan\\Simba\\SModel\\{$this->model}",
+            "Diepxuan\\Simba\\SModel\\{$this->model}Model",
         ];
 
         foreach ($namespaces as $namespace) {
@@ -213,13 +221,5 @@ class InputDonVi extends Component
 
         // Default: return as is (will fail if not found)
         return $this->model;
-    }
-
-    /**
-     * Render component.
-     */
-    public function render(): View
-    {
-        return view('catalog::components.input-donvi');
     }
 }
