@@ -133,18 +133,20 @@ class InputDonVi extends Component
         }
 
         $modelClass = $this->getModelClass();
+        $field      = $this->field;
+        $label      = $this->label;
 
         // Tìm kiếm theo field hoặc label
         $this->results = $modelClass::query()
-            ->where(static function (Builder $q) use ($search): void {
-                $q->where($this->field, 'like', "%{$search}%")
-                    ->orWhere($this->label, 'like', "%{$search}%");
+            ->where(static function (Builder $q) use ($search, $field, $label): void {
+                $q->where($field, 'like', "%{$search}%")
+                    ->orWhere($label, 'like', "%{$search}%");
             })
             ->limit(10)
             ->get()
-            ->map(fn ($item) => [
-                'value' => $item->{$this->field},
-                'label' => $item->{$this->label},
+            ->map(static fn ($item) => [
+                'value' => $item->{$field},
+                'label' => $item->{$label},
             ])
             ->toArray()
         ;
