@@ -1,15 +1,12 @@
 <div class="relative w-full" x-data="{
     showDropdown: @entangle('showDropdown'),
-    searching: @entangle('searching'),
-    search: @entangle('search'),
-    value: @entangle('value')
+    searching: @entangle('searching')
 }" @click.outside="showDropdown = false">
     {{-- Input field --}}
     <div class="relative">
         <input
             type="text"
-            x-model="search"
-            @input="$wire.updatedSearch()"
+            wire:model.live.debounce.300ms="search"
             @focus="showDropdown = true"
             @blur="setTimeout(() => showDropdown = false, 200)"
             placeholder="{{ $placeholder }}"
@@ -57,7 +54,7 @@
                         <div class="flex items-center justify-between">
                             <div class="flex-1">
                                 <p class="font-medium text-gray-800">{{ $kh['ten_kh'] }}</p>
-                                <p class="text-xs text-gray-500">{{ $kh['dia_chi'] }} {{ $kh['dien_thoai'] ? '• ' . $kh['dien_thoai'] : '' }}</p>
+                                <p class="text-xs text-gray-500">{{ $kh['dia_chi'] }} {{ $kh['tel'] ? '• ' . $kh['tel'] : '' }}</p>
                             </div>
                             <span class="rounded bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
                                 {{ $kh['ma_kh'] }}
