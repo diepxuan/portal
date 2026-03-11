@@ -54,7 +54,7 @@
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <label class="text-right">Mã kho</label>
                     <div class="col-span-2">
-                        <livewire:catalog::component.input-donvi
+                        <livewire:catalog::component.input-don-vi
                             model="InDmKho"
                             field="ma_kho"
                             label="ten_kho"
@@ -67,7 +67,7 @@
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <label class="text-right">Mã vật tư</label>
                     <div class="col-span-2">
-                        <livewire:catalog::component.input-donvi
+                        <livewire:catalog::component.input-don-vi
                             model="InDmVt"
                             field="ma_vt"
                             label="ten_vt"
@@ -80,7 +80,7 @@
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <label class="text-right">Mã bộ phận</label>
                     <div class="col-span-2">
-                        <livewire:catalog::component.input-donvi
+                        <livewire:catalog::component.input-don-vi
                             model="SiDmBp"
                             field="ma_bp"
                             label="ten_bp"
@@ -93,7 +93,7 @@
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <label class="text-right">Mã ngoại tệ</label>
                     <div class="col-span-2">
-                        <livewire:catalog::component.input-donvi
+                        <livewire:catalog::component.input-don-vi
                             model="SiDmNt"
                             field="ma_nt"
                             label="ten_nt"
