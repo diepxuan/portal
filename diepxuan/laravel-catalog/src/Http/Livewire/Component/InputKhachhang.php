@@ -20,16 +20,17 @@ use Livewire\Component;
 /**
  * Input autocomplete đối tượng (khách hàng, nhà cung cấp, nhân viên).
  *
- * Hỗ trợ nhiều mode:
+ * Hỗ trợ nhiều mode (single hoặc multi-mode):
  * - khachhang: Chỉ khách hàng (isKh = true)
  * - nhacungcap: Chỉ nhà cung cấp (isNcc = true)
  * - nhanvien: Chỉ nhân viên (isNv = true)
- * - khachhang-va-nhacungcap: Cả khách và NCC (isKh = true AND isNcc = true)
  * - all: Tất cả (không lọc)
+ * - Multi-mode: khachhang,nhacungcap | khachhang,nhanvien | nhacungcap,nhanvien
  *
  * Usage:
  * <livewire:catalog::component.input-khachhang mode="khachhang" wire:model="pMa_Kh" />
  * <livewire:catalog::component.input-khachhang mode="nhanvien" wire:model="pMa_Nv" />
+ * <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_DoiTuong" />
  */
 class InputKhachhang extends Component
 {
@@ -107,16 +108,20 @@ class InputKhachhang extends Component
             return;
         }
 
-        // Build query theo mode
+        // Build query theo mode (hỗ trợ multi-mode: khachhang,nhacungcap)
         $query = ArDmKh::query();
 
-        match ($this->mode) {
-            'khachhang'               => $query->laKhachHang(),
-            'nhacungcap'              => $query->laNhaCungCap(),
-            'nhanvien'                => $query->laNhanVien(),
-            'khachhang-va-nhacungcap' => $query->laKhachHang()->laNhaCungCap(),
-            default                   => null, // all: không lọc
-        };
+        // Parse mode (comma-separated)
+        $modes = array_map('trim', explode(',', $this->mode));
+
+        foreach ($modes as $m) {
+            match ($m) {
+                'khachhang'  => $query->laKhachHang(),
+                'nhacungcap' => $query->laNhaCungCap(),
+                'nhanvien'   => $query->laNhanVien(),
+                default      => null, // all: không lọc
+            };
+        }
 
         // Tìm kiếm theo mã, tên, địa chỉ, tel
         $this->results = $query
@@ -175,12 +180,20 @@ class InputKhachhang extends Component
      */
     protected function getPlaceholderByMode(): string
     {
-        return match ($this->mode) {
-            'khachhang'               => 'Chọn khách hàng...',
-            'nhacungcap'              => 'Chọn nhà cung cấp...',
-            'nhanvien'                => 'Chọn nhân viên...',
-            'khachhang-va-nhacungcap' => 'Chọn khách/NCC...',
-            default                   => 'Chọn đối tượng...',
+        // Parse mode để hiển thị placeholder phù hợp
+        $modes = array_map('trim', explode(',', $this->mode));
+
+        // Nếu có nhiều mode hoặc all → placeholder chung
+        if (count($modes) > 1 || in_array('all', $modes, true)) {
+            return 'Chọn đối tượng...';
+        }
+
+        // Single mode
+        return match ($modes[0]) {
+            'khachhang'  => 'Chọn khách hàng...',
+            'nhacungcap' => 'Chọn nhà cung cấp...',
+            'nhanvien'   => 'Chọn nhân viên...',
+            default      => 'Chọn đối tượng...',
         };
     }
 
