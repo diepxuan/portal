@@ -21,20 +21,19 @@ use Livewire\Component;
 /**
  * Input autocomplete đối tượng (khách hàng, nhà cung cấp, nhân viên).
  *
- * Hỗ trợ nhiều mode (single hoặc multi-mode, OR logic):
+ * Hỗ trợ nhiều mode (single hoặc multi-mode):
  * - khachhang: Chỉ khách hàng (isKh = true)
  * - nhacungcap: Chỉ nhà cung cấp (isNcc = true)
  * - nhanvien: Chỉ nhân viên (isNv = true)
  * - all: Tất cả (không lọc)
- * - Multi-mode: khachhang,nhacungcap (isKh = true OR isNcc = true)
- *
- * Lưu ý: Tất cả mode đều dùng OR logic (không hỗ trợ AND)
+ * - Multi-mode OR: khachhang|nhanvien (isKh = true OR isNv = true) - dùng pipe
+ * - Multi-mode AND: khachhang,nhacungcap (isKh = true AND isNcc = true) - dùng comma
  *
  * Usage:
  * <livewire:catalog::component.input-khachhang mode="khachhang" wire:model="pMa_Kh" />
  * <livewire:catalog::component.input-khachhang mode="nhanvien" wire:model="pMa_Nv" />
- * <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_KhachHoacNcc" />
- * <livewire:catalog::component.input-khachhang mode="khachhang,nhanvien" wire:model="pMa_KhachHoacNhanVien" />
+ * <livewire:catalog::component.input-khachhang mode="khachhang|nhanvien" wire:model="pMa_KhachHoacNhanVien" />
+ * <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_KhachVaNcc" />
  */
 class InputKhachhang extends Component
 {
@@ -112,26 +111,42 @@ class InputKhachhang extends Component
             return;
         }
 
-        // Build query theo mode (OR logic - mặc định)
-        // Mode: khachhang,nhacungcap,nhanvien (isKh = true OR isNcc = true OR isNv = true)
+        // Build query theo mode
+        // Hỗ trợ:
+        // - OR: khachhang|nhanvien (isKh = true OR isNv = true) - dùng pipe
+        // - AND: khachhang,nhacungcap (isKh = true AND isNcc = true) - dùng comma
         $query = ArDmKh::query();
 
-        // Parse mode (comma-separated, OR logic)
-        $modes = array_map('trim', explode(',', $this->mode));
+        // Kiểm tra mode có chứa pipe (OR) không
+        if (str_contains($this->mode, '|')) {
+            // OR logic: dùng where nested closure
+            $modes = array_map('trim', explode('|', $this->mode));
 
-        // Dùng nested closure cho OR logic
-        $query->where(static function (Builder $q) use ($modes): void {
-            foreach ($modes as $i => $m) {
-                $method = $i === 0 ? 'where' : 'orWhere';
+            $query->where(static function (Builder $q) use ($modes): void {
+                foreach ($modes as $i => $m) {
+                    $method = $i === 0 ? 'where' : 'orWhere';
 
+                    match ($m) {
+                        'khachhang'  => $q->$method('isKh', true),
+                        'nhacungcap' => $q->$method('isNcc', true),
+                        'nhanvien'   => $q->$method('isNv', true),
+                        default      => null,
+                    };
+                }
+            });
+        } else {
+            // AND logic: comma-separated (scopes nối tiếp)
+            $modes = array_map('trim', explode(',', $this->mode));
+
+            foreach ($modes as $m) {
                 match ($m) {
-                    'khachhang'  => $q->$method('isKh', true),
-                    'nhacungcap' => $q->$method('isNcc', true),
-                    'nhanvien'   => $q->$method('isNv', true),
+                    'khachhang'  => $query->laKhachHang(),
+                    'nhacungcap' => $query->laNhaCungCap(),
+                    'nhanvien'   => $query->laNhanVien(),
                     default      => null, // all: không lọc
                 };
             }
-        });
+        }
 
         // Tìm kiếm theo mã, tên, địa chỉ, tel
         $this->results = $query
@@ -191,7 +206,9 @@ class InputKhachhang extends Component
     protected function getPlaceholderByMode(): string
     {
         // Parse mode để hiển thị placeholder phù hợp
-        $modes = array_map('trim', explode(',', $this->mode));
+        // Hỗ trợ cả pipe (OR) và comma (AND)
+        $separator = str_contains($this->mode, '|') ? '|' : ',';
+        $modes     = array_map('trim', explode($separator, $this->mode));
 
         // Nếu có nhiều mode hoặc all → placeholder chung
         if (count($modes) > 1 || in_array('all', $modes, true)) {
