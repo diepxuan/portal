@@ -69,7 +69,7 @@
     {{-- No results --}}
     @if($showDropdown && !$searching && count($results) === 0 && strlen(trim($search)) > 0)
         <div class="absolute z-50 mt-1 w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-center text-sm text-gray-500 shadow-lg">
-            Không tìm thấy khách hàng
+            Không tìm thấy đối tượng
         </div>
     @endif
 </div>
