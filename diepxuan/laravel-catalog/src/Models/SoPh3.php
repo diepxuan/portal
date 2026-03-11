@@ -8,12 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-07-05 20:25:52
+ * @lastupdate 2026-03-11 23:20:00
  */
 
 namespace Diepxuan\Catalog\Models;
 
 use Diepxuan\Simba\Models\SoPh3 as Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -38,6 +39,21 @@ class SoPh3 extends Model
         $result['phs'] = self::hydrate($result['phs']);
 
         return $result;
+    }
+
+    /**
+     * Scope: Filter theo ngày chứng từ.
+     */
+    public function scopeFilterByNgayCt(Builder $query, ?string $fromDate, ?string $toDate): Builder
+    {
+        if (!empty($fromDate)) {
+            $query->whereDate('ngay_ct', '>=', $fromDate);
+        }
+        if (!empty($toDate)) {
+            $query->whereDate('ngay_ct', '<=', $toDate);
+        }
+
+        return $query;
     }
 
     protected function ngayCt(): Attribute
