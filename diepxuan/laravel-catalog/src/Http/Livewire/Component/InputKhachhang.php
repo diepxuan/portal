@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\Component;
 
 use Diepxuan\Catalog\Models\ArDmKh;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -25,12 +26,14 @@ use Livewire\Component;
  * - nhacungcap: Chỉ nhà cung cấp (isNcc = true)
  * - nhanvien: Chỉ nhân viên (isNv = true)
  * - all: Tất cả (không lọc)
- * - Multi-mode: khachhang,nhacungcap | khachhang,nhanvien | nhacungcap,nhanvien
+ * - Multi-mode AND: khachhang,nhacungcap (isKh = true AND isNcc = true)
+ * - Multi-mode OR: khachhang|nhanvien (isKh = true OR isNv = true)
  *
  * Usage:
  * <livewire:catalog::component.input-khachhang mode="khachhang" wire:model="pMa_Kh" />
  * <livewire:catalog::component.input-khachhang mode="nhanvien" wire:model="pMa_Nv" />
- * <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_DoiTuong" />
+ * <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_KhachVaNcc" />
+ * <livewire:catalog::component.input-khachhang mode="khachhang|nhanvien" wire:model="pMa_KhachHoacNhanVien" />
  */
 class InputKhachhang extends Component
 {
@@ -108,19 +111,41 @@ class InputKhachhang extends Component
             return;
         }
 
-        // Build query theo mode (hỗ trợ multi-mode: khachhang,nhacungcap)
+        // Build query theo mode
+        // Hỗ trợ:
+        // - AND: khachhang,nhacungcap (isKh = true AND isNcc = true)
+        // - OR: khachhang|nhanvien (isKh = true OR isNv = true)
         $query = ArDmKh::query();
 
-        // Parse mode (comma-separated)
-        $modes = array_map('trim', explode(',', $this->mode));
+        // Kiểm tra mode có chứa pipe (OR) không
+        if (str_contains($this->mode, '|')) {
+            // OR logic: dùng where nested closure
+            $modes = array_map('trim', explode('|', $this->mode));
+            
+            $query->where(static function (Builder $q) use ($modes): void {
+                foreach ($modes as $i => $m) {
+                    $method = $i === 0 ? 'where' : 'orWhere';
+                    
+                    match ($m) {
+                        'khachhang'  => $q->$method('isKh', true),
+                        'nhacungcap' => $q->$method('isNcc', true),
+                        'nhanvien'   => $q->$method('isNv', true),
+                        default      => null,
+                    };
+                }
+            });
+        } else {
+            // AND logic: comma-separated
+            $modes = array_map('trim', explode(',', $this->mode));
 
-        foreach ($modes as $m) {
-            match ($m) {
-                'khachhang'  => $query->laKhachHang(),
-                'nhacungcap' => $query->laNhaCungCap(),
-                'nhanvien'   => $query->laNhanVien(),
-                default      => null, // all: không lọc
-            };
+            foreach ($modes as $m) {
+                match ($m) {
+                    'khachhang'  => $query->laKhachHang(),
+                    'nhacungcap' => $query->laNhaCungCap(),
+                    'nhanvien'   => $query->laNhanVien(),
+                    default      => null, // all: không lọc
+                };
+            }
         }
 
         // Tìm kiếm theo mã, tên, địa chỉ, tel
@@ -181,7 +206,9 @@ class InputKhachhang extends Component
     protected function getPlaceholderByMode(): string
     {
         // Parse mode để hiển thị placeholder phù hợp
-        $modes = array_map('trim', explode(',', $this->mode));
+        // Hỗ trợ cả comma (AND) và pipe (OR)
+        $separator = str_contains($this->mode, '|') ? '|' : ',';
+        $modes     = array_map('trim', explode($separator, $this->mode));
 
         // Nếu có nhiều mode hoặc all → placeholder chung
         if (count($modes) > 1 || in_array('all', $modes, true)) {
