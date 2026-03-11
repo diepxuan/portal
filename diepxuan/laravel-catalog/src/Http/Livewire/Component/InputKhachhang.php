@@ -117,17 +117,26 @@ class InputKhachhang extends Component
         // Parse mode (hỗ trợ cả comma và pipe, đều là OR logic)
         $modes = array_map('trim', preg_split('/[,.|]/', $this->mode));
 
-        // Dùng nested closure cho OR logic
+        // Dùng nested closure cho OR logic với scopes
         $query->where(static function (Builder $q) use ($modes): void {
             foreach ($modes as $i => $m) {
-                $method = $i === 0 ? 'where' : 'orWhere';
-
-                match ($m) {
-                    'khachhang'  => $q->$method('isKh', true),
-                    'nhacungcap' => $q->$method('isNcc', true),
-                    'nhanvien'   => $q->$method('isNv', true),
-                    default      => null, // all: không lọc
-                };
+                if ($i === 0) {
+                    // Điều kiện đầu tiên dùng where
+                    match ($m) {
+                        'khachhang'  => $q->laKhachHang(),
+                        'nhacungcap' => $q->laNhaCungCap(),
+                        'nhanvien'   => $q->laNhanVien(),
+                        default      => null,
+                    };
+                } else {
+                    // Các điều kiện sau dùng orWhere với scope
+                    match ($m) {
+                        'khachhang'  => $q->orWhere(static fn ($sq) => $sq->laKhachHang()),
+                        'nhacungcap' => $q->orWhere(static fn ($sq) => $sq->laNhaCungCap()),
+                        'nhanvien'   => $q->orWhere(static fn ($sq) => $sq->laNhanVien()),
+                        default      => null,
+                    };
+                }
             }
         });
 
