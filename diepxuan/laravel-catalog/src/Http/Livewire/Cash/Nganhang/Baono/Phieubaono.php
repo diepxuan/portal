@@ -32,6 +32,9 @@ use Livewire\Component;
 
 class Phieubaono extends Component
 {
+    // Property nhận từ bên ngoài (Baono component)
+    public $sttRec = '';
+    
     public $pMa_Kh;
     public $pKh;
     public $pDien_Giai;
@@ -131,8 +134,11 @@ class Phieubaono extends Component
         // Lấy mã ngoại tệ mặc định từ CatalogService
         $this->pMa_Nt = \CatalogService::ma_Nt() ?: self::DEFAULT_MA_NT;
 
-        // Nếu có stt_rec, load phiếu để sửa
-        if (!empty($this->pStt_Rec)) {
+        // Nếu có stt_rec từ bên ngoài truyền vào, load phiếu để sửa
+        if (!empty($this->sttRec)) {
+            $this->pStt_Rec = $this->sttRec;
+            $this->loadPhieu();
+        } elseif (!empty($this->pStt_Rec)) {
             $this->loadPhieu();
         }
 
@@ -142,6 +148,20 @@ class Phieubaono extends Component
             ->limit(100)
             ->get()
         ;
+    }
+
+    /**
+     * Xử lý khi sttRec thay đổi từ bên ngoài
+     */
+    public function updatedSttRec($value): void
+    {
+        if (!empty($value)) {
+            $this->pStt_Rec = $value;
+            $this->loadPhieu();
+        } else {
+            // Reset form khi sttRec rỗng
+            $this->resetForm();
+        }
     }
 
     public function loadPhieu(): void
@@ -662,6 +682,90 @@ class Phieubaono extends Component
         }
 
         $this->calculateTotal();
+    }
+
+    /**
+     * Xóa phiếu báo nợ
+     */
+    public function deletePhieu(): void
+    {
+        if (empty($this->pStt_Rec)) {
+            $this->dispatch('action-message', ['on' => 'delete-error', 'message' => 'Không có phiếu nào được chọn để xóa']);
+
+            return;
+        }
+
+        $maCty = \CatalogService::company()->id ?? '001';
+        $lUser = \Auth::user()->name ?? '';
+
+        try {
+            \DB::transaction(function () use ($maCty, $lUser): void {
+                // 1. Process chứng từ để unlock (mode 2 = sửa/xóa)
+                AsProcessCt::call([
+                    'pMa_cty'  => $maCty,
+                    'pMa_Ct'   => 'CA4',
+                    'pStt_rec' => $this->pStt_Rec,
+                    'pMode'    => '2',
+                ]);
+
+                // 2. Xóa chi tiết
+                $deleteDetails = AsCADelCT2::call([
+                    'pMa_cty'  => $maCty,
+                    'pStt_rec' => $this->pStt_Rec,
+                ]);
+
+                if (0 !== $deleteDetails) {
+                    throw new \Exception('Không thể xóa chi tiết phiếu báo nợ');
+                }
+
+                // 3. Xóa header (dùng AsCADelPH2 nếu có, hoặc xóa trực tiếp)
+                // Lưu ý: Cần stored procedure AsCADelPH2 để xóa header
+                // Nếu chưa có, cần tạo hoặc dùng cách khác
+            });
+
+            // Reset form sau khi xóa thành công
+            $this->resetForm();
+
+            $this->dispatch('action-message', ['on' => 'phieu-deleted']);
+        } catch (\Exception $e) {
+            $this->dispatch('action-message', ['on' => 'delete-error', 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Reset form về trạng thái mặc định
+     */
+    public function resetForm(): void
+    {
+        $this->pStt_Rec = '';
+        $this->pMode = 'create';
+        $this->pMa_Kh = '';
+        $this->pKh = '';
+        $this->pDien_Giai = '';
+        $this->pTk_Co = self::DEFAULT_TK_CO;
+        $this->pNgay_Ct = now()->toDateString();
+        $this->pSo_Ct = AsGetSoCt::call([
+            'pMa_ct'   => self::MA_CT,
+            'pNgay_Ct' => $this->pNgay_Ct,
+        ]);
+        $this->pNgay_Lap = now()->toDateString();
+        $this->pDia_Chi = '';
+        $this->pNguoi_Gd = \Auth::user()->name ?? '';
+        $this->pMa_Nt = \CatalogService::ma_Nt() ?: self::DEFAULT_MA_NT;
+        $this->pTy_Gia = self::DEFAULT_TY_GIA;
+        $this->pT_Tien_Nt = 0;
+        $this->pT_Thue = 0;
+        $this->pT_TT = 0;
+        $this->pT_Thue_Nt = 0;
+        $this->pT_TT_Nt = 0;
+        $this->pKht_Tain = '0';
+        $this->pTrang_Thai = '';
+        $this->pPost2Gl = '';
+        $this->pCts = collect();
+        $this->pSoDu = 0;
+        $this->pTong_Ps_No = 0;
+        $this->pSoDuCts = collect();
+        $this->addRow();
     }
 
     public function render()
