@@ -548,8 +548,13 @@ class Phieubaono extends Component
         }
     }
 
-    public function updateKhachHang(): void
+    public function updateKhachHang($ma_kh = null): void
     {
+        // Nếu có ma_kh từ event, cập nhật pMa_Kh
+        if ($ma_kh) {
+            $this->pMa_Kh = $ma_kh;
+        }
+
         $this->pKh = ArDmKh::where('ma_kh', $this->pMa_Kh)->first();
         if ($this->pKh) {
             $this->pDien_Giai = 'Thanh toán nhà chung cấp ' . $this->pKh->ten_kh;
