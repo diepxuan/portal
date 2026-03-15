@@ -15,10 +15,11 @@
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Mã KH</label>
                 <div class="col-span-3">
-                    <input type="text"
-                        class="block w-full rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        list="ArDmKh-suggestions" wire:model="pMa_Kh" wire:change="updateKhachHang"
-                        placeholder="Nhập mã khách hàng..." />
+                    <livewire:catalog::component.input-khachhang 
+                        mode="khachhang" 
+                        wire:model="pMa_Kh"
+                        wire:customer-selected="updateKhachHang"
+                        placeholder="Chọn khách hàng..." />
                 </div>
             </div>
 
