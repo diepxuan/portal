@@ -8,12 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-01-11 16:42:19
+ * @lastupdate 2026-03-15 17:08:09
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang;
 
 use Diepxuan\Catalog\Models\GlCt;
+use Diepxuan\Simba\StoredProcedures\AsCADelCT2;
+use Diepxuan\Simba\StoredProcedures\AsCADelPH2;
+use Diepxuan\Simba\StoredProcedures\AsProcessCt;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -23,11 +26,11 @@ class Baono extends Component
     public $pTkdu_List = '112';
     public $pMa_Nt;
     public $pMa_Bp;
-    
+
     // Property để quản lý chế độ sửa
     public $editingSttRec = '';
-    public $showForm = false;
-    
+    public $showForm      = false;
+
     protected $glCts;
 
     public function mount(): void
@@ -47,19 +50,25 @@ class Baono extends Component
     }
 
     /**
-     * Mở form sửa phiếu
+     * Mở form sửa phiếu.
+     *
+     * @param mixed $sttRec
      */
     public function editPhieu($sttRec): void
     {
         $this->editingSttRec = $sttRec;
-        $this->showForm = true;
-        
+        $this->showForm      = true;
+
         // Scroll to form
         $this->dispatch('scroll-to-form');
+
+        $this->resultRender();
     }
 
     /**
-     * Xóa phiếu
+     * Xóa phiếu.
+     *
+     * @param mixed $sttRec
      */
     public function deletePhieu($sttRec): void
     {
@@ -68,9 +77,9 @@ class Baono extends Component
         $lUser = \Auth::user()->name ?? '';
 
         try {
-            \DB::transaction(function () use ($maCty, $lUser, $sttRec): void {
+            \DB::transaction(static function () use ($maCty, $sttRec): void {
                 // 1. Process chứng từ để unlock (mode 2 = sửa/xóa)
-                \Diepxuan\Simba\StoredProcedures\AsProcessCt::call([
+                AsProcessCt::call([
                     'pMa_cty'  => $maCty,
                     'pMa_Ct'   => 'CA4',
                     'pStt_rec' => $sttRec,
@@ -78,7 +87,7 @@ class Baono extends Component
                 ]);
 
                 // 2. Xóa chi tiết
-                $deleteDetails = \Diepxuan\Simba\StoredProcedures\AsCADelCT2::call([
+                $deleteDetails = AsCADelCT2::call([
                     'pMa_cty'  => $maCty,
                     'pStt_rec' => $sttRec,
                 ]);
@@ -89,8 +98,8 @@ class Baono extends Component
 
                 // 3. Xóa header (dùng AsCADelPH2 nếu có)
                 // Lưu ý: Cần kiểm tra stored procedure AsCADelPH2 có tồn tại chưa
-                if (class_exists('\\Diepxuan\\Simba\\StoredProcedures\\AsCADelPH2')) {
-                    $deleteHeader = \Diepxuan\Simba\StoredProcedures\AsCADelPH2::call([
+                if (class_exists('\Diepxuan\Simba\StoredProcedures\AsCADelPH2')) {
+                    $deleteHeader = AsCADelPH2::call([
                         'pMa_cty'  => $maCty,
                         'pStt_rec' => $sttRec,
                     ]);
@@ -103,7 +112,7 @@ class Baono extends Component
 
             // Refresh danh sách
             $this->resultRender();
-            
+
             $this->dispatch('action-message', ['on' => 'phieu-deleted']);
         } catch (\Exception $e) {
             $this->dispatch('action-message', ['on' => 'delete-error', 'message' => 'Lỗi: ' . $e->getMessage()]);
@@ -111,12 +120,12 @@ class Baono extends Component
     }
 
     /**
-     * Đóng form
+     * Đóng form.
      */
     public function closeForm(): void
     {
         $this->editingSttRec = '';
-        $this->showForm = false;
+        $this->showForm      = false;
         $this->resultRender();
     }
 

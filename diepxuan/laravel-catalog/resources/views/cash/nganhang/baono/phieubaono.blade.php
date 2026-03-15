@@ -2,15 +2,22 @@
     <!-- Header Form -->
     <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
         <h4 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-700">Thông tin phiếu</h4>
-        
+
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- Mã KH -->
+            <div class="grid grid-cols-4 items-center gap-2">
+                <div class="col-span-3">
+                    {{ $sttRec }}
+                    {{ $pStt_Rec }}
+                </div>
+            </div>
             <!-- Mã KH -->
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Mã KH</label>
                 <div class="col-span-3">
                     <input type="text"
                         class="block w-full rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        list="ArDmKh-suggestions" wire:model="pMa_Kh" wire:change="updateKhachHang" 
+                        list="ArDmKh-suggestions" wire:model="pMa_Kh" wire:change="updateKhachHang"
                         placeholder="Nhập mã khách hàng..." />
                 </div>
             </div>
@@ -18,21 +25,24 @@
             <!-- Diễn giải -->
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Diễn giải</label>
-                <input class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                <input
+                    class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     wire:model="pDien_Grai" placeholder="Nội dung giao dịch..." />
             </div>
 
             <!-- Địa chỉ -->
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Địa chỉ</label>
-                <input class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                <input
+                    class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     wire:model="pDia_Chi" placeholder="Địa chỉ khách hàng..." />
             </div>
 
             <!-- Người GD -->
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Người GD</label>
-                <input class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                <input
+                    class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     wire:model="pNguoi_Gd" />
             </div>
 
@@ -47,7 +57,8 @@
             <!-- Số CT -->
             <div class="grid grid-cols-4 items-center gap-2">
                 <label class="col-span-1 text-right text-sm font-medium text-gray-700">Số CT</label>
-                <input class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                <input
+                    class="col-span-3 rounded-md border-gray-300 py-1.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                     wire:model="pSo_Ct" />
             </div>
 
@@ -74,24 +85,29 @@
         <div class="border-b border-gray-200 bg-gray-50 px-4 py-3">
             <h4 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Chi tiết khoản nợ</h4>
         </div>
-        
+
         <div class="overflow-x-auto p-4">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th scope="col"
+                            class="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             TK Nợ
                         </th>
-                        <th scope="col" class="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th scope="col"
+                            class="whitespace-nowrap px-3 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Diễn giải
                         </th>
-                        <th scope="col" class="whitespace-nowrap px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th scope="col"
+                            class="whitespace-nowrap px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                             Số dư
                         </th>
-                        <th scope="col" class="whitespace-nowrap px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th scope="col"
+                            class="whitespace-nowrap px-3 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                             Số tiền
                         </th>
-                        <th scope="col" class="w-10 px-3 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th scope="col"
+                            class="w-10 px-3 py-2 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
                         </th>
                     </tr>
                 </thead>
@@ -99,10 +115,8 @@
                     @foreach ($pCts as $index => $row)
                         <tr class="hover:bg-gray-50">
                             <td class="whitespace-nowrap px-3 py-2">
-                                <livewire:catalog::component.input-taikhoan
-                                    wire:model="pCts.{{ $index }}.ma_tk"
-                                    wire:key="tk-no-{{ $index }}"
-                                    placeholder="Chọn TK..." />
+                                <livewire:catalog::component.input-taikhoan wire:model="pCts.{{ $index }}.ma_tk"
+                                    wire:key="tk-no-{{ $index }}" placeholder="Chọn TK..." />
                             </td>
                             <td class="px-3 py-2">
                                 <input type="text"
@@ -121,8 +135,7 @@
                                 <input type="number"
                                     class="block w-full rounded-md border-gray-300 py-1.5 text-right text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     wire:model.lazy="pCts.{{ $index }}.ps_no"
-                                    wire:keydown.enter="handleEnter({{ $index }})"
-                                    placeholder="0">
+                                    wire:keydown.enter="handleEnter({{ $index }})" placeholder="0">
                             </td>
                             <td class="whitespace-nowrap px-3 py-2 text-center">
                                 <button wire:click="removeRow({{ $index }})"
@@ -140,7 +153,8 @@
                 </tbody>
                 <tfoot class="bg-gray-50">
                     <tr>
-                        <td colspan="3" class="whitespace-nowrap px-3 py-3 text-right text-sm font-bold uppercase tracking-wide text-gray-700">
+                        <td colspan="3"
+                            class="whitespace-nowrap px-3 py-3 text-right text-sm font-bold uppercase tracking-wide text-gray-700">
                             Tổng cộng:
                         </td>
                         <td class="whitespace-nowrap px-3 py-3 text-right text-sm font-bold text-gray-900">
@@ -156,7 +170,8 @@
         <div class="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-4 py-3">
             <button wire:click="addRow"
                 class="inline-flex items-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium leading-4 text-blue-700 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Thêm dòng
@@ -167,13 +182,13 @@
                 <x-catalog::action-message on="phieu-saved" class="text-sm text-green-600">
                     Đã lưu phiếu thành công
                 </x-catalog::action-message>
-                
+
                 <x-catalog::action-message on="phieu-deleted" class="text-sm text-green-600">
                     Đã xóa phiếu thành công
                 </x-catalog::action-message>
 
                 <!-- Cancel Button (chỉ hiện khi đang sửa) -->
-                @if($pMode === 'edit')
+                @if ($pMode === 'edit')
                     <button wire:click="resetForm"
                         class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         Hủy
@@ -183,8 +198,10 @@
                 <!-- Save Button -->
                 <button wire:click="submit"
                     class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                     </svg>
                     {{ $pMode === 'edit' ? 'Cập nhật' : 'Lưu phiếu' }}
                 </button>

@@ -135,6 +135,7 @@ class Phieubaono extends Component
         $this->pMa_Nt = \CatalogService::ma_Nt() ?: self::DEFAULT_MA_NT;
 
         // Nếu có stt_rec từ bên ngoài truyền vào, load phiếu để sửa
+        \Debugbar::info('Phieubaono mount - sttRec:', $this->sttRec);
         if (!empty($this->sttRec)) {
             $this->pStt_Rec = $this->sttRec;
             $this->loadPhieu();
@@ -155,6 +156,7 @@ class Phieubaono extends Component
      */
     public function updatedSttRec($value): void
     {
+        \Debugbar::info('updatedSttRec called with value:', $value);
         if (!empty($value)) {
             $this->pStt_Rec = $value;
             $this->loadPhieu();
@@ -166,12 +168,15 @@ class Phieubaono extends Component
 
     public function loadPhieu(): void
     {
+        \Debugbar::info('loadPhieu called with pStt_Rec:', $this->pStt_Rec);
         if (empty($this->pStt_Rec)) {
             return;
         }
 
         // Load header từ database
+        \Debugbar::info('Querying CaPh3 with stt_rec:', $this->pStt_Rec);
         $caPh3 = CaPh3::where('stt_rec', $this->pStt_Rec)->first();
+        \Debugbar::info('CaPh3 result:', $caPh3);
 
         if ($caPh3) {
             $this->pMode     = 'edit';
