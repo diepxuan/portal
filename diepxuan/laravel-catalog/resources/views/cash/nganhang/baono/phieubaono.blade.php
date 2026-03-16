@@ -6,20 +6,18 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <!-- Mã KH -->
             <div class="grid grid-cols-4 items-center gap-2">
+                <label class="col-span-1 text-right text-sm font-medium text-gray-700">Mã KH</label>
+                <div class="col-span-3">
+                    <livewire:catalog::component.input-khachhang mode="khachhang,nhacungcap" wire:model="pMa_Kh"
+                        placeholder="Chọn khách hàng..." />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-4 items-center gap-2">
                 <div class="col-span-3">
                     {{ $sttRec }}
                     {{ $pStt_Rec }}
-                </div>
-            </div>
-            <!-- Mã KH -->
-            <div class="grid grid-cols-4 items-center gap-2">
-                <label class="col-span-1 text-right text-sm font-medium text-gray-700">Mã KH</label>
-                <div class="col-span-3">
-                    <livewire:catalog::component.input-khachhang 
-                        mode="khachhang" 
-                        wire:model="pMa_Kh"
-                        wire:customer-selected="updateKhachHang"
-                        placeholder="Chọn khách hàng..." />
+                    {{ $pKh ? $pKh->ten_kh : '' }}
                 </div>
             </div>
 

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-11 20:06:58
+ * @lastupdate 2026-03-15 23:57:09
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
@@ -87,7 +87,7 @@ class InputKhachhang extends Component
 
         // Load tên đối tượng nếu có value
         if ($value) {
-            $kh = ArDmKh::withoutGlobalScope('ksd')->find($value);
+            $kh = ArDmKh::find($value);
             if ($kh) {
                 $this->search = $kh->ten_kh ?? '';
             }
@@ -120,7 +120,7 @@ class InputKhachhang extends Component
         // Dùng nested closure cho OR logic với scopes
         $query->where(static function (Builder $q) use ($modes): void {
             foreach ($modes as $i => $m) {
-                if ($i === 0) {
+                if (0 === $i) {
                     // Điều kiện đầu tiên dùng where
                     match ($m) {
                         'khachhang'  => $q->laKhachHang(),
@@ -143,7 +143,7 @@ class InputKhachhang extends Component
         // Tìm kiếm theo mã, tên, địa chỉ, tel
         $this->results = $query
             ->search($search)
-            ->limit(10)
+            ->limit(20)
             ->get()
             ->map(static fn ($kh) => [
                 'ma_kh'   => $kh->ma_kh,
