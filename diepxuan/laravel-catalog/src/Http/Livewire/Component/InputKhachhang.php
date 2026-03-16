@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-15 23:57:09
+ * @lastupdate 2026-03-16 14:15:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
@@ -16,6 +16,7 @@ namespace Diepxuan\Catalog\Http\Livewire\Component;
 use Diepxuan\Catalog\Models\ArDmKh;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
+use Livewire\Attributes\Modelable;
 use Livewire\Component;
 
 /**
@@ -46,6 +47,7 @@ class InputKhachhang extends Component
     /**
      * Giá trị selected (mã đối tượng).
      */
+    #[Modelable]
     public ?string $value = null;
 
     /**
@@ -167,9 +169,6 @@ class InputKhachhang extends Component
         $this->search       = $ten_kh;
         $this->showDropdown = false;
         $this->results      = [];
-
-        // Emit event để parent component biết
-        $this->dispatch('customer-selected', ma_kh: $ma_kh);
     }
 
     /**
