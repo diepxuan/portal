@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-16 11:18:14
+ * @lastupdate 2026-03-16 14:15:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -28,7 +28,6 @@ use Diepxuan\Simba\StoredProcedures\AsGetSttRec;
 use Diepxuan\Simba\StoredProcedures\AsPostCaph3_glct;
 use Diepxuan\Simba\StoredProcedures\AsProcessCt;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Phieubaono extends Component
@@ -534,10 +533,9 @@ class Phieubaono extends Component
         }
     }
 
-    #[On('customer-selected')]
     public function updateKhachHang($ma_kh = null): void
     {
-        // Nếu có ma_kh từ event, cập nhật pMa_Kh
+        // Nếu có ma_kh từ parameter, cập nhật pMa_Kh
         if ($ma_kh) {
             $this->pMa_Kh = $ma_kh;
         }
