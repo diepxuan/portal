@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-16 14:15:00
+ * @lastupdate 2026-03-16 18:25:17
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -38,11 +38,11 @@ class Phieubaono extends Component
     const DEFAULT_MA_NT  = 'VND';
     const DEFAULT_TY_GIA = 1;
     // Property nhận từ bên ngoài (Baono component)
-    public $sttRec = '';
+    public ?string $sttRec = '';
 
-    public $pMa_Kh;
+    public ?string $pMa_Kh = null;
     public $pKh;
-    public $pDien_Giai;
+    public ?string $pDien_Giai = '';
     public $pTk_Co = self::DEFAULT_TK_CO;
     public $pNgay_Ct;
     public $pSo_Ct;
@@ -238,11 +238,14 @@ class Phieubaono extends Component
 
     public function updatedPMa_Kh($value): void
     {
-        $this->updateKhachHang();
+        \Debugbar::info(__METHOD__);
+        $this->updateKhachHang($value);
     }
 
     public function updated($property): void
     {
+        \Debugbar::info(__METHOD__);
+
         if ('pDien_Giai' === $property) {
             // Auto-fill diễn giải mới vào tất cả các dòng chi tiết
             $this->pCts = $this->pCts->map(function ($row) {
@@ -539,6 +542,8 @@ class Phieubaono extends Component
         if ($ma_kh) {
             $this->pMa_Kh = $ma_kh;
         }
+
+        \Debugbar::info('Phieubaono/updateKhachHang/pMa_Kh:', $this->pMa_Kh);
 
         $this->pKh = ArDmKh::where('ma_kh', $this->pMa_Kh)->first();
         if ($this->pKh) {
