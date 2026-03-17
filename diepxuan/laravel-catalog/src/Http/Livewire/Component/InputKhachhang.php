@@ -169,6 +169,10 @@ class InputKhachhang extends Component
         $this->search       = $ten_kh;
         $this->showDropdown = false;
         $this->results      = [];
+
+        // Dispatch event để parent component biết value đã thay đổi
+        // Giúp trigger updated* hook trong parent khi dùng #[Modelable]
+        $this->dispatch('value-updated', $ma_kh);
     }
 
     /**
