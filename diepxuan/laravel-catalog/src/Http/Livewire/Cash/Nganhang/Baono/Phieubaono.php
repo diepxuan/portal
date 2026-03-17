@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-16 18:25:17
+ * @lastupdate 2026-03-17 11:24:52
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -43,7 +43,7 @@ class Phieubaono extends Component
     public ?string $pMa_Kh = null;
     public $pKh;
     public ?string $pDien_Giai = '';
-    public $pTk_Co = self::DEFAULT_TK_CO;
+    public $pTk_Co             = self::DEFAULT_TK_CO;
     public $pNgay_Ct;
     public $pSo_Ct;
     public $pNgay_Lap;
@@ -236,15 +236,15 @@ class Phieubaono extends Component
         }
     }
 
-    public function updatedPMa_Kh($value): void
+    public function updatedPMaKh($value): void
     {
-        \Debugbar::info(__METHOD__);
+        \Debugbar::info(__METHOD__, $value);
         $this->updateKhachHang($value);
     }
 
     public function updated($property): void
     {
-        \Debugbar::info(__METHOD__);
+        \Debugbar::info(__METHOD__, $property);
 
         if ('pDien_Giai' === $property) {
             // Auto-fill diễn giải mới vào tất cả các dòng chi tiết
