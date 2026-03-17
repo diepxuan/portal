@@ -52,3 +52,8 @@ portal-fixed.service
 *.temp
 /tmp/
 /temp/
+
+# IDE helpers
+**/_ide_helper.php
+**/.phpactor.json
+
