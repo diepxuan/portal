@@ -424,7 +424,17 @@ class Phieubaono extends Component
                     'pMa_Ct'  => 'CA4',
                 ]);
 
+                \Debugbar::info('AsGetSttRec raw result:', $stt_rec_result);
+                \Debugbar::info('AsGetSttRec first():', $stt_rec_result->first());
+                \Debugbar::info('AsGetSttRec pStt_rec:', $stt_rec_result->first()->pStt_rec ?? 'NULL');
+
                 $stt_rec = $stt_rec_result->first()->pStt_rec ?? '';
+
+                \Debugbar::info('Final stt_rec:', $stt_rec);
+
+                if (empty($stt_rec)) {
+                    throw new \Exception('Không thể lấy stt_rec từ AsGetSttRec. Vui lòng kiểm tra stored procedure.');
+                }
 
                 // 1. Insert Header bằng stored procedure
                 $insertHeaderResult = AsCAInsPH2::call([

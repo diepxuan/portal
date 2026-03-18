@@ -67,10 +67,15 @@ class ProcedureCaller
             $sql .= ";\nSELECT " . implode(', ', $selectOut);
         }
         
+        \Debugbar::info('ProcedureCaller SQL:', $sql);
+        \Debugbar::info('ProcedureCaller bindings:', $bindings);
+        
         $conn = $connection ? DB::connection($connection) : DB::connection();
         
         // Dùng select() để execute toàn bộ batch và fetch kết quả
         $rows = $conn->select($sql, $bindings);
+
+        \Debugbar::info('ProcedureCaller result:', $rows);
 
         return collect($rows);
     }
