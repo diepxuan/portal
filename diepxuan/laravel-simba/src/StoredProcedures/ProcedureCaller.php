@@ -38,11 +38,13 @@ class ProcedureCaller
         $execParts  = [];
         $bindings   = [];
         $selectOut  = [];
+        $hasOutput  = false;
 
         foreach ($params as $key => $value) {
             // Nếu là OUTPUT param
             if (\is_array($value) && ($value['output'] ?? false)) {
                 $type = $value['type'] ?? 'INT';
+                $hasOutput = true;
 
                 $declareSql[] = "DECLARE @{$key} {$type}";
                 $execParts[]  = "@{$key} = @{$key} OUTPUT";
@@ -57,17 +59,28 @@ class ProcedureCaller
             $sql .= implode(";\n", $declareSql) . ";\n";
         }
         $sql .= "EXEC {$name}\n    " . implode(",\n    ", $execParts);
-        if (!empty($selectOut)) {
-            $sql .= ";\nSELECT " . implode(', ', $selectOut);
-        }
+        
         $conn = $connection ? DB::connection($connection) : DB::connection();
+        
+        // Nếu có output parameters, dùng statement() thay vì select() để tránh lỗi
+        // "The active result for the query contains no fields"
+        if ($hasOutput) {
+            // Execute procedure với output params
+            $conn->statement($sql, $bindings);
+            
+            // Fetch output values
+            if (!empty($selectOut)) {
+                $selectSql = "SELECT " . implode(', ', $selectOut);
+                $rows = $conn->select($selectSql);
+                return collect($rows);
+            }
+            
+            return collect([]);
+        }
+        
+        // Không có output params - dùng select() bình thường
         $rows = $conn->select($sql, $bindings);
 
         return collect($rows);
-        // Lấy giá trị của các tham số theo thứ tự
-        // $bindings = array_values($params);
-
-        // Thực thi stored procedure
-        // return DB::select($sql, $bindings);
     }
 }
