@@ -416,7 +416,7 @@ class Phieubaono extends Component
                     'pMa_Ct'  => 'CA4',
                 ]);
 
-                $stt_rec = $stt_rec_result; // Kết quả từ stored procedure
+                $stt_rec = $stt_rec_result->first()->pStt_rec ?? '';
 
                 // 1. Insert Header bằng stored procedure
                 $insertHeader = AsCAInsPH2::call([
