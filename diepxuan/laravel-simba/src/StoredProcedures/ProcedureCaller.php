@@ -55,30 +55,21 @@ class ProcedureCaller
             }
         }
         $sql = '';
+        // Thêm SET NOCOUNT ON để tránh multiple result sets từ procedure
+        $sql .= "SET NOCOUNT ON;\n";
         if (!empty($declareSql)) {
             $sql .= implode(";\n", $declareSql) . ";\n";
         }
         $sql .= "EXEC {$name}\n    " . implode(",\n    ", $execParts);
         
-        $conn = $connection ? DB::connection($connection) : DB::connection();
-        
-        // Nếu có output parameters, dùng statement() thay vì select() để tránh lỗi
-        // "The active result for the query contains no fields"
-        if ($hasOutput) {
-            // Execute procedure với output params
-            $conn->statement($sql, $bindings);
-            
-            // Fetch output values
-            if (!empty($selectOut)) {
-                $selectSql = "SELECT " . implode(', ', $selectOut);
-                $rows = $conn->select($selectSql);
-                return collect($rows);
-            }
-            
-            return collect([]);
+        // Thêm SELECT để fetch output values (phải cùng batch với DECLARE)
+        if (!empty($selectOut)) {
+            $sql .= ";\nSELECT " . implode(', ', $selectOut);
         }
         
-        // Không có output params - dùng select() bình thường
+        $conn = $connection ? DB::connection($connection) : DB::connection();
+        
+        // Dùng select() để execute toàn bộ batch và fetch kết quả
         $rows = $conn->select($sql, $bindings);
 
         return collect($rows);
