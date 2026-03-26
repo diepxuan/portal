@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-26 19:32:30
+ * @lastupdate 2026-03-26 19:34:36
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -22,6 +22,7 @@ use Diepxuan\Catalog\Models\SysUserInfo;
 use Diepxuan\Catalog\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class CatalogService
 {
@@ -103,8 +104,8 @@ class CatalogService
                 // Set children property on the NavigationMenu object
                 $menu->children = $this->menuTree($menu->id);
 
-                // Default route to 'home' if route is null or empty
-                if (empty($menu->route)) {
+                // Check if route exists, default to 'home' if not
+                if (empty($menu->route) || !Route::has($menu->route)) {
                     $menu->route = 'home';
                 }
 
