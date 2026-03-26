@@ -62,4 +62,4 @@ Sếp yêu cầu Bột:
 - Chỉ sử dụng tiếng Việt.
 - Không bao giờ dùng biểu tượng cảm xúc.
 - Giữ kỷ luật tuyệt đối với SOUL.md.
-- **Chỉ làm việc trong `/root/.openclaw/workspace/projects/portal/`**
+- Chỉ làm việc trong `/root/.openclaw/workspace/projects/portal/`

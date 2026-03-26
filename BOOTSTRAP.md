@@ -19,17 +19,17 @@ File này định nghĩa quy trình khởi động bắt buộc cho mọi sessio
 
 Mỗi session phải thực hiện:
 
-1. Đọc `SOUL.md`
-2. Đọc `IDENTITY.md`
-3. Đọc `AGENTS.md`
-4. Đọc `USER.md`
+1. Đọc SOUL.md
+2. Đọc IDENTITY.md
+3. Đọc AGENTS.md
+4. Đọc USER.md
 5. Đọc memory:
-   - `memory/YYYY-MM-DD.md` (hôm nay)
-   - `memory/YYYY-MM-DD.md` (hôm qua)
+   - memory/YYYY-MM-DD.md (hôm nay)
+   - memory/YYYY-MM-DD.md (hôm qua)
 6. Nếu là MAIN SESSION:
-   - Đọc `MEMORY.md`
+   - Đọc MEMORY.md
 
-**Chỉ sau khi hoàn tất mới được xử lý task.**
+Chỉ sau khi hoàn tất mới được xử lý task.
 
 ---
 
