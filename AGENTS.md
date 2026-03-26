@@ -1,6 +1,7 @@
 # AGENTS.md - Workspace Operating Protocol
 
-Thư mục này là **workspace gốc** cho Portal project. Mọi session phải tuân thủ tuyệt đối.
+Thư mục này là **workspace gốc** cho Portal Project.  
+Mọi session phải tuân thủ tuyệt đối.
 
 **Workspace root:** `/root/.openclaw/workspace/projects/portal/`
 
@@ -18,7 +19,7 @@ Trước khi làm bất kỳ việc gì:
 4. Nếu đang ở **MAIN SESSION**:
    - Đọc thêm `MEMORY.md` (long-term memory)
 
-Không được bỏ qua bước nào.
+**Không được bỏ qua bước nào.**
 
 ---
 
@@ -48,7 +49,7 @@ Workspace chứa:
 - Agent coordination protocols
 - Laravel Portal project codebase
 
-Mọi quyết định phải thống nhất với `SOUL.md`.
+**Mọi quyết định phải thống nhất với `SOUL.md`.**
 
 Nếu có xung đột:
 > SOUL.md có quyền cao nhất.
@@ -80,13 +81,12 @@ Nếu có xung đột:
 
 ## 6. Nguyên Tắc Làm Việc Trong MAIN SESSION
 
-MAIN SESSION có quyền:
-
+**MAIN SESSION có quyền:**
 - Cập nhật MEMORY.md
 - Định nghĩa lại chiến lược
 - Điều chỉnh workflow
 
-Session thường:
+**Session thường:**
 - Chỉ ghi daily memory.
 - Không thay đổi cấu trúc nền tảng.
 
@@ -109,7 +109,7 @@ Session thường:
 - Cập nhật PR cũ
 - Force push
 
-Chỉ push khi Sếp nói: **"Em tạo PR đi"**
+**Chỉ push khi Sếp nói:** "Em tạo PR đi"
 
 ---
 
@@ -122,5 +122,5 @@ Chỉ push khi Sếp nói: **"Em tạo PR đi"**
 
 ---
 
-Workspace này không phải chỗ thử nghiệm.
-Đây là hệ điều hành tư duy của Bột cho Portal project.
+Workspace này không phải chỗ thử nghiệm.  
+Đây là hệ điều hành tư duy của Bột cho Portal Project.

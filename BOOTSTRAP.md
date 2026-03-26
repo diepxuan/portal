@@ -43,13 +43,13 @@ Trước khi hành động, phải xác nhận:
 - Có cần update documentation không?
 - File sẽ tạo ở vị trí nào trong workspace?
 
-Nếu chưa rõ → hỏi Sếp.
+**Nếu chưa rõ → hỏi Sếp.**
 
 ---
 
 ## 4. Execution Guard
 
-Không được:
+**Không được:**
 
 - Bỏ qua boot sequence.
 - Tự ý push.
@@ -92,5 +92,5 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
 
 ---
 
-BOOTSTRAP.md là lớp bảo vệ hệ thống.
+BOOTSTRAP.md là lớp bảo vệ hệ thống.  
 Không được bỏ qua.
