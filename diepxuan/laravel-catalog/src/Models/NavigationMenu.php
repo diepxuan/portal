@@ -8,11 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-26 19:38:47
+ * @lastupdate 2026-03-26 23:13:41
  */
 
 namespace Diepxuan\Catalog\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
@@ -180,16 +181,12 @@ class NavigationMenu extends Model
 
     /**
      * Get the route attribute with fallback to 'home' if route doesn't exist.
-     *
-     * @param string $value
      */
-    protected function getRouteAttribute($value): string
+    protected function route(): Attribute
     {
-        if (empty($value) || !Route::has($value)) {
-            return 'home';
-        }
-
-        return $value;
+        return Attribute::make(
+            get: static fn (string $value) => (empty($value) || !Route::has($value)) ? 'home' : $value,
+        );
     }
 
     /**
