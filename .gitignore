@@ -57,3 +57,6 @@ portal-fixed.service
 **/_ide_helper.php
 **/.phpactor.json
 
+# OpenClaw
+.openclaw/workspace-state.json
+
