@@ -8,13 +8,14 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-24 23:50:17
+ * @lastupdate 2026-03-26 19:38:47
  */
 
 namespace Diepxuan\Catalog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -175,6 +176,20 @@ class NavigationMenu extends Model
             ['name' => 'Hệ thống', 'route' => 'system', 'order' => 999],
             ['name' => 'Menu', 'route' => 'system.menu', 'order' => 999],
         ])->mapInto(static::class);
+    }
+
+    /**
+     * Get the route attribute with fallback to 'home' if route doesn't exist.
+     *
+     * @param string $value
+     */
+    protected function getRouteAttribute($value): string
+    {
+        if (empty($value) || !Route::has($value)) {
+            return 'home';
+        }
+
+        return $value;
     }
 
     /**
