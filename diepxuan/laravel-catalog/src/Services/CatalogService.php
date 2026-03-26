@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-26 15:57:13
+ * @lastupdate 2026-03-26 19:32:30
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -99,14 +99,17 @@ class CatalogService
             ->where('parent_id', $parentId)
             ->sortBy('order')
             ->values()
-            ->map(fn ($menu) => (object) [
-                'id'        => $menu->id,
-                'name'      => $menu->name,
-                'route'     => $menu->route,
-                'order'     => $menu->order,
-                'parent_id' => $menu->parent_id,
-                'children'  => $this->menuTree($menu->id),
-            ])
+            ->map(function ($menu) {
+                // Set children property on the NavigationMenu object
+                $menu->children = $this->menuTree($menu->id);
+
+                // Default route to 'home' if route is null or empty
+                if (empty($menu->route)) {
+                    $menu->route = 'home';
+                }
+
+                return $menu;
+            })
         ;
     }
 
