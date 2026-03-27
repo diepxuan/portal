@@ -65,6 +65,13 @@ Package `laravel‑core` tự động phát hiện và đăng ký:
 ### laravel-support
 - [Serve:Dev Commands](diepxuan/laravel-support/docs/SERVE-DEV-COMMANDS.md) - Development server management
 
+### laravel-simba
+- [Model Architecture](diepxuan/laravel-simba/docs/MODEL-ARCHITECTURE.md) - Kiến trúc Model 3 lớp
+- [Configuration](diepxuan/laravel-simba/docs/CONFIGURATION.md) - Cấu hình package
+- [Database Access Policy](diepxuan/laravel-simba/docs/DATABASE_ACCESS_POLICY.md) - Chính sách truy cập database
+- [Stored Procedures](diepxuan/laravel-simba/docs/README.md) - Danh sách stored procedures
+- [Troubleshooting](diepxuan/laravel-simba/docs/TROUBLESHOOTING.md) - Xử lý sự cố
+
 ## Cách thêm package mới
 
 1.  Tạo thư mục `diepxuan/laravel‑<tên>` với cấu trúc chuẩn.

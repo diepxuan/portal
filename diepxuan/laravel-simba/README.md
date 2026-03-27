@@ -10,6 +10,18 @@ Laravel Integration With Simba. Package cung cấp các model và stored procedu
 
 Xem chi tiết: [Database Access Policy](./docs/DATABASE_ACCESS_POLICY.md)
 
+## Kiến trúc Model 3 lớp
+
+Package sử dụng kiến trúc Model 3 lớp để phân chia trách nhiệm rõ ràng:
+
+```
+Diepxuan\Catalog\Models\<Model>
+    extends Diepxuan\Simba\Models\<Model>
+        extends Diepxuan\Simba\SModel\<Model>Model
+```
+
+**Xem chi tiết:** [Model Architecture](./docs/MODEL-ARCHITECTURE.md)
+
 ## Chức năng chính
 
 - Cung cấp các model (SModel) tương ứng với các bảng dữ liệu trong hệ thống Simba: SysLanguage, InCT3, SoPh3, GlDmTk, GlCt, GlCdTk, SysCompany, SysCompanyResx, InDmVt, InPH3, SiSetup, SysUserCompanyRight, ArDmKh, InDmKho, SysUserInfo, InDmNhvt, ...
@@ -111,6 +123,15 @@ laravel-simba/
 - diepxuan/php-charset (xử lý charset)
 - diepxuan/laravel-core (core chung)
 - diepxuan/laravel-eloquent-composite (hỗ trợ composite primary key)
+- diepxuan/laravel-catalog (package sử dụng chính)
+
+## Tài liệu
+
+- [Model Architecture](docs/MODEL-ARCHITECTURE.md) - Kiến trúc Model 3 lớp
+- [Configuration](docs/CONFIGURATION.md) - Cấu hình package
+- [Database Access Policy](docs/DATABASE_ACCESS_POLICY.md) - Chính sách truy cập database
+- [Stored Procedures](docs/README.md) - Danh sách stored procedures
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Xử lý sự cố
 
 ## Ghi chú
 
