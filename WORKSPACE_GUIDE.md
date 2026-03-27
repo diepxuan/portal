@@ -29,7 +29,7 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
 │
 ├── 📁 Memory System
 │   └── memory/
-│       ├── 2026-03-26.md       # Daily memory (hôm nay)
+│       ├── 2026-03-28.md       # Daily memory (hôm nay)
 │       └── YYYY-MM-DD.md       # Daily memory files
 │
 ├── 📁 Laravel Application
@@ -40,10 +40,32 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
 │   │   └── ...
 │   │
 │   ├── diepxuan/               # CORE BUSINESS PACKAGES (14 packages)
-│   │   ├── laravel-simba/      # Accounting package
+│   │   ├── laravel-simba/      # Accounting integration
+│   │   │   ├── src/
+│   │   │   ├── config/
+│   │   │   ├── docs/           # Package documentation
+│   │   │   └── README.md
 │   │   ├── laravel-catalog/    # Catalog package
-│   │   ├── laravel-base/       # Base package
-│   │   └── ...                 # Other packages
+│   │   │   ├── src/
+│   │   │   ├── docs/
+│   │   │   └── README.md
+│   │   ├── laravel-core/       # Core system (auto-discovery)
+│   │   │   ├── src/
+│   │   │   ├── docs/
+│   │   │   └── README.md
+│   │   ├── laravel-support/    # Developer utilities + serve:dev
+│   │   │   ├── src/
+│   │   │   ├── docs/
+│   │   │   └── README.md
+│   │   ├── laravel-magento/    # Magento API integration
+│   │   ├── laravel-ronaldjack/ # Ronald Jack SDK
+│   │   ├── laravel-log/        # Custom log channel
+│   │   ├── laravel-currency/   # Currency formatting
+│   │   ├── laravel-disreg/     # Disable registration
+│   │   ├── laravel-eloquent-composite/
+│   │   ├── laravel-gmail/      # Gmail client
+│   │   ├── laravel-scavenger/  # Web scraper
+│   │   └── php-charset/        # Charset converter
 │   │
 │   ├── config/                 # Configuration files
 │   ├── database/               # Migrations, seeders, factories
@@ -54,11 +76,12 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
 │   ├── docker/                 # Docker configuration
 │   └── .githooks/              # Git hooks
 │
-├── 📁 Documentation
+├── 📁 Project Documentation
 │   ├── README.md               # Project overview
 │   ├── AI_AGENT_GUIDE.md       # Guide for AI agents
 │   ├── ARCHITECTURE.md         # System architecture
 │   ├── DEVELOPMENT.md          # Development setup
+│   ├── PACKAGES.md             # Package overview & links
 │   ├── CHANGELOG.md            # Version history
 │   └── docs/                   # Additional documentation
 │       └── UPDATE-YYYY-MM-DD.md # Config/behavior changes
@@ -94,11 +117,45 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
   - Ví dụ: `fix_namespace_issues.php`, `generate_models.py`
 
 ### 3.2 Documentation
-- **Vị trí:** `docs/` folder hoặc root project
+
+#### Project-level Documentation
+- **Vị trí:** Root project hoặc `docs/` folder
+- **File:**
+  - `README.md` - Project overview
+  - `PACKAGES.md` - Package overview với links đến docs chi tiết
+  - `ARCHITECTURE.md` - System architecture
+  - `DEVELOPMENT.md` - Development setup
+  - `CHANGELOG.md` - Version history
+  - `docs/UPDATE-YYYY-MM-DD.md` - Config/behavior changes
+
+#### Package Documentation (QUAN TRỌNG)
+- **Vị trí:** `diepxuan/[package-name]/docs/`
 - **Quy tắc:**
-  - Project docs: Trong `docs/` folder
-  - Root docs: `README.md`, `GUIDE.md`, `REPORT.md`
-  - Config changes: `docs/UPDATE-YYYY-MM-DD.md`
+  - Documentation thuộc về package nào → nằm trong package đó
+  - Không tạo docs chung ở root cho tính năng của package cụ thể
+  - Mỗi package phải có `README.md` với overview và links đến docs chi tiết
+
+**Ví dụ:**
+```
+diepxuan/laravel-core/docs/
+├── CORE-PACKAGE-LOADING.md      # Auto-discovery system
+└── PACKAGE-NAMESPACE-CONVENTIONS.md
+
+diepxuan/laravel-support/docs/
+├── SERVE-DEV-COMMANDS.md        # Development server management
+└── CODE-STYLE-AND-FORMATTING.md
+
+diepxuan/laravel-simba/docs/
+├── MODEL-ARCHITECTURE.md        # Model 3-layer architecture
+├── CONFIGURATION.md
+├── DATABASE_ACCESS_POLICY.md
+├── TROUBLESHOOTING.md
+└── procedures-*.md              # Stored procedure docs
+```
+
+#### Links từ PACKAGES.md
+- `PACKAGES.md` là central index cho tất cả package documentation
+- Mỗi package section trong `PACKAGES.md` phải có links đến docs chi tiết
 
 ### 3.3 Memory Files
 - **Vị trí:** `memory/` folder
@@ -109,9 +166,10 @@ Không tạo file hoặc thực hiện thao tác ra ngoài phạm vi này.
 ### 3.4 Package Files
 - **Vị trí:** Trong package tương ứng (`diepxuan/[package-name]/`)
 - **Quy tắc:**
-  - Mỗi package phải có README.md
-  - Thay đổi lớn phải có CHANGELOG.md
-  - Config changes phải có docs/UPDATE-YYYY-MM-DD.md
+  - Mỗi package phải có `README.md`
+  - Package docs → `diepxuan/[package-name]/docs/`
+  - Thay đổi lớn → `CHANGELOG.md` trong package
+  - Config changes → `docs/UPDATE-YYYY-MM-DD.md` trong package
 
 ---
 
@@ -165,14 +223,43 @@ Mọi thay đổi phải có tài liệu:
 - [ ] README.md đã cập nhật (nếu cần)
 - [ ] CHANGELOG.md có ghi nhận thay đổi
 - [ ] Config changes có docs/UPDATE-YYYY-MM-DD.md
+- [ ] Documentation nằm đúng vị trí (package docs → trong package)
+- [ ] PACKAGES.md có links đến docs mới (nếu là package documentation)
 - [ ] Cấu trúc thư mục đúng quy định
 - [ ] Git branch đúng quy tắc (1 task = 1 branch)
 
 ---
 
-## 7. Hiệu Lực
+## 7. Documentation Structure Summary
+
+### Project-level (Root)
+| File | Mục đích |
+|------|----------|
+| `README.md` | Project overview |
+| `PACKAGES.md` | Package index với links |
+| `ARCHITECTURE.md` | System architecture |
+| `DEVELOPMENT.md` | Development setup |
+| `CHANGELOG.md` | Project changelog |
+| `docs/UPDATE-*.md` | Config/behavior changes |
+
+### Package-level (`diepxuan/[package]/`)
+| File | Mục đích |
+|------|----------|
+| `README.md` | Package overview + links to docs |
+| `docs/*.md` | Package-specific documentation |
+| `CHANGELOG.md` | Package changelog |
+
+### Current Package Documentation
+- **laravel-core:** `docs/CORE-PACKAGE-LOADING.md`, `docs/PACKAGE-NAMESPACE-CONVENTIONS.md`
+- **laravel-support:** `docs/SERVE-DEV-COMMANDS.md`, `docs/CODE-STYLE-AND-FORMATTING.md`
+- **laravel-simba:** `docs/MODEL-ARCHITECTURE.md`, `docs/CONFIGURATION.md`, `docs/DATABASE_ACCESS_POLICY.md`, `docs/TROUBLESHOOTING.md`, `docs/procedures-*.md`
+- **laravel-catalog:** `docs/TIMER_SYSTEM.md`
+
+---
+
+## 8. Hiệu Lực
 
 Quy tắc này có hiệu lực ngay lập tức và áp dụng cho toàn bộ Portal project.
 
-**Last Updated:** 2026-03-26  
+**Last Updated:** 2026-03-28  
 **Maintained by:** Bột (OpenClaw Assistant)
