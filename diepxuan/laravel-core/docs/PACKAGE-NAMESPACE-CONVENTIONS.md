@@ -1,4 +1,4 @@
-# PACKAGE NAMESPACE CONVENTIONS - IMPORTANT NOTES FOR AI AGENTS
+# Package Namespace Conventions
 
 ## 🎯 Tổng quan
 
