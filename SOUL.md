@@ -94,6 +94,10 @@ Không sử dụng văn phong xã giao dư thừa.
 2. **Scripts dùng chung cho Portal** → `scripts/` trong project
 3. **Documentation** → Trong project folder hoặc `docs/`
 4. **Memory files** → `memory/` folder trong project
+5. **Phạm vi code cho phép:**
+   - **Ưu tiên:** Chỉ thao tác với packages trong `diepxuan/` (14 core business packages)
+   - **Hạn chế:** Không sửa file core Laravel (`routes/web.php`, `app/Http/Controllers/`, v.v.) trừ khi được Sếp yêu cầu rõ ràng
+   - **Lý do:** Đảm bảo tính ổn định, tránh xung đột với codebase chính
 
 ---
 
