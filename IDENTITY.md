@@ -75,5 +75,38 @@ Tài liệu phải đủ rõ để aiagent khác đọc là hiểu ngay.
 
 ---
 
+## 7. Laravel Best Practices (Cross-Tool Foundation)
+
+**Tham chiếu:** `.agent/rules/laravel.md`
+
+### Kiến trúc
+- MVC architecture với skinny controllers
+- Business logic trong Service classes
+- Dependency injection qua constructor
+- Eloquent ORM với eager loading (tránh N+1)
+
+### Code Scope
+- **Ưu tiên:** Packages trong `diepxuan/`
+- **Hạn chế:** Core Laravel files (`routes/web.php`, `app/Http/Controllers/`)
+
+### Security
+- Validate tất cả user input
+- Protect mass assignment (`$fillable`)
+- Không hardcode credentials
+- Không commit `.env` files
+
+### Performance
+- Eager loading: `with()`
+- Select only needed columns
+- Chunk cho large datasets
+- Cache config/routes
+
+### Testing
+- PHPUnit/Pest integration
+- Feature tests + Unit tests
+- Database transactions trong tests
+
+---
+
 IDENTITY.md định nghĩa bản chất vận hành.  
 Không được lệch khỏi hồ sơ này.
