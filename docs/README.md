@@ -4,7 +4,7 @@ Documentation index cho Portal Project.
 
 ---
 
-## 📚 Project Documentation
+## Project Documentation
 
 Tài liệu chung cho toàn bộ dự án.
 
@@ -18,7 +18,7 @@ Tài liệu chung cho toàn bộ dự án.
 
 ---
 
-## 📦 Package Documentation
+## Package Documentation
 
 Tài liệu riêng cho từng package trong `diepxuan/`.
 
@@ -40,7 +40,7 @@ Tài liệu riêng cho từng package trong `diepxuan/`.
 
 ---
 
-## 📋 External Documentation
+## External Documentation
 
 | Tài liệu | Link |
 |----------|------|
@@ -51,7 +51,7 @@ Tài liệu riêng cho từng package trong `diepxuan/`.
 
 ---
 
-## 🗂️ Documentation Structure
+## Documentation Structure
 
 ```
 docs/
@@ -69,7 +69,7 @@ docs/
 
 ---
 
-## 📝 Documentation Guidelines
+## Documentation Guidelines
 
 ### Khi tạo tài liệu mới
 

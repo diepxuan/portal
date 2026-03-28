@@ -1,4 +1,4 @@
-# CORE PACKAGE LOADING SYSTEM - DOCUMENTATION
+# Core Package Loading System
 
 ## 🎯 Tổng quan
 
@@ -98,7 +98,7 @@ return [
 ### Lỗi 1: "Class not found" khi config dùng `Class::class`
 **Triệu chứng**: `Class "Diepxuan\Support" not found`
 **Nguyên nhân**: Laravel cố load class trước khi config ready
-**Fix**: Dùng string `'Diepxuan\\Support'` thay vì `Support::class`
+**Fix**: Dùng string `'Diepxuan\\Support'` thay vì `Class::class`
 
 ### Lỗi 2: Commands không được register
 **Triệu chứng**: `php artisan` không hiển thị commands
