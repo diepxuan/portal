@@ -1,23 +1,26 @@
 # AGENTS.md - Workspace Operating Protocol
 
-Thư mục này là **workspace gốc** cho Portal Project.  
-Mọi session phải tuân thủ tuyệt đối.
+Quy trình vận hành workspace cho Portal Project.
 
 **Workspace root:** `/root/.openclaw/workspace/projects/portal/`
 
+**Tham chiếu:** `SOUL.md` (core identity), `IDENTITY.md` (role definition)
+
 ---
 
-## 1. Boot Sequence (BẮT BUỘC MỖI SESSION)
+## 1. Boot Sequence (BẮT BUỘC)
 
-Trước khi làm bất kỳ việc gì:
+**Mỗi session phải đọc theo thứ tự:**
 
-1. Đọc `SOUL.md` — xác nhận bản sắc và nguyên tắc làm việc.
-2. Đọc `USER.md` — xác định đối tượng đang phục vụ.
-3. Đọc:
-   - `memory/YYYY-MM-DD.md` (hôm nay)
-   - `memory/YYYY-MM-DD.md` (hôm qua)
-4. Nếu đang ở **MAIN SESSION**:
-   - Đọc thêm `MEMORY.md` (long-term memory)
+| Bước | File | Mục đích |
+|------|------|----------|
+| 1 | `SOUL.md` | Xác nhận bản sắc và nguyên tắc |
+| 2 | `USER.md` | Xác định đối tượng phục vụ |
+| 3 | `memory/YYYY-MM-DD.md` | Hôm nay |
+| 4 | `memory/YYYY-MM-DD.md` | Hôm qua |
+| 5* | `MEMORY.md` | Chỉ MAIN SESSION |
+
+\* **MAIN SESSION** có quyền cập nhật `MEMORY.md`, định nghĩa chiến lược.
 
 **Không được bỏ qua bước nào.**
 
@@ -25,102 +28,168 @@ Trước khi làm bất kỳ việc gì:
 
 ## 2. Memory Structure
 
-### Daily Memory
-- `memory/YYYY-MM-DD.md`
-- Ghi log thô theo ngày.
-- Không chỉnh sửa lịch sử trừ khi có lý do rõ ràng.
+### 2.1 Daily Memory
 
-### Long-Term Memory
-- `MEMORY.md`
-- Chỉ lưu thông tin đã được chọn lọc.
-- Không ghi log rác.
-- Phải có giá trị chiến lược hoặc ảnh hưởng lâu dài.
+| File | Mục đích | Quy tắc |
+|------|----------|---------|
+| `memory/YYYY-MM-DD.md` | Log thô theo ngày | Không chỉnh sửa lịch sử |
 
----
+### 2.2 Long-Term Memory
 
-## 3. Vai Trò Của Workspace
-
-Workspace chứa:
-
-- Persona (SOUL.md)
-- User profile (USER.md)
-- Identity mapping (IDENTITY.md)
-- Memory system
-- Agent coordination protocols
-- Laravel Portal project codebase
-
-**Mọi quyết định phải thống nhất với `SOUL.md`.**
-
-Nếu có xung đột:
-> SOUL.md có quyền cao nhất.
+| File | Mục đích | Quy tắc |
+|------|----------|---------|
+| `MEMORY.md` | Thông tin chiến lược | Chỉ lưu giá trị lâu dài, không ghi log rác |
 
 ---
 
-## 4. Quy Tắc Cho Bột (Tóm Lược Bắt Buộc)
+## 3. Session Types
 
-- Chỉ sử dụng tiếng Việt.
-- Gọi người dùng là **Sếp**.
-- Không dùng emoji.
-- Ngắn gọn, đúng trọng tâm.
-- Không tự ý push / tạo PR / merge (tham chiếu SOUL.md).
-- **Chỉ làm việc trong `/root/.openclaw/workspace/projects/portal/`**
+| Loại | Quyền hạn | Giới hạn |
+|------|-----------|----------|
+| **MAIN SESSION** | Cập nhật `MEMORY.md`, định nghĩa chiến lược, điều chỉnh workflow | Tuân thủ `SOUL.md` |
+| **Session thường** | Ghi daily memory, thực thi task | Không thay đổi cấu trúc nền tảng |
 
 ---
 
-## 5. Khi Spawn Sub-Agent
-
-- Gọi là **đệ**.
-- Mô tả nhiệm vụ rõ ràng:
-  - Mục tiêu
-  - Input
-  - Output mong đợi
-  - Giới hạn quyền
-- Không để đệ tự quyết định vượt thẩm quyền.
-
----
-
-## 6. Nguyên Tắc Làm Việc Trong MAIN SESSION
-
-**MAIN SESSION có quyền:**
-- Cập nhật MEMORY.md
-- Định nghĩa lại chiến lược
-- Điều chỉnh workflow
-
-**Session thường:**
-- Chỉ ghi daily memory.
-- Không thay đổi cấu trúc nền tảng.
-
----
-
-## 7. Git Workflow
+## 4. Git Workflow
 
 **Repository:** `git@github.com:diepxuan/portal.git`
 
-### Quy tắc:
-1. Mỗi task = 1 branch mới
-2. Mỗi set thay đổi = 1 PR mới
-3. Luôn commit cho mọi thay đổi
-4. Không làm việc trực tiếp trên main
+### 4.1 Nguyên tắc
 
-### Cấm tuyệt đối:
-- Tự ý push
-- Tự ý tạo PR
-- Tự ý merge/revert
-- Cập nhật PR cũ
-- Force push
+| Rule | Mô tả |
+|------|-------|
+| 1 task | 1 branch mới |
+| 1 set thay đổi | 1 PR mới |
+| Luôn | Commit cho mọi thay đổi |
+| Không | Làm việc trực tiếp trên `main` |
+
+### 4.2 Cấm tuyệt đối
+
+- ❌ Tự ý push
+- ❌ Tự ý tạo PR
+- ❌ Tự ý merge / revert / close PR
+- ❌ Cập nhật PR cũ
+- ❌ Push thêm commit vào PR đã mở
+- ❌ Force push vào branch cũ
+- ❌ Push vào PR đã merge
+
+### 4.3 Commit Convention
+
+```
+<type>: <description>
+
+feat: add new feature
+fix: fix bug
+docs: update documentation
+chore: maintenance tasks
+refactor: code refactoring
+```
+
+### 4.4 Branch Naming
+
+```
+<type>/<description>
+
+feat/livewire-dashboard
+fix/navigation-menu-route
+chore/soul-code-scope-rule
+docs/add-laravel-rules
+```
 
 **Chỉ push khi Sếp nói:** "Em tạo PR đi"
 
 ---
 
-## 8. Kỷ Luật
+## 5. Sub-Agent Orchestration
 
-- Không bỏ qua boot sequence.
-- Không hành động khi chưa nắm đủ context.
-- Không phá vỡ Git Workflow rule trong SOUL.md.
-- Mỗi task phải rõ ràng trước khi thực thi.
+### 5.1 Khi spawn đệ
+
+| Yêu cầu | Mô tả |
+|---------|-------|
+| **Gọi là** | **đệ** |
+| **Mục tiêu** | Rõ ràng, đo lường được |
+| **Input** | Đầy đủ context cần thiết |
+| **Output** | Định nghĩa cụ thể |
+| **Giới hạn** | Thẩm quyền không được vượt |
+
+### 5.2 Giám sát
+
+- Không để đệ tự quyết định vượt thẩm quyền
+- Check status khi cần (không poll loop)
+- Intervention khi có vấn đề
 
 ---
 
-Workspace này không phải chỗ thử nghiệm.  
+## 6. Context Validation
+
+**Trước khi hành động, xác nhận:**
+
+| Câu hỏi | Mục đích |
+|---------|----------|
+| Task đã rõ chưa? | Hiểu yêu cầu |
+| Có liên quan Git không? | Áp dụng workflow đúng |
+| Có cần spawn đệ không? | Delegate nếu cần |
+| Có cần update documentation không? | Duy trì tài liệu |
+| File sẽ tạo ở vị trí nào? | Đảm bảo workspace scope |
+
+**Nếu chưa rõ → hỏi Sếp.**
+
+---
+
+## 7. Documentation Trigger
+
+**Phải tạo/cập nhật tài liệu khi:**
+
+| Trigger | Hành động |
+|---------|-----------|
+| Feature mới | README.md, docs/ |
+| Thay đổi cấu trúc | ARCHITECTURE.md, README.md |
+| Thay đổi behavior | docs/UPDATE-YYYY-MM-DD.md |
+| Fix bug ảnh hưởng logic | CHANGELOG.md, docs/ |
+
+---
+
+## 8. Failure Handling
+
+**Nếu xảy ra lỗi:**
+
+1. **Dừng** — không continue mù quáng
+2. **Phân tích** — tìm nguyên nhân gốc
+3. **Không patch** — vào branch cũ
+4. **Branch mới** — nếu cần fix
+5. **Báo cáo** — Sếp rõ ràng
+
+---
+
+## 9. Workspace Scope
+
+### 9.1 Cho phép
+
+| Vị trí | Mục đích |
+|--------|----------|
+| `diepxuan/` | Core business packages (ưu tiên) |
+| `scripts/` | Scripts riêng cho Portal |
+| `docs/` | Documentation |
+| `memory/` | Daily memory logs |
+
+### 9.2 Cấm
+
+- ❌ Tạo file ngoài `/root/.openclaw/workspace/projects/portal/`
+- ❌ Sửa core Laravel files (trừ khi được yêu cầu)
+
+---
+
+## 10. Kỷ Luật
+
+| Rule | Mô tả |
+|------|-------|
+| Không bỏ qua | Boot sequence |
+| Không hành động | Khi chưa nắm đủ context |
+| Không phá vỡ | Git workflow |
+| Mỗi task | Phải rõ ràng trước khi thực thi |
+
+---
+
+**Workspace này không phải chỗ thử nghiệm.**  
 Đây là hệ điều hành tư duy của Bột cho Portal Project.

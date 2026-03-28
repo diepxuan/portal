@@ -1,12 +1,12 @@
 # Serve:Dev Commands - Development Server Management
 
-## 🎯 Overview
+## Overview
 
 Package `laravel-support` cung cấp hệ thống command `serve:dev` để quản lý development server (Laravel + Vite) một cách tích hợp.
 
 **Lưu ý:** Toàn bộ scripts đã được tích hợp vào `serve:dev` commands. Không còn external scripts.
 
-## 📋 Available Commands
+## Available Commands
 
 ### **1. serve:dev** - Main development command
 
@@ -150,7 +150,7 @@ php artisan serve:dev:logs all --follow
 - `storage/logs/vite-server.log` - Vite server logs
 - `storage/logs/health-check.log` - Health check logs
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 serve:dev commands (in laravel-support package)
@@ -158,13 +158,13 @@ serve:dev commands (in laravel-support package)
 ├── serve:dev:stop         # Stop servers
 ├── serve:dev:status       # Check status
 ├── serve:dev:health       # Health check + auto-recovery
-└── serve:dev:service      # Systemd service management
+├── serve:dev:service      # Systemd service management
 └── serve:dev:logs         # Log viewer
 ```
 
 **Không còn external scripts** - tất cả đều trong package.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### **Option 1: Basic development**
 ```bash
@@ -194,7 +194,7 @@ php artisan serve:dev --health
 php artisan serve:dev:health --fix
 ```
 
-## ⚙️ Auto-Recovery Features
+## Auto-Recovery Features
 
 ### **Health Check Logic:**
 1. **Kiểm tra Laravel:**
@@ -221,7 +221,7 @@ RestartSec=10
 OnUnitActiveSec=30s
 ```
 
-## 📁 File Structure
+## File Structure
 
 ```
 laravel-support/
@@ -243,7 +243,7 @@ laravel-support/
 **Log files:**
 - `storage/logs/health-check.log` - Health check logs
 
-## 🔄 Migration từ External Scripts
+## Migration từ External Scripts
 
 **Đã loại bỏ:**
 - `scripts/health-check.sh`
@@ -260,7 +260,7 @@ php artisan serve:dev:health --fix
 php artisan serve:dev:service install
 ```
 
-## ✅ Benefits
+## Benefits
 
 1. **Centralized**: Tất cả trong package
 2. **Maintainable**: Dễ update và maintain
@@ -268,7 +268,7 @@ php artisan serve:dev:service install
 4. **Testable**: Có thể viết tests
 5. **Documented**: Artisan help sẵn có
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ```bash
 # 1. Start development
