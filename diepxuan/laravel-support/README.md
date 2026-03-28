@@ -2,6 +2,11 @@
 
 Package hỗ trợ và tiện ích cho Laravel.
 
+## 📚 Documentation
+
+- **Project Docs:** [Serve:Dev Commands](../../docs/project/serve-dev-commands.md) - Development server commands
+- **Project Docs:** [Package Namespace Conventions](../../docs/project/package-namespace-conventions.md)
+
 ## Mô tả ngắn gọn
 
 Cung cấp các công cụ hỗ trợ cho developer trong hệ thống DX, bao gồm mở rộng Collection và command tự động quản lý npm.

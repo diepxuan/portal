@@ -6,6 +6,11 @@ Core package cho DX System.
 
 Laravel core cho DX System (lấy từ composer.json).
 
+## 📚 Documentation
+
+- **Project Docs:** [Core Package Loading](../../docs/project/core-package-loading.md) - Auto-discovery system
+- **Project Docs:** [Package Namespace Conventions](../../docs/project/package-namespace-conventions.md)
+
 ## Chức năng chính
 
 - Cung cấp các ServiceProvider cốt lõi: Config, Route, Migration, Translation, View, Middleware, Register.
