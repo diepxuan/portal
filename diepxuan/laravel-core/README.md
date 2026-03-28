@@ -6,6 +6,11 @@ Core package cho DX System.
 
 Laravel core cho DX System - package nền tảng cung cấp cơ chế auto-discovery và auto-registration cho tất cả packages trong hệ thống.
 
+## 📚 Documentation
+
+- **Project Docs:** [Core Package Loading](../../docs/project/core-package-loading.md) - Auto-discovery system
+- **Project Docs:** [Package Namespace Conventions](../../docs/project/package-namespace-conventions.md)
+
 ## Chức năng chính
 
 ### 1. Package Management

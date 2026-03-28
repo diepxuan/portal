@@ -2,6 +2,11 @@
 
 Tích hợp Laravel với Simba (phần mềm kế toán).
 
+## 📚 Documentation
+
+- **Project Docs:** [Model Architecture](../../docs/project/model-architecture.md) - 3-layer Model pattern (SModel → Simba\Models → Catalog\Models)
+- **Project Docs:** [Package Namespace Conventions](../../docs/project/package-namespace-conventions.md)
+
 ## Mô tả ngắn gọn
 
 Laravel Integration With Simba. Package cung cấp các model và stored procedure caller để tương tác với cơ sở dữ liệu Simba (ERP/kế toán), hỗ trợ composite primary key và xử lý charset.
