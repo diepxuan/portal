@@ -17,7 +17,7 @@ Thư mục `diepxuan/` chứa **14 package Laravel nội bộ** được quản 
 | **laravel‑ronaldjack** | SDK Ronald Jack cho Laravel. | (none) | Các class giao tiếp với Ronald Jack API. |
 | **laravel‑scavenger** | Web scraper tích hợp. | ext‑iconv, ext‑json, ext‑dom | Cung cấp scraper engine với hỗ trợ charset tiếng Việt. |
 | **laravel‑simba** | Tích hợp với hệ thống Simba. | php‑charset, laravel‑core, laravel‑eloquent‑composite | Cung cấp model, service để đồng bộ dữ liệu Simba. |
-| **laravel‑support** | Các utility hỗ trợ developer. | php‑charset, laravel‑core | Các helper, macros, service hỗ trợ. |
+| **laravel‑support** | Các utility hỗ trợ developer + development server management. | php‑charset, laravel‑core | Các helper, macros, service hỗ trợ + serve:dev commands. |
 | **php‑charset** | Chuyển đổi charset tiếng Việt (kế thừa từ `kenny‑ngo/vietnamese‑converter`). | (none) | Cung cấp hàm `vn_to_ascii()`, `vn_to_utf8()`, … |
 
 ## Quan hệ phụ thuộc (dependency graph)
@@ -56,6 +56,22 @@ Package `laravel‑core` tự động phát hiện và đăng ký:
 3.  **Blade components:** Tìm class trong `View\Components` và file `.blade.php` trong `resources/views/components`.
 4.  **Service providers:** Mỗi package có một service provider chính (khai báo trong `composer.json` → `extra.laravel.providers`).
 
+## Tài liệu chi tiết
+
+### laravel-core
+- [Core Package Loading System](diepxuan/laravel-core/docs/CORE-PACKAGE-LOADING.md) - Auto-discovery và config system
+- [Package Namespace Conventions](diepxuan/laravel-core/docs/PACKAGE-NAMESPACE-CONVENTIONS.md) - Quy ước namespace cho tất cả packages
+
+### laravel-support
+- [Serve:Dev Commands](diepxuan/laravel-support/docs/SERVE-DEV-COMMANDS.md) - Development server management
+
+### laravel-simba
+- [Model Architecture](diepxuan/laravel-simba/docs/MODEL-ARCHITECTURE.md) - Kiến trúc Model 3 lớp
+- [Configuration](diepxuan/laravel-simba/docs/CONFIGURATION.md) - Cấu hình package
+- [Database Access Policy](diepxuan/laravel-simba/docs/DATABASE_ACCESS_POLICY.md) - Chính sách truy cập database
+- [Stored Procedures](diepxuan/laravel-simba/docs/README.md) - Danh sách stored procedures
+- [Troubleshooting](diepxuan/laravel-simba/docs/TROUBLESHOOTING.md) - Xử lý sự cố
+
 ## Cách thêm package mới
 
 1.  Tạo thư mục `diepxuan/laravel‑<tên>` với cấu trúc chuẩn.
@@ -70,4 +86,4 @@ Package `laravel‑core` tự động phát hiện và đăng ký:
 -   **Commit message** nên bắt đầu bằng tên package: `<package>: mô tả thay đổi`.
 
 ---
-*Tài liệu này được cập nhật dựa trên code hiện tại (2026‑02‑11).*
+*Tài liệu này được cập nhật dựa trên code hiện tại (2026‑03‑28).*

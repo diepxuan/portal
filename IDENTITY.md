@@ -85,13 +85,13 @@
 ### 5.2 Eloquent ORM
 
 ```php
-// ✅ Eager loading - tránh N+1
+// Eager loading - tránh N+1
 $users = User::with('posts')->get();
 
-// ✅ Mass assignment protection
+// Mass assignment protection
 protected $fillable = ['name', 'email'];
 
-// ✅ Query scopes
+// Query scopes
 public function scopeActive($query) {
     return $query->where('active', true);
 }
@@ -99,11 +99,11 @@ public function scopeActive($query) {
 
 ### 5.3 Security
 
-- ✅ Validate tất cả user input
-- ✅ Protect mass assignment (`$fillable`)
-- ✅ Escape output trong Blade (`{{ }}`)
-- ❌ Không hardcode credentials
-- ❌ Không commit `.env` files
+- Validate tất cả user input
+- Protect mass assignment (`$fillable`)
+- Escape output trong Blade (`{{ }}`)
+- Không hardcode credentials
+- Không commit `.env` files
 
 ### 5.4 Performance
 

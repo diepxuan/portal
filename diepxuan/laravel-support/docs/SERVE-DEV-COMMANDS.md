@@ -1,14 +1,19 @@
-# Serve:Dev Commands - Complete Integration
+# Serve:Dev Commands - Development Server Management
 
-## 🎯 Overview
-Toàn bộ scripts đã được tích hợp vào `serve:dev` commands trong laravel-support package. Không còn external scripts.
+## Overview
 
-## 📋 Available Commands
+Package `laravel-support` cung cấp hệ thống command `serve:dev` để quản lý development server (Laravel + Vite) một cách tích hợp.
+
+**Lưu ý:** Toàn bộ scripts đã được tích hợp vào `serve:dev` commands. Không còn external scripts.
+
+## Available Commands
 
 ### **1. serve:dev** - Main development command
+
 ```bash
 php artisan serve:dev
 ```
+
 **Options:**
 - `--host=0.0.0.0` - Host address
 - `--port=8000` - Laravel port
@@ -35,21 +40,27 @@ php artisan serve:dev --port=8080 --vite-port=3000
 ```
 
 ### **2. serve:dev:stop** - Stop development
+
 ```bash
 php artisan serve:dev:stop
 ```
+
 Stops both Laravel and Vite servers.
 
 ### **3. serve:dev:status** - Check status
+
 ```bash
 php artisan serve:dev:status
 ```
+
 Shows detailed status of both servers.
 
 ### **4. serve:dev:health** - Health check with auto-recovery
+
 ```bash
 php artisan serve:dev:health
 ```
+
 **Options:**
 - `--fix` - Auto-fix if server is down
 - `--interval=30` - Health check interval
@@ -69,9 +80,11 @@ php artisan serve:dev:health --fix --log
 ```
 
 ### **5. serve:dev:service** - Systemd service management
+
 ```bash
 php artisan serve:dev:service <action>
 ```
+
 **Actions:**
 - `install` - Install systemd service
 - `uninstall` - Uninstall service
@@ -101,9 +114,11 @@ sudo php artisan serve:dev:service start
 ```
 
 ### **6. serve:dev:logs** - View logs real-time
+
 ```bash
 php artisan serve:dev:logs [type]
 ```
+
 **Arguments:**
 - `type` - Type of logs (laravel, vite, health, all) - default: all
 
@@ -135,70 +150,51 @@ php artisan serve:dev:logs all --follow
 - `storage/logs/vite-server.log` - Vite server logs
 - `storage/logs/health-check.log` - Health check logs
 
-## 🔧 Portal-dev.sh Wrapper
-
-`portal-dev.sh` là wrapper cho tất cả commands:
-
-```bash
-# Development
-./portal-dev.sh start
-./portal-dev.sh stop
-./portal-dev.sh status
-./portal-dev.sh vite
-
-# Health & Service
-./portal-dev.sh health --fix
-./portal-dev.sh service install
-
-# Artisan pass-through
-./portal-dev.sh migrate
-./portal-dev.sh make:model Post
-```
-
-## 🏗️ Architecture
+## Architecture
 
 ```
-serve:dev commands (integrated)
+serve:dev commands (in laravel-support package)
 ├── serve:dev              # Main command
 ├── serve:dev:stop         # Stop servers
 ├── serve:dev:status       # Check status
 ├── serve:dev:health       # Health check + auto-recovery
-└── serve:dev:service      # Systemd service management
+├── serve:dev:service      # Systemd service management
+└── serve:dev:logs         # Log viewer
 ```
 
 **Không còn external scripts** - tất cả đều trong package.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### **Option 1: Basic development**
 ```bash
-./portal-dev.sh start
-./portal-dev.sh status
-./portal-dev.sh stop
+php artisan serve:dev
+php artisan serve:dev:status
+php artisan serve:dev:stop
 ```
 
 ### **Option 2: With systemd service**
 ```bash
 # Install as service
-sudo ./portal-dev.sh start --service
+sudo php artisan serve:dev --service
 
 # Or manually install service
-sudo ./portal-dev.sh service install
+sudo php artisan serve:dev:service install
 
 # Check service status
-./portal-dev.sh service status
+php artisan serve:dev:service status
 ```
 
 ### **Option 3: With health check**
 ```bash
 # Start with health check
-./portal-dev.sh start --health
+php artisan serve:dev --health
 
 # Manual health check
-./portal-dev.sh health --fix
+php artisan serve:dev:health --fix
 ```
 
-## ⚙️ Auto-Recovery Features
+## Auto-Recovery Features
 
 ### **Health Check Logic:**
 1. **Kiểm tra Laravel:**
@@ -225,27 +221,29 @@ RestartSec=10
 OnUnitActiveSec=30s
 ```
 
-## 📁 File Structure (Simplified)
+## File Structure
 
 ```
-portal/
-├── portal-dev.sh              # CLI wrapper
-├── diepxuan/laravel-support/  # All commands here
-│   └── src/Commands/
-│       ├── ServeDev.php       # Main command
-│       ├── ServeDevStop.php   # Stop command
-│       ├── ServeDevStatus.php # Status command
-│       ├── ServeDevHealth.php # Health check
-│       └── ServeDevService.php # Service management
-└── storage/
-    ├── app/
-    │   ├── portal.pid        # Laravel PID
-    │   └── vite.pid          # Vite PID
-    └── logs/
-        └── health-check.log  # Health logs
+laravel-support/
+├── src/Commands/
+│   ├── ServeDev.php       # Main command
+│   ├── ServeDevStop.php   # Stop command
+│   ├── ServeDevStatus.php # Status command
+│   ├── ServeDevHealth.php # Health check
+│   ├── ServeDevService.php # Service management
+│   └── ServeDevLogs.php   # Log viewer
+└── docs/
+    └── SERVE-DEV-COMMANDS.md  # This documentation
 ```
 
-## 🔄 Migration từ External Scripts
+**PID files:**
+- `storage/app/portal.pid` - Laravel PID
+- `storage/app/vite.pid` - Vite PID
+
+**Log files:**
+- `storage/logs/health-check.log` - Health check logs
+
+## Migration từ External Scripts
 
 **Đã loại bỏ:**
 - `scripts/health-check.sh`
@@ -262,7 +260,7 @@ php artisan serve:dev:health --fix
 php artisan serve:dev:service install
 ```
 
-## ✅ Benefits
+## Benefits
 
 1. **Centralized**: Tất cả trong package
 2. **Maintainable**: Dễ update và maintain
@@ -270,7 +268,7 @@ php artisan serve:dev:service install
 4. **Testable**: Có thể viết tests
 5. **Documented**: Artisan help sẵn có
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ```bash
 # 1. Start development
