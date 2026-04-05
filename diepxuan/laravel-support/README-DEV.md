@@ -250,3 +250,186 @@ php artisan dev cleanup
 **Location**: `diepxuan/laravel-support/`  
 **Commands**: `Dev`, `Npm`  
 **Service Provider**: `SupportServiceProvider`
+---
+
+## 🔥 NEW: Systemd Service Integration (2026-04-05)
+
+### Overview
+
+The `serve:dev` command now supports running as a systemd service with proper process management and health checks.
+
+### Quick Start
+
+```bash
+# Install as systemd service
+sudo php artisan serve:dev --service --health
+
+# Start the service
+sudo systemctl start portal.service
+
+# Check status
+sudo systemctl status portal.service
+
+# View logs
+journalctl -u portal.service -f
+```
+
+### Command Options
+
+```bash
+php artisan serve:dev [options]
+
+Options:
+      --host[=HOST]         Host address (default: "0.0.0.0")
+      --port[=PORT]         Port number (default: 8000)
+      --vite-port[=PORT]    Vite port (default: 8073)
+      --no-vite             Skip Vite server
+      --foreground          Run in foreground (for systemd)
+      --service             Install as systemd service
+      --health              Enable health check
+      --health-interval=N   Health check interval in seconds (default: 30)
+```
+
+### Service Management Commands
+
+```bash
+# Install service
+sudo php artisan serve:dev:service install
+
+# Uninstall service
+sudo php artisan serve:dev:service uninstall
+
+# Start/Stop/Restart
+sudo systemctl start portal.service
+sudo systemctl stop portal.service
+sudo systemctl restart portal.service
+
+# Enable/disable on boot
+sudo systemctl enable portal.service
+sudo systemctl disable portal.service
+
+# Check status
+sudo systemctl status portal.service
+sudo systemctl status portal-health.timer
+```
+
+### Critical Fixes Applied
+
+#### Issue 1: Service Restart Loops
+**Problem**: Service failed to start, entering restart loops.
+
+**Root Cause**: `Type=simple` with a command that forks child processes and exits.
+
+**Solution**: Changed to `Type=forking` to match actual process behavior.
+
+#### Issue 2: Zombie Processes
+**Problem**: Multiple vite/npm/esbuild processes accumulated over time, causing port conflicts.
+
+**Root Cause**: `KillMode=process` only killed the main process, leaving children running.
+
+**Solution**: Changed to `KillMode=control-group` to kill all processes in the cgroup.
+
+#### Issue 3: Transaction Conflicts
+**Problem**: Service failed to stop/restart with "destructive transaction" errors.
+
+**Root Cause**: `ExecStartPost` health check created conflicting systemd jobs.
+
+**Solution**: Integrated health check into main command via `--health` flag.
+
+### Service File Configuration
+
+```ini
+[Unit]
+Description=Portal Development Service (PHP + Vite)
+After=network.target
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/path/to/project
+ExecStart=/usr/bin/php artisan serve:dev --foreground --health
+Restart=always
+KillMode=control-group
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Health Check
+
+The health check runs automatically every 30 seconds (configurable) and:
+- Checks if Laravel server is responding (HTTP 200/302)
+- Checks if Vite server is running
+- Automatically restarts failed services
+- Logs to systemd journal
+
+```bash
+# Manual health check
+php artisan serve:dev:health --fix --log
+
+# View health check logs
+journalctl -u portal-health.service -f
+```
+
+### Troubleshooting
+
+#### Service won't start
+```bash
+# Check logs
+journalctl -u portal.service -n 50 --no-pager
+
+# Check for port conflicts
+ss -tlnp | grep -E '8000|8073'
+
+# Kill zombie processes
+pkill -f 'artisan serve'
+pkill -f 'node.*vite'
+pkill -f 'esbuild'
+```
+
+#### Zombie processes
+```bash
+# Stop service properly
+sudo systemctl stop portal.service
+
+# Verify all processes killed
+ps aux | grep -E 'artisan|vite|esbuild' | grep -v grep
+
+# If still running, force kill
+sudo systemctl kill portal.service
+```
+
+#### Port conflicts after restart
+```bash
+# Uninstall and reinstall service
+sudo php artisan serve:dev:service uninstall
+sudo php artisan serve:dev:service install
+```
+
+### Best Practices
+
+1. **Always use `--foreground --health`** when running as systemd service
+2. **Set `KillMode=control-group`** to prevent zombie processes
+3. **Use `TimeoutStopSec=60`** for graceful shutdown
+4. **Monitor logs regularly**: `journalctl -u portal.service -f`
+5. **Check health timer**: `systemctl status portal-health.timer`
+
+### Architecture
+
+```
+systemd
+  └── portal.service (Type=forking)
+       ├── Main process (monitor, exits after spawn)
+       ├── php artisan serve (PID file tracked)
+       └── npm run vite (child of serve)
+            
+portal-health.timer (every 30s)
+  └── portal-health.service
+       └── php artisan serve:dev:health --fix --log
+```
+
+---
+
+**Last Updated**: 2026-04-05  
+**Version**: 2.0.0 (with systemd support)
