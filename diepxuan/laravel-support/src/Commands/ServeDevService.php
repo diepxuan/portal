@@ -1,10 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * @copyright  © 2019 Dxvn, Inc.
+ *
+ * @author     Tran Ngoc Duc <ductn@diepxuan.com>
+ * @author     Tran Ngoc Duc <caothu91@gmail.com>
+ *
+ * @lastupdate 2026-04-05 23:48:12
+ */
+
 namespace Diepxuan\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
-use Illuminate\Support\Str;
 
 class ServeDevService extends Command
 {
@@ -29,123 +39,157 @@ class ServeDevService extends Command
 
     /**
      * Service template.
+     *
+     * CÁC LỖI SYSTEMD SERVICE ĐÃ SỬA - 2026-04-05:
+     *
+     * Vấn đề: Service không khởi động đúng cách, gây ra vòng lặp restart và tiến trình zombie.
+     *
+     * Nguyên nhân gốc rễ:
+     * 1. Type=simple với lệnh daemonizing: Lệnh `serve:dev` spawn các tiến trình con
+     *    (php artisan serve, npm run vite) và tiến trình chính thoát. Với Type=simple,
+     *    systemd nghĩ service đã chết khi tiến trình chính thoát.
+     *
+     * 2. KillMode=process: Chỉ kill tiến trình chính, để lại các tiến trình con (node, vite,
+     *    esbuild) chạy như zombie. Chúng tích lũy theo thời gian và gây xung đột cổng.
+     *
+     * 3. Health check ExecStartPost: Có thể gây xung đột transaction khi stopping/restarting
+     *    vì systemd xếp hàng các jobs xung đột (stop health check vs stop main service).
+     *
+     * Giải pháp đã áp dụng:
+     * 1. Type=forking: Bảo systemd mong đợi tiến trình chính fork và thoát, trong khi
+     *    các tiến trình con tiếp tục chạy. Phù hợp với hành vi thực tế của lệnh serve:dev.
+     *
+     * 2. KillMode=control-group: Kill TẤT CẢ tiến trình trong cgroup, đảm bảo không có zombie.
+     *
+     * 3. Tích hợp flag --health: Health check giờ là một phần của lệnh chính, loại bỏ
+     *    xung đột ExecStartPost.
+     *
+     * 4. TimeoutStopSec=60: Tăng timeout để shutdown êm ái cho tất cả tiến trình con.
      */
     protected $serviceTemplate = <<<'EOT'
-[Unit]
-Description=Portal Development Service (PHP + Vite)
-After=network.target
-Requires=network.target
+        [Unit]
+        Description=Portal Development Service (PHP + Vite)
+        After=network.target
+        Requires=network.target
 
-[Service]
-Type=simple
-User={user}
-Group={group}
-WorkingDirectory={working_dir}
-Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-Environment="NODE_ENV=development"
-Environment="APP_ENV=local"
+        [Service]
+        Type=forking
+        User={user}
+        Group={group}
+        WorkingDirectory={working_dir}
+        Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        Environment="NODE_ENV=development"
+        Environment="APP_ENV=local"
 
-# Main command - start serve:dev
-ExecStart=/usr/bin/php artisan serve:dev
+        # Main command - start serve:dev
+        ExecStart=/usr/bin/php artisan serve:dev --foreground --health
 
-# Restart configuration
-Restart=always
-RestartSec=10
-StartLimitInterval=60
-StartLimitBurst=5
+        # Restart configuration
+        Restart=always
+        RestartSec=10
+        StartLimitInterval=60
+        StartLimitBurst=5
 
-# Health check
-ExecStartPost=/bin/bash -c 'sleep 10 && php artisan serve:dev:health --fix --log'
+        # Health check
 
-# Logging
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier={service_name}
+        # Logging
+        StandardOutput=journal
+        StandardError=journal
+        SyslogIdentifier={service_name}
 
-# Process management
-KillMode=process
-KillSignal=SIGTERM
-TimeoutStopSec=30
-SendSIGKILL=yes
+        # Process management
+        KillMode=control-group
+        KillSignal=SIGTERM
+        TimeoutStopSec=60
+        SendSIGKILL=yes
 
-[Install]
-WantedBy=multi-user.target
-EOT;
+        [Install]
+        WantedBy=multi-user.target
+        EOT;
 
     /**
      * Timer template.
      */
     protected $timerTemplate = <<<'EOT'
-[Unit]
-Description={service_name} Health Check Timer
-Requires={service_name}.service
-After={service_name}.service
+        [Unit]
+        Description={service_name} Health Check Timer
+        Requires={service_name}.service
+        After={service_name}.service
 
-[Timer]
-OnUnitActiveSec={interval}s
-OnBootSec=60s
-OnUnitInactiveSec={interval}s
-Persistent=true
+        [Timer]
+        OnUnitActiveSec={interval}s
+        OnBootSec=60s
+        OnUnitInactiveSec={interval}s
+        Persistent=true
 
-[Install]
-WantedBy=timers.target
-EOT;
+        [Install]
+        WantedBy=timers.target
+        EOT;
 
     /**
      * Health service template.
      */
     protected $healthServiceTemplate = <<<'EOT'
-[Unit]
-Description={service_name} Health Check Service
-Requires={service_name}.service
-After={service_name}.service
+        [Unit]
+        Description={service_name} Health Check Service
+        Requires={service_name}.service
+        After={service_name}.service
 
-[Service]
-Type=oneshot
-User={user}
-Group={group}
-WorkingDirectory={working_dir}
-Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        [Service]
+        Type=oneshot
+        User={user}
+        Group={group}
+        WorkingDirectory={working_dir}
+        Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-# Run health check
-ExecStart=/usr/bin/php artisan serve:dev:health --fix --log
+        # Run health check
+        ExecStart=/usr/bin/php artisan serve:dev:health --fix --log
 
-# Logging
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier={service_name}-health
-EOT;
+        # Logging
+        StandardOutput=journal
+        StandardError=journal
+        SyslogIdentifier={service_name}-health
+        EOT;
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $action = $this->argument('action');
+        $action      = $this->argument('action');
         $serviceName = $this->option('name');
-        
-        $this->info("🔧 Development Service: {$serviceName}");
+
+        $this->info("Development Service: {$serviceName}");
 
         switch ($action) {
             case 'install':
                 return $this->installService();
+
             case 'uninstall':
                 return $this->uninstallService();
+
             case 'start':
                 return $this->startService();
+
             case 'stop':
                 return $this->stopService();
+
             case 'restart':
                 return $this->restartService();
+
             case 'status':
                 return $this->statusService();
+
             case 'enable':
                 return $this->enableService();
+
             case 'disable':
                 return $this->disableService();
+
             default:
                 $this->error("Unknown action: {$action}");
                 $this->info('Available actions: install, uninstall, start, stop, restart, status, enable, disable');
+
                 return 1;
         }
     }
@@ -156,45 +200,49 @@ EOT;
     protected function installService(): int
     {
         $serviceName = $this->option('name');
-        $serviceDir = '/etc/systemd/system';
-        
-        $this->info("📦 Installing {$serviceName} service...");
+        $serviceDir  = '/etc/systemd/system';
+
+        $this->info("Đang Installing {$serviceName} service...");
 
         // Check if running as root
-        if (posix_getuid() !== 0) {
-            $this->error('❌ Please run as root (sudo)');
+        if (0 !== posix_getuid()) {
+            $this->error('Lỗi: Please run as root (sudo)');
+
             return 1;
         }
 
         // Create service file
         $serviceContent = $this->renderTemplate($this->serviceTemplate);
-        $serviceFile = "{$serviceDir}/{$serviceName}.service";
-        
+        $serviceFile    = "{$serviceDir}/{$serviceName}.service";
+
         if (!file_put_contents($serviceFile, $serviceContent)) {
-            $this->error("❌ Failed to create service file: {$serviceFile}");
+            $this->error("Lỗi: Failed to create service file: {$serviceFile}");
+
             return 1;
         }
-        $this->info("✅ Service file created: {$serviceFile}");
+        $this->info("Đã Service file created: {$serviceFile}");
 
         // Create health service file
         $healthServiceContent = $this->renderTemplate($this->healthServiceTemplate);
-        $healthServiceFile = "{$serviceDir}/{$serviceName}-health.service";
-        
+        $healthServiceFile    = "{$serviceDir}/{$serviceName}-health.service";
+
         if (!file_put_contents($healthServiceFile, $healthServiceContent)) {
-            $this->error("❌ Failed to create health service file: {$healthServiceFile}");
+            $this->error("Lỗi: Failed to create health service file: {$healthServiceFile}");
+
             return 1;
         }
-        $this->info("✅ Health service file created: {$healthServiceFile}");
+        $this->info("Đã Health service file created: {$healthServiceFile}");
 
         // Create timer file
         $timerContent = $this->renderTemplate($this->timerTemplate);
-        $timerFile = "{$serviceDir}/{$serviceName}-health.timer";
-        
+        $timerFile    = "{$serviceDir}/{$serviceName}-health.timer";
+
         if (!file_put_contents($timerFile, $timerContent)) {
-            $this->error("❌ Failed to create timer file: {$timerFile}");
+            $this->error("Lỗi: Failed to create timer file: {$timerFile}");
+
             return 1;
         }
-        $this->info("✅ Timer file created: {$timerFile}");
+        $this->info("Đã Timer file created: {$timerFile}");
 
         // Reload systemd
         $this->info('🔄 Reloading systemd...');
@@ -206,9 +254,9 @@ EOT;
         Process::run("systemctl enable {$serviceName}-health.timer");
 
         $this->info('');
-        $this->info('✅ Service installed successfully!');
+        $this->info('Đã Service installed successfully!');
         $this->info('');
-        $this->info('🔧 Management commands:');
+        $this->info('Quản lý: Management commands:');
         $this->info("   sudo systemctl start {$serviceName}.service");
         $this->info("   sudo systemctl stop {$serviceName}.service");
         $this->info("   sudo systemctl restart {$serviceName}.service");
@@ -227,12 +275,13 @@ EOT;
     protected function uninstallService(): int
     {
         $serviceName = $this->option('name');
-        
+
         $this->info("🗑️ Uninstalling {$serviceName} service...");
 
         // Check if running as root
-        if (posix_getuid() !== 0) {
-            $this->error('❌ Please run as root (sudo)');
+        if (0 !== posix_getuid()) {
+            $this->error('Lỗi: Please run as root (sudo)');
+
             return 1;
         }
 
@@ -246,7 +295,7 @@ EOT;
 
         // Remove files
         $serviceDir = '/etc/systemd/system';
-        $files = [
+        $files      = [
             "{$serviceDir}/{$serviceName}.service",
             "{$serviceDir}/{$serviceName}-health.service",
             "{$serviceDir}/{$serviceName}-health.timer",
@@ -255,7 +304,7 @@ EOT;
         foreach ($files as $file) {
             if (file_exists($file)) {
                 unlink($file);
-                $this->info("✅ Removed: {$file}");
+                $this->info("Đã Removed: {$file}");
             }
         }
 
@@ -263,7 +312,7 @@ EOT;
         Process::run('systemctl daemon-reload');
         Process::run('systemctl reset-failed');
 
-        $this->info('✅ Service uninstalled successfully!');
+        $this->info('Đã Service uninstalled successfully!');
 
         return 0;
     }
@@ -274,23 +323,23 @@ EOT;
     protected function startService(): int
     {
         $serviceName = $this->option('name');
-        
-        $this->info("🚀 Starting {$serviceName} service...");
-        
+
+        $this->info("Khởi động: Starting {$serviceName} service...");
+
         $result = Process::run("systemctl start {$serviceName}.service");
-        
+
         if ($result->successful()) {
-            $this->info("✅ Service started");
-            
+            $this->info('Đã Service started');
+
             // Also start timer
             Process::run("systemctl start {$serviceName}-health.timer");
-            $this->info("✅ Health timer started");
-            
+            $this->info('Đã Health timer started');
+
             return 0;
-        } else {
-            $this->error("❌ Failed to start service: " . $result->errorOutput());
-            return 1;
         }
+        $this->error('Lỗi: Failed to start service: ' . $result->errorOutput());
+
+        return 1;
     }
 
     /**
@@ -299,23 +348,23 @@ EOT;
     protected function stopService(): int
     {
         $serviceName = $this->option('name');
-        
-        $this->info("🛑 Stopping {$serviceName} service...");
-        
+
+        $this->info("Dừng: Stopping {$serviceName} service...");
+
         $result = Process::run("systemctl stop {$serviceName}.service");
-        
+
         if ($result->successful()) {
-            $this->info("✅ Service stopped");
-            
+            $this->info('Đã Service stopped');
+
             // Also stop timer
             Process::run("systemctl stop {$serviceName}-health.timer");
-            $this->info("✅ Health timer stopped");
-            
+            $this->info('Đã Health timer stopped');
+
             return 0;
-        } else {
-            $this->error("❌ Failed to stop service: " . $result->errorOutput());
-            return 1;
         }
+        $this->error('Lỗi: Failed to stop service: ' . $result->errorOutput());
+
+        return 1;
     }
 
     /**
@@ -324,18 +373,19 @@ EOT;
     protected function restartService(): int
     {
         $serviceName = $this->option('name');
-        
+
         $this->info("🔄 Restarting {$serviceName} service...");
-        
+
         $result = Process::run("systemctl restart {$serviceName}.service");
-        
+
         if ($result->successful()) {
-            $this->info("✅ Service restarted");
+            $this->info('Đã Service restarted');
+
             return 0;
-        } else {
-            $this->error("❌ Failed to restart service: " . $result->errorOutput());
-            return 1;
         }
+        $this->error('Lỗi: Failed to restart service: ' . $result->errorOutput());
+
+        return 1;
     }
 
     /**
@@ -344,22 +394,22 @@ EOT;
     protected function statusService(): int
     {
         $serviceName = $this->option('name');
-        
-        $this->info("📊 {$serviceName} Service Status");
-        $this->info("==============================");
-        
+
+        $this->info("Trạng thái: {$serviceName} Service Status");
+        $this->info('==============================');
+
         // Main service
         $this->info('');
         $this->info('🌐 Main Service:');
         $result = Process::run("systemctl status {$serviceName}.service --no-pager");
         $this->line($result->output());
-        
+
         // Timer
         $this->info('');
         $this->info('🩺 Health Timer:');
         $result = Process::run("systemctl status {$serviceName}-health.timer --no-pager");
         $this->line($result->output());
-        
+
         return 0;
     }
 
@@ -369,23 +419,23 @@ EOT;
     protected function enableService(): int
     {
         $serviceName = $this->option('name');
-        
+
         $this->info("⚙️ Enabling {$serviceName} service...");
-        
+
         $result = Process::run("systemctl enable {$serviceName}.service");
-        
+
         if ($result->successful()) {
-            $this->info("✅ Service enabled");
-            
+            $this->info('Đã Service enabled');
+
             // Also enable timer
             Process::run("systemctl enable {$serviceName}-health.timer");
-            $this->info("✅ Health timer enabled");
-            
+            $this->info('Đã Health timer enabled');
+
             return 0;
-        } else {
-            $this->error("❌ Failed to enable service: " . $result->errorOutput());
-            return 1;
         }
+        $this->error('Lỗi: Failed to enable service: ' . $result->errorOutput());
+
+        return 1;
     }
 
     /**
@@ -394,23 +444,23 @@ EOT;
     protected function disableService(): int
     {
         $serviceName = $this->option('name');
-        
+
         $this->info("⚙️ Disabling {$serviceName} service...");
-        
+
         $result = Process::run("systemctl disable {$serviceName}.service");
-        
+
         if ($result->successful()) {
-            $this->info("✅ Service disabled");
-            
+            $this->info('Đã Service disabled');
+
             // Also disable timer
             Process::run("systemctl disable {$serviceName}-health.timer");
-            $this->info("✅ Health timer disabled");
-            
+            $this->info('Đã Health timer disabled');
+
             return 0;
-        } else {
-            $this->error("❌ Failed to disable service: " . $result->errorOutput());
-            return 1;
         }
+        $this->error('Lỗi: Failed to disable service: ' . $result->errorOutput());
+
+        return 1;
     }
 
     /**
@@ -420,10 +470,10 @@ EOT;
     {
         $variables = [
             '{service_name}' => $this->option('name'),
-            '{user}' => $this->option('user'),
-            '{group}' => $this->option('group'),
-            '{working_dir}' => base_path(),
-            '{interval}' => $this->option('interval'),
+            '{user}'         => $this->option('user'),
+            '{group}'        => $this->option('group'),
+            '{working_dir}'  => base_path(),
+            '{interval}'     => $this->option('interval'),
         ];
 
         return str_replace(array_keys($variables), array_values($variables), $template);
