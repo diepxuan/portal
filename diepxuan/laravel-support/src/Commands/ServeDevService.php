@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 23:27:19
+ * @lastupdate 2026-04-05 23:34:40
  */
 
 namespace Diepxuan\Support\Commands;
@@ -40,31 +40,31 @@ class ServeDevService extends Command
     /**
      * Service template.
      *
-     * SYSTEMD SERVICE FIXES - 2026-04-05:
+     * CÁC LỖI SYSTEMD SERVICE ĐÃ SỬA - 2026-04-05:
      *
-     * Issue: Service failed to start properly, causing restart loops and zombie processes.
+     * Vấn đề: Service không khởi động đúng cách, gây ra vòng lặp restart và tiến trình zombie.
      *
-     * Root Causes:
-     * 1. Type=simple with daemonizing command: The `serve:dev` command spawns child processes
-     *    (php artisan serve, npm run vite) and the main process exits. With Type=simple,
-     *    systemd thinks the service died when main process exits.
+     * Nguyên nhân gốc rễ:
+     * 1. Type=simple với lệnh daemonizing: Lệnh `serve:dev` spawn các tiến trình con
+     *    (php artisan serve, npm run vite) và tiến trình chính thoát. Với Type=simple,
+     *    systemd nghĩ service đã chết khi tiến trình chính thoát.
      *
-     * 2. KillMode=process: Only kills the main process, leaving child processes (node, vite,
-     *    esbuild) running as zombies. These accumulate over time and cause port conflicts.
+     * 2. KillMode=process: Chỉ kill tiến trình chính, để lại các tiến trình con (node, vite,
+     *    esbuild) chạy như zombie. Chúng tích lũy theo thời gian và gây xung đột cổng.
      *
-     * 3. ExecStartPost health check: Can cause transaction conflicts when stopping/restarting
-     *    because systemd queues conflicting jobs (stop health check vs stop main service).
+     * 3. Health check ExecStartPost: Có thể gây xung đột transaction khi stopping/restarting
+     *    vì systemd xếp hàng các jobs xung đột (stop health check vs stop main service).
      *
-     * Solutions Applied:
-     * 1. Type=forking: Tells systemd to expect the main process to fork and exit, while
-     *    children continue running. Matches actual behavior of serve:dev command.
+     * Giải pháp đã áp dụng:
+     * 1. Type=forking: Bảo systemd mong đợi tiến trình chính fork và thoát, trong khi
+     *    các tiến trình con tiếp tục chạy. Phù hợp với hành vi thực tế của lệnh serve:dev.
      *
-     * 2. KillMode=control-group: Kills ALL processes in the cgroup, ensuring no zombies.
+     * 2. KillMode=control-group: Kill TẤT CẢ tiến trình trong cgroup, đảm bảo không có zombie.
      *
-     * 3. Integrated --health flag: Health check is now part of main command, eliminating
-     *    ExecStartPost conflicts.
+     * 3. Tích hợp flag --health: Health check giờ là một phần của lệnh chính, loại bỏ
+     *    xung đột ExecStartPost.
      *
-     * 4. TimeoutStopSec=60: Extended timeout for graceful shutdown of all child processes.
+     * 4. TimeoutStopSec=60: Tăng timeout để shutdown êm ái cho tất cả tiến trình con.
      */
     protected $serviceTemplate = <<<'EOT'
         [Unit]
