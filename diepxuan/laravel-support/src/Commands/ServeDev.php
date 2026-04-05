@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-28 10:12:41
+ * @lastupdate 2026-04-05 23:27:19
  */
 
 namespace Diepxuan\Support\Commands;
@@ -335,18 +335,103 @@ class ServeDev extends Command
 
     /**
      * Wait for signal in foreground mode.
+     *
+     * SYSTEMD INTEGRATION:
+     * This method keeps the main process alive for systemd monitoring when running
+     * as a service. Systemd uses the main process PID to track service state.
+     *
+     * SIGNAL HANDLING:
+     * - SIGTERM: Graceful shutdown (systemd stop/restart)
+     * - SIGINT: Graceful shutdown (Ctrl+C)
+     * - SIGHUP: Reload configuration (future use)
      */
     protected function waitForSignal(): void
     {
-        // Keep process alive
-        while (true) {
-            if (!$this->isProcessRunning($this->portalPidFile)) {
-                $this->error('Laravel server stopped unexpectedly');
+        $this->info('🔒 Entering foreground monitor mode...');
 
-                break;
+        // Declare tick for signal handling
+        declare(ticks=1);
+
+        // Setup signal handlers for graceful shutdown
+        pcntl_signal(SIGTERM, function (): void {
+            $this->info('🛑 Received SIGTERM, shutting down gracefully...');
+            $this->stopAllServers();
+
+            exit(0);
+        });
+
+        pcntl_signal(SIGINT, function (): void {
+            $this->info('🛑 Received SIGINT, shutting down gracefully...');
+            $this->stopAllServers();
+
+            exit(0);
+        });
+
+        // Main monitoring loop
+        $lastStatusTime = time();
+        $statusInterval = 300; // Log status every 5 minutes
+
+        while (true) {
+            // Process pending signals
+            pcntl_signal_dispatch();
+
+            // Check if portal server is still running
+            if (!$this->isProcessRunning($this->portalPidFile)) {
+                $this->warn('⚠️ Laravel server stopped unexpectedly, attempting restart...');
+
+                // Try to restart
+                if (!$this->startLaravelServer()) {
+                    $this->error('❌ Failed to restart Laravel server');
+
+                    // Exit and let systemd handle restart
+                    exit(1);
+                }
             }
+
+            // Check Vite server if enabled
+            if (!$this->option('no-vite') && !$this->isProcessRunning($this->vitePidFile)) {
+                $this->warn('⚠️ Vite server stopped unexpectedly, attempting restart...');
+                $this->startViteServer();
+            }
+
+            // Periodic status log (for systemd journal)
+            if ((time() - $lastStatusTime) >= $statusInterval) {
+                $this->info('📊 Service health check: All servers running');
+                $lastStatusTime = time();
+            }
+
             sleep(5);
         }
+    }
+
+    /**
+     * Stop all servers gracefully.
+     */
+    protected function stopAllServers(): void
+    {
+        $this->info('🛑 Stopping all development servers...');
+
+        // Stop Vite first
+        if (file_exists($this->vitePidFile)) {
+            $pid = (int) file_get_contents($this->vitePidFile);
+            if ($pid > 0 && false !== posix_getpgid($pid)) {
+                posix_kill($pid, SIGTERM);
+                $this->info("   Vite server stopped (PID: {$pid})");
+            }
+            @unlink($this->vitePidFile);
+        }
+
+        // Stop Laravel server
+        if (file_exists($this->portalPidFile)) {
+            $pid = (int) file_get_contents($this->portalPidFile);
+            if ($pid > 0 && false !== posix_getpgid($pid)) {
+                posix_kill($pid, SIGTERM);
+                $this->info("   Laravel server stopped (PID: {$pid})");
+            }
+            @unlink($this->portalPidFile);
+        }
+
+        $this->info('✅ All servers stopped');
     }
 
     /**
