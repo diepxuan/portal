@@ -2,7 +2,7 @@
 
 This package provides development environment management commands for Portal projects.
 
-## 🚀 Installation
+## Installation
 
 The package is already included in the Portal project. To use the development commands:
 
@@ -14,7 +14,7 @@ composer dump-autoload
 php artisan list | grep dev
 ```
 
-## 📋 Available Commands
+## Available Commands
 
 ### Development Environment Management
 
@@ -102,7 +102,7 @@ php artisan dev status --port=9000
 ```
 - `--port`: Port to check (default: 8000)
 
-## 🔧 Automatic Fixes
+## Automatic Fixes
 
 The `dev fix` command automatically fixes common issues:
 
@@ -214,7 +214,7 @@ php artisan dev build
 ./portal-dev.sh dev:fix
 ```
 
-## 📝 Notes
+## Notes
 
 - Development commands work even if artisan has issues
 - PID files are automatically cleaned up
@@ -222,7 +222,7 @@ php artisan dev build
 - No external web server required (uses PHP built-in server)
 - SQLite database for easy development setup
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Start development
@@ -250,3 +250,187 @@ php artisan dev cleanup
 **Location**: `diepxuan/laravel-support/`  
 **Commands**: `Dev`, `Npm`  
 **Service Provider**: `SupportServiceProvider`
+
+---
+
+## NEW: Tích hợp Systemd Service (2026-04-05)
+
+### Tổng quan
+
+Lệnh `serve:dev` giờ đây hỗ trợ chạy như một systemd service với quản lý tiến trình và kiểm tra sức khỏe đầy đủ.
+
+### Bắt đầu nhanh
+
+```bash
+# Cài đặt như systemd service
+sudo php artisan serve:dev --service --health
+
+# Khởi động service
+sudo systemctl start portal.service
+
+# Kiểm tra trạng thái
+sudo systemctl status portal.service
+
+# Xem logs
+journalctl -u portal.service -f
+```
+
+### Tùy chọn lệnh
+
+```bash
+php artisan serve:dev [options]
+
+Options:
+      --host[=HOST]         Địa chỉ host (mặc định: "0.0.0.0")
+      --port[=PORT]         Cổng (mặc định: 8000)
+      --vite-port[=PORT]    Cổng Vite (mặc định: 8073)
+      --no-vite             Bỏ qua server Vite
+      --foreground          Chạy ở chế độ foreground (cho systemd)
+      --service             Cài đặt như systemd service
+      --health              Bật kiểm tra sức khỏe
+      --health-interval=N   Khoảng thời gian kiểm tra (giây, mặc định: 30)
+```
+
+### Lệnh quản lý Service
+
+```bash
+# Cài đặt service
+sudo php artisan serve:dev:service install
+
+# Gỡ cài đặt service
+sudo php artisan serve:dev:service uninstall
+
+# Start/Stop/Restart
+sudo systemctl start portal.service
+sudo systemctl stop portal.service
+sudo systemctl restart portal.service
+
+# Bật/tắt khi khởi động
+sudo systemctl enable portal.service
+sudo systemctl disable portal.service
+
+# Kiểm tra trạng thái
+sudo systemctl status portal.service
+sudo systemctl status portal-health.timer
+```
+
+### Các lỗi nghiêm trọng đã sửa
+
+#### Vấn đề 1: Service restart liên tục
+**Triệu chứng**: Service không khởi động được, rơi vào vòng lặp restart.
+
+**Nguyên nhân**: `Type=simple` với lệnh fork tiến trình con rồi thoát.
+
+**Giải pháp**: Đổi thành `Type=forking` để phù hợp với hành vi thực tế của tiến trình.
+
+#### Vấn đề 2: Tiến trình zombie
+**Triệu chứng**: Nhiều tiến trình vite/npm/esbuild tích lũy theo thời gian, gây xung đột cổng.
+
+**Nguyên nhân**: `KillMode=process` chỉ kill tiến trình chính, để lại tiến trình con chạy.
+
+**Giải pháp**: Đổi thành `KillMode=control-group` để kill tất cả tiến trình trong cgroup.
+
+#### Vấn đề 3: Xung đột transaction
+**Triệu chứng**: Service không stop/restart được với lỗi "destructive transaction".
+
+**Nguyên nhân**: Health check `ExecStartPost` tạo ra các systemd jobs xung đột.
+
+**Giải pháp**: Tích hợp health check vào lệnh chính qua flag `--health`.
+
+### Cấu hình Service File
+
+```ini
+[Unit]
+Description=Portal Development Service (PHP + Vite)
+After=network.target
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/path/to/project
+ExecStart=/usr/bin/php artisan serve:dev --foreground --health
+Restart=always
+KillMode=control-group
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### Kiểm tra sức khỏe (Health Check)
+
+Health check chạy tự động mỗi 30 giây (có thể cấu hình) và:
+- Kiểm tra Laravel server có phản hồi không (HTTP 200/302)
+- Kiểm tra Vite server có chạy không
+- Tự động restart các service bị lỗi
+- Ghi log vào systemd journal
+
+```bash
+# Kiểm tra sức khỏe thủ công
+php artisan serve:dev:health --fix --log
+
+# Xem logs health check
+journalctl -u portal-health.service -f
+```
+
+### Xử lý sự cố
+
+#### Service không khởi động được
+```bash
+# Kiểm tra logs
+journalctl -u portal.service -n 50 --no-pager
+
+# Kiểm tra xung đột cổng
+ss -tlnp | grep -E '8000|8073'
+
+# Kill tiến trình zombie
+pkill -f 'artisan serve'
+pkill -f 'node.*vite'
+pkill -f 'esbuild'
+```
+
+#### Tiến trình zombie
+```bash
+# Stop service đúng cách
+sudo systemctl stop portal.service
+
+# Xác nhận tất cả tiến trình đã bị kill
+ps aux | grep -E 'artisan|vite|esbuild' | grep -v grep
+
+# Nếu vẫn chạy, force kill
+sudo systemctl kill portal.service
+```
+
+#### Xung đột cổng sau restart
+```bash
+# Gỡ cài đặt và cài đặt lại service
+sudo php artisan serve:dev:service uninstall
+sudo php artisan serve:dev:service install
+```
+
+### Thực hành tốt nhất
+
+1. **Luôn dùng `--foreground --health`** khi chạy như systemd service
+2. **Đặt `KillMode=control-group`** để tránh tiến trình zombie
+3. **Dùng `TimeoutStopSec=60`** để shutdown êm ái
+4. **Theo dõi logs thường xuyên**: `journalctl -u portal.service -f`
+5. **Kiểm tra health timer**: `systemctl status portal-health.timer`
+
+### Kiến trúc
+
+```
+systemd
+  └── portal.service (Type=forking)
+       ├── Tiến trình chính (monitor, thoát sau khi spawn)
+       ├── php artisan serve (PID file được theo dõi)
+       └── npm run vite (con của serve)
+            
+portal-health.timer (mỗi 30s)
+  └── portal-health.service
+       └── php artisan serve:dev:health --fix --log
+```
+
+---
+
+**Cập nhật cuối**: 2026-04-05  
+**Phiên bản**: 2.0.0 (với hỗ trợ systemd)
