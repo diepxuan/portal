@@ -2,7 +2,7 @@
 
 This package provides development environment management commands for Portal projects.
 
-## 🚀 Installation
+## Installation
 
 The package is already included in the Portal project. To use the development commands:
 
@@ -14,7 +14,7 @@ composer dump-autoload
 php artisan list | grep dev
 ```
 
-## 📋 Available Commands
+## Available Commands
 
 ### Development Environment Management
 
@@ -102,7 +102,7 @@ php artisan dev status --port=9000
 ```
 - `--port`: Port to check (default: 8000)
 
-## 🔧 Automatic Fixes
+## Automatic Fixes
 
 The `dev fix` command automatically fixes common issues:
 
@@ -214,7 +214,7 @@ php artisan dev build
 ./portal-dev.sh dev:fix
 ```
 
-## 📝 Notes
+## Notes
 
 - Development commands work even if artisan has issues
 - PID files are automatically cleaned up
@@ -222,7 +222,7 @@ php artisan dev build
 - No external web server required (uses PHP built-in server)
 - SQLite database for easy development setup
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Start development

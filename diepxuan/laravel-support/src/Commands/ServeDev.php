@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 23:34:40
+ * @lastupdate 2026-04-05 23:48:11
  */
 
 namespace Diepxuan\Support\Commands;
@@ -54,7 +54,7 @@ class ServeDev extends Command
         $this->portalPidFile = storage_path('app/portal.pid');
         $this->vitePidFile   = storage_path('app/vite.pid');
 
-        $this->info('🚀 Starting Laravel development environment with Vite...');
+        $this->info('Bat dau: Starting Laravel development environment with Vite...');
 
         // Check if already running
         if ($this->isProcessRunning($this->portalPidFile)) {
@@ -103,7 +103,7 @@ class ServeDev extends Command
      */
     protected function fixViteManifest(): void
     {
-        $this->info('🔧 Checking Vite manifest...');
+        $this->info('Quan ly: Checking Vite manifest...');
 
         $buildPath  = public_path('build');
         $assetsPath = public_path('build/assets');
@@ -225,7 +225,7 @@ class ServeDev extends Command
 
         // Install dependencies if needed
         if (!file_exists(base_path('node_modules'))) {
-            $this->info('📦 Installing npm dependencies...');
+            $this->info('Cai dat: Installing npm dependencies...');
             Process::run('npm install', base_path());
         }
 
@@ -297,7 +297,7 @@ class ServeDev extends Command
      */
     protected function installSystemdService(): void
     {
-        $this->info('🔧 Installing as systemd service...');
+        $this->info('Quan ly: Installing as systemd service...');
 
         // Check if running as root
         if (0 !== posix_getuid()) {
