@@ -250,53 +250,54 @@ php artisan dev cleanup
 **Location**: `diepxuan/laravel-support/`  
 **Commands**: `Dev`, `Npm`  
 **Service Provider**: `SupportServiceProvider`
+
 ---
 
-## 🔥 NEW: Systemd Service Integration (2026-04-05)
+## NEW: Tích hợp Systemd Service (2026-04-05)
 
-### Overview
+### Tổng quan
 
-The `serve:dev` command now supports running as a systemd service with proper process management and health checks.
+Lệnh `serve:dev` giờ đây hỗ trợ chạy như một systemd service với quản lý tiến trình và kiểm tra sức khỏe đầy đủ.
 
-### Quick Start
+### Bắt đầu nhanh
 
 ```bash
-# Install as systemd service
+# Cài đặt như systemd service
 sudo php artisan serve:dev --service --health
 
-# Start the service
+# Khởi động service
 sudo systemctl start portal.service
 
-# Check status
+# Kiểm tra trạng thái
 sudo systemctl status portal.service
 
-# View logs
+# Xem logs
 journalctl -u portal.service -f
 ```
 
-### Command Options
+### Tùy chọn lệnh
 
 ```bash
 php artisan serve:dev [options]
 
 Options:
-      --host[=HOST]         Host address (default: "0.0.0.0")
-      --port[=PORT]         Port number (default: 8000)
-      --vite-port[=PORT]    Vite port (default: 8073)
-      --no-vite             Skip Vite server
-      --foreground          Run in foreground (for systemd)
-      --service             Install as systemd service
-      --health              Enable health check
-      --health-interval=N   Health check interval in seconds (default: 30)
+      --host[=HOST]         Địa chỉ host (mặc định: "0.0.0.0")
+      --port[=PORT]         Cổng (mặc định: 8000)
+      --vite-port[=PORT]    Cổng Vite (mặc định: 8073)
+      --no-vite             Bỏ qua server Vite
+      --foreground          Chạy ở chế độ foreground (cho systemd)
+      --service             Cài đặt như systemd service
+      --health              Bật kiểm tra sức khỏe
+      --health-interval=N   Khoảng thời gian kiểm tra (giây, mặc định: 30)
 ```
 
-### Service Management Commands
+### Lệnh quản lý Service
 
 ```bash
-# Install service
+# Cài đặt service
 sudo php artisan serve:dev:service install
 
-# Uninstall service
+# Gỡ cài đặt service
 sudo php artisan serve:dev:service uninstall
 
 # Start/Stop/Restart
@@ -304,39 +305,39 @@ sudo systemctl start portal.service
 sudo systemctl stop portal.service
 sudo systemctl restart portal.service
 
-# Enable/disable on boot
+# Bật/tắt khi khởi động
 sudo systemctl enable portal.service
 sudo systemctl disable portal.service
 
-# Check status
+# Kiểm tra trạng thái
 sudo systemctl status portal.service
 sudo systemctl status portal-health.timer
 ```
 
-### Critical Fixes Applied
+### Các lỗi nghiêm trọng đã sửa
 
-#### Issue 1: Service Restart Loops
-**Problem**: Service failed to start, entering restart loops.
+#### Vấn đề 1: Service restart liên tục
+**Triệu chứng**: Service không khởi động được, rơi vào vòng lặp restart.
 
-**Root Cause**: `Type=simple` with a command that forks child processes and exits.
+**Nguyên nhân**: `Type=simple` với lệnh fork tiến trình con rồi thoát.
 
-**Solution**: Changed to `Type=forking` to match actual process behavior.
+**Giải pháp**: Đổi thành `Type=forking` để phù hợp với hành vi thực tế của tiến trình.
 
-#### Issue 2: Zombie Processes
-**Problem**: Multiple vite/npm/esbuild processes accumulated over time, causing port conflicts.
+#### Vấn đề 2: Tiến trình zombie
+**Triệu chứng**: Nhiều tiến trình vite/npm/esbuild tích lũy theo thời gian, gây xung đột cổng.
 
-**Root Cause**: `KillMode=process` only killed the main process, leaving children running.
+**Nguyên nhân**: `KillMode=process` chỉ kill tiến trình chính, để lại tiến trình con chạy.
 
-**Solution**: Changed to `KillMode=control-group` to kill all processes in the cgroup.
+**Giải pháp**: Đổi thành `KillMode=control-group` để kill tất cả tiến trình trong cgroup.
 
-#### Issue 3: Transaction Conflicts
-**Problem**: Service failed to stop/restart with "destructive transaction" errors.
+#### Vấn đề 3: Xung đột transaction
+**Triệu chứng**: Service không stop/restart được với lỗi "destructive transaction".
 
-**Root Cause**: `ExecStartPost` health check created conflicting systemd jobs.
+**Nguyên nhân**: Health check `ExecStartPost` tạo ra các systemd jobs xung đột.
 
-**Solution**: Integrated health check into main command via `--health` flag.
+**Giải pháp**: Tích hợp health check vào lệnh chính qua flag `--health`.
 
-### Service File Configuration
+### Cấu hình Service File
 
 ```ini
 [Unit]
@@ -356,80 +357,80 @@ TimeoutStopSec=60
 WantedBy=multi-user.target
 ```
 
-### Health Check
+### Kiểm tra sức khỏe (Health Check)
 
-The health check runs automatically every 30 seconds (configurable) and:
-- Checks if Laravel server is responding (HTTP 200/302)
-- Checks if Vite server is running
-- Automatically restarts failed services
-- Logs to systemd journal
+Health check chạy tự động mỗi 30 giây (có thể cấu hình) và:
+- Kiểm tra Laravel server có phản hồi không (HTTP 200/302)
+- Kiểm tra Vite server có chạy không
+- Tự động restart các service bị lỗi
+- Ghi log vào systemd journal
 
 ```bash
-# Manual health check
+# Kiểm tra sức khỏe thủ công
 php artisan serve:dev:health --fix --log
 
-# View health check logs
+# Xem logs health check
 journalctl -u portal-health.service -f
 ```
 
-### Troubleshooting
+### Xử lý sự cố
 
-#### Service won't start
+#### Service không khởi động được
 ```bash
-# Check logs
+# Kiểm tra logs
 journalctl -u portal.service -n 50 --no-pager
 
-# Check for port conflicts
+# Kiểm tra xung đột cổng
 ss -tlnp | grep -E '8000|8073'
 
-# Kill zombie processes
+# Kill tiến trình zombie
 pkill -f 'artisan serve'
 pkill -f 'node.*vite'
 pkill -f 'esbuild'
 ```
 
-#### Zombie processes
+#### Tiến trình zombie
 ```bash
-# Stop service properly
+# Stop service đúng cách
 sudo systemctl stop portal.service
 
-# Verify all processes killed
+# Xác nhận tất cả tiến trình đã bị kill
 ps aux | grep -E 'artisan|vite|esbuild' | grep -v grep
 
-# If still running, force kill
+# Nếu vẫn chạy, force kill
 sudo systemctl kill portal.service
 ```
 
-#### Port conflicts after restart
+#### Xung đột cổng sau restart
 ```bash
-# Uninstall and reinstall service
+# Gỡ cài đặt và cài đặt lại service
 sudo php artisan serve:dev:service uninstall
 sudo php artisan serve:dev:service install
 ```
 
-### Best Practices
+### Thực hành tốt nhất
 
-1. **Always use `--foreground --health`** when running as systemd service
-2. **Set `KillMode=control-group`** to prevent zombie processes
-3. **Use `TimeoutStopSec=60`** for graceful shutdown
-4. **Monitor logs regularly**: `journalctl -u portal.service -f`
-5. **Check health timer**: `systemctl status portal-health.timer`
+1. **Luôn dùng `--foreground --health`** khi chạy như systemd service
+2. **Đặt `KillMode=control-group`** để tránh tiến trình zombie
+3. **Dùng `TimeoutStopSec=60`** để shutdown êm ái
+4. **Theo dõi logs thường xuyên**: `journalctl -u portal.service -f`
+5. **Kiểm tra health timer**: `systemctl status portal-health.timer`
 
-### Architecture
+### Kiến trúc
 
 ```
 systemd
   └── portal.service (Type=forking)
-       ├── Main process (monitor, exits after spawn)
-       ├── php artisan serve (PID file tracked)
-       └── npm run vite (child of serve)
+       ├── Tiến trình chính (monitor, thoát sau khi spawn)
+       ├── php artisan serve (PID file được theo dõi)
+       └── npm run vite (con của serve)
             
-portal-health.timer (every 30s)
+portal-health.timer (mỗi 30s)
   └── portal-health.service
        └── php artisan serve:dev:health --fix --log
 ```
 
 ---
 
-**Last Updated**: 2026-04-05  
-**Version**: 2.0.0 (with systemd support)
+**Cập nhật cuối**: 2026-04-05  
+**Phiên bản**: 2.0.0 (với hỗ trợ systemd)

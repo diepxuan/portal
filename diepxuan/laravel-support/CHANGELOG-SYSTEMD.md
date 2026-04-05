@@ -1,113 +1,113 @@
-# Changelog - Systemd Service Fixes
+# Changelog - Sửa lỗi Systemd Service
 
 ## [2.0.0] - 2026-04-05
 
-### Critical Fixes
+### Sửa lỗi nghiêm trọng
 
-#### Systemd Service Integration
-Fixed critical issues with systemd service that caused service failures and zombie processes.
+#### Tích hợp Systemd Service
+Đã sửa các lỗi nghiêm trọng với systemd service gây ra lỗi service và tiến trình zombie.
 
-##### Issues Fixed
+##### Các lỗi đã sửa
 
-1. **Service Restart Loops** (#SYSTEMD-001)
-   - **Symptom**: Service failed to start, entering continuous restart loops
-   - **Root Cause**: `Type=simple` configuration with a command that forks child processes
-   - **Impact**: Service unavailable, high CPU usage from restart attempts
-   - **Fix**: Changed to `Type=forking` to match actual process behavior
+1. **Service restart liên tục** (#SYSTEMD-001)
+   - **Triệu chứng**: Service không khởi động được, rơi vào vòng lặp restart liên tục
+   - **Nguyên nhân**: Cấu hình `Type=simple` với lệnh fork tiến trình con
+   - **Ảnh hưởng**: Service không khả dụng, CPU tăng cao do cố gắng restart
+   - **Sửa**: Đổi thành `Type=forking` để phù hợp với hành vi thực tế của tiến trình
    - **File**: `ServeDevService.php`
 
-2. **Zombie Process Accumulation** (#SYSTEMD-002)
-   - **Symptom**: Multiple vite/npm/esbuild processes accumulated over time
-   - **Root Cause**: `KillMode=process` only killed main process, leaving children
-   - **Impact**: Port conflicts, memory leaks, system instability
-   - **Fix**: Changed to `KillMode=control-group` to kill entire process tree
+2. **Tích lũy tiến trình zombie** (#SYSTEMD-002)
+   - **Triệu chứng**: Nhiều tiến trình vite/npm/esbuild tích lũy theo thời gian
+   - **Nguyên nhân**: `KillMode=process` chỉ kill tiến trình chính, để lại tiến trình con
+   - **Ảnh hưởng**: Xung đột cổng, rò rỉ bộ nhớ, mất ổn định hệ thống
+   - **Sửa**: Đổi thành `KillMode=control-group` để kill toàn bộ cây tiến trình
    - **File**: `ServeDevService.php`
 
-3. **Transaction Conflicts on Stop/Restart** (#SYSTEMD-003)
-   - **Symptom**: "destructive transaction" errors when stopping/restarting service
-   - **Root Cause**: `ExecStartPost` health check created conflicting systemd jobs
-   - **Impact**: Service couldn't be stopped or restarted cleanly
-   - **Fix**: Integrated health check into main command via `--health` flag
+3. **Xung đột transaction khi Stop/Restart** (#SYSTEMD-003)
+   - **Triệu chứng**: Lỗi "destructive transaction" khi stop/restart service
+   - **Nguyên nhân**: Health check `ExecStartPost` tạo ra các systemd jobs xung đột
+   - **Ảnh hưởng**: Không thể stop hoặc restart service một cách sạch sẽ
+   - **Sửa**: Tích hợp health check vào lệnh chính qua flag `--health`
    - **Files**: `ServeDevService.php`, `ServeDev.php`
 
-4. **Graceful Shutdown Not Working** (#SYSTEMD-004)
-   - **Symptom**: Processes killed abruptly, data loss possible
-   - **Root Cause**: No signal handling in foreground mode
-   - **Impact**: Unclean shutdowns, potential data corruption
-   - **Fix**: Added PCNTL signal handlers for SIGTERM/SIGINT
+4. **Shutdown êm ái không hoạt động** (#SYSTEMD-004)
+   - **Triệu chứng**: Tiến trình bị kill đột ngột, có thể mất dữ liệu
+   - **Nguyên nhân**: Không có xử lý signal trong chế độ foreground
+   - **Ảnh hưởng**: Shutdown không sạch sẽ, có thể hỏng dữ liệu
+   - **Sửa**: Thêm bộ xử lý signal PCNTL cho SIGTERM/SIGINT
    - **File**: `ServeDev.php`
 
-### Changes
+### Thay đổi
 
 #### ServeDevService.php
-- Changed `Type=simple` → `Type=forking`
-- Changed `KillMode=process` → `KillMode=control-group`
-- Changed `TimeoutStopSec=30` → `TimeoutStopSec=60`
-- Updated `ExecStart` to include `--foreground --health` flags
-- Removed `ExecStartPost` health check (integrated into main command)
-- Added comprehensive documentation comments
+- Đổi `Type=simple` thành `Type=forking`
+- Đổi `KillMode=process` thành `KillMode=control-group`
+- Đổi `TimeoutStopSec=30` thành `TimeoutStopSec=60`
+- Cập nhật `ExecStart` bao gồm flags `--foreground --health`
+- Xóa health check `ExecStartPost` (tích hợp vào lệnh chính)
+- Thêm comments tài liệu chi tiết
 
 #### ServeDev.php
-- Enhanced `waitForSignal()` method with:
-  - PCNTL signal handling (SIGTERM, SIGINT)
-  - Automatic restart of failed child processes
-  - Periodic status logging (every 5 minutes)
-  - Graceful shutdown via `stopAllServers()` method
-- Added `stopAllServers()` helper method
+- Nâng cao phương thức `waitForSignal()` với:
+  - Xử lý signal PCNTL (SIGTERM, SIGINT)
+  - Tự động restart tiến trình con bị lỗi
+  - Ghi log trạng thái định kỳ (mỗi 5 phút)
+  - Phương thức helper `stopAllServers()` để shutdown êm ái
+- Thêm phương thức helper `stopAllServers()`
 
-### New Features
+### Tính năng mới
 
-1. **Integrated Health Check**
-   - Health check now runs as part of main command
-   - No separate systemd timer required (but still supported)
-   - Auto-recovery for failed child processes
+1. **Health Check tích hợp**
+   - Health check giờ chạy như một phần của lệnh chính
+   - Không cần systemd timer riêng (vẫn hỗ trợ)
+   - Tự động phục hồi tiến trình con bị lỗi
 
-2. **Signal Handling**
-   - Graceful shutdown on SIGTERM (systemd stop)
-   - Graceful shutdown on SIGINT (Ctrl+C)
-   - Proper cleanup of PID files
+2. **Xử lý Signal**
+   - Shutdown êm ái khi nhận SIGTERM (systemd stop)
+   - Shutdown êm ái khi nhận SIGINT (Ctrl+C)
+   - Dọn dẹp file PID đúng cách
 
-3. **Status Logging**
-   - Periodic health status to systemd journal
-   - Easier debugging and monitoring
+3. **Ghi log trạng thái**
+   - Ghi log trạng thái sức khỏe định kỳ vào systemd journal
+   - Debug và giám sát dễ dàng hơn
 
-### Documentation
+### Tài liệu
 
-- Updated `README-DEV.md` with:
-  - Systemd service installation guide
-  - Management commands reference
-  - Troubleshooting section
-  - Architecture diagram
-  - Best practices
+- Cập nhật `README-DEV.md` với:
+  - Hướng dẫn cài đặt systemd service
+  - Tham chiếu lệnh quản lý
+  - Mục xử lý sự cố
+  - Sơ đồ kiến trúc
+  - Thực hành tốt nhất
 
-- Added `CHANGELOG-SYSTEMD.md` (this file)
+- Thêm `CHANGELOG-SYSTEMD.md` (file này)
 
-### Migration Guide
+### Hướng dẫn Migration
 
-#### For Existing Installations
+#### Cho cài đặt hiện có
 
 ```bash
-# 1. Stop current service
+# 1. Stop service hiện tại
 sudo systemctl stop portal.service
 sudo systemctl stop portal-health.timer
 
-# 2. Uninstall old service
+# 2. Gỡ cài đặt service cũ
 sudo php artisan serve:dev:service uninstall
 
-# 3. Reinstall with new configuration
+# 3. Cài đặt lại với cấu hình mới
 sudo php artisan serve:dev:service install --interval=30
 
 # 4. Start service
 sudo systemctl start portal.service
 
-# 5. Verify
+# 5. Xác minh
 sudo systemctl status portal.service
 journalctl -u portal.service -f
 ```
 
-#### Configuration Changes
+#### Thay đổi cấu hình
 
-Old service file:
+File service cũ:
 ```ini
 Type=simple
 ExecStart=/usr/bin/php artisan serve:dev
@@ -116,7 +116,7 @@ KillMode=process
 TimeoutStopSec=30
 ```
 
-New service file:
+File service mới:
 ```ini
 Type=forking
 ExecStart=/usr/bin/php artisan serve:dev --foreground --health
@@ -126,27 +126,27 @@ TimeoutStopSec=60
 
 ### Testing
 
-Tested scenarios:
+Các kịch bản đã test:
 - ✅ Service start/stop/restart
-- ✅ Service enable/disable on boot
-- ✅ Graceful shutdown under load
-- ✅ Auto-recovery of failed processes
-- ✅ No zombie process accumulation
-- ✅ Clean journal logs
-- ✅ Health check auto-fix
+- ✅ Service enable/disable khi khởi động
+- ✅ Shutdown êm ái dưới tải
+- ✅ Tự động phục hồi tiến trình bị lỗi
+- ✅ Không tích lũy tiến trình zombie
+- ✅ Logs journal sạch sẽ
+- ✅ Health check tự động sửa lỗi
 
-### Compatibility
+### Tương thích
 
 - **Laravel**: 9.x, 10.x, 11.x
 - **PHP**: 8.1+
-- **Systemd**: 247+ (tested on Proxmox VE 8.x)
+- **Systemd**: 247+ (test trên Proxmox VE 8.x)
 - **Node.js**: 18.x, 20.x, 22.x
 
-### Known Limitations
+### Hạn chế đã biết
 
-1. **Type=forking** requires the command to properly daemonize
-2. **PCNTL extension** required for signal handling
-3. **Root access** required for service installation
+1. **Type=forking** yêu cầu lệnh phải daemonize đúng cách
+2. **Extension PCNTL** yêu cầu cho xử lý signal
+3. **Quyền root** yêu cầu cho cài đặt service
 
 ### Contributors
 
@@ -154,6 +154,6 @@ Tested scenarios:
 
 ---
 
-**Previous Version**: 1.0.0  
-**Current Version**: 2.0.0  
-**Release Date**: 2026-04-05
+**Phiên bản trước**: 1.0.0  
+**Phiên bản hiện tại**: 2.0.0  
+**Ngày phát hành**: 2026-04-05

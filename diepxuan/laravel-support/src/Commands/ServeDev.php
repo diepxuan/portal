@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 23:27:19
+ * @lastupdate 2026-04-05 23:34:40
  */
 
 namespace Diepxuan\Support\Commands;
@@ -136,7 +136,7 @@ class ServeDev extends Command
             file_put_contents(public_path('build/assets/app-dev.css'), '/* Development CSS */');
             file_put_contents(public_path('build/assets/app-dev.js'), '// Development JS');
 
-            $this->info('✅ Created Vite manifest and assets');
+            $this->info('Đã tạo Vite manifest và assets');
         }
     }
 
@@ -153,7 +153,7 @@ class ServeDev extends Command
             $examplePath = base_path('.env.example');
             if (file_exists($examplePath)) {
                 copy($examplePath, $envPath);
-                $this->info('✅ Created .env from .env.example');
+                $this->info('Đã tạo .env từ .env.example');
             }
         }
 
@@ -162,14 +162,14 @@ class ServeDev extends Command
             $envContent = file_get_contents($envPath);
             if (!str_contains($envContent, 'APP_KEY=base64:')) {
                 $this->callSilently('key:generate');
-                $this->info('✅ Generated application key');
+                $this->info('Đã tạo application key');
             }
         }
 
         // Clear cache
         $this->callSilently('config:clear');
         $this->callSilently('view:clear');
-        $this->info('✅ Cache cleared');
+        $this->info('Cache đã được xóa');
     }
 
     /**
@@ -203,7 +203,7 @@ class ServeDev extends Command
         // Wait a bit for server to start
         sleep(2);
 
-        $this->info("✅ Laravel server started (PID: {$pid})");
+        $this->info("Laravel server đã start (PID: {$pid})");
         $this->info("   URL: http://{$host}:{$port}");
 
         return true;
@@ -218,7 +218,7 @@ class ServeDev extends Command
 
         // Check package.json
         if (!file_exists(base_path('package.json'))) {
-            $this->warn('⚠️ package.json not found, skipping Vite');
+            $this->warn('Không tìm thấy package.json, bỏ qua Vite');
 
             return;
         }
@@ -250,7 +250,7 @@ class ServeDev extends Command
         // Wait a bit for server to start
         sleep(3);
 
-        $this->info("✅ Vite server started (PID: {$pid})");
+        $this->info("Vite server đã start (PID: {$pid})");
         $this->info("   URL: http://localhost:{$vitePort}");
     }
 
@@ -260,7 +260,7 @@ class ServeDev extends Command
     protected function showStatus(): void
     {
         $this->info('');
-        $this->info('📊 Development Environment Status');
+        $this->info('Trạng thái Development Environment');
         $this->info('================================');
 
         $host     = $this->option('host');
@@ -270,19 +270,19 @@ class ServeDev extends Command
         // Check Laravel server
         if ($this->isProcessRunning($this->portalPidFile)) {
             $pid = file_get_contents($this->portalPidFile);
-            $this->info("✅ Laravel: RUNNING (PID: {$pid})");
+            $this->info("Laravel: ĐANG CHẠY (PID: {$pid})");
             $this->info("   URL: http://{$host}:{$port}");
         } else {
-            $this->error('❌ Laravel: STOPPED');
+            $this->error('Laravel: DỪNG');
         }
 
         // Check Vite server
         if (!$this->option('no-vite') && $this->isProcessRunning($this->vitePidFile)) {
             $pid = file_get_contents($this->vitePidFile);
-            $this->info("✅ Vite: RUNNING (PID: {$pid})");
+            $this->info("Vite: ĐANG CHẠY (PID: {$pid})");
             $this->info("   URL: http://localhost:{$vitePort}");
         } elseif (!$this->option('no-vite')) {
-            $this->error('❌ Vite: STOPPED');
+            $this->error('Vite: DỪNG');
         }
 
         $this->info('');
@@ -301,7 +301,7 @@ class ServeDev extends Command
 
         // Check if running as root
         if (0 !== posix_getuid()) {
-            $this->warn('⚠️ Please run as root (sudo) to install systemd service');
+            $this->warn('Vui lòng chạy với quyền root (sudo) để cài đặt systemd service');
             $this->info('   Command: sudo php artisan serve:dev --service');
 
             return;
@@ -334,69 +334,69 @@ class ServeDev extends Command
     }
 
     /**
-     * Wait for signal in foreground mode.
+     * Đợi signal trong chế độ foreground.
      *
-     * SYSTEMD INTEGRATION:
-     * This method keeps the main process alive for systemd monitoring when running
-     * as a service. Systemd uses the main process PID to track service state.
+     * TÍCH HỢP SYSTEMD:
+     * Phương thức này giữ tiến trình chính sống để systemd giám sát khi chạy
+     * như một service. Systemd dùng PID của tiến trình chính để theo dõi trạng thái service.
      *
-     * SIGNAL HANDLING:
-     * - SIGTERM: Graceful shutdown (systemd stop/restart)
-     * - SIGINT: Graceful shutdown (Ctrl+C)
-     * - SIGHUP: Reload configuration (future use)
+     * XỬ LÝ SIGNAL:
+     * - SIGTERM: Shutdown êm ái (systemd stop/restart)
+     * - SIGINT: Shutdown êm ái (Ctrl+C)
+     * - SIGHUP: Reload cấu hình (dùng trong tương lai)
      */
     protected function waitForSignal(): void
     {
-        $this->info('🔒 Entering foreground monitor mode...');
+        $this->info('Đang vào chế độ monitor foreground...');
 
-        // Declare tick for signal handling
+        // Declare tick cho xử lý signal
         declare(ticks=1);
 
-        // Setup signal handlers for graceful shutdown
+        // Thiết lập signal handlers cho shutdown êm ái
         pcntl_signal(SIGTERM, function (): void {
-            $this->info('🛑 Received SIGTERM, shutting down gracefully...');
+            $this->info('Nhận SIGTERM, đang shutdown êm ái...');
             $this->stopAllServers();
 
             exit(0);
         });
 
         pcntl_signal(SIGINT, function (): void {
-            $this->info('🛑 Received SIGINT, shutting down gracefully...');
+            $this->info('Nhận SIGINT, đang shutdown êm ái...');
             $this->stopAllServers();
 
             exit(0);
         });
 
-        // Main monitoring loop
+        // Vòng lặp giám sát chính
         $lastStatusTime = time();
-        $statusInterval = 300; // Log status every 5 minutes
+        $statusInterval = 300; // Ghi log trạng thái mỗi 5 phút
 
         while (true) {
-            // Process pending signals
+            // Xử lý các signal đang chờ
             pcntl_signal_dispatch();
 
-            // Check if portal server is still running
+            // Kiểm tra xem portal server có còn chạy không
             if (!$this->isProcessRunning($this->portalPidFile)) {
-                $this->warn('⚠️ Laravel server stopped unexpectedly, attempting restart...');
+                $this->warn('Laravel server dừng đột ngột, đang cố restart...');
 
-                // Try to restart
+                // Cố restart
                 if (!$this->startLaravelServer()) {
-                    $this->error('❌ Failed to restart Laravel server');
+                    $this->error('Không thể restart Laravel server');
 
-                    // Exit and let systemd handle restart
+                    // Thoát để systemd xử lý restart
                     exit(1);
                 }
             }
 
-            // Check Vite server if enabled
+            // Kiểm tra Vite server nếu được bật
             if (!$this->option('no-vite') && !$this->isProcessRunning($this->vitePidFile)) {
-                $this->warn('⚠️ Vite server stopped unexpectedly, attempting restart...');
+                $this->warn('Vite server dừng đột ngột, đang cố restart...');
                 $this->startViteServer();
             }
 
-            // Periodic status log (for systemd journal)
+            // Ghi log trạng thái định kỳ (cho systemd journal)
             if ((time() - $lastStatusTime) >= $statusInterval) {
-                $this->info('📊 Service health check: All servers running');
+                $this->info('Kiểm tra sức khỏe service: Tất cả servers đang chạy');
                 $lastStatusTime = time();
             }
 
@@ -405,18 +405,18 @@ class ServeDev extends Command
     }
 
     /**
-     * Stop all servers gracefully.
+     * Stop tất cả servers một cách êm ái.
      */
     protected function stopAllServers(): void
     {
-        $this->info('🛑 Stopping all development servers...');
+        $this->info('Đang stop tất cả development servers...');
 
-        // Stop Vite first
+        // Stop Vite trước
         if (file_exists($this->vitePidFile)) {
             $pid = (int) file_get_contents($this->vitePidFile);
             if ($pid > 0 && false !== posix_getpgid($pid)) {
                 posix_kill($pid, SIGTERM);
-                $this->info("   Vite server stopped (PID: {$pid})");
+                $this->info("   Vite server đã stop (PID: {$pid})");
             }
             @unlink($this->vitePidFile);
         }
@@ -426,12 +426,12 @@ class ServeDev extends Command
             $pid = (int) file_get_contents($this->portalPidFile);
             if ($pid > 0 && false !== posix_getpgid($pid)) {
                 posix_kill($pid, SIGTERM);
-                $this->info("   Laravel server stopped (PID: {$pid})");
+                $this->info("   Laravel server đã stop (PID: {$pid})");
             }
             @unlink($this->portalPidFile);
         }
 
-        $this->info('✅ All servers stopped');
+        $this->info('Tất cả servers đã stop');
     }
 
     /**
