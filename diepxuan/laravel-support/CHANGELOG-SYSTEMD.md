@@ -127,13 +127,13 @@ TimeoutStopSec=60
 ### Testing
 
 Các kịch bản đã test:
-- ✅ Service start/stop/restart
-- ✅ Service enable/disable khi khởi động
-- ✅ Shutdown êm ái dưới tải
-- ✅ Tự động phục hồi tiến trình bị lỗi
-- ✅ Không tích lũy tiến trình zombie
-- ✅ Logs journal sạch sẽ
-- ✅ Health check tự động sửa lỗi
+- -  Service start/stop/restart
+- -  Service enable/disable khi khởi động
+- -  Shutdown êm ái dưới tải
+- -  Tự động phục hồi tiến trình bị lỗi
+- -  Không tích lũy tiến trình zombie
+- -  Logs journal sạch sẽ
+- -  Health check tự động sửa lỗi
 
 ### Tương thích
 

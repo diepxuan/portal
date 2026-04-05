@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-01 00:00:00
+ * @lastupdate 2026-04-05 23:48:09
  */
 
 namespace Diepxuan\Support\Commands;
@@ -96,7 +96,7 @@ class CodeFormat extends Command
             }
 
             if (str_contains($result->output(), 'Fixed all files')) {
-                $this->info('✅ All files formatted successfully.');
+                $this->info('OK: All files formatted successfully.');
             } elseif (str_contains($result->output(), 'No files found')) {
                 $this->warn('No PHP files found to format.');
             }

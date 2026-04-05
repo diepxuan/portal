@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 23:34:40
+ * @lastupdate 2026-04-05 23:48:12
  */
 
 namespace Diepxuan\Support\Commands;
@@ -159,7 +159,7 @@ class ServeDevService extends Command
         $action      = $this->argument('action');
         $serviceName = $this->option('name');
 
-        $this->info("🔧 Development Service: {$serviceName}");
+        $this->info("Development Service: {$serviceName}");
 
         switch ($action) {
             case 'install':
@@ -202,11 +202,11 @@ class ServeDevService extends Command
         $serviceName = $this->option('name');
         $serviceDir  = '/etc/systemd/system';
 
-        $this->info("📦 Installing {$serviceName} service...");
+        $this->info("Đang Installing {$serviceName} service...");
 
         // Check if running as root
         if (0 !== posix_getuid()) {
-            $this->error('❌ Please run as root (sudo)');
+            $this->error('Lỗi: Please run as root (sudo)');
 
             return 1;
         }
@@ -216,33 +216,33 @@ class ServeDevService extends Command
         $serviceFile    = "{$serviceDir}/{$serviceName}.service";
 
         if (!file_put_contents($serviceFile, $serviceContent)) {
-            $this->error("❌ Failed to create service file: {$serviceFile}");
+            $this->error("Lỗi: Failed to create service file: {$serviceFile}");
 
             return 1;
         }
-        $this->info("✅ Service file created: {$serviceFile}");
+        $this->info("Đã Service file created: {$serviceFile}");
 
         // Create health service file
         $healthServiceContent = $this->renderTemplate($this->healthServiceTemplate);
         $healthServiceFile    = "{$serviceDir}/{$serviceName}-health.service";
 
         if (!file_put_contents($healthServiceFile, $healthServiceContent)) {
-            $this->error("❌ Failed to create health service file: {$healthServiceFile}");
+            $this->error("Lỗi: Failed to create health service file: {$healthServiceFile}");
 
             return 1;
         }
-        $this->info("✅ Health service file created: {$healthServiceFile}");
+        $this->info("Đã Health service file created: {$healthServiceFile}");
 
         // Create timer file
         $timerContent = $this->renderTemplate($this->timerTemplate);
         $timerFile    = "{$serviceDir}/{$serviceName}-health.timer";
 
         if (!file_put_contents($timerFile, $timerContent)) {
-            $this->error("❌ Failed to create timer file: {$timerFile}");
+            $this->error("Lỗi: Failed to create timer file: {$timerFile}");
 
             return 1;
         }
-        $this->info("✅ Timer file created: {$timerFile}");
+        $this->info("Đã Timer file created: {$timerFile}");
 
         // Reload systemd
         $this->info('🔄 Reloading systemd...');
@@ -254,9 +254,9 @@ class ServeDevService extends Command
         Process::run("systemctl enable {$serviceName}-health.timer");
 
         $this->info('');
-        $this->info('✅ Service installed successfully!');
+        $this->info('Đã Service installed successfully!');
         $this->info('');
-        $this->info('🔧 Management commands:');
+        $this->info('Quản lý: Management commands:');
         $this->info("   sudo systemctl start {$serviceName}.service");
         $this->info("   sudo systemctl stop {$serviceName}.service");
         $this->info("   sudo systemctl restart {$serviceName}.service");
@@ -280,7 +280,7 @@ class ServeDevService extends Command
 
         // Check if running as root
         if (0 !== posix_getuid()) {
-            $this->error('❌ Please run as root (sudo)');
+            $this->error('Lỗi: Please run as root (sudo)');
 
             return 1;
         }
@@ -304,7 +304,7 @@ class ServeDevService extends Command
         foreach ($files as $file) {
             if (file_exists($file)) {
                 unlink($file);
-                $this->info("✅ Removed: {$file}");
+                $this->info("Đã Removed: {$file}");
             }
         }
 
@@ -312,7 +312,7 @@ class ServeDevService extends Command
         Process::run('systemctl daemon-reload');
         Process::run('systemctl reset-failed');
 
-        $this->info('✅ Service uninstalled successfully!');
+        $this->info('Đã Service uninstalled successfully!');
 
         return 0;
     }
@@ -324,20 +324,20 @@ class ServeDevService extends Command
     {
         $serviceName = $this->option('name');
 
-        $this->info("🚀 Starting {$serviceName} service...");
+        $this->info("Khởi động: Starting {$serviceName} service...");
 
         $result = Process::run("systemctl start {$serviceName}.service");
 
         if ($result->successful()) {
-            $this->info('✅ Service started');
+            $this->info('Đã Service started');
 
             // Also start timer
             Process::run("systemctl start {$serviceName}-health.timer");
-            $this->info('✅ Health timer started');
+            $this->info('Đã Health timer started');
 
             return 0;
         }
-        $this->error('❌ Failed to start service: ' . $result->errorOutput());
+        $this->error('Lỗi: Failed to start service: ' . $result->errorOutput());
 
         return 1;
     }
@@ -349,20 +349,20 @@ class ServeDevService extends Command
     {
         $serviceName = $this->option('name');
 
-        $this->info("🛑 Stopping {$serviceName} service...");
+        $this->info("Dừng: Stopping {$serviceName} service...");
 
         $result = Process::run("systemctl stop {$serviceName}.service");
 
         if ($result->successful()) {
-            $this->info('✅ Service stopped');
+            $this->info('Đã Service stopped');
 
             // Also stop timer
             Process::run("systemctl stop {$serviceName}-health.timer");
-            $this->info('✅ Health timer stopped');
+            $this->info('Đã Health timer stopped');
 
             return 0;
         }
-        $this->error('❌ Failed to stop service: ' . $result->errorOutput());
+        $this->error('Lỗi: Failed to stop service: ' . $result->errorOutput());
 
         return 1;
     }
@@ -379,11 +379,11 @@ class ServeDevService extends Command
         $result = Process::run("systemctl restart {$serviceName}.service");
 
         if ($result->successful()) {
-            $this->info('✅ Service restarted');
+            $this->info('Đã Service restarted');
 
             return 0;
         }
-        $this->error('❌ Failed to restart service: ' . $result->errorOutput());
+        $this->error('Lỗi: Failed to restart service: ' . $result->errorOutput());
 
         return 1;
     }
@@ -395,7 +395,7 @@ class ServeDevService extends Command
     {
         $serviceName = $this->option('name');
 
-        $this->info("📊 {$serviceName} Service Status");
+        $this->info("Trạng thái: {$serviceName} Service Status");
         $this->info('==============================');
 
         // Main service
@@ -425,15 +425,15 @@ class ServeDevService extends Command
         $result = Process::run("systemctl enable {$serviceName}.service");
 
         if ($result->successful()) {
-            $this->info('✅ Service enabled');
+            $this->info('Đã Service enabled');
 
             // Also enable timer
             Process::run("systemctl enable {$serviceName}-health.timer");
-            $this->info('✅ Health timer enabled');
+            $this->info('Đã Health timer enabled');
 
             return 0;
         }
-        $this->error('❌ Failed to enable service: ' . $result->errorOutput());
+        $this->error('Lỗi: Failed to enable service: ' . $result->errorOutput());
 
         return 1;
     }
@@ -450,15 +450,15 @@ class ServeDevService extends Command
         $result = Process::run("systemctl disable {$serviceName}.service");
 
         if ($result->successful()) {
-            $this->info('✅ Service disabled');
+            $this->info('Đã Service disabled');
 
             // Also disable timer
             Process::run("systemctl disable {$serviceName}-health.timer");
-            $this->info('✅ Health timer disabled');
+            $this->info('Đã Health timer disabled');
 
             return 0;
         }
-        $this->error('❌ Failed to disable service: ' . $result->errorOutput());
+        $this->error('Lỗi: Failed to disable service: ' . $result->errorOutput());
 
         return 1;
     }

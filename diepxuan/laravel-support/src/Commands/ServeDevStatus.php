@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-28 10:15:53
+ * @lastupdate 2026-04-05 23:48:13
  */
 
 namespace Diepxuan\Support\Commands;
@@ -39,7 +39,7 @@ class ServeDevStatus extends Command
      */
     public function handle()
     {
-        $this->info('📊 Development Servers Status');
+        $this->info('Trạng thái: Development Servers Status');
         $this->info('=============================');
 
         $portalPidFile = storage_path('app/portal.pid');
@@ -55,24 +55,24 @@ class ServeDevStatus extends Command
         if (file_exists($portalPidFile)) {
             $pid = (int) file_get_contents($portalPidFile);
             if ($pid > 0 && $this->isProcessRunning($pid)) {
-                $this->info("   Status:  ✅ RUNNING (PID: {$pid})");
+                $this->info("   Status:  OK: RUNNING (PID: {$pid})");
 
                 // Check port
                 if ($this->isPortListening($laravelPort)) {
-                    $this->info("   Port:    ✅ {$laravelPort} LISTENING");
+                    $this->info("   Port:    OK: {$laravelPort} LISTENING");
 
                     // Check HTTP response
                     $response = $this->checkHttpResponse('localhost', $laravelPort);
                     $this->info("   HTTP:    {$response}");
                 } else {
-                    $this->info("   Port:    ❌ {$laravelPort} NOT LISTENING");
+                    $this->info("   Port:    Lỗi: {$laravelPort} NOT LISTENING");
                 }
             } else {
-                $this->info("   Status:  ❌ STOPPED (stale PID: {$pid})");
+                $this->info("   Status:  Lỗi: STOPPED (stale PID: {$pid})");
                 unlink($portalPidFile);
             }
         } else {
-            $this->info('   Status:  ❌ STOPPED (no PID file)');
+            $this->info('   Status:  Lỗi: STOPPED (no PID file)');
         }
 
         // Check Vite server
@@ -82,20 +82,20 @@ class ServeDevStatus extends Command
         if (file_exists($vitePidFile)) {
             $pid = (int) file_get_contents($vitePidFile);
             if ($pid > 0 && $this->isProcessRunning($pid)) {
-                $this->info("   Status:  ✅ RUNNING (PID: {$pid})");
+                $this->info("   Status:  OK: RUNNING (PID: {$pid})");
 
                 // Check port
                 if ($this->isPortListening($vitePort)) {
-                    $this->info("   Port:    ✅ {$vitePort} LISTENING");
+                    $this->info("   Port:    OK: {$vitePort} LISTENING");
                 } else {
-                    $this->info("   Port:    ❌ {$vitePort} NOT LISTENING");
+                    $this->info("   Port:    Lỗi: {$vitePort} NOT LISTENING");
                 }
             } else {
-                $this->info("   Status:  ❌ STOPPED (stale PID: {$pid})");
+                $this->info("   Status:  Lỗi: STOPPED (stale PID: {$pid})");
                 unlink($vitePidFile);
             }
         } else {
-            $this->info('   Status:  ❌ STOPPED (no PID file)');
+            $this->info('   Status:  Lỗi: STOPPED (no PID file)');
         }
 
         // Check ports directly
@@ -103,15 +103,15 @@ class ServeDevStatus extends Command
         $this->info('🔍 Port Status:');
 
         if ($this->isPortListening($laravelPort)) {
-            $this->info("   Port {$laravelPort}: ✅ LISTENING (Laravel)");
+            $this->info("   Port {$laravelPort}: OK: LISTENING (Laravel)");
         } else {
-            $this->info("   Port {$laravelPort}: ❌ NOT LISTENING");
+            $this->info("   Port {$laravelPort}: Lỗi: NOT LISTENING");
         }
 
         if ($this->isPortListening($vitePort)) {
-            $this->info("   Port {$vitePort}: ✅ LISTENING (Vite)");
+            $this->info("   Port {$vitePort}: OK: LISTENING (Vite)");
         } else {
-            $this->info("   Port {$vitePort}: ❌ NOT LISTENING");
+            $this->info("   Port {$vitePort}: Lỗi: NOT LISTENING");
         }
 
         // Show URLs
@@ -156,12 +156,12 @@ class ServeDevStatus extends Command
         $code   = trim($result->output());
 
         if (\in_array($code, ['200', '301', '302', '304'], true)) {
-            return "✅ {$code} OK";
+            return "OK: {$code} OK";
         }
         if ('TIMEOUT' === $code) {
-            return '❌ TIMEOUT';
+            return 'Lỗi: TIMEOUT';
         }
 
-        return "⚠️ {$code}";
+        return "Cảnh báo: {$code}";
     }
 }
