@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-14 15:25:35
+ * @lastupdate 2026-04-06 00:18:57
  */
 
 use Illuminate\Support\Str;
@@ -119,10 +119,11 @@ return [
             'prefix_indexes' => true,
             // 'encrypt'                  => env('DB_ENCRYPT', 'no'),
             'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'true'),
-            // 'options'                  => [
-            //     PDO::ATTR_EMULATE_PREPARES => true, // GIÁ TRỊ ĐÚNG
-            //     PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION,
-            // ],
+            'options'                  => [
+                //     PDO::ATTR_EMULATE_PREPARES => true, // GIÁ TRỊ ĐÚNG
+                //     PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION,
+                PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_UTF8,
+            ],
         ],
     ],
 
