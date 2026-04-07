@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 22:42:17
+ * @lastupdate 2026-04-07 12:39:39
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\DB;
  *
  * Cung cấp phương thức tĩnh để gọi stored procedures của Simba SQL Server.
  * Sử dụng Laravel DB facade để thực thi câu lệnh SQL.
+ *
+ * @note FIX UTF-8: Tự động CAST string parameters thành NVARCHAR để hỗ trợ tiếng Việt có dấu
+ *       Vấn đề: PDO SQLSRV không tự động thêm N'...' prefix cho parameter binding
+ *       Giải pháp: Dùng positional parameters (?) với CAST thay vì named parameters (:)
+ *       Tham khảo: docs/SQLSRV-UTF8-ROOT-CAUSE.md
  */
 class ProcedureCaller
 {
@@ -41,6 +46,8 @@ class ProcedureCaller
         $hasOutput   = false;
         $outputTypes = [];
 
+        \Debugbar::info("ProcedureCaller {$name} params: ", $params);
+
         foreach ($params as $key => $value) {
             // Nếu là OUTPUT param
             if (\is_array($value) && ($value['output'] ?? false)) {
@@ -56,6 +63,7 @@ class ProcedureCaller
                 $bindings[$key] = $value;
             }
         }
+
         $sql = '';
         // Thêm SET NOCOUNT ON để tránh multiple result sets từ procedure
         $sql .= "SET NOCOUNT ON;\n";
@@ -76,7 +84,13 @@ class ProcedureCaller
         $conn = $connection ? DB::connection($connection) : DB::connection();
 
         // Dùng select() để execute toàn bộ batch và fetch kết quả
-        $rows = $conn->select($sql, $bindings);
+        if (empty($bindings)) {
+            $rows = $conn->select($sql);
+        } else {
+            // Replace ? với Unicode literal
+            $processedQuery = self::replacePlaceholders($sql, $bindings);
+            $rows           = $conn->select($processedQuery);
+        }
 
         // Tự động ép kiểu các giá trị output trả về dựa trên type đã khai báo
         if ($hasOutput && !empty($rows)) {
@@ -96,5 +110,77 @@ class ProcedureCaller
         \Debugbar::info('ProcedureCaller result:', $rows);
 
         return collect($rows);
+    }
+
+    /**
+     * Escape single quote cho SQL Server.
+     */
+    public static function escape(string $value): string
+    {
+        return str_replace("'", "''", $value);
+    }
+
+    /**
+     * Chuyển giá trị sang dạng Unicode literal (N'...')
+     * Dùng cho parameter binding bị lỗi UTF-8.
+     */
+    public static function toUnicodeLiteral(mixed $value): string
+    {
+        if (null === $value) {
+            return 'NULL';
+        }
+
+        if (\is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (\is_int($value) || \is_float($value)) {
+            return (string) $value;
+        }
+
+        if ($value instanceof \DateTimeInterface) {
+            return "N'" . self::escape($value->format('Y-m-d H:i:s')) . "'";
+        }
+
+        return "N'" . self::escape((string) $value) . "'";
+    }
+
+    /**
+     * Replace ? placeholders với Unicode literals.
+     */
+    private static function replacePlaceholders(string $query, array $bindings): string
+    {
+        $count = 0;
+
+        return preg_replace_callback('/\?/', static function () use ($bindings, &$count) {
+            $value = $bindings[$count] ?? null;
+            ++$count;
+
+            return self::toUnicodeLiteral($value);
+        }, $query);
+    }
+
+    /**
+     * Kiểm tra xem value có phải là date/datetime format không.
+     */
+    private static function isDateOrDatetime(string $value): bool
+    {
+        // Check các format date/datetime phổ biến
+        // YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, DD/MM/YYYY, v.v.
+        $datePatterns = [
+            '/^\d{4}-\d{2}-\d{2}$/',                    // 2026-04-06
+            '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/',  // 2026-04-06 12:30:45
+            '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/',  // 2026-04-06T12:30:45 (ISO 8601)
+            '/^\d{2}\/\d{2}\/\d{4}$/',                  // 06/04/2026
+            '/^\d{2}-\d{2}-\d{4}$/',                    // 06-04-2026
+        ];
+
+        foreach ($datePatterns as $pattern) {
+            if (preg_match($pattern, $value)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
