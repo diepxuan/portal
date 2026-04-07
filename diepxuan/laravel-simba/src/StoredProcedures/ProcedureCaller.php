@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-07 13:02:25
+ * @lastupdate 2026-04-07 13:04:50
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -87,7 +87,7 @@ class ProcedureCaller
         if (empty($bindings)) {
             $rows = $conn->select($sql);
         } else {
-            // Replace ? với Unicode literal
+            // Replace :placeholder với Unicode literal (fix UTF-8 cho SQL Server)
             $processedQuery = self::replacePlaceholders($sql, $bindings);
             $rows           = $conn->select($processedQuery);
         }
@@ -146,17 +146,20 @@ class ProcedureCaller
     }
 
     /**
-     * Replace ? placeholders với Unicode literals.
+     * Replace :placeholder với Unicode literals (N'...')
+     * Fix UTF-8 cho SQL Server parameter binding trên Linux.
+     *
+     * @param string $query    SQL query với :named placeholders
+     * @param array  $bindings Associative array [paramName => value]
      */
     private static function replacePlaceholders(string $query, array $bindings): string
     {
-        $count = 0;
+        foreach ($bindings as $key => $value) {
+            $literal = self::toUnicodeLiteral($value);
+            $pattern = '/:' . preg_quote($key, '/') . '/';
+            $query   = preg_replace($pattern, $literal, $query);
+        }
 
-        return preg_replace_callback('/\?/', static function () use ($bindings, &$count) {
-            $value = $bindings[$count] ?? null;
-            ++$count;
-
-            return self::toUnicodeLiteral($value);
-        }, $query);
+        return $query;
     }
 }
