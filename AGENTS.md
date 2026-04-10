@@ -4,6 +4,12 @@ Quy trình vận hành workspace cho Portal Project.
 
 **Workspace root:** `/root/.openclaw/workspace/projects/portal/`
 
+**Repository:** `git@github.com:diepxuan/portal.git`
+
+**Project URL:** https://github.com/orgs/diepxuan/projects/2
+
+**Issues:** https://github.com/diepxuan/portal/issues
+
 **Tham chiếu:** `SOUL.md` (core identity), `IDENTITY.md` (role definition)
 
 ---
@@ -52,8 +58,6 @@ Quy trình vận hành workspace cho Portal Project.
 ---
 
 ## 4. Git Workflow
-
-**Repository:** `git@github.com:diepxuan/portal.git`
 
 ### 4.1 Nguyên tắc
 
