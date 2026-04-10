@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-07 12:39:38
+ * @lastupdate 2026-04-10 23:41:52
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -212,14 +212,14 @@ class Phieubaono extends Component
                     'ps_no'     => $caCt2->ps_no,
                     'ps_co'     => $caCt2->ps_co,
                     'ps_no_nt'  => $caCt2->ps_no_nt,
-                    'ps_co_nt'  => $caCt3->ps_co_nt,
-                    'ma_kh'     => $caCt3->ma_kh,
-                    'ma_hd'     => $caCt3->ma_hd,
-                    'ma_bp'     => $caCt3->ma_bp,
-                    'ma_phi'    => $caCt3->ma_phi,
-                    'ma_spct'   => $caCt3->ma_spct,
-                    'ma_lo'     => $caCt3->ma_lo,
-                    'ma_ku'     => $caCt3->ma_ku,
+                    'ps_co_nt'  => $caCt2->ps_co_nt,
+                    'ma_kh'     => $caCt2->ma_kh,
+                    'ma_hd'     => $caCt2->ma_hd,
+                    'ma_bp'     => $caCt2->ma_bp,
+                    'ma_phi'    => $caCt2->ma_phi,
+                    'ma_spct'   => $caCt2->ma_spct,
+                    'ma_lo'     => $caCt2->ma_lo,
+                    'ma_ku'     => $caCt2->ma_ku,
                 ]);
 
                 // Khởi tạo số dư cho từng dòng (sẽ được tính sau)
