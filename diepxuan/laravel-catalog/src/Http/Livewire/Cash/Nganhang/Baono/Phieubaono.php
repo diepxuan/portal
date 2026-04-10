@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-10 23:41:52
+ * @lastupdate 2026-04-10 23:46:28
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -233,6 +233,7 @@ class Phieubaono extends Component
             // Update khách hàng info và số dư
             $this->updateKhachHang();
             $this->updateSoDu();
+            $this->updateSoDuTungDong();
         }
     }
 
