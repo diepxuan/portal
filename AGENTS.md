@@ -57,9 +57,35 @@ Quy trình vận hành workspace cho Portal Project.
 
 ---
 
-## 4. Git Workflow
+## 4. Task Management
 
-### 4.1 Nguyên tắc
+### 4.1 Task Creation
+
+| Loại | Vị trí | URL |
+|------|--------|-----|
+| Task mới | GitHub Issues | https://github.com/diepxuan/portal/issues |
+| Project board | GitHub Projects | https://github.com/orgs/diepxuan/projects/2 |
+
+**Workflow:**
+1. Task được tạo trong Issues
+2. Issues được thêm vào Project board
+3. Project board dùng để theo dõi tiến độ
+
+### 4.2 Issue Labels
+
+| Label | Mục đích |
+|-------|----------|
+| `bug` | Lỗi cần fix |
+| `feature` | Tính năng mới |
+| `docs` | Tài liệu |
+| `chore` | Công việc bảo trì |
+| `priority-high` | Ưu tiên cao |
+
+---
+
+## 5. Git Workflow
+
+### 5.1 Nguyên tắc
 
 | Rule | Mô tả |
 |------|-------|
@@ -68,7 +94,7 @@ Quy trình vận hành workspace cho Portal Project.
 | Luôn | Commit cho mọi thay đổi |
 | Không | Làm việc trực tiếp trên `main` |
 
-### 4.2 Cấm tuyệt đối
+### 5.2 Cấm tuyệt đối
 
 - ❌ Tự ý push
 - ❌ Tự ý tạo PR
@@ -78,7 +104,7 @@ Quy trình vận hành workspace cho Portal Project.
 - ❌ Force push vào branch cũ
 - ❌ Push vào PR đã merge
 
-### 4.3 Commit Convention
+### 5.3 Commit Convention
 
 ```
 <type>: <description>
@@ -90,7 +116,7 @@ chore: maintenance tasks
 refactor: code refactoring
 ```
 
-### 4.4 Branch Naming
+### 5.4 Branch Naming
 
 ```
 <type>/<description>
@@ -105,9 +131,9 @@ docs/add-laravel-rules
 
 ---
 
-## 5. Sub-Agent Orchestration
+## 6. Sub-Agent Orchestration
 
-### 5.1 Khi spawn đệ
+### 6.1 Khi spawn đệ
 
 | Yêu cầu | Mô tả |
 |---------|-------|
@@ -117,7 +143,7 @@ docs/add-laravel-rules
 | **Output** | Định nghĩa cụ thể |
 | **Giới hạn** | Thẩm quyền không được vượt |
 
-### 5.2 Giám sát
+### 6.2 Giám sát
 
 - Không để đệ tự quyết định vượt thẩm quyền
 - Check status khi cần (không poll loop)
@@ -125,7 +151,7 @@ docs/add-laravel-rules
 
 ---
 
-## 6. Context Validation
+## 7. Context Validation
 
 **Trước khi hành động, xác nhận:**
 
@@ -141,7 +167,7 @@ docs/add-laravel-rules
 
 ---
 
-## 7. Documentation Trigger
+## 8. Documentation Trigger
 
 **Phải tạo/cập nhật tài liệu khi:**
 
@@ -154,7 +180,7 @@ docs/add-laravel-rules
 
 ---
 
-## 8. Failure Handling
+## 9. Failure Handling
 
 **Nếu xảy ra lỗi:**
 
@@ -166,9 +192,9 @@ docs/add-laravel-rules
 
 ---
 
-## 9. Workspace Scope
+## 10. Workspace Scope
 
-### 9.1 Cho phép
+### 10.1 Cho phép
 
 | Vị trí | Mục đích |
 |--------|----------|
@@ -177,14 +203,14 @@ docs/add-laravel-rules
 | `docs/` | Documentation |
 | `memory/` | Daily memory logs |
 
-### 9.2 Cấm
+### 10.2 Cấm
 
 - ❌ Tạo file ngoài `/root/.openclaw/workspace/projects/portal/`
 - ❌ Sửa core Laravel files (trừ khi được yêu cầu)
 
 ---
 
-## 10. Kỷ Luật
+## 11. Kỷ Luật
 
 | Rule | Mô tả |
 |------|-------|
