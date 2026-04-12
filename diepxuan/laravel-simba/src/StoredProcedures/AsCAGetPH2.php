@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 16:41:44
+ * @lastupdate 2026-04-12 16:59:26
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -159,39 +159,5 @@ class AsCAGetPH2
             'pStt_rec' => $Stt_rec,
             'pLUser'   => $LUser,
         ]);
-    }
-
-    /**
-     * Lấy tất cả phiếu hàng 2.
-     *
-     * @return Collection Collection chứa tất cả phiếu
-     */
-    public static function getAll(): Collection
-    {
-        return self::call([]);
-    }
-
-    /**
-     * Lấy 1 phiếu hàng 2 theo stt_rec.
-     *
-     * @param string $sttRec Số thứ tự bản ghi cần lấy
-     *
-     * @return null|object Object phiếu nếu tìm thấy, null nếu không tìm thấy
-     *
-     * @example
-     * ```php
-     * $phieu = AsCAGetPH2::getBySttRec('CA420240101001');
-     * if ($phieu) {
-     *     echo $phieu->so_ct;
-     * }
-     * ```
-     */
-    public static function getBySttRec(string $sttRec): ?object
-    {
-        $result = self::call([]);
-
-        $found = $result->first(static fn ($item) => ($item->stt_rec ?? '') === $sttRec);
-
-        return $found ?: null;
     }
 }
