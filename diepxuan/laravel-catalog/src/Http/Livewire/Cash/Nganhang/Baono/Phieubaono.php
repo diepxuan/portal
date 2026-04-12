@@ -8,16 +8,16 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 16:59:25
+ * @lastupdate 2026-04-12 17:05:04
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
 
 use Diepxuan\Catalog\Models\ArDmKh;
 use Diepxuan\Catalog\Models\CaCt2;
-use Diepxuan\Catalog\Models\CaPh2;
 use Diepxuan\Simba\Models\GlDmTk;
 use Diepxuan\Simba\StoredProcedures\AsCADelCT2;
+use Diepxuan\Simba\StoredProcedures\AsCAGetPH2;
 use Diepxuan\Simba\StoredProcedures\AsCAInsCT2;
 use Diepxuan\Simba\StoredProcedures\AsCAInsPH2;
 use Diepxuan\Simba\StoredProcedures\AsCAUpdPH2;
@@ -175,10 +175,10 @@ class Phieubaono extends Component
             return;
         }
 
-        // Load header từ database
-        \Debugbar::info('Querying CaPh2 with stt_rec:', $this->pStt_Rec);
-        $caPh2 = CaPh2::where('stt_rec', $this->pStt_Rec)->first();
-        \Debugbar::info('CaPh2 result:', $caPh2);
+        // Load header từ stored procedure
+        \Debugbar::info('Calling AsCAGetPH2::getBySttRec with:', $this->pStt_Rec);
+        $caPh2 = AsCAGetPH2::getBySttRec($this->pStt_Rec);
+        \Debugbar::info('AsCAGetPH2 result:', $caPh2);
 
         if ($caPh2) {
             $this->pMode     = 'edit';
