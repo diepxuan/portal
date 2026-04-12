@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-10 23:46:28
+ * @lastupdate 2026-04-12 16:59:25
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -135,7 +135,7 @@ class Phieubaono extends Component
         $this->pMa_Nt = \CatalogService::ma_Nt() ?: self::DEFAULT_MA_NT;
 
         // Nếu có stt_rec từ bên ngoài truyền vào, load phiếu để sửa
-        \Debugbar::info('Phieubaono mount - sttRec:', $this->sttRec);
+        \Debugbar::info("Phieubaono mount - sttRec: {$this->sttRec}");
         if (!empty($this->sttRec)) {
             $this->pStt_Rec = $this->sttRec;
             $this->loadPhieu();
