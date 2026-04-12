@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 16:59:26
+ * @lastupdate 2026-04-12 17:13:42
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -72,8 +72,7 @@ use Illuminate\Support\Collection;
  * | Method | Mô tả | Trả về |
  * |--------|-------|--------|
  * | `call(array $params)` | Gọi procedure với tham số | `Collection` |
- * | `callWithParams()` | Gọi procedure không tham số | `Collection` |
- * | `getBySttRec(string $sttRec)` | Lấy 1 phiếu theo stt_rec | `?object` |
+ * | `callWithParams()` | Gọi procedure với named parameters | `Collection` |
  * | `getAll()` | Lấy tất cả phiếu | `Collection` |
  *
  * ## Ví dụ sử dụng
@@ -81,24 +80,21 @@ use Illuminate\Support\Collection;
  * ```php
  * use Diepxuan\Simba\StoredProcedures\AsCAGetPH2;
  *
- * // 1. Lấy tất cả phiếu
- * $allPhieu = AsCAGetPH2::getAll();
- *
- * // 2. Lấy 1 phiếu theo stt_rec
- * $phieu = AsCAGetPH2::getBySttRec('CA420240101001');
+ * // 1. Lấy 1 phiếu theo stt_rec
+ * $phieu = AsCAGetPH2::call(['pStt_rec' => 'CA420240101001'])->first();
  * if ($phieu) {
  *     echo $phieu->so_ct; // Số chứng từ
  *     echo $phieu->ma_kh; // Mã khách hàng
  *     echo $phieu->t_tt;  // Tổng thanh toán
  * }
  *
- * // 3. Gọi trực tiếp với call()
- * $result = AsCAGetPH2::call([]);
+ * // 2. Lấy tất cả phiếu
+ * $allPhieu = AsCAGetPH2::call([]);
  *
- * // 4. Gọi với callWithParams()
- * $result = AsCAGetPH2::callWithParams();
+ * // 3. Gọi với callWithParams()
+ * $result = AsCAGetPH2::callWithParams(pStt_rec: 'CA420240101001');
  *
- * // 5. Lọc kết quả sau khi gọi
+ * // 4. Lọc kết quả sau khi gọi
  * $phieuCA4 = AsCAGetPH2::call([])
  *     ->where('ma_ct', 'CA4')
  *     ->where('ma_kh', 'KH001')
@@ -109,7 +105,7 @@ use Illuminate\Support\Collection;
  *
  * - Procedure thuộc nhóm Get (`asCAGet*`), không có output parameter.
  * - Kết quả trả về là Laravel Collection, có thể dùng các method `filter()`, `first()`, `where()`, v.v.
- * - Để lấy 1 phiếu cụ thể, ưu tiên dùng `getBySttRec()` để tối ưu performance.
+ * - Để lấy 1 phiếu cụ thể, dùng `call(['pStt_rec' => '...'])->first()`.
  * - Các field datetime (`ngay_ct`, `ngay_lct`, `cdate`, `ldate`) được cast thành `\DateTime` object.
  *
  * ## Tham chiếu
