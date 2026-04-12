@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 17:16:49
+ * @lastupdate 2026-04-12 17:19:23
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -24,29 +24,30 @@ use Illuminate\Support\Collection;
  *
  * ## Mục đích
  *
- * Lấy danh sách phiếu hàng 2 (PH2) từ hệ thống Simba.
- * Procedure trả về danh sách các phiếu hàng loại 2 được sử dụng trong kế toán công nợ phải trả (Nhà cung cấp).
+ * Lấy thông tin phiếu hàng 2 (PH2) từ hệ thống Simba.
+ * Procedure trả về danh sách các phiếu thuộc bảng CA_PH2 (Cash Phiếu 2).
  *
- * ## Nhóm chứng từ
+ * ## Parameters (theo SQL Server)
  *
- * | Mã CT | Diễn giải | Loại |
- * |-------|-----------|------|
- * | CA4   | Phiếu báo nợ | Công nợ phải trả |
+ * | Name | Type | Required | Description |
+ * |------|------|----------|-------------|
+ * | `@pMa_cty` | nvarchar(3) | ❌ | Mã công ty |
+ * | `@pStt_rec` | nvarchar(20) | ❌ | Số tham chiếu (stt_rec) cần lấy |
  *
  * ## Fields trả về
  *
- * Procedure trả về Collection với các fields sau (từ bảng `CaPh2`):
+ * Procedure trả về Collection với các fields từ bảng `CA_PH2`:
  *
  * | Field | Kiểu | Diễn giải |
  * |-------|------|-----------|
  * | `ma_cty` | string(3) | Mã công ty |
  * | `stt_rec` | string(20) | Số thứ tự bản ghi (PK) |
- * | `ma_ct` | string(3) | Mã chứng từ (ví dụ: CA4) |
+ * | `ma_ct` | string(3) | Mã chứng từ (CA1, CA2, CA3, CA4, CA5, CA6) |
  * | `so_ct` | string(20) | Số chứng từ |
  * | `ngay_ct` | datetime | Ngày chứng từ |
  * | `ngay_lct` | datetime | Ngày lập chứng từ |
  * | `kht_tain` | boolean | Kế hoạch tài chính |
- * | `ma_kh` | string(20) | Mã khách hàng/Nhà cung cấp |
+ * | `ma_kh` | string(20) | Mã khách hàng |
  * | `dia_chi` | string(255) | Địa chỉ |
  * | `nguoi_gd` | string(30) | Người giao dịch |
  * | `dien_giai` | string(255) | Diễn giải |
@@ -59,7 +60,7 @@ use Illuminate\Support\Collection;
  * | `t_thue` | float | Thuế VNĐ |
  * | `t_tt` | float | Tổng thanh toán VNĐ |
  * | `t_tt_nt` | float | Tổng thanh toán ngoại tệ |
- * | `stt_rec_hd` | string(20) | STT rec hóa đơn (nếu có) |
+ * | `stt_rec_hd` | string(20) | STT rec hóa đơn |
  * | `trang_thai` | string | Trạng thái |
  * | `post2gl` | string | Đã post GL chưa |
  * | `cdate` | datetime | Ngày tạo |
@@ -67,51 +68,42 @@ use Illuminate\Support\Collection;
  * | `ldate` | datetime | Ngày sửa |
  * | `luser` | string | Người sửa |
  *
- * ## Phương thức
- *
- * | Method | Mô tả | Trả về |
- * |--------|-------|--------|
- * | `call(array $params)` | Gọi procedure với tham số | `Collection` |
- * | `callWithParams()` | Gọi procedure với named parameters | `Collection` |
- * | `getAll()` | Lấy tất cả phiếu | `Collection` |
- *
  * ## Ví dụ sử dụng
  *
  * ```php
  * use Diepxuan\Simba\StoredProcedures\AsCAGetPH2;
  *
  * // 1. Lấy 1 phiếu theo stt_rec
- * $phieu = AsCAGetPH2::call(['pStt_rec' => 'CA420240101001'])->first();
- * if ($phieu) {
- *     echo $phieu->so_ct; // Số chứng từ
- *     echo $phieu->ma_kh; // Mã khách hàng
- *     echo $phieu->t_tt;  // Tổng thanh toán
- * }
+ * $phieu = AsCAGetPH2::call([
+ *     'pStt_rec' => '001wCA40000000676570',
+ * ])->first();
  *
- * // 2. Lấy tất cả phiếu
+ * // 2. Lấy tất cả phiếu của công ty
+ * $allPhieu = AsCAGetPH2::call([
+ *     'pMa_cty' => '001',
+ * ]);
+ *
+ * // 3. Lấy tất cả phiếu (không filter)
  * $allPhieu = AsCAGetPH2::call([]);
  *
- * // 3. Gọi với callWithParams()
- * $result = AsCAGetPH2::callWithParams(pStt_rec: 'CA420240101001');
- *
- * // 4. Lọc kết quả sau khi gọi
- * $phieuCA4 = AsCAGetPH2::call([])
- *     ->where('ma_ct', 'CA4')
- *     ->where('ma_kh', 'KH001')
- *     ->first();
+ * // 4. Gọi với callWithParams()
+ * $phieu = AsCAGetPH2::callWithParams(
+ *     Ma_cty: '001',
+ *     Stt_rec: '001wCA40000000676570'
+ * )->first();
  * ```
  *
  * ## Lưu ý
  *
- * - Procedure thuộc nhóm Get (`asCAGet*`), không có output parameter.
- * - Kết quả trả về là Laravel Collection, có thể dùng các method `filter()`, `first()`, `where()`, v.v.
- * - Để lấy 1 phiếu cụ thể, dùng `call(['pStt_rec' => '...'])->first()`.
- * - Các field datetime (`ngay_ct`, `ngay_lct`, `cdate`, `ldate`) được cast thành `\DateTime` object.
+ * - Procedure thuộc nhóm Get (`asCAGet*`), không có output parameter
+ * - Kết quả trả về là Laravel Collection
+ * - Nếu không truyền params → trả về tất cả phiếu
+ * - Dùng `pStt_rec` để filter theo 1 phiếu cụ thể
+ * - Dùng `pMa_cty` để filter theo công ty
  *
  * ## Tham chiếu
  *
- * - Model: `Diepxuan\\Simba\\SModel\\CaPh2Model`
- * - Bảng: `CaPh2`
+ * - Bảng: `CA_PH2`
  * - Procedure liên quan: `asCAGetCT2` (lấy chi tiết phiếu)
  */
 class AsCAGetPH2
@@ -119,8 +111,7 @@ class AsCAGetPH2
     /**
      * Gọi stored procedure asCAGetPH2.
      *
-     * @param array $params Mảng tham số với các khóa tương ứng tên tham số.
-     *                      Các parameters có thể thiếu, sẽ dùng giá trị default.
+     * @param array $params Mảng tham số với các khóa: pMa_cty, pStt_rec
      *
      * @return Collection kết quả từ procedure
      */
@@ -136,7 +127,7 @@ class AsCAGetPH2
     }
 
     /**
-     * Call stored procedure asCAGetPH2 with named parameters (helper method).
+     * Call stored procedure asCAGetPH2 with named parameters.
      *
      * @param null|string $Ma_cty  Mã công ty
      * @param null|string $Stt_rec Số tham chiếu
