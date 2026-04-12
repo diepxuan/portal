@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-05 23:48:12
+ * @lastupdate 2026-04-12 23:57:44
  */
 
 namespace Diepxuan\Support\Commands;
@@ -253,6 +253,11 @@ class ServeDevService extends Command
         Process::run("systemctl enable {$serviceName}.service");
         Process::run("systemctl enable {$serviceName}-health.timer");
 
+        // Install docs:watch service
+        $this->info('');
+        $this->info('📚 Installing docs:watch service...');
+        $this->installDocsWatchService();
+
         $this->info('');
         $this->info('Đã Service installed successfully!');
         $this->info('');
@@ -265,6 +270,10 @@ class ServeDevService extends Command
         $this->info('🩺 Health check:');
         $this->info("   Runs every {$this->option('interval')} seconds");
         $this->info('   Logs: journalctl -u portal.service -f');
+        $this->info('');
+        $this->info('📚 Docs sync:');
+        $this->info('   sudo systemctl status portal-docs-watch.service');
+        $this->info('   journalctl -u portal-docs-watch.service -f');
 
         return 0;
     }
@@ -277,6 +286,11 @@ class ServeDevService extends Command
         $serviceName = $this->option('name');
 
         $this->info("🗑️ Uninstalling {$serviceName} service...");
+
+        // Uninstall docs:watch service first
+        $this->info('');
+        $this->info('📚 Uninstalling docs:watch service...');
+        $this->uninstallDocsWatchService();
 
         // Check if running as root
         if (0 !== posix_getuid()) {
@@ -315,6 +329,47 @@ class ServeDevService extends Command
         $this->info('Đã Service uninstalled successfully!');
 
         return 0;
+    }
+
+    /**
+     * Install docs:watch service.
+     */
+    protected function installDocsWatchService(): void
+    {
+        // Call docs:watch --service command
+        $result = $this->call('docs:watch', [
+            '--service' => true,
+        ]);
+
+        if (0 === $result) {
+            $this->info('✅ Docs:watch service installed');
+        } else {
+            $this->warn('⚠️  Docs:watch service installation failed (continuing anyway)');
+        }
+    }
+
+    /**
+     * Uninstall docs:watch service.
+     */
+    protected function uninstallDocsWatchService(): void
+    {
+        $serviceDir = '/etc/systemd/system';
+        $files      = [
+            "{$serviceDir}/portal-docs-watch.service",
+        ];
+
+        foreach ($files as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+                $this->info("Đã Removed: {$file}");
+            }
+        }
+
+        // Stop and disable service
+        Process::run('systemctl stop portal-docs-watch.service 2>/dev/null || true');
+        Process::run('systemctl disable portal-docs-watch.service 2>/dev/null || true');
+
+        $this->info('✅ Docs:watch service uninstalled');
     }
 
     /**
