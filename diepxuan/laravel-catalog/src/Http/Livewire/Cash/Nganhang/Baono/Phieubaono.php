@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 17:05:04
+ * @lastupdate 2026-04-12 17:10:45
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
@@ -176,8 +176,11 @@ class Phieubaono extends Component
         }
 
         // Load header từ stored procedure
-        \Debugbar::info('Calling AsCAGetPH2::getBySttRec with:', $this->pStt_Rec);
-        $caPh2 = AsCAGetPH2::getBySttRec($this->pStt_Rec);
+        \Debugbar::info('Calling AsCAGetPH2::call with pStt_rec:', $this->pStt_Rec);
+        $result = AsCAGetPH2::call([
+            'pStt_rec' => $this->pStt_Rec,
+        ]);
+        $caPh2 = $result->first();
         \Debugbar::info('AsCAGetPH2 result:', $caPh2);
 
         if ($caPh2) {
