@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 17:13:42
+ * @lastupdate 2026-04-12 17:16:49
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -132,7 +132,6 @@ class AsCAGetPH2
         return ProcedureCaller::call('asCAGetPH2', [
             'pMa_cty'  => $paramObj->pMa_cty ?? null,
             'pStt_rec' => $paramObj->pStt_rec ?? null,
-            'pLUser'   => $paramObj->pLUser ?? null,
         ], $connection);
     }
 
@@ -141,19 +140,16 @@ class AsCAGetPH2
      *
      * @param null|string $Ma_cty  Mã công ty
      * @param null|string $Stt_rec Số tham chiếu
-     * @param null|string $LUser   Người dùng
      *
      * @return Collection Kết quả từ procedure
      */
     public static function callWithParams(
         ?string $Ma_cty = null,
         ?string $Stt_rec = null,
-        ?string $LUser = null,
     ): Collection {
         return self::call([
             'pMa_cty'  => $Ma_cty,
             'pStt_rec' => $Stt_rec,
-            'pLUser'   => $LUser,
         ]);
     }
 }
