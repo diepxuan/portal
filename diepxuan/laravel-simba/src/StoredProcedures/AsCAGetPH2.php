@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-11 12:00:03
+ * @lastupdate 2026-04-12 16:41:44
  */
 
 namespace Diepxuan\Simba\StoredProcedures;
@@ -123,26 +123,42 @@ class AsCAGetPH2
     /**
      * Gọi stored procedure asCAGetPH2.
      *
-     * @param array $params mảng tham số (hiện tại không sử dụng)
+     * @param array $params Mảng tham số với các khóa tương ứng tên tham số.
+     *                      Các parameters có thể thiếu, sẽ dùng giá trị default.
      *
-     * @return Collection kết quả trả về từ procedure
+     * @return Collection kết quả từ procedure
      */
     public static function call(array $params): Collection
     {
         $paramObj   = ParamHelper::fromArray($params);
         $connection = (new SModel())->getConnectionName();
 
-        return ProcedureCaller::call('asCAGetPH2', [], $connection);
+        return ProcedureCaller::call('asCAGetPH2', [
+            'pMa_cty'  => $paramObj->pMa_cty ?? null,
+            'pStt_rec' => $paramObj->pStt_rec ?? null,
+            'pLUser'   => $paramObj->pLUser ?? null,
+        ], $connection);
     }
 
     /**
-     * Call stored procedure asCAGetPH2 with named parameters.
+     * Call stored procedure asCAGetPH2 with named parameters (helper method).
      *
-     * @return Collection kết quả trả về từ procedure
+     * @param null|string $Ma_cty  Mã công ty
+     * @param null|string $Stt_rec Số tham chiếu
+     * @param null|string $LUser   Người dùng
+     *
+     * @return Collection Kết quả từ procedure
      */
-    public static function callWithParams(): Collection
-    {
-        return self::call([]);
+    public static function callWithParams(
+        ?string $Ma_cty = null,
+        ?string $Stt_rec = null,
+        ?string $LUser = null,
+    ): Collection {
+        return self::call([
+            'pMa_cty'  => $Ma_cty,
+            'pStt_rec' => $Stt_rec,
+            'pLUser'   => $LUser,
+        ]);
     }
 
     /**
