@@ -1,9 +1,14 @@
 name: Sync Docs from SimbaSql
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [closed]
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
 
 jobs:
   sync-docs:
