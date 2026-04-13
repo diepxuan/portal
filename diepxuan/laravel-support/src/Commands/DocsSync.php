@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 23:52:29
+ * @lastupdate 2026-04-13 17:40:39
  */
 
 namespace Diepxuan\Support\Commands;
@@ -33,7 +33,7 @@ class DocsSync extends Command
         {--dest=/root/.openclaw/workspace/projects/portal/diepxuan/laravel-simba/docs : Destination directory}
         {--dry-run : Show what would be copied without actually copying}
         {--delete : Delete files in dest not in source}
-        {--verbose : Show detailed output}';
+        {--debug : Show detailed output}';
 
     /**
      * The console command description.
@@ -51,7 +51,7 @@ class DocsSync extends Command
         $dest    = $this->option('dest');
         $dryRun  = $this->option('dry-run');
         $delete  = $this->option('delete');
-        $verbose = $this->option('verbose');
+        $verbose = $this->option('debug');
 
         $this->info('📚 Documentation Sync');
         $this->info('=====================');
@@ -118,7 +118,9 @@ class DocsSync extends Command
             $rsyncCmd .= ' --delete';
         }
 
-        if (!$verbose) {
+        if ($verbose) {
+            $rsyncCmd .= ' --verbose';
+        } else {
             $rsyncCmd .= ' --quiet';
         }
 
@@ -129,7 +131,7 @@ class DocsSync extends Command
             $this->line("Command: {$rsyncCmd}");
         }
 
-        $result = Process::run($rsyncCmd);
+        $result = Process::run("PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin {$rsyncCmd}");
 
         if ($result->successful()) {
             // Parse rsync output for stats
