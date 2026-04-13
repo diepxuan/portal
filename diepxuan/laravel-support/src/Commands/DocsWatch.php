@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 23:52:30
+ * @lastupdate 2026-04-13 17:40:40
  */
 
 namespace Diepxuan\Support\Commands;
@@ -341,7 +341,8 @@ class DocsWatch extends Command
             pcntl_signal_dispatch();
 
             // Run inotifywait with timeout to allow signal handling
-            $result = Process::timeout(5)->run([
+            // Note: Process timeout must be > inotifywait timeout to avoid false timeouts
+            $result = Process::timeout(10)->run([
                 'inotifywait',
                 '-r',
                 '-e', 'modify,create,delete,move',

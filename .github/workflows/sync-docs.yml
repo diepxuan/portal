@@ -1,0 +1,55 @@
+name: Sync Docs from SimbaSql
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+
+jobs:
+  sync-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Portal repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone SimbaSql repository
+        uses: actions/checkout@v4
+        with:
+          repository: diepxuan/SimbaSql
+          path: simbasql-source
+          fetch-depth: 1
+
+      - name: Sync docs folder
+        run: |
+          echo "Syncing docs from SimbaSql to portal..."
+          rsync -av --delete \
+            simbasql-source/docs/ \
+            diepxuan/laravel-simba/docs/
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "✅ No changes detected"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "📝 Changes detected"
+          fi
+
+      - name: Commit and push changes
+        if: steps.git-check.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "chore: sync docs from SimbaSql
+
+          Auto-synced docs from diepxuan/SimbaSql repository
+          Triggered by: ${{ github.event_name }}"
+          git push
