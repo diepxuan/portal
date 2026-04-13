@@ -8,17 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-12 23:52:31
+ * @lastupdate 2026-04-13 17:52:27
  */
 
 namespace Diepxuan\Support;
 
 use Diepxuan\Support\Commands\CodeFormat;
 use Diepxuan\Support\Commands\Dev;
-use Diepxuan\Support\Commands\DocsSync;
-use Diepxuan\Support\Commands\DocsWatch;
-use Diepxuan\Support\Commands\DocsWatchStatus;
-use Diepxuan\Support\Commands\DocsWatchStop;
 use Diepxuan\Support\Commands\Npm;
 use Diepxuan\Support\Commands\ServeDev;
 use Diepxuan\Support\Commands\ServeDevHealth;
@@ -46,12 +42,6 @@ class SupportServiceProvider extends ServiceProvider
                 ServeDevHealth::class,
                 ServeDevService::class,
                 ServeDevLogs::class,
-
-                // Documentation sync commands
-                DocsSync::class,
-                DocsWatch::class,
-                DocsWatchStop::class,
-                DocsWatchStatus::class,
 
                 // Other commands
                 Npm::class,
