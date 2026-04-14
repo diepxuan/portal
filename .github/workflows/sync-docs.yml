@@ -28,6 +28,7 @@ jobs:
           repository: diepxuan/SimbaSql
           path: simbasql-source
           fetch-depth: 1
+          token: ${{ secrets.SIMBASQL_TOKEN }}
 
       - name: Sync docs folder
         run: |
