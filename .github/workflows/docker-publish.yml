@@ -5,7 +5,7 @@ name: Build and Push Docker Image to GHCR
 on:
   # Chạy khi có push code lên branch 'main'
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   # Cho phép chạy thủ công từ tab Actions
   workflow_dispatch:
 
@@ -68,13 +68,13 @@ jobs:
           tags: |
             # type=semver: tạo tag phiên bản khi push git tag, ví dụ: v1.2.3
             type=semver,pattern={{version}}
-            
+
             # type=edge: tạo tag 'latest' khi push lên branch 'main'
             type=edge,branch=main
-            
+
             # type=ref,event=branch: tạo tag theo tên branch, ví dụ: main
             type=ref,event=branch
-            
+
             # QUAN TRỌNG: Ghi đè để tạo tag 'latest' khi push lên branch 'main'
             # (branch mặc định của repo)
             type=raw,value=latest,enable={{is_default_branch}}
@@ -86,14 +86,14 @@ jobs:
           # QUAN TRỌNG: `context` là thư mục gốc của project Laravel của bạn
           # vì Dockerfile của Sail có thể tham chiếu đến các file từ thư mục gốc.
           context: ./vendor/laravel/sail/runtimes/8.2
-          
+
           # QUAN TRỌNG: Chỉ định đường dẫn chính xác đến Dockerfile
           file: ./vendor/laravel/sail/runtimes/8.2/Dockerfile_sqlsrv
 
           push: true # Đẩy image sau khi build thành công
           tags: ${{ steps.meta.outputs.tags }} # Sử dụng các tag đã tạo ở bước trên
           labels: ${{ steps.meta.outputs.labels }} # Gắn các label đã tạo ở bước trên
-          
+
           # Dockerfile build args
           build-args: |
             WWWUSER=1000
