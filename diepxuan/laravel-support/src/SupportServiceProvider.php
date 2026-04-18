@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-13 17:52:27
+ * @lastupdate 2026-04-18 10:20:41
  */
 
 namespace Diepxuan\Support;
@@ -32,6 +32,7 @@ class SupportServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        return;
         if ($this->app->runningInConsole()) {
             $this->commands([
                 // Dev server commands
