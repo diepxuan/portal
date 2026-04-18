@@ -27,7 +27,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Diepxuan\\Laravel\\Support\\SupportServiceProvider"
+        "Diepxuan\\Support\\SupportServiceProvider"
       ]
     }
   }
