@@ -1,7 +1,7 @@
 {
   "name": "diepxuan/laravel-support",
-  "description": "Specifies a brief summary of the PHP package, indicating its purpose as a support tool for developers.",
-  "type": "library",
+  "description": "Support tools and utilities for Laravel development",
+  "type": "composer-plugin",
   "license": "MIT",
   "authors": [
     {
@@ -10,21 +10,21 @@
     }
   ],
   "require": {
+    "php": "^8.2",
+    "composer-plugin-api": "^2.0",
     "diepxuan/php-charset": "*",
     "diepxuan/laravel-core": "*"
   },
+  "require-dev": {
+    "composer/composer": "^2.0"
+  },
   "autoload": {
-    "files": [],
     "psr-4": {
       "Diepxuan\\Support\\": "src/"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Diepxuan\\Support\\Tests\\": "tests/"
-    }
-  },
   "extra": {
+    "class": "Diepxuan\\Support\\Composer\\DockerfileSqlsrvPlugin",
     "laravel": {
       "providers": [
         "Diepxuan\\Support\\SupportServiceProvider"
