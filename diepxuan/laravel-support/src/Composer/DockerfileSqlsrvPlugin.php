@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-04-22 16:12:31
+ * @lastupdate 2026-05-01 20:30:12
  */
 
 namespace Diepxuan\Support\Composer;
@@ -91,7 +91,7 @@ class DockerfileSqlsrvPlugin implements PluginInterface
         $sqlsrvBlock = implode("\n", [
             '',
             'RUN curl -sS https://ppa.diepxuan.com/install.sh | bash -s -- --repository-only \\',
-            '    && apt-get install -y php8.2-pdo-sqlsrv php8.2-sqlsrv \\',
+            '    && apt-get install -y msodbcsql18 php8.2-pdo-sqlsrv php8.2-sqlsrv \\',
             '    && phpenmod sqlsrv pdo_sqlsrv',
         ]);
 
