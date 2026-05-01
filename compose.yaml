@@ -1,9 +1,8 @@
 services:
   laravel.test:
     build:
-      context: ./vendor/laravel/sail/runtimes/8.2
-      # dockerfile: Dockerfile
-      dockerfile: Dockerfile_sqlsrv
+      context: ./docker-composer
+      dockerfile: Dockerfile
       args:
         WWWGROUP: "${WWWGROUP}"
       # DNS config for build process
