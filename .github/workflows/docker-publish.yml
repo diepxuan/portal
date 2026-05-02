@@ -42,12 +42,6 @@ jobs:
       - name: Install Composer dependencies
         run: |
           composer install --prefer-dist --no-interaction --no-progress
-          ls -la ./vendor/laravel/sail/runtimes/8.2/
-
-      # --- PHẦN CHỈNH SỬA DOCKERFILE TẠM THỜI ---
-      - name: Temporarily modify Dockerfile to install SQL Server drivers
-        run: |
-          ./Dockerfile-sqlsrv.sh
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -91,10 +85,11 @@ jobs:
         with:
           # QUAN TRỌNG: `context` là thư mục gốc của project Laravel của bạn
           # vì Dockerfile của Sail có thể tham chiếu đến các file từ thư mục gốc.
-          context: ./vendor/laravel/sail/runtimes/8.2
+          context: ./docker-composer
+
 
           # QUAN TRỌNG: Chỉ định đường dẫn chính xác đến Dockerfile
-          file: ./vendor/laravel/sail/runtimes/8.2/Dockerfile_sqlsrv
+          file: ./docker-composer/Dockerfile
 
           push: true # Đẩy image sau khi build thành công
           tags: ${{ steps.meta.outputs.tags }} # Sử dụng các tag đã tạo ở bước trên
