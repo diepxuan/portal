@@ -538,149 +538,24 @@ Kiem tra 151 task files theo khuon mau 002 (9 sections: Thong tin co ban, Muc ti
 
 ---
 
-## DLLs chua co Task (184 DLLs)
+## DLLs chua co Task (1 DLL)
 
 ### Tong quan
 
 | Nhom | So DLL chua co task |
 |------|---------------------|
-| AR | 1 (ArRptF5BCCN01a) |
-| CA | 7 |
-| CO | 15 |
-| SO | 22 |
-| PO | 1 |
-| SI | 8 |
-| IN | 12 |
-| FA | 17 |
-| GL | 84 |
-| System | 18 |
-| **Tong** | **184** |
+| IN | 1 |
+| **Tong** | **1** |
 
 ### Danh sach DLLs chua co task
 
-#### AR (1)
-- ArRptF5BCCN01a (Drill-down F5 tu ARRptBCCN01a)
+#### IN (1)
+- INDMVT_ (file loi, khong ton tai trong thu muc decompiled)
 
-#### CA (7)
-- CARptTMNH01.dll
-- CARptTMNH02.dll
-- CARptTMNH03.dll
-- CARptTMNH04.dll
-- CARptTMNH05.dll
-- CARptTMNH06.dll
-- CARptTMNH07.dll
+### Ghi chu
 
-#### CO (15)
-- CODMBOM_.dll
-- CODMSPCT.dll
-- COGDBGT.dll
-- COLK.dll
-- COPB.dll
-- CORptGt01.dll
-- CORptGt02.dll
-- CORptGt03.dll
-- CoCalcCost.dll
-- CoDMCPTT.dll
-- CoDelPostCP2GL.dll
-- CoNgungKHCPTT.dll
-- CoPostCPTT2GL.dll
-- CoRptCTPBCPTT.dll
-- CoRptKHCPTT.dll
-
-#### SO (22)
-- SOVchSO3.dll
-- SOVchSO3_.dll
-- SOVchSO4.dll
-- SOVchSO5.dll
-- SORptBK01.dll
-- SORptF5BCPT06.dll
-- SORptF5TH0.dll
-- SORptTH02.dll
-- SODMCK.dll
-- SODMDGVT.dll
-- SODMDKTT.dll
-- SODMHTTT.dll
-- SODMKM.dll
-- SODMNVKD.dll
-- SODMTS.dll
-- SOND51HuyHD.dll
-- SOND51bkhd.dll
-- SOND51dmmhd.dll
-- SOND51mchhd.dll
-- SOND51xoahd.dll
-
-#### PO (1)
-- PoVchPO6.dll
-
-#### SI (8)
-- SiChangeFY.dll
-- SiImExData.dll
-- SiInfomationProduct.dll
-- SiReOrderVoucherNumber.dll
-- SiTools.dll
-- SiTools_2.dll
-- SiUpdateLog.dll
-
-#### IN (12)
-- INDMLO.dll (da co task 106)
-- INDMLO.dll
-- INDMNHVT.dll
-- INDMLO.dll
-- INVchIN2.dll
-- INVchIN3.dll
-- INVchIN5.dll
-- INRptBKN04.dll
-- INRptBKX04.dll
-- INRptCD01.dll
-- INRptCTVT02.dll
-- INRptTHN02.dll
-- INRptTHX02.dll
-- INCalGiaNTXT.dll
-
-#### FA (17)
-- FADMBPSD.dll (da co task 127)
-- FADMNHTS.dll (da co task 128)
-- FADelCC2GL.dll (da co task 136)
-- FADelTS2GL.dll (da co task 135)
-- FAPostCC2GL.dll
-- FAPostTS2GL.dll
-- FAChuyenTS.dll
-- FADelKHTS.dll
-- FAAdjustKHTS.dll
-- FADMCC.dll
-- FADMLDTS.dll
-- FADMNV.dll
-- FADMTS.dll
-- FARptBCPT01.dll
-- FARptBCPT06.dll
-- FARptBCPT07.dll
-- FARptBCPT08.dll
-- FARptBCPT10.dll
-- FARptBCTS04.dll
-- FARptBCTS05.dll
-- FARptSoSD.dll
-- Fakkts.dll
-
-#### GL (84)
-(Nhieu GL reports va mau BCTC)
-
-#### System (18)
-- AsiaLicenseCommon.dll
-- DashBoard.dll
-- Docking.dll
-- DynReport.dll
-- DynamicReport.dll
-- Framework.dll
-- GenerationReport.dll
-- Helper.dll
-- OptFieldInfo.dll
-- OptFieldSetup.dll
-- ReportDynamic.dll
-- RptCommon.dll
-- SMFFY.dll
-- SMKS.dll
-- SMUserInfo.dll
-- ToolCommon.dll
+- Cac DLL khac trong danh sach truoc da duoc tao task trong dot 158-341
+- INDMVT_ la mot file loi trong SimbaSql nen khong can tao task
 
 ---
 
