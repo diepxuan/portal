@@ -143,7 +143,48 @@ class DMLO extends Model
 }
 ```
 
-### 2. Livewire Components
+### 2. Stored Procedure Classes
+
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINGetDMLO.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINGetDMLO extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_DMLO_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINInsDMLO.php
+class AsINInsDMLO extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_DMLO_INSERT';
+    protected $params = ['pMa_cty', 'ma_lo', 'ten_lo', 'han_dung', 'trang_thai', 'ksd'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINUpdDMLO.php
+class AsINUpdDMLO extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_DMLO_UPDATE';
+    protected $params = ['pMa_cty', 'ma_lo', 'ten_lo', 'han_dung', 'trang_thai', 'ksd'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINDelDMLO.php
+class AsINDelDMLO extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_DMLO_DELETE';
+    protected $params = ['pMa_cty', 'ma_lo'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINChkDMLO.php
+class AsINChkDMLO extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_DMLO_CHECK';
+    protected $params = ['pMa_cty', 'ma_lo'];
+}
+```
+
+### 3. Livewire Components
 
 ```php
 // diepxuan/laravel-catalog/src/Http/Livewire/IN/Danhmuc/Lo.php
@@ -186,7 +227,7 @@ class LoEdit extends Component
 }
 ```
 
-### 3. Views
+### 4. Views
 
 ```
 resources/views/catalog/in/danhmuc/
@@ -194,7 +235,7 @@ resources/views/catalog/in/danhmuc/
 └── lo-edit.blade.php
 ```
 
-### 4. Routes
+### 5. Routes
 
 ```php
 Route::prefix('catalog/in/danhmuc')
@@ -212,6 +253,11 @@ Route::prefix('catalog/in/danhmuc')
 | Loai | Package | File | Ghi chu |
 |------|---------|------|---------|
 | Model | laravel-simba | DMLO.php | Chinh |
+| SP | laravel-simba | AsINGetDMLO.php | Get |
+| SP | laravel-simba | AsINInsDMLO.php | Insert |
+| SP | laravel-simba | AsINUpdDMLO.php | Update |
+| SP | laravel-simba | AsINDelDMLO.php | Delete |
+| SP | laravel-simba | AsINChkDMLO.php | Check trung |
 | Component | laravel-catalog | Lo.php | List |
 | Component | laravel-catalog | LoEdit.php | Edit |
 

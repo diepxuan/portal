@@ -116,6 +116,12 @@ Chuyen doi chuc nang phieu thanh toan mua hang (PO5) tu .NET sang PHP Laravel.
 3. **Giam ton kho**:
    - Giam ton kho khi tra hang
 
+### Lookup Integration
+
+- Tu DMVT: Chon vat tu tra lai
+- Tu POVchPO1: Lookup phieu nhap goc
+- Tu DMKHO: Chon kho
+
 ---
 
 ## Mapping PHP

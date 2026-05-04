@@ -59,6 +59,47 @@ Giong nhu SOND51mchhd, bo sung them:
 
 ---
 
+## Table Navigation
+
+| Bang | Mo ta | Relationship |
+|------|-------|---------------|
+| SOND51mhd | Mau hoa don | FK ma_tb -> SOND51mhd.ma_tb |
+| SOND51phhd | Phat hanh hoa don | FK ma_tb -> SOND51phhd.ma_tb |
+
+---
+
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_SO_ND51XOA_GET | Lay danh sach thong bao xoa |
+| SP_SO_ND51XOA_GETBYID | Lay chi tiet 1 thong bao |
+| SP_SO_ND51XOA_INSERT | Them thong bao moi |
+| SP_SO_ND51XOA_UPDATE | Cap nhat thong bao |
+| SP_SO_ND51XOA_DELETE | Xoa thong bao |
+| SP_SO_ND51XOA_CHECK | Kiem tra trung ma |
+
+### SP_INSERT (reference)
+
+```sql
+EXEC SP_SO_ND51XOA_INSERT
+    @pMa_cty VARCHAR(50),
+    @pStt_rec VARCHAR(20),
+    @pMa_ct VARCHAR(10),
+    @pNgay_tb DATETIME,
+    @pMa_tb VARCHAR(20),
+    @pNoi_nhan NVARCHAR(500),
+    @pTen_tc NVARCHAR(200),
+    @pDai_dien NVARCHAR(100),
+    @pDia_chi NVARCHAR(500),
+    @pMa_thue VARCHAR(20),
+    @pGhi_chu NVARCHAR(500),
+    @pKieu_xl VARCHAR(10),
+    @pStatus INT OUTPUT
+```
+
+---
+
 ## Business Logic
 
 ### Khac biet voi SOND51mchhd
@@ -69,6 +110,11 @@ Giong nhu SOND51mchhd, bo sung them:
 | Label kieu_xl | Khong co | "XOA" |
 | Ly do | "Ly do mat, chay, hong" | "Ly do xoa" |
 | Messages | 50153, 50154, 50155, 50156 | 50157, 50182, 50183, 50184 |
+
+### Lookup Integration
+
+- Tu SOND51mhd: Chon mau hoa don
+- Tu SOND51phhd: Chon to bao cao phat hanh
 
 ---
 
@@ -105,7 +151,41 @@ class ND51Xoahd extends Model
 }
 ```
 
-### 2. Livewire Component
+### 2. Stored Procedure Classes
+
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/SoGetND51Xoahd.php
+class SoGetND51Xoahd extends StoredProcedure
+{
+    protected $procedure = 'SP_SO_ND51XOA_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/SoInsND51Xoahd.php
+// diepxuan/laravel-simba/src/StoredProcedures/SoUpdND51Xoahd.php
+// diepxuan/laravel-simba/src/StoredProcedures/SoDelND51Xoahd.php
+// diepxuan/laravel-simba/src/StoredProcedures/SoChkND51Xoahd.php
+```
+
+### 3. Livewire Component (List)
+
+```php
+// diepxuan/laravel-catalog/src/Http/Livewire/SO/Thongbaoxoahoadon.php
+namespace Diepxuan\Catalog\Http\Livewire\SO;
+
+class Thongbaoxoahoadon extends Component
+{
+    const MA_CT = 'ND51';
+
+    public Collection $pThongBaos;
+    public string $pSearch = '';
+
+    public function mount(): void { $this->loadData(); }
+    public function render(): View { return view('catalog::so.thongbaoxoahoadon'); }
+}
+```
+
+### 4. Livewire Component (Edit)
 
 ```php
 // diepxuan/laravel-catalog/src/Http/Livewire/SO/ThongbaoxoahoadonEdit.php
@@ -135,6 +215,14 @@ Route::prefix('catalog/so')
     });
 ```
 
+### 4. Views
+
+```
+resources/views/catalog/so/
+├── thongbaoxoahoadon.blade.php        (List page)
+├── thongbaoxoahoadon-edit.blade.php   (Edit form)
+```
+
 ---
 
 ## Dependencies
@@ -143,6 +231,10 @@ Route::prefix('catalog/so')
 |------|---------|------|---------|
 | Model | laravel-simba | ND51Xoahd.php | Chinh |
 | Model | laravel-simba | ND51XoahdCt.php | Chi tiet |
+| SP | laravel-simba | SoGetND51Xoahd.php | Get list |
+| SP | laravel-simba | SoInsND51Xoahd.php | Insert |
+| SP | laravel-simba | SoUpdND51Xoahd.php | Update |
+| SP | laravel-simba | SoDelND51Xoahd.php | Delete |
 | Component | laravel-catalog | Thongbaoxoahoadon.php | List |
 | Component | laravel-catalog | ThongbaoxoahoadonEdit.php | Edit |
 

@@ -42,6 +42,28 @@ Chuyen doi chuc nang bang ke chung tu ton kho tu .NET sang PHP Laravel.
 
 ---
 
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_IN_RPT_BK01_GET | Lay du lieu bang ke chung tu ton kho |
+
+### SP_GET (reference)
+
+```sql
+-- Lay du lieu bang ke chung tu ton kho
+EXEC SP_IN_RPT_BK01_GET
+    @pMa_cty VARCHAR(50),
+    @pMonth INT,
+    @pYear INT,
+    @pMa_vt VARCHAR(50) = NULL,
+    @pMa_kho VARCHAR(50) = NULL,
+    @pMa_Nt VARCHAR(10) = 'VND',
+    @pIsVND BIT = 1
+```
+
+---
+
 ## Business Logic
 
 ### Validate Rules

@@ -20,9 +20,22 @@ Chuyen doi chuc nang bao cao loi nhuan theo hop dong tu .NET sang PHP Laravel.
 
 ## Form classes
 
-| Class | Ke thua | Muc dich |
-|-------|---------|----------|
-| frmSORptLaiLo | frmReport | Form bao cao loi nhuan |
+### frmSORptLaiLo (Form bao cao loi nhuan)
+- **Ke thua:** frmReport
+- **Chuc nang:** Bao cao loi nhuan theo hop dong
+- **Controls tren tabFilter:**
+
+| Control | Type | Mo ta |
+|---------|------|-------|
+| cboKyBc | ComboBox | Ky bao cao |
+| txtNgay1 | AsMaskedTextBox | Ngay bat dau |
+| txtNgay2 | AsMaskedTextBox | Ngay ket thuc |
+| txtMa_hd | AsTextBox | Ma hop dong |
+| txtMa_nhhd | AsTextBox | Nhom hop dong |
+| txtMa_Kh | AsTextBox | Ma khach hang |
+| txtMa_vt | AsTextBox | Ma vat tu |
+| optNo | RadioButton | Phat sinh No (Doanh thu) |
+| optCo | RadioButton | Phat sinh Co (Chi phi) |
 
 ## Stored Procedures
 
@@ -39,6 +52,8 @@ Chuyen doi chuc nang bao cao loi nhuan theo hop dong tu .NET sang PHP Laravel.
 
 ## Mapping PHP
 
+### 1. Livewire Component
+
 ```php
 // diepxuan/laravel-catalog/src/Http/Livewire/SO/Reports/Baocaoloinhuan.php
 namespace Diepxuan\Catalog\Http\Livewire\SO\Reports;
@@ -48,11 +63,37 @@ class Baocaoloinhuan extends Component
     const MA_CT = 'SO';
     const REPORT_TYPE = 'LAILO';
 
+    public ?DateTime $pNgay1 = null;
+    public ?DateTime $pNgay2 = null;
+    public ?string $pMa_hd = null;
+    public ?string $pMa_Kh = null;
+    public ?string $pMa_vt = null;
+    public bool $pPhatSinhNo = true;
+
+    public function loadData(): void { /* Call SP SO_LAILO_GET */ }
     public function render(): View
     {
         return view('catalog::so.reports.bao-cao-loi-nhuan');
     }
 }
+```
+
+### 2. Views
+
+```
+resources/views/catalog/so/reports/
+├── bao-cao-loi-nhuan.blade.php
+```
+
+### 3. Routes
+
+```php
+Route::prefix('catalog/so/reports')
+    ->name('catalog.so.reports.')
+    ->group(function () {
+        Route::get('/bao-cao-loi-nhuan', [Baocaoloinhuan::class, 'render'])
+            ->name('baocaoloinhuan');
+    });
 ```
 
 ## Dependencies

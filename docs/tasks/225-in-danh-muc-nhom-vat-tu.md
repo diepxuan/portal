@@ -272,6 +272,28 @@ class NhomvattuEdit extends Component
 }
 ```
 
+### 4. Views
+
+```
+resources/views/catalog/in/danhmuc/
+├── nhom-vat-tu.blade.php              (Tree list page)
+├── nhom-vat-tu-edit.blade.php         (Modal edit)
+└── _nhom-vat-tu-row.blade.php         (Component row)
+```
+
+### 5. Routes
+
+```php
+Route::prefix('catalog/in/danhmuc')
+    ->name('catalog.in.danhmuc.')
+    ->group(function () {
+        Route::get('/nhom-vat-tu', [Nhomvattu::class, 'render'])
+            ->name('nhom-vat-tu');
+        Route::get('/nhom-vat-tu/edit/{maNhvt?}', [NhomvattuEdit::class, 'render'])
+            ->name('nhom-vat-tu.edit');
+    });
+```
+
 ---
 
 ## Dependencies
