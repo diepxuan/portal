@@ -1,4 +1,4 @@
-# Task 342: CA4 - Phieu bao no ngan hang
+# Task 030: CA4 - Phieu bao no ngan hang
 
 ## Thong tin co ban
 
@@ -7,7 +7,7 @@
 | **DLL** | CAVchCA4.dll |
 | **Module** | CA (Cash - Tien mat & ngan hang) |
 | **Loai** | Voucher (Phieu chi - UNC) |
-| **Trang thai** | Da phan tich |
+| **Trang thai** | Da hoan thanh |
 
 ## Muc tieu
 
