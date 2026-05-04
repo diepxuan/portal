@@ -131,6 +131,17 @@ resources/views/catalog/in/baocao/
 └── cong-no-vat-tu-report.blade.php
 ```
 
+### 3. Routes
+
+```php
+Route::prefix('catalog/in/baocao')
+    ->name('catalog.in.baocao.')
+    ->group(function () {
+        Route::get('/cong-no-vat-tu', [CongNoVatTu::class, 'render'])
+            ->name('cong-no-vat-tu');
+    });
+```
+
 ---
 
 ## Dependencies

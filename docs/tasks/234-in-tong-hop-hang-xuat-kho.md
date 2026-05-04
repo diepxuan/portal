@@ -134,6 +134,17 @@ resources/views/catalog/in/baocao/
 └── tong-hop-xuat-kho-report.blade.php
 ```
 
+### 3. Routes
+
+```php
+Route::prefix('catalog/in/baocao')
+    ->name('catalog.in.baocao.')
+    ->group(function () {
+        Route::get('/tong-hop-xuat-kho', [TongHopXuatKho::class, 'render'])
+            ->name('tong-hop-xuat-kho');
+    });
+```
+
 ---
 
 ## Dependencies
