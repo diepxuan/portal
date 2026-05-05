@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-05 20:11:16
+ * @lastupdate 2026-05-05 23:16:37
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
@@ -45,6 +45,14 @@ class KhachhangList extends Component
     protected $queryString = [
         'search' => ['except' => ''],
     ];
+
+    /**
+     * Reset pagination về trang 1 khi search thay đổi.
+     */
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
 
     /**
      * Xóa khách hàng theo mã.
