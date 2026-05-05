@@ -202,11 +202,13 @@ docs/add-laravel-rules
 | `scripts/` | Scripts riêng cho Portal |
 | `docs/` | Documentation |
 | `memory/` | Daily memory logs |
+| `simba-docs/` | Mount ZFS từ SimbaSql repo — domain knowledge (readonly) |
 
 ### 10.2 Cấm
 
 - ❌ Tạo file ngoài `/root/.openclaw/workspace/projects/portal/`
 - ❌ Sửa core Laravel files (trừ khi được yêu cầu)
+- ❌ Ghi đè hoặc sửa file trong `simba-docs/` (mount readonly từ SimbaSql)
 
 ---
 
