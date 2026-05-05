@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-03 16:11:56
+ * @lastupdate 2026-05-05 20:11:14
  */
 
 use Diepxuan\Catalog\Http\Controllers\SellController;
@@ -16,7 +16,8 @@ use Diepxuan\Catalog\Http\Controllers\SystemController;
 use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
-use Diepxuan\Catalog\Http\Livewire\Banhang\Khachhang;
+use Diepxuan\Catalog\Http\Livewire\Banhang\KhachhangForm;
+use Diepxuan\Catalog\Http\Livewire\Banhang\KhachhangList;
 use Diepxuan\Catalog\Http\Livewire\Cash\Baocao\Chi;
 use Diepxuan\Catalog\Http\Livewire\Cash\Baocao\Nganhang;
 use Diepxuan\Catalog\Http\Livewire\Cash\Baocao\Thu;
@@ -72,7 +73,9 @@ Route::middleware(['auth'])->group(static function (): void {
 
     Route::get('banhang/hoadonbanhang', Hoadonbanhang::class)->name('ar.ph.hdbh');
     Route::resource('banhang/bangkebanhang', SellController::class)->names('sell.list');
-    Route::get('/banhang/khachhang', Khachhang::class)->name('ar.khachhang');
+    Route::get('/banhang/khachhang', KhachhangList::class)->name('ar.khachhang');
+    Route::get('/banhang/khachhang/create', KhachhangForm::class)->name('ar.khachhang.create');
+    Route::get('/banhang/khachhang/edit/{id}', KhachhangForm::class)->name('ar.khachhang.edit');
 
     Route::get('/muahang/cungcap', Cungcap::class)->name('ar.cungcap');
 
