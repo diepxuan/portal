@@ -65,6 +65,7 @@ Nếu có xung đột giữa các file → SOUL.md được ưu tiên.
 | Git workflow | `AGENTS.md` §7 |
 | Documentation rules | `IDENTITY.md` §5 |
 | Memory system | `AGENTS.md` §2 |
+| Simba domain knowledge | `docs/SIMBA-DOCS.md`, `simba-docs/` (mount) |
 
 ---
 
