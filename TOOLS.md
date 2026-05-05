@@ -20,14 +20,26 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ## SSH Hosts
 
 ### Development Servers
+
 - **web** → `ssh root@web` (Portal development server)
-  - Primary database server for Portal application
-  - Contains production-like data for development
+    - Primary database server for Portal application
+    - Contains production-like data for development
 
 ### Database Connections
+
 - **Portal Database**: SQL Server on web server
 
 ### Notes
+
 - SSH key: `~/.ssh/id_rsa` (existing key)
 - Default port: 22
 - Use `ssh root@web` for direct connection
+
+---
+
+## simba-docs
+
+- **Mount point:** `simba-docs/` (trong workspace)
+- **Mục đích:** Toàn bộ tài liệu SimbaSql .NET — domain knowledge
+- **Trạng thái:** Readonly
+- **Chi tiết:** `docs/SIMBA-DOCS.md`
