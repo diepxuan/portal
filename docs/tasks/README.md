@@ -23,6 +23,54 @@ Tong quan: **338 DLL** (217 + 84 moi) da duoc decompile va phan tich
 
 ---
 
+## Tasks da hoan thanh (14 tasks)
+
+### AR - Cong no phai thu (3 tasks)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 001 | ar-danh-muc-khach-hang | Danh muc khach hang | ✅ DONE |
+| 002 | ar-danh-muc-nhom-khach-hang | Danh muc nhom khach hang | ✅ DONE |
+| 003 | ar-danh-muc-phan-loai-khach-hang | Danh muc phan loai khach hang | ✅ DONE |
+
+### CA - Tien mat & ngan hang (4 tasks)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 027 | ca-voucher-thu-tien | Phieu thu tien | ✅ DONE |
+| 028 | ca-voucher-chi-tien | Phieu chi tien | ✅ DONE |
+| 029 | ca-voucher-bao-no-ngan-hang | Phieu bao no ngan hang | ✅ DONE |
+| 030 | ca-voucher-bao-co-uy-nhiem-chi | Phieu bao co uy nhiem chi | ✅ DONE |
+
+### GL - So cai tong hop (1 task)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 146 | gl-danhmuc-taikhoan | Danh muc tai khoan | ✅ DONE |
+
+### IN - Ton kho (4 tasks)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 100 | in-danhmuc-kho | Danh muc kho | ✅ DONE |
+| 109 | in-danhmuc-nhomhang-vat | Danh muc nhom hang vat tu | ✅ DONE |
+| 114 | in-danhmuc-vattu | Danh muc vat tu | ✅ DONE |
+| 117 | in-baocao-tonkho-02 | Bao cao ton kho 02 | ✅ DONE |
+
+### PO - Don hang mua (1 task)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 063 | po-danhmuc-chuongtrinh-muahang | Danh muc chuong trinh mua hang | ✅ DONE |
+
+### System (1 task)
+
+| # | Task | Mo ta | Trang thai |
+|---|------|-------|----------|
+| 11 | admin-dashboard | Dashboard he thong | ✅ DONE |
+
+---
+
 ## Tasks da tao (301 tasks)
 
 ### AR - Cong no phai thu (17 tasks: 001-016, 158)
