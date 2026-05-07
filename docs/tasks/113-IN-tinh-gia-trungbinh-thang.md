@@ -47,6 +47,29 @@ Chuyen doi chuc nang tinh gia trung binh thang tu .NET sang PHP Laravel.
 
 ---
 
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_IN_CAL_GIA_TB | Tinh gia trung binh thang |
+
+### SP_CAL (reference)
+
+```sql
+-- Tinh gia trung binh thang
+EXEC SP_IN_CAL_GIA_TB
+    @pMa_cty VARCHAR(50),
+    @pKyBc VARCHAR(50) = NULL,
+    @pMa_kho VARCHAR(50) = NULL,
+    @pNh_vt VARCHAR(50) = NULL,
+    @pMa_vt VARCHAR(50) = NULL,
+    @pMa_tkvt VARCHAR(50) = NULL,
+    @pKieu_ps INT = 0,
+    @pTk_cl VARCHAR(20) = '632'
+```
+
+---
+
 ## Business Logic
 
 ### Calculation Rules
@@ -102,26 +125,47 @@ Route::get('/tinh-gia-trung-binh-thang', [Tinhgiatrungbinhthang::class, 'render'
 
 ---
 
-## Cấu trúc dữ liệu
+### 2. Stored Procedure Classes
 
-| Bảng | Mô tả | Loại |
-|------|--------|------|
-| INVENTORY | Tồn kho | Transaction |
-| INVT | Vật tư | Master |
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINCalGiaTB.php
+namespace Diepxuan\Simba\StoredProcedures;
 
-## Stored Procedures
+class AsINCalGiaTB extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_CAL_GIA_TB';
+    protected $params = ['pMa_cty', 'pKyBc', 'pMa_kho', 'pNh_vt', 'pMa_vt', 'pMa_tkvt', 'pKieu_ps', 'pTk_cl'];
+}
+```
 
-| SP Name | Mô tả |
-|---------|-------|
-| `IN_CAL_GIA_TB` | Tính giá trung bình tháng |
+### 3. Views
+
+```
+resources/views/catalog/in/calculations/
+└── tinh-gia-trung-binh-thang.blade.php   (Calculation form)
+```
+
+### 4. Routes
+
+```php
+Route::prefix('catalog/in/calculations')
+    ->name('catalog.in.calculations.')
+    ->group(function () {
+        Route::get('/tinh-gia-trung-binh-thang', [Tinhgiatrungbinhthang::class, 'render'])
+            ->name('gia-tb');
+    });
+```
+
+---
 
 ## Dependencies
 
-| Package | Module | Mô tả |
-|---------|--------|--------|
-| diepxuan/catalog | IN | Module tồn kho |
-| diepxuan/catalog | DMVT | Lookup vật tư |
-| diepxuan/system | Commons | Ngày tháng, số dư |
+| Loai | Package | File | Ghi chu |
+|------|---------|------|---------|
+| Component | laravel-catalog | Tinhgiatrungbinhthang.php | Calculation form |
+| SP | laravel-simba | AsINCalGiaTB.php | Tinh gia TB thang |
+| Model | laravel-simba | DMKHO.php | Lookup kho |
+| Model | laravel-simba | DMVT.php | Lookup vat tu |
 
 ## Progress Checklist
 

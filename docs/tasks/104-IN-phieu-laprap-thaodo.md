@@ -130,6 +130,17 @@ Chuyen doi chuc nang phieu lap rap/thao do tu .NET sang PHP Laravel, dat ket qua
 | SP_IN_IN6_FIND | Tim kiem |
 | SP_IN_IN6_CHECK | Kiem tra trung so chung tu |
 
+### SP_GET (reference)
+
+```sql
+-- Lay danh sach phieu lap rap/thao do
+EXEC SP_IN_IN6_GET
+    @pMa_cty VARCHAR(50) = '001',
+    @pSearch NVARCHAR(100) = NULL,
+    @pPageIndex INT = 1,
+    @pPageSize INT = 50
+```
+
 ---
 
 ## Business Logic
@@ -221,7 +232,56 @@ class IN6CTD extends Model
 }
 ```
 
-### 2. Livewire Component (Edit Modal)
+### 2. Stored Procedure Classes
+
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINGetIN6.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINGetIN6 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_IN6_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINInsIN6.php
+class AsINInsIN6 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_IN6_INSERT';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'ma_nt', 'ty_gia', 'so_ct', 'ngay_ct',
+        'ma_kh', 'ten_kh', 'dia_chi', 'nguoi_gd', 'dien_giai',
+        'ma_gd', 'tien_nt', 'tien',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINUpdIN6.php
+class AsINUpdIN6 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_IN6_UPDATE';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'ma_nt', 'ty_gia', 'so_ct', 'ngay_ct',
+        'ma_kh', 'ten_kh', 'dia_chi', 'nguoi_gd', 'dien_giai',
+        'ma_gd', 'tien_nt', 'tien',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINDelIN6.php
+class AsINDelIN6 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_IN6_DELETE';
+    protected $params = ['pMa_cty', 'stt_rec'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINChkIN6.php
+class AsINChkIN6 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_IN6_CHECK';
+    protected $params = ['pMa_cty', 'so_ct'];
+}
+```
+
+### 3. Livewire Component (Edit Modal)
 
 ```php
 // diepxuan/laravel-catalog/src/Http/Livewire/IN/LaprapthaodoEdit.php
@@ -267,7 +327,7 @@ class LaprapthaodoEdit extends Component
 }
 ```
 
-### 3. Views
+### 5. Views
 
 ```
 resources/views/catalog/in/
@@ -275,7 +335,7 @@ resources/views/catalog/in/
 ├── lap-rap-thao-do-edit.blade.php      (Edit modal + 2 grid)
 ```
 
-### 4. Routes
+### 6. Routes
 
 ```php
 Route::prefix('catalog/in')
@@ -297,6 +357,14 @@ Route::prefix('catalog/in')
 | Model | laravel-simba | IN6.php | Header |
 | Model | laravel-simba | IN6CT.php | Detail Master |
 | Model | laravel-simba | IN6CTD.php | Detail Chi tiet |
+| Model | laravel-simba | DMVT.php | Vat tu (FK) |
+| Model | laravel-simba | DMBOM.php | BOM (Lookup) |
+| SP | laravel-simba | AsINGetIN6.php | Get |
+| SP | laravel-simba | AsINInsIN6.php | Insert |
+| SP | laravel-simba | AsINUpdIN6.php | Update |
+| SP | laravel-simba | AsINDelIN6.php | Delete |
+| SP | laravel-simba | AsINChkIN6.php | Check trung |
+| Component | laravel-catalog | Laprapthaodo.php | List |
 | Component | laravel-catalog | LaprapthaodoEdit.php | Edit |
 
 ---

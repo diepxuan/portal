@@ -104,27 +104,41 @@ Route::get('/bao-cao-tong-hop-hang-xuat', [Baocaotonghophangxuat::class, 'render
 
 ---
 
-## Cấu trúc dữ liệu
+### 2. Stored Procedure Classes
 
-| Bảng | Mô tả | Loại |
-|------|--------|------|
-| INVENTORY | Tồn kho | Transaction |
-| INVT | Vật tư | Master |
-| DMBHCT | Bán hàng chi tiết | Transaction |
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINRptTHX01.php
+namespace Diepxuan\Simba\StoredProcedures;
 
-## Stored Procedures
+class AsINRptTHX01 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_RPT_THX01_GET';
+    protected $params = [
+        'pMa_cty', 'pMa_vt', 'pMa_nhvt', 'pMa_Kh', 'pMa_kho_xuat',
+        'pMa_Kho_nhap', 'pTk_vt', 'pTk_Du', 'pMa_NX', 'pMa_Bp',
+        'pMa_Hd', 'pMa_lo', 'pSo_ct1', 'pSo_ct2', 'pLoai_px', 'pPS_dc',
+        'pNgay1', 'pNgay2',
+    ];
+}
+```
 
-| SP Name | Mô tả |
-|---------|-------|
-| `IN_THX01_GET` | Tổng hợp hàng xuất kho |
+### 3. Views
+
+```
+resources/views/catalog/in/reports/
+├── baocao-tong-hop-hang-xuat.blade.php   (Form loc + CrystalViewer)
+```
+
+---
 
 ## Dependencies
 
-| Package | Module | Mô tả |
-|---------|--------|--------|
-| diepxuan/catalog | IN | Module tồn kho |
-| diepxuan/reporting | CrystalReport | Xem báo cáo |
-| diepxuan/system | Commons | Lookup VT, kho |
+| Loai | Package | File | Ghi chu |
+|------|---------|------|---------|
+| Component | laravel-catalog | Baocaotonghophangxuat.php | Report viewer |
+| SP | laravel-simba | AsINRptTHX01.php | Data source |
+| Model | laravel-simba | DMVT.php | Lookup vat tu |
+| Model | laravel-simba | DMKHO.php | Lookup kho |
 
 ## Progress Checklist
 

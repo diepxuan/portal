@@ -44,6 +44,31 @@ Chuyen doi chuc nang bao cao chi tiet vat tu 01 tu .NET sang PHP Laravel.
 
 ---
 
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_IN_RPT_CTVT01_GET | Lay du lieu bao cao chi tiet vat tu 01 |
+
+### SP_GET (reference)
+
+```sql
+-- Lay du lieu bao cao chi tiet vat tu 01
+EXEC SP_IN_RPT_CTVT01_GET
+    @pMa_cty VARCHAR(50) = '001',
+    @pKyBc INT = NULL,
+    @pNgay1 DATETIME = NULL,
+    @pNgay2 DATETIME = NULL,
+    @pMa_vt VARCHAR(50),
+    @pMa_kho VARCHAR(50),
+    @pMa_vitri VARCHAR(50) = NULL,
+    @pTK_VT VARCHAR(50) = NULL,
+    @pDVT INT = 0,
+    @pMa_Nt VARCHAR(10) = 'VND'
+```
+
+---
+
 ## Business Logic
 
 ### Validate Rules

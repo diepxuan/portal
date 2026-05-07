@@ -134,6 +134,13 @@ Chuyen doi chuc nang phieu nhap kho mua (PO4) tu .NET sang PHP Laravel.
    - TK phai tra
    - TK thue
 
+### Lookup Integration
+
+- Tu DMNCC: Chon nha cung cap, dien thong tin
+- Tu DMVT: Chon vat tu, dien ten, DVT
+- Tu DMKHO: Chon kho, kiem tra ton
+- Tu POVchPO1: Lookup don dat hang (PO1)
+
 ---
 
 ## Mapping PHP

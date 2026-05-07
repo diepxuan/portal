@@ -119,6 +119,17 @@ resources/views/catalog/in/baocao/
 └── the-kho-so-chi-tiet-report.blade.php
 ```
 
+### 3. Routes
+
+```php
+Route::prefix('catalog/in/baocao')
+    ->name('catalog.in.baocao.')
+    ->group(function () {
+        Route::get('/the-kho-so-chi-tiet', [TheKhoSoChiTiet::class, 'render'])
+            ->name('the-kho-so-chi-tiet');
+    });
+```
+
 ---
 
 ## Dependencies

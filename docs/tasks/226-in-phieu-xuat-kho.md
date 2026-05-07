@@ -181,22 +181,234 @@ class INPHIEUX extends Model
 }
 ```
 
-### 2. Livewire Component (List)
+### 2. Stored Procedure Classes
 
 ```php
-// diepxuan/laravel-catalog/src/Http/Livewire/IN/Chungtu/Phieuxuat.php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINGetPhieuXuat.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINGetPhieuXuat extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN2_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINInsPhieuXuat.php
+class AsINInsPhieuXuat extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN2_INSERT';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh',
+        'dia_chi', 'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia',
+        'tien_nt', 'tien', 'ma_gd', 'so_ct_goc',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINUpdPhieuXuat.php
+class AsINUpdPhieuXuat extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN2_UPDATE';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh',
+        'dia_chi', 'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia',
+        'tien_nt', 'tien', 'ma_gd', 'so_ct_goc',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINDelPhieuXuat.php
+class AsINDelPhieuXuat extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN2_DELETE';
+    protected $params = ['pMa_cty', 'stt_rec'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINChkPhieuXuat.php
+class AsINChkPhieuXuat extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN2_CHECK';
+    protected $params = ['pMa_cty', 'so_ct'];
+}
+```
+
+### 3. Models
+
+```php
+// app/Models/IN/INPHIEUX.php
+namespace Diepxuan\Simba\Models\IN;
+
+class INPHIEUX extends Model
+{
+    protected $table = 'INPHIEUX';
+    protected $primaryKey = 'stt_rec';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $connection = 'simba';
+
+    protected $fillable = [
+        'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh', 'dia_chi',
+        'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia', 'tien_nt', 'tien',
+        'ma_gd', 'so_ct_goc', 'stt_rec',
+    ];
+
+    protected $casts = [
+        'ngay_ct' => 'datetime',
+        'ty_gia' => 'decimal:6',
+        'tien_nt' => 'decimal:2',
+        'tien' => 'decimal:2',
+    ];
+
+    public function chiTiets()
+    {
+        return $this->hasMany(INCTX::class, 'stt_rec', 'stt_rec');
+    }
+
+    public function khachHang()
+    {
+        return $this->belongsTo(DMKH::class, 'ma_kh', 'ma_kh');
+    }
+}
+
+// app/Models/IN/INCTX.php
+class INCTX extends Model
+{
+    protected $table = 'INCTX';
+    protected $primaryKey = 'stt_rec0';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $connection = 'simba';
+
+    protected $fillable = [
+        'stt_rec', 'stt_rec0', 'ma_vt', 'ten_vt', 'dvt', 'ma_kho',
+        'so_luong', 'gia_nt', 'tien_nt', 'gia', 'tien',
+        'tk_no', 'tk_vt', 'ma_bp', 'ma_spct', 'ma_phi', 'ma_hd', 'ma_lo',
+        'gia_dich_danh',
+    ];
+
+    protected $casts = [
+        'so_luong' => 'decimal:6',
+        'gia_nt' => 'decimal:6',
+        'tien_nt' => 'decimal:2',
+        'gia' => 'decimal:2',
+        'tien' => 'decimal:2',
+        'gia_dich_danh' => 'boolean',
+    ];
+
+    public function phieu()
+    {
+        return $this->belongsTo(INPHIEUX::class, 'stt_rec', 'stt_rec');
+    }
+
+    public function vatTu()
+    {
+        return $this->belongsTo(DMVT::class, 'ma_vt', 'ma_vt');
+    }
+
+    public function kho()
+    {
+        return $this->belongsTo(DMKHO::class, 'ma_kho', 'ma_kho');
+    }
+}
+```
+
+### 4. Livewire Component (Edit Modal)
+
+```php
+// diepxuan/laravel-catalog/src/Http/Livewire/IN/Chungtu/PhieuxuatEdit.php
 namespace Diepxuan\Catalog\Http\Livewire\IN\Chungtu;
 
-class Phieuxuat extends Component
+class PhieuxuatEdit extends Component
 {
-    const MA_CT = 'IN2';
+    public ?string $pSttRec = null;
+    public string $pSoCt = '';
+    public ?Carbon $pNgayCt = null;
+    public ?string $pMaKh = null;
+    public string $pTenKh = '';
+    public string $pDiaChi = '';
+    public string $pNguoiGd = '';
+    public string $pDienGiai = '';
+    public ?string $pMaNt = 'VND';
+    public float $pTyGia = 1;
+    public float $pTienNt = 0;
+    public float $pTien = 0;
+    public ?string $pMaGd = null;
+    public string $pSoCtGoc = '';
+    public Collection $pChiTiets;
+    public ?string $pMode = 'create';
 
-    public Collection $pPhieuxuats;
-    public string $pSearch = '';
-    public string $pMa_Kho = '';
-    public string $pMa_Kh = '';
-    // ...
+    protected $rules = [
+        'pSoCt' => 'required|string|max:50',
+        'pNgayCt' => 'required|date',
+        'pMaKh' => 'required|string|max:50',
+        'pChiTiets' => 'required|min:1',
+    ];
+
+    public function mount(?string $sttRec = null): void
+    {
+        $this->pNgayCt = now();
+        $this->pChiTiets = collect([]);
+        if ($sttRec) {
+            $this->pSttRec = $sttRec;
+            $this->loadPhieu();
+        }
+    }
+
+    public function updatedPMaKh($value): void
+    {
+        // Auto-fill ten_kh, dia_chi, nguoi_gd
+    }
+
+    public function tinhTien(): void
+    {
+        $this->pTienNt = $this->pChiTiets->sum('tien_nt');
+        $this->pTien = $this->pTienNt * $this->pTyGia;
+    }
+
+    public function checkTonKho(): bool
+    {
+        // Kiem tra ton kho truoc khi luu
+        return true;
+    }
+
+    public function submit(): void
+    {
+        $this->validate();
+        if (!$this->checkTonKho()) {
+            session()->flash('error', 'So luong vuot ton kho');
+            return;
+        }
+        // Goi SP_INSERT hoac SP_UPDATE
+    }
+
+    public function render(): View
+    {
+        return view('catalog::in.chungtu.phieu-xuat-edit');
+    }
 }
+```
+
+### 5. Views
+
+```
+resources/views/catalog/in/chungtu/
+├── phieu-xuat.blade.php              (List page)
+├── phieu-xuat-edit.blade.php         (Edit modal + detail grid)
+├── phieu-xuat-find.blade.php         (Search form)
+└── _phieu-xuat-row.blade.php         (Component row)
+```
+
+### 6. Routes
+
+```php
+Route::prefix('catalog/in/chungtu')
+    ->name('catalog.in.chungtu.')
+    ->group(function () {
+        Route::get('/phieu-xuat', [Phieuxuat::class, 'render'])
+            ->name('phieu-xuat');
+        Route::get('/phieu-xuat/edit/{sttRec?}', [PhieuxuatEdit::class, 'render'])
+            ->name('phieu-xuat.edit');
+        Route::get('/phieu-xuat/search', [PhieuxuatFind::class, 'render'])
+            ->name('phieu-xuat.search');
+    });
 ```
 
 ---
@@ -207,10 +419,14 @@ class Phieuxuat extends Component
 |------|---------|------|---------|
 | Model | laravel-simba | INPHIEUX.php | Header |
 | Model | laravel-simba | INCTX.php | Detail |
-| Model | laravel-simba | DMVT.php | Vat tu |
-| Model | laravel-simba | DMKHO.php | Kho |
+| Model | laravel-simba | DMVT.php | Vat tu (FK) |
+| Model | laravel-simba | DMKHO.php | Kho (FK) |
+| Model | laravel-simba | DMKH.php | Khach hang (FK) |
 | SP | laravel-simba | AsINGetPhieuXuat.php | Get |
 | SP | laravel-simba | AsINInsPhieuXuat.php | Insert |
+| SP | laravel-simba | AsINUpdPhieuXuat.php | Update |
+| SP | laravel-simba | AsINDelPhieuXuat.php | Delete |
+| SP | laravel-simba | AsINChkPhieuXuat.php | Check trung |
 | Component | laravel-catalog | Phieuxuat.php | List |
 | Component | laravel-catalog | PhieuxuatEdit.php | Edit |
 
@@ -219,11 +435,13 @@ class Phieuxuat extends Component
 ## Progress Checklist
 
 - [ ] Phan tich yeu cau & review task nay
-- [ ] Tao Stored Procedure classes
+- [ ] Tao Stored Procedure classes (Get, Insert, Update, Delete, Check)
 - [ ] Tao Models INPHIEUX, INCTX
 - [ ] Tao Livewire Phieuxuat (list)
-- [ ] Tao Livewire PhieuxuatEdit (form nhap lieu)
-- [ ] Tao Views (list + edit)
+- [ ] Tao Livewire PhieuxuatEdit (form nhap lieu + detail grid)
+- [ ] Tao Livewire PhieuxuatFind (search)
+- [ ] Tao Views (list + edit + search)
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test Inventory check & gia dich danh
+- [ ] Test tinh tien tu dong (NT * TyGia)

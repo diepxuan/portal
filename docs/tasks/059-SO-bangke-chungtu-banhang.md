@@ -98,6 +98,36 @@ EXEC SP_SO_RPT_BK02
 
 ---
 
+## Business Logic
+
+### Filter Criteria
+
+| Tieu chi | Mo ta |
+|----------|-------|
+| Ngay | Tu ngay - Den ngay |
+| Loai phieu | Don hang, Phieu xuat, Hoa don... |
+| Trang thai | Nhap, Da duyet, Da giao, Hoan thanh |
+| Nhom theo | Chi tieu nhom (KH, VT, Kho, NVKD, ...) |
+| So CT | Tu so - Den so |
+| Khach hang | Ma KH, Nhom KH, PLKH 1/2/3 |
+| Vat tu | Ma VT, Nhom VT, PLVT 1/2/3 |
+| Kho | Ma kho |
+| Bo phan | Ma bo phan |
+| NVKD | Ma nhan vien kinh doanh |
+| HD/NHD | Hop dong, Nhom hop dong |
+| Tien te | VND hoac ngoai te |
+
+### Group By Options
+
+- Theo khach hang
+- Theo vat tu
+- Theo kho
+- Theo NVKD
+- Theo bo phan
+- Theo hop dong
+
+---
+
 ## Mapping PHP
 
 ### 1. Report Service

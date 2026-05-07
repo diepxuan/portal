@@ -136,6 +136,13 @@ Chuyen doi chuc nang hoa don mua hang (PO3) tu .NET sang PHP Laravel.
    - TK phai tra (tk_pt)
    - TK thue (tk_thue)
 
+### Lookup Integration
+
+- Tu DMNCC: Chon nha cung cap, dien thong tin
+- Tu DMVT: Chon vat tu, dien ten, DVT
+- Tu DMHTTT: Chon hinh thuc thanh toan
+- Tu DMKHO: Chon kho, kiem tra ton
+
 ---
 
 ## Mapping PHP

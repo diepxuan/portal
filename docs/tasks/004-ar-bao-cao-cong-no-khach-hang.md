@@ -22,6 +22,31 @@ Chuyen doi chuc nang bao cao cong no khach hang tu .NET sang PHP Laravel, dat ke
 
 ## Cau truc du lieu
 
+### Bang: VW_AR_CDKH (View bao cao cong no KH)
+
+| Truong | Kieu | Chieu dai | Mo ta |
+|--------|------|-----------|-------|
+| ma_kh | varchar | 50 | Ma khach hang |
+| ten_kh | nvarchar | 200 | Ten khach hang |
+| dia_chi | nvarchar | 500 | Dia chi |
+| ma_so_thue | varchar | 50 | Ma so thue |
+| ma_tk | varchar | 20 | Tai khoan cong no |
+| ten_tk | nvarchar | 200 | Ten tai khoan |
+| ma_nt | varchar | 10 | Ma ngoai te |
+| ty_gia | decimal | 18,4 | Ty gia |
+| du_dk_nt | decimal | 18,2 | So du dau ky NT |
+| du_dk | decimal | 18,2 | So du dau ky VND |
+| ps_no_nt | decimal | 18,2 | Phat sinh no NT |
+| ps_no | decimal | 18,2 | Phat sinh no VND |
+| ps_co_nt | decimal | 18,2 | Phat sinh co NT |
+| ps_co | decimal | 18,2 | Phat sinh co VND |
+| du_ck_nt | decimal | 18,2 | So du cuoi ky NT |
+| du_ck | decimal | 18,2 | So du cuoi ky VND |
+| ma_plkh1 | varchar | 50 | Phan loai KH 1 |
+| ma_plkh2 | varchar | 50 | Phan loai KH 2 |
+| ma_plkh3 | varchar | 50 | Phan loai KH 3 |
+| ma_nhkh | varchar | 50 | Ma nhom KH |
+
 ### Bang lien quan
 
 | Bang | Mo ta | Relationship |

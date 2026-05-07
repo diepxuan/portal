@@ -102,27 +102,51 @@ Route::get('/bao-cao-ton-kho-02', [Baocaotonkho02::class, 'render'])
 
 ---
 
-## Cấu trúc dữ liệu
+### 2. Stored Procedure Classes
 
-| Bảng | Mô tả | Loại |
-|------|--------|------|
-| INVENTORY | Tồn kho | Transaction |
-| INVT | Vật tư | Master |
-| DMKHO | Kho | Reference |
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINRptCD02.php
+namespace Diepxuan\Simba\StoredProcedures;
 
-## Stored Procedures
+class AsINRptCD02 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_CD02_GET';
+    protected $params = [
+        'pMa_cty', 'pMa_vt', 'pNh_vt', 'pMa_kho', 'pMa_vitri',
+        'pMa_tkvt', 'pMa_lo', 'pNgay', 'pDVT', 'pLoaiTon',
+        'pQuaToiDa', 'pQuaToiThieu',
+    ];
+}
+```
 
-| SP Name | Mô tả |
-|---------|-------|
-| `IN_CD02_GET` | Lấy dữ liệu báo cáo tồn kho 02 |
+### 3. Views
+
+```
+resources/views/catalog/in/reports/
+├── baocao-ton-kho-02.blade.php   (Form loc + CrystalViewer)
+```
+
+### 4. Routes
+
+```php
+Route::prefix('catalog/in/reports')
+    ->name('catalog.in.reports.')
+    ->group(function () {
+        Route::get('/bao-cao-ton-kho-02', [Baocaotonkho02::class, 'render'])
+            ->name('ton-kho-02');
+    });
+```
+
+---
 
 ## Dependencies
 
-| Package | Module | Mô tả |
-|---------|--------|--------|
-| diepxuan/catalog | IN | Module tồn kho |
-| diepxuan/reporting | CrystalReport | Xem báo cáo |
-| diepxuan/system | Commons | Lookup VT, kho |
+| Loai | Package | File | Ghi chu |
+|------|---------|------|---------|
+| Component | laravel-catalog | Baocaotonkho02.php | Report viewer |
+| SP | laravel-simba | AsINRptCD02.php | Data source |
+| Model | laravel-simba | DMVT.php | Lookup vat tu |
+| Model | laravel-simba | DMKHO.php | Lookup kho |
 
 ## Progress Checklist
 

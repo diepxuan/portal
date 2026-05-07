@@ -192,6 +192,14 @@ EXEC SP_PO_POH_GET
    - Hien thi ton kho hien tai
    - Khong cho phep dat lon hon ton
 
+### Lookup Integration
+
+- Tu DMNCC: Chon nha cung cap, dien thong tin
+- Tu DMVT: Chon vat tu, dien ten, DVT
+- Tu DMHTTT: Chon hinh thuc thanh toan
+- Tu DMKHO: Chon kho, kiem tra ton
+- Tu POVchPO7: Lookup don hang (PO7)
+
 ---
 
 ## Mapping PHP

@@ -140,18 +140,35 @@ class Chuyentondauky extends Component
 }
 ```
 
-### 2. Views
+### 2. Stored Procedure Classes
+
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINTransferINCDVT.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINTransferINCDVT extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_TRANSFER_CDVT';
+    protected $params = ['pMa_cty', 'pMa_kho', 'pNam_moi', 'pStatus'];
+}
+```
+
+### 3. Views
 
 ```
 resources/views/catalog/in/transfers/
-└── chuyen-ton-dau-ky.blade.php
+└── chuyen-ton-dau-ky.blade.php    (Transfer confirmation form)
 ```
 
-### 3. Routes
+### 4. Routes
 
 ```php
-Route::get('/chuyen-ton-dau-ky', [Chuyentondauky::class, 'render'])
-    ->name('catalog.in.transfers.chuyen-ton-dau-ky');
+Route::prefix('catalog/in/transfers')
+    ->name('catalog.in.transfers.')
+    ->group(function () {
+        Route::get('/chuyen-ton-dau-ky', [Chuyentondauky::class, 'render'])
+            ->name('chuyen-ton-dau-ky');
+    });
 ```
 
 ---
@@ -162,6 +179,7 @@ Route::get('/chuyen-ton-dau-ky', [Chuyentondauky::class, 'render'])
 |------|---------|------|---------|
 | Model | laravel-simba | DMKHO.php | Kho |
 | Model | laravel-simba | INCDVT.php | Ton dau ky |
+| SP | laravel-simba | AsINTransferINCDVT.php | Transfer SP |
 | Component | laravel-catalog | Chuyentondauky.php | Transfer form |
 
 ---

@@ -47,6 +47,29 @@ Chuyen doi chuc nang tinh gia binh quan di dong tu .NET sang PHP Laravel.
 
 ---
 
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_IN_CAL_GIA_BQDD | Tinh gia binh quan di dong |
+
+### SP_CAL (reference)
+
+```sql
+-- Tinh gia binh quan di dong
+EXEC SP_IN_CAL_GIA_BQDD
+    @pMa_cty VARCHAR(50),
+    @pKyBc VARCHAR(50) = NULL,
+    @pMa_kho VARCHAR(50) = NULL,
+    @pMa_NhVt VARCHAR(50) = NULL,
+    @pMa_vt VARCHAR(50) = NULL,
+    @pMa_tkvt VARCHAR(50) = NULL,
+    @pKieu_ps INT = 0,
+    @pTk_cl VARCHAR(20) = '632'
+```
+
+---
+
 ## Business Logic
 
 ### Calculation Rules
@@ -108,28 +131,47 @@ Route::get('/tinh-gia-binh-quan-di-dong', [Tinhgiabinhquandidong::class, 'render
 
 ---
 
-## Cấu trúc dữ liệu
+### 2. Stored Procedure Classes
 
-| Bảng | Mô tả | Loại |
-|------|--------|------|
-| INVENTORY | Tồn kho | Transaction |
-| INVT | Vật tư | Master |
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/AsINCalGiaBQDD.php
+namespace Diepxuan\Simba\StoredProcedures;
 
-## Stored Procedures
+class AsINCalGiaBQDD extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_CAL_GIA_BQDD';
+    protected $params = ['pMa_cty', 'pKyBc', 'pMa_kho', 'pMa_NhVt', 'pMa_vt', 'pMa_tkvt', 'pKieu_ps', 'pTk_cl'];
+}
+```
 
-| SP Name | Mô tả |
-|---------|-------|
-| `IN_CAL_GIA_BQDD` | Tính giá bình quân di động |
+### 3. Views
 
-**Parameters:** CompanyID, KyBc, Ma_kho, Ma_NhVt, Ma_vt, Ma_tkvt, Kieu_ps, Tk_cl
+```
+resources/views/catalog/in/calculations/
+└── tinh-gia-binh-quan-di-dong.blade.php   (Calculation form)
+```
+
+### 4. Routes
+
+```php
+Route::prefix('catalog/in/calculations')
+    ->name('catalog.in.calculations.')
+    ->group(function () {
+        Route::get('/tinh-gia-binh-quan-di-dong', [Tinhgiabinhquandidong::class, 'render'])
+            ->name('gia-bqdd');
+    });
+```
+
+---
 
 ## Dependencies
 
-| Package | Module | Mô tả |
-|---------|--------|--------|
-| diepxuan/catalog | IN | Module tồn kho |
-| diepxuan/catalog | DMVT | Lookup vật tư |
-| diepxuan/system | Commons | Ngày tháng, số dư |
+| Loai | Package | File | Ghi chu |
+|------|---------|------|---------|
+| Component | laravel-catalog | Tinhgiabinhquandidong.php | Calculation form |
+| SP | laravel-simba | AsINCalGiaBQDD.php | Tinh gia BQDD |
+| Model | laravel-simba | DMKHO.php | Lookup kho |
+| Model | laravel-simba | DMVT.php | Lookup vat tu |
 
 ## Progress Checklist
 
