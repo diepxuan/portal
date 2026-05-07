@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-07 10:15:08
+ * @lastupdate 2026-05-07 12:36:47
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
@@ -16,6 +16,8 @@ namespace Diepxuan\Catalog\Http\Livewire\Banhang;
 use Diepxuan\Catalog\Models\ArDmKh;
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARDelDMKH;
+use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -96,26 +98,84 @@ class KhachhangList extends Component
 
     /**
      * Render the component.
+     *
+     * Sử dụng Stored Procedure asARGetDMKH thay vì Eloquent query.
      */
     public function render(): View
     {
-        $query = ArDmKh::laKhachHang();
-
-        if ('' !== $this->search) {
-            $search = $this->search;
-            $query->where(static function ($q) use ($search): void {
-                $q->where('ma_kh', 'like', "%{$search}%")
-                    ->orWhere('ten_kh', 'like', "%{$search}%")
-                    ->orWhere('dia_chi', 'like', "%{$search}%")
-                    ->orWhere('tel', 'like', "%{$search}%")
-                ;
-            });
-        }
-
-        $khachhangs = $query->paginate($this->perPage);
+        $khachhangs = $this->getKhachHangsPaginated();
 
         return view('catalog::banhang.khachhang', [
             'khachhangs' => $khachhangs,
         ])->layout('catalog::layouts.app');
+    }
+
+    /**
+     * Lấy danh sách khách hàng đã phân trang từ SP.
+     */
+    protected function getKhachHangsPaginated(): LengthAwarePaginator
+    {
+        // Gọi SP asARGetDMKH với module AR
+        $results = AsARGetDMKH::getCustomers(
+            maCty: SModel::CTY,
+            search: '' !== $this->search ? $this->search : null,
+        );
+
+        // Filter bổ sung trong PHP cho search mở rộng (ten_kh, dia_chi, tel)
+        // SP chỉ hỗ trợ prefix search trên ma_kh
+        if ('' !== $this->search) {
+            $results = $this->filterSearchResults($results);
+        }
+
+        return $this->paginateCollection($results);
+    }
+
+    /**
+     * Filter kết quả SP cho search mở rộng (ten_kh, dia_chi, tel).
+     *
+     * @param mixed $results
+     */
+    protected function filterSearchResults($results)
+    {
+        $search = mb_strtolower($this->search);
+
+        return collect($results)->filter(static function ($item) use ($search): bool {
+            $fields = [
+                $item->MA_KH ?? '',
+                $item->TEN_KH ?? '',
+                $item->DIA_CHI ?? '',
+                $item->TEL ?? '',
+            ];
+
+            foreach ($fields as $field) {
+                if (str_contains(mb_strtolower($field), $search)) {
+                    return true;
+                }
+            }
+
+            return false;
+        })->values();
+    }
+
+    /**
+     * Manual pagination cho Collection.
+     *
+     * @param mixed $items
+     */
+    protected function paginateCollection($items): LengthAwarePaginator
+    {
+        $page   = LengthAwarePaginator::resolveCurrentPage();
+        $total  = \count($items);
+        $offset = ($page - 1) * $this->perPage;
+
+        $pagedItems = collect($items)->slice($offset, $this->perPage)->values();
+
+        return new LengthAwarePaginator(
+            $pagedItems,
+            $total,
+            $this->perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()],
+        );
     }
 }
