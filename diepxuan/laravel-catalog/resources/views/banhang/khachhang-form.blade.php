@@ -300,10 +300,10 @@
 <script>
     document.addEventListener('livewire:init', () => {
         Livewire.on('success', (event) => {
-            alert(event.message);
+            window.dispatchEvent(new CustomEvent('toast-success', { detail: { message: event.message } }));
         });
         Livewire.on('error', (event) => {
-            alert(event.message);
+            window.dispatchEvent(new CustomEvent('toast-error', { detail: { message: event.message } }));
         });
     });
 </script>
