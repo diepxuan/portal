@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-07 13:02:11
+ * @lastupdate 2026-05-07 13:04:48
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
@@ -19,6 +19,7 @@ use Diepxuan\Simba\StoredProcedures\AsARDelDMKH;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
 use Diepxuan\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -163,7 +164,7 @@ class Khachhang extends Component
      */
     protected function paginateCollection($items): LengthAwarePaginator
     {
-        $page   = LengthAwarePaginator::resolveCurrentPage();
+        $page   = Paginator::resolveCurrentPage();
         $total  = \count($items);
         $offset = ($page - 1) * $this->perPage;
 
