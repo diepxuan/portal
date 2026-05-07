@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-07 13:04:48
+ * @lastupdate 2026-05-07 13:05:53
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
@@ -18,7 +18,8 @@ use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARDelDMKH;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
 use Diepxuan\Support\Collection;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -113,7 +114,7 @@ class Khachhang extends Component
     /**
      * Lấy danh sách khách hàng đã phân trang từ SP.
      */
-    protected function getKhachHangsPaginated(): LengthAwarePaginator
+    protected function getKhachHangsPaginated(): LengthAwarePaginatorContract
     {
         // Gọi SP asARGetDMKH với module AR
         $results = AsARGetDMKH::getCustomers(
@@ -162,7 +163,7 @@ class Khachhang extends Component
      *
      * @param mixed $items
      */
-    protected function paginateCollection($items): LengthAwarePaginator
+    protected function paginateCollection($items): LengthAwarePaginatorContract
     {
         $page   = Paginator::resolveCurrentPage();
         $total  = \count($items);
