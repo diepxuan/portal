@@ -153,6 +153,13 @@ Chuyen doi chuc nang phieu nhap kho noi bo (PO7) tu .NET sang PHP Laravel.
 4. **Ton kho**:
    - Tang ton kho khi nhap
 
+### Lookup Integration
+
+- Tu DMNCC: Chon nha cung cap, dien thong tin
+- Tu DMVT: Chon vat tu, dien ten, DVT
+- Tu DMKHO: Chon kho
+- Tu DMHTTT: Chon hinh thuc thanh toan
+
 ---
 
 ## Mapping PHP

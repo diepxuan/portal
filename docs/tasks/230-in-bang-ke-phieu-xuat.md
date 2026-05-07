@@ -115,6 +115,17 @@ resources/views/catalog/in/baocao/
 └── bang-ke-phieu-xuat-report.blade.php (Report viewer)
 ```
 
+### 3. Routes
+
+```php
+Route::prefix('catalog/in/baocao')
+    ->name('catalog.in.baocao.')
+    ->group(function () {
+        Route::get('/bang-ke-phieu-xuat', [BangKePhieuXuat::class, 'render'])
+            ->name('bang-ke-phieu-xuat');
+    });
+```
+
 ---
 
 ## Dependencies

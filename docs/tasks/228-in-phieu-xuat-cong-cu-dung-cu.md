@@ -138,15 +138,209 @@ class INPHIEUXCC extends Model
 }
 ```
 
-### 2. Livewire Component
+### 2. Stored Procedure Classes
 
 ```php
-// diepxuan/laravel-catalog/src/Http/Livewire/IN/Chungtu/XuatCongcu.php
-class XuatCongcu extends Component
+// diepxuan/laravel-simba/src/StoredProcedures/AsINGetXuatCC.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINGetXuatCC extends StoredProcedure
 {
-    const MA_CT = 'IN5';
-    // ...
+    protected $procedure = 'SP_IN_VCHIN5_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
 }
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINInsXuatCC.php
+class AsINInsXuatCC extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN5_INSERT';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh',
+        'dia_chi', 'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia',
+        'tien_nt', 'tien',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINUpdXuatCC.php
+class AsINUpdXuatCC extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN5_UPDATE';
+    protected $params = [
+        'pMa_cty', 'stt_rec', 'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh',
+        'dia_chi', 'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia',
+        'tien_nt', 'tien',
+    ];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINDelXuatCC.php
+class AsINDelXuatCC extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN5_DELETE';
+    protected $params = ['pMa_cty', 'stt_rec'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/AsINChkXuatCC.php
+class AsINChkXuatCC extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_VCHIN5_CHECK';
+    protected $params = ['pMa_cty', 'so_ct'];
+}
+```
+
+### 3. Models
+
+```php
+// app/Models/IN/INPHIEUXCC.php
+namespace Diepxuan\Simba\Models\IN;
+
+class INPHIEUXCC extends Model
+{
+    protected $table = 'INPHIEUXCC';
+    protected $primaryKey = 'stt_rec';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $connection = 'simba';
+
+    protected $fillable = [
+        'so_ct', 'ngay_ct', 'ma_kh', 'ten_kh', 'dia_chi',
+        'nguoi_gd', 'dien_giai', 'ma_nt', 'ty_gia', 'tien_nt', 'tien',
+        'stt_rec',
+    ];
+
+    protected $casts = [
+        'ngay_ct' => 'datetime',
+        'ty_gia' => 'decimal:6',
+        'tien_nt' => 'decimal:2',
+        'tien' => 'decimal:2',
+    ];
+
+    public function chiTiets()
+    {
+        return $this->hasMany(INCTXCC::class, 'stt_rec', 'stt_rec');
+    }
+}
+
+// app/Models/IN/INCTXCC.php
+class INCTXCC extends Model
+{
+    protected $table = 'INCTXCC';
+    protected $primaryKey = 'stt_rec0';
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $connection = 'simba';
+
+    protected $fillable = [
+        'stt_rec', 'stt_rec0', 'ma_cc', 'ten_cc', 'dvt', 'ma_kho',
+        'so_luong', 'so_ky', 'gia_nt', 'tien_nt', 'gia', 'tien',
+        'tk_pb', 'tk_cp', 'tk_cc', 'ma_bpsd', 'ma_bp', 'ma_spct',
+        'ma_phi', 'ma_lo',
+    ];
+
+    protected $casts = [
+        'so_luong' => 'decimal:6',
+        'so_ky' => 'integer',
+        'gia_nt' => 'decimal:6',
+        'tien_nt' => 'decimal:2',
+        'gia' => 'decimal:2',
+        'tien' => 'decimal:2',
+    ];
+
+    public function phieu()
+    {
+        return $this->belongsTo(INPHIEUXCC::class, 'stt_rec', 'stt_rec');
+    }
+
+    public function congCu()
+    {
+        return $this->belongsTo(DMCC::class, 'ma_cc', 'ma_cc');
+    }
+
+    public function kho()
+    {
+        return $this->belongsTo(DMKHO::class, 'ma_kho', 'ma_kho');
+    }
+}
+```
+
+### 4. Livewire Component (Edit Modal)
+
+```php
+// diepxuan/laravel-catalog/src/Http/Livewire/IN/Chungtu/XuatCongcuEdit.php
+namespace Diepxuan\Catalog\Http\Livewire\IN\Chungtu;
+
+class XuatCongcuEdit extends Component
+{
+    public ?string $pSttRec = null;
+    public string $pSoCt = '';
+    public ?Carbon $pNgayCt = null;
+    public ?string $pMaKh = null;
+    public string $pTenKh = '';
+    public string $pDienGiai = '';
+    public ?string $pMaNt = 'VND';
+    public float $pTyGia = 1;
+    public float $pTienNt = 0;
+    public float $pTien = 0;
+    public Collection $pChiTiets;
+    public ?string $pMode = 'create';
+
+    protected $rules = [
+        'pSoCt' => 'required|string|max:50',
+        'pNgayCt' => 'required|date',
+        'pChiTiets' => 'required|min:1',
+    ];
+
+    public function mount(?string $sttRec = null): void
+    {
+        $this->pNgayCt = now();
+        $this->pChiTiets = collect([]);
+        if ($sttRec) {
+            $this->pSttRec = $sttRec;
+            $this->loadPhieu();
+        }
+    }
+
+    public function tinhPhanBo(): float
+    {
+        // Chi phi phan bo = Tien / so_ky
+        return 0;
+    }
+
+    public function submit(): void
+    {
+        $this->validate();
+        // Goi SP_INSERT hoac SP_UPDATE
+    }
+
+    public function render(): View
+    {
+        return view('catalog::in.chungtu.xuat-congcu-edit');
+    }
+}
+```
+
+### 5. Views
+
+```
+resources/views/catalog/in/chungtu/
+├── xuat-congcu.blade.php              (List page)
+├── xuat-congcu-edit.blade.php         (Edit modal + detail grid)
+├── xuat-congcu-find.blade.php         (Search form)
+└── _xuat-congcu-row.blade.php         (Component row)
+```
+
+### 6. Routes
+
+```php
+Route::prefix('catalog/in/chungtu')
+    ->name('catalog.in.chungtu.')
+    ->group(function () {
+        Route::get('/xuat-congcu', [XuatCongcu::class, 'render'])
+            ->name('xuat-congcu');
+        Route::get('/xuat-congcu/edit/{sttRec?}', [XuatCongcuEdit::class, 'render'])
+            ->name('xuat-congcu.edit');
+        Route::get('/xuat-congcu/search', [XuatCongcuFind::class, 'render'])
+            ->name('xuat-congcu.search');
+    });
 ```
 
 ---
@@ -157,20 +351,27 @@ class XuatCongcu extends Component
 |------|---------|------|---------|
 | Model | laravel-simba | INPHIEUXCC.php | Header |
 | Model | laravel-simba | INCTXCC.php | Detail |
-| Model | laravel-simba | DMCC.php | Cong cu |
+| Model | laravel-simba | DMCC.php | Cong cu (FK) |
+| Model | laravel-simba | DMKHO.php | Kho (FK) |
 | SP | laravel-simba | AsINGetXuatCC.php | Get |
 | SP | laravel-simba | AsINInsXuatCC.php | Insert |
-| Component | laravel-catalog | XuatCongcu.php | List/Edit |
+| SP | laravel-simba | AsINUpdXuatCC.php | Update |
+| SP | laravel-simba | AsINDelXuatCC.php | Delete |
+| SP | laravel-simba | AsINChkXuatCC.php | Check trung |
+| Component | laravel-catalog | XuatCongcu.php | List |
+| Component | laravel-catalog | XuatCongcuEdit.php | Edit |
 
 ---
 
 ## Progress Checklist
 
 - [ ] Phan tich yeu cau & review task nay
-- [ ] Tao Stored Procedure classes
+- [ ] Tao Stored Procedure classes (Get, Insert, Update, Delete, Check)
 - [ ] Tao Models INPHIEUXCC, INCTXCC
-- [ ] Tao Livewire XuatCongcu (list + edit)
-- [ ] Tao Views
+- [ ] Tao Livewire XuatCongcu (list)
+- [ ] Tao Livewire XuatCongcuEdit (form nhap lieu + detail grid)
+- [ ] Tao Livewire XuatCongcuFind (search)
+- [ ] Tao Views (list + edit + search)
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test phan bo ky & tai khoan

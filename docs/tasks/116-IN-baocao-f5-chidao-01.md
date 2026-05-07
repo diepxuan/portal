@@ -102,11 +102,35 @@ class DrilldownCongno01 extends Component
 }
 ```
 
-### 2. Routes
+### 2. Stored Procedure Classes
 
 ```php
-Route::get('/drilldown-cong-no-01', [DrilldownCongno01::class, 'render'])
-    ->name('catalog.in.reports.drilldown-cong-no-01');
+// diepxuan/laravel-simba/src/StoredProcedures/AsINRptF5CD01.php
+namespace Diepxuan\Simba\StoredProcedures;
+
+class AsINRptF5CD01 extends StoredProcedure
+{
+    protected $procedure = 'SP_IN_RPT_F5CD01_GET';
+    protected $params = ['pMa_cty', 'pMotherReportInfo', 'pDrilldownMenuId', 'pFormularFields', 'pIsNT', 'pNhanIn'];
+}
+```
+
+### 3. Views
+
+```
+resources/views/catalog/in/reports/
+├── drilldown-cong-no-01.blade.php    (Drill-down viewer)
+```
+
+### 4. Routes
+
+```php
+Route::prefix('catalog/in/reports')
+    ->name('catalog.in.reports.')
+    ->group(function () {
+        Route::get('/drilldown-cong-no-01', [DrilldownCongno01::class, 'render'])
+            ->name('drilldown-cong-no-01');
+    });
 ```
 
 ---

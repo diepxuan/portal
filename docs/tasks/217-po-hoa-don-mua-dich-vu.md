@@ -113,6 +113,80 @@ Chuyen doi chuc nang hoa don mua dich vu (PO6) tu .NET sang PHP Laravel, dat ket
 
 ---
 
+## Table Navigation
+
+| Bang | Mo ta | Relationship |
+|------|-------|---------------|
+| DMNCC | Danh muc NCC | FK ma_kh -> DMNCC.ma_kh |
+| DMHTTT | Danh muc HTTT | FK ma_httt -> DMHTTT.ma_httt |
+| DMTS | Danh muc thue suat | FK ma_thue -> DMTS.ma_thue |
+| DMVT | Danh muc vat tu | FK ma_vt -> DMVT.ma_vt |
+| DSTK | Danh sach tai khoan | FK tk_* -> DSTK.tk |
+
+---
+
+## Stored Procedures
+
+| SP Name | Mo ta |
+|---------|-------|
+| SP_PO_PO6_GET | Lay danh sach hoa don mua dich vu |
+| SP_PO_PO6_GETBYID | Lay chi tiet 1 hoa don (header + detail + thue) |
+| SP_PO_PO6_INSERT | Them hoa don moi |
+| SP_PO_PO6_UPDATE | Cap nhat hoa don |
+| SP_PO_PO6_DELETE | Xoa hoa don |
+| SP_PO_PO6_FIND | Tim kiem hoa don |
+
+### SP_GET (reference)
+
+```sql
+EXEC SP_PO_PO6_GET
+    @pMa_cty VARCHAR(50) = '001',
+    @pSearch NVARCHAR(100) = NULL,
+    @pPageIndex INT = 1,
+    @pPageSize INT = 50
+```
+
+### SP_GETBYID (reference)
+
+```sql
+EXEC SP_PO_PO6_GETBYID
+    @pMa_cty VARCHAR(50) = '001',
+    @pStt_rec VARCHAR(20)
+```
+
+### SP_INSERT (reference)
+
+```sql
+EXEC SP_PO_PO6_INSERT
+    @pMa_cty VARCHAR(50),
+    @pStt_rec VARCHAR(20),
+    @pMa_ct VARCHAR(10),
+    @pNgay_ct DATETIME,
+    @pSo_ct VARCHAR(20),
+    @pSo_seri VARCHAR(20),
+    @pMa_kh VARCHAR(20),
+    @pNguoi_gd NVARCHAR(100),
+    @pDia_chi NVARCHAR(500),
+    @pMa_so_thue VARCHAR(20),
+    @pSo_hd VARCHAR(20),
+    @pNgay_hd DATETIME,
+    @pMa_httt VARCHAR(20),
+    @pDien_giai NVARCHAR(255),
+    @pMa_nt VARCHAR(3),
+    @pTy_gia DECIMAL(18,2),
+    @pTk_pt VARCHAR(20),
+    @pTk_thue VARCHAR(20),
+    @pT_tien_nt DECIMAL(18,2),
+    @pT_thue_nt DECIMAL(18,2),
+    @pT_tt_nt DECIMAL(18,2),
+    @pT_tien DECIMAL(18,2),
+    @pT_thue DECIMAL(18,2),
+    @pT_tt DECIMAL(18,2),
+    @pStatus INT OUTPUT
+```
+
+---
+
 ## Business Logic
 
 ### Hach toan
@@ -122,6 +196,53 @@ Chuyen doi chuc nang hoa don mua dich vu (PO6) tu .NET sang PHP Laravel, dat ket
 | TK Chi phi / DV | | T_Tien |
 | TK Thuế GTGT được khấu trừ | | T_Thue |
 | | TK Phải trả NCC | T_Tt |
+
+### Validate Rules
+
+| Rule | Field | Message |
+|------|-------|---------|
+| Required | ma_kh | 'Ma nha cung cap khong duoc trong' |
+| Required | ngay_ct | 'Ngay chung tu khong duoc trong' |
+| Required | ma_httt | 'Hinh thuc thanh toan khong duoc trong' |
+| Required | so_hd | 'So hoa don khong duoc trong' |
+| Required | ngay_hd | 'Ngay hoa don khong duoc trong' |
+
+### Business Rules
+
+1. **Tu dong dien thong tin NCC**:
+   - Sau khi chon ma_kh -> dien nguoi_gd, dia_chi, ma_so_thue, ma_httt
+   - Lookup tu DMNCC
+
+2. **Tu dong dien TK ke toan**:
+   - Sau khi chon ma_httt -> dien tk_pt, tk_thue
+   - Lay tu cau hinh HTTT
+
+3. **Tinh toan**:
+   ```
+   Tien_NT = So_Luong * Gia_NT
+   Tien = Tien_NT * Ty_Gia
+   Thue_GTGT_NT = (Tien_NT) * Ts_GTGT / 100
+   Thue_GTGT = Thue_GTGT_NT * Ty_Gia
+   T_Tt_NT = T_Tien_NT + T_Thue_NT
+   ```
+
+4. **Lay thue dau vao tu chi tiet**:
+   - Nut "cmdGetTaInFromDetail": Tong hop thue tu bang chi tiet
+   - Dien vao bang TAIN
+
+5. **Hach toan ke toan**:
+   | No | Co | So tien |
+   |----|----|---------|
+   | TK Chi phi / Dich vu | | T_Tien |
+   | TK Thue GTGT duoc khau tru | | T_Thue |
+   | | TK Phai tra NCC | T_Tt |
+
+### Lookup Integration
+
+- Tu DMNCC: Chon nha cung cap, dien thong tin
+- Tu DMHTTT: Chon hinh thuc thanh toan, dien TK
+- Tu DMTS: Chon thue suat
+- Tu DSTK: Chon tai khoan ke toan
 
 ---
 
@@ -155,7 +276,84 @@ class PO6 extends Model
 }
 ```
 
-### 2. Routes
+### 2. Stored Procedure Classes
+
+```php
+// diepxuan/laravel-simba/src/StoredProcedures/PoGetPO6.php
+class PoGetPO6 extends StoredProcedure
+{
+    protected $procedure = 'SP_PO_PO6_GET';
+    protected $params = ['pMa_cty', 'pSearch', 'pPageIndex', 'pPageSize'];
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/PoInsPO6.php
+class PoInsPO6 extends StoredProcedure
+{
+    protected $procedure = 'SP_PO_PO6_INSERT';
+    // params: all header fields
+}
+
+// diepxuan/laravel-simba/src/StoredProcedures/PoUpdPO6.php
+// diepxuan/laravel-simba/src/StoredProcedures/PoDelPO6.php
+```
+
+### 3. Livewire Component (List)
+
+```php
+// diepxuan/laravel-catalog/src/Http/Livewire/PO/Voucher/Hoadonmuadichvu.php
+namespace Diepxuan\Catalog\Http\Livewire\PO\Voucher;
+
+class Hoadonmuadichvu extends Component
+{
+    const MA_CT = 'PO6';
+
+    public Collection $pHoaDons;
+    public string $pSearch = '';
+    public int $pPageIndex = 1;
+    public int $pPageSize = 50;
+    public ?string $pEditingSttRec = null;
+
+    public function mount(): void { $this->loadHoaDon(); }
+    public function loadHoaDon(): void { /* Load via SP */ }
+    public function render(): View { return view('catalog::po.voucher.hoadonmuadichvu'); }
+}
+```
+
+### 4. Livewire Component (Edit)
+
+```php
+// diepxuan/laravel-catalog/src/Http/Livewire/PO/Voucher/HoadonmuadichvuEdit.php
+class HoadonmuadichvuEdit extends Component
+{
+    public ?string $pStt_Rec = null;
+    public ?string $pMa_Kh = null;
+    public string $pSo_Hd = '';
+    public ?string $pNgay_Ct = null;
+    public ?string $pNgay_Hd = null;
+    public ?string $pMa_Httt = null;
+    public ?string $pMa_Nt = 'VND';
+    public Collection $pChiTiet;
+    public Collection $pThueDauVao;
+    public ?string $pMode = 'create';
+
+    public function updatedPMaKh($value): void { /* Lookup NCC info */ }
+    public function updatedPMaHttt($value): void { /* Lookup accounting accounts */ }
+    public function getThueFromDetail(): void { /* Aggregate tax from details */ }
+    public function submit(): void { $this->validate(); /* Call SP */ }
+    public function render(): View { return view('catalog::po.voucher.hoadonmuadichvu-edit'); }
+}
+```
+
+### 5. Views
+
+```
+resources/views/catalog/po/voucher/
+├── hoadonmuadichvu.blade.php           (List page)
+├── hoadonmuadichvu-edit.blade.php      (Edit voucher)
+└── _hoadonmuadichvu-row.blade.php      (Row component)
+```
+
+### 6. Routes
 
 ```php
 Route::prefix('catalog/po')
@@ -170,6 +368,22 @@ Route::prefix('catalog/po')
 
 ---
 
+## Dependencies
+
+| Loai | Package | File | Ghi chu |
+|------|---------|------|---------|
+| Model | laravel-simba | PO6.php | Chinh |
+| Model | laravel-simba | PO7.php | Chi tiet |
+| Model | laravel-simba | TAIN.php | Thue dau vao |
+| SP | laravel-simba | PoGetPO6.php | Get list |
+| SP | laravel-simba | PoInsPO6.php | Insert |
+| SP | laravel-simba | PoUpdPO6.php | Update |
+| SP | laravel-simba | PoDelPO6.php | Delete |
+| Component | laravel-catalog | Hoadonmuadichvu.php | List |
+| Component | laravel-catalog | HoadonmuadichvuEdit.php | Edit |
+
+---
+
 ## Progress Checklist
 
 - [ ] Phan tich yeu cau & review task nay
@@ -178,4 +392,7 @@ Route::prefix('catalog/po')
 - [ ] Tao Livewire components
 - [ ] Tao Views
 - [ ] Them Routes
-- [ ] Test CRUD operations
+- [ ] Test lookup NCC, HTTT
+- [ ] Test tinh toan tien, thue
+- [ ] Test lay thue dau vao tu chi tiet
+- [ ] Test hach toan ke toan
