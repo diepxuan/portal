@@ -12,7 +12,7 @@
             'ma_kh' => 'Mã khách hàng',
             'ten_kh' => 'Tên khách hàng',
             'dia_chi' => 'Địa chỉ',
-            'dien_thoai' => 'Điện thoại',
+            'tel' => 'Điện thoại',
             'nguoi_gd' => 'Người giao dịch',
             'ma_httt_po' => 'Hình thức TT',
         ],
