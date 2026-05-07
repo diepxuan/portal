@@ -8,16 +8,17 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-05 20:11:15
+ * @lastupdate 2026-05-07 10:15:07
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
 
-use Diepxuan\Catalog\Models\ArDmKh;
 use Diepxuan\Catalog\Models\ArDmNhKh;
 use Diepxuan\Catalog\Models\ArDmPlKh;
-use Diepxuan\Simba\Models\ArDmKh as SimbaArDmKh;
 use Diepxuan\Simba\SModel\SModel;
+use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
+use Diepxuan\Simba\StoredProcedures\AsARInsDMKH;
+use Diepxuan\Simba\StoredProcedures\AsARUpdDMKH;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -78,7 +79,6 @@ class KhachhangForm extends Component
      */
     protected $messages = [
         'ma_kh.required'  => 'Mã khách hàng không được để trống.',
-        'ma_kh.unique'    => 'Mã khách hàng đã tồn tại.',
         'ten_kh.required' => 'Tên khách hàng không được để trống.',
         'email.email'     => 'Email không đúng định dạng.',
     ];
@@ -99,38 +99,44 @@ class KhachhangForm extends Component
     }
 
     /**
-     * Tải thông tin khách hàng để chỉnh sửa.
+     * Tải thông tin khách hàng để chỉnh sửa qua Stored Procedure.
      *
      * @param string $maKh mã khách hàng
      */
     public function loadKhachHang(string $maKh): void
     {
-        $khachHang = ArDmKh::withoutGlobalScopes()
-            ->where('ma_kh', $maKh)
-            ->first()
-        ;
+        try {
+            $result = AsARGetDMKH::call([
+                'pMa_cty' => SModel::CTY,
+                'pMa_kh'  => $maKh,
+            ]);
 
-        if (!$khachHang) {
-            $this->dispatch('error', message: 'Không tìm thấy khách hàng.');
+            if ($result->isEmpty()) {
+                $this->dispatch('error', message: 'Không tìm thấy khách hàng.');
 
-            return;
+                return;
+            }
+
+            $row = $result->first();
+
+            $this->ma_kh           = $row['MA_KH'] ?? $maKh;
+            $this->ten_kh          = $row['TEN_KH'] ?? '';
+            $this->dia_chi         = $row['DIA_CHI'] ?? '';
+            $this->ma_so_thue      = $row['MA_SO_THUE'] ?? '';
+            $this->dien_thoai      = $row['TEL'] ?? '';
+            $this->fax             = $row['FAX'] ?? '';
+            $this->email           = $row['EMAIL'] ?? '';
+            $this->ma_nt           = $row['MA_NT'] ?? 'VND';
+            $this->tk_cn           = $row['TK_CN'] ?? null;
+            $this->ma_plkh1        = $row['MA_PLKH1'] ?? null;
+            $this->ma_plkh2        = $row['MA_PLKH2'] ?? null;
+            $this->ma_plkh3        = $row['MA_PLKH3'] ?? null;
+            $this->ma_nhkh         = $row['MA_NHKH'] ?? null;
+            $this->isKh            = (bool) ($row['IS_KH'] ?? 1);
+            $this->hasTransactions = false;
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Không thể tải thông tin khách hàng: ' . $e->getMessage());
         }
-
-        $this->ma_kh           = $khachHang->ma_kh;
-        $this->ten_kh          = $khachHang->ten_kh ?? '';
-        $this->dia_chi         = $khachHang->dia_chi ?? '';
-        $this->ma_so_thue      = $khachHang->ma_so_thue ?? '';
-        $this->dien_thoai      = $khachHang->tel ?? '';
-        $this->fax             = $khachHang->fax ?? '';
-        $this->email           = $khachHang->email ?? '';
-        $this->ma_nt           = $khachHang->ma_nt ?? 'VND';
-        $this->tk_cn           = $khachHang->tk_cn;
-        $this->ma_plkh1        = $khachHang->ma_plkh1;
-        $this->ma_plkh2        = $khachHang->ma_plkh2;
-        $this->ma_plkh3        = $khachHang->ma_plkh3;
-        $this->ma_nhkh         = $khachHang->ma_nhkh;
-        $this->isKh            = (bool) $khachHang->isKh;
-        $this->hasTransactions = $khachHang->hasTransactions();
     }
 
     /**
@@ -165,7 +171,8 @@ class KhachhangForm extends Component
      */
     protected function rules(): array
     {
-        $rules = [
+        return [
+            'ma_kh'      => 'required|string|max:50',
             'ten_kh'     => 'required|string|max:200',
             'dia_chi'    => 'nullable|string|max:500',
             'ma_so_thue' => 'nullable|string|max:50',
@@ -180,14 +187,6 @@ class KhachhangForm extends Component
             'ma_nhkh'    => 'nullable|string|max:50',
             'isKh'       => 'boolean',
         ];
-
-        if ('create' === $this->mode) {
-            $rules['ma_kh'] = 'required|string|max:50|unique:' . (new SimbaArDmKh())->getTable() . ',ma_kh';
-        } else {
-            $rules['ma_kh'] = 'required|string|max:50';
-        }
-
-        return $rules;
     }
 
     /**
@@ -203,86 +202,76 @@ class KhachhangForm extends Component
     }
 
     /**
-     * Tạo mới khách hàng.
+     * Tạo mới khách hàng qua Stored Procedure.
      */
     protected function createKhachHang(): void
     {
-        $khachHang             = new SimbaArDmKh();
-        $khachHang->ma_kh      = strtoupper(trim($this->ma_kh));
-        $khachHang->ma_cty     = SModel::CTY;
-        $khachHang->ten_kh     = $this->ten_kh;
-        $khachHang->dia_chi    = $this->dia_chi;
-        $khachHang->ma_so_thue = $this->ma_so_thue;
-        $khachHang->tel        = $this->dien_thoai;
-        $khachHang->fax        = $this->fax;
-        $khachHang->email      = $this->email;
-        $khachHang->ma_nt      = $this->ma_nt;
-        $khachHang->tk_cn      = $this->tk_cn;
-        $khachHang->ma_plkh1   = $this->ma_plkh1;
-        $khachHang->ma_plkh2   = $this->ma_plkh2;
-        $khachHang->ma_plkh3   = $this->ma_plkh3;
-        $khachHang->ma_nhkh    = $this->ma_nhkh;
-        $khachHang->isKh       = $this->isKh;
-        $khachHang->ksd        = true;
-        $khachHang->cuser      = auth()->user()->name ?? 'system';
-        $khachHang->cdate      = now();
-        $khachHang->luser      = auth()->user()->name ?? 'system';
-        $khachHang->ldate      = now();
+        $maKh = strtoupper(trim($this->ma_kh));
+        $user = auth()->user()->name ?? 'system';
 
-        if ($khachHang->save()) {
-            $this->dispatch('success', message: 'Đã thêm khách hàng ' . $khachHang->ma_kh);
+        try {
+            $result = AsARInsDMKH::call([
+                'pMa_cty'     => SModel::CTY,
+                'pMa_kh'      => $maKh,
+                'pLoai'       => 1,
+                'pTen_kh'     => $this->ten_kh,
+                'pMa_so_thue' => $this->ma_so_thue,
+                'pDia_chi'    => $this->dia_chi,
+                'pTel'        => $this->dien_thoai,
+                'pFax'        => $this->fax,
+                'pEmail'      => $this->email,
+                'pTk'         => $this->tk_cn,
+                'pMa_plkh1'   => $this->ma_plkh1,
+                'pMa_plkh2'   => $this->ma_plkh2,
+                'pMa_plkh3'   => $this->ma_plkh3,
+                'pMa_nhkh'    => $this->ma_nhkh,
+                'pIskh'       => $this->isKh ? 1 : 0,
+                'pKsd'        => 1,
+                'pLUser'      => $user,
+            ]);
+
+            $this->dispatch('success', message: 'Đã thêm khách hàng ' . $maKh);
             $this->dispatch('khachhang-saved');
             $this->redirect(route('ar.khachhang'), navigate: true);
-        } else {
-            $this->dispatch('error', message: 'Không thể thêm khách hàng.');
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Không thể thêm khách hàng: ' . $e->getMessage());
         }
     }
 
     /**
-     * Cập nhật khách hàng.
+     * Cập nhật khách hàng qua Stored Procedure.
      */
     protected function updateKhachHang(): void
     {
-        $khachHang = ArDmKh::withoutGlobalScopes()
-            ->where('ma_kh', $this->ma_kh)
-            ->first()
-        ;
+        $maKh = strtoupper(trim($this->ma_kh));
+        $user = auth()->user()->name ?? 'system';
 
-        if (!$khachHang) {
-            $this->dispatch('error', message: 'Không tìm thấy khách hàng.');
+        try {
+            $result = AsARUpdDMKH::call([
+                'pMa_cty'     => SModel::CTY,
+                'pMa_kh'      => $maKh,
+                'pLoai'       => 1,
+                'pTen_kh'     => $this->ten_kh,
+                'pMa_so_thue' => $this->ma_so_thue,
+                'pDia_chi'    => $this->dia_chi,
+                'pTel'        => $this->dien_thoai,
+                'pFax'        => $this->fax,
+                'pEmail'      => $this->email,
+                'pTk'         => $this->tk_cn,
+                'pMa_plkh1'   => $this->ma_plkh1,
+                'pMa_plkh2'   => $this->ma_plkh2,
+                'pMa_plkh3'   => $this->ma_plkh3,
+                'pMa_nhkh'    => $this->ma_nhkh,
+                'pIskh'       => $this->isKh ? 1 : 0,
+                'pKsd'        => 1,
+                'pLUser'      => $user,
+            ]);
 
-            return;
-        }
-
-        // Không cho sửa ma_kh khi đã có giao dịch
-        if ($this->hasTransactions && $this->ma_kh !== $khachHang->ma_kh) {
-            $this->dispatch('error', message: 'Không được sửa mã khách hàng khi đã có giao dịch.');
-
-            return;
-        }
-
-        $khachHang->ten_kh     = $this->ten_kh;
-        $khachHang->dia_chi    = $this->dia_chi;
-        $khachHang->ma_so_thue = $this->ma_so_thue;
-        $khachHang->tel        = $this->dien_thoai;
-        $khachHang->fax        = $this->fax;
-        $khachHang->email      = $this->email;
-        $khachHang->ma_nt      = $this->ma_nt;
-        $khachHang->tk_cn      = $this->tk_cn;
-        $khachHang->ma_plkh1   = $this->ma_plkh1;
-        $khachHang->ma_plkh2   = $this->ma_plkh2;
-        $khachHang->ma_plkh3   = $this->ma_plkh3;
-        $khachHang->ma_nhkh    = $this->ma_nhkh;
-        $khachHang->isKh       = $this->isKh;
-        $khachHang->luser      = auth()->user()->name ?? 'system';
-        $khachHang->ldate      = now();
-
-        if ($khachHang->save()) {
-            $this->dispatch('success', message: 'Đã cập nhật khách hàng ' . $khachHang->ma_kh);
+            $this->dispatch('success', message: 'Đã cập nhật khách hàng ' . $maKh);
             $this->dispatch('khachhang-saved');
             $this->redirect(route('ar.khachhang'), navigate: true);
-        } else {
-            $this->dispatch('error', message: 'Không thể cập nhật khách hàng.');
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Không thể cập nhật khách hàng: ' . $e->getMessage());
         }
     }
 }

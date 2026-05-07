@@ -8,12 +8,14 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-05 23:16:37
+ * @lastupdate 2026-05-07 10:15:08
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
 
 use Diepxuan\Catalog\Models\ArDmKh;
+use Diepxuan\Simba\SModel\SModel;
+use Diepxuan\Simba\StoredProcedures\AsARDelDMKH;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -55,7 +57,7 @@ class KhachhangList extends Component
     }
 
     /**
-     * Xóa khách hàng theo mã.
+     * Xóa khách hàng theo mã qua Stored Procedure.
      *
      * @param string $maKh mã khách hàng
      */
@@ -78,14 +80,18 @@ class KhachhangList extends Component
             return;
         }
 
-        // Đánh dấu ksd = false thay vì xóa hẳn
-        $khachHang->ksd   = false;
-        $khachHang->luser = auth()->user()->name ?? 'system';
-        $khachHang->ldate = now();
-        $khachHang->save();
+        // Đánh dấu ksd = false qua Stored Procedure
+        try {
+            AsARDelDMKH::call([
+                'pMa_cty' => SModel::CTY,
+                'pMa_kh'  => $maKh,
+            ]);
 
-        $this->dispatch('success', message: 'Đã xóa khách hàng ' . $maKh);
-        $this->dispatch('khachhang-saved');
+            $this->dispatch('success', message: 'Đã xóa khách hàng ' . $maKh);
+            $this->dispatch('khachhang-saved');
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Không thể xóa khách hàng: ' . $e->getMessage());
+        }
     }
 
     /**
