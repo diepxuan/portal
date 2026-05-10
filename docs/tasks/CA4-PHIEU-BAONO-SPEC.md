@@ -300,3 +300,8 @@ AsPostCaPh2_glct::call([
 ---
 
 *Document created by Bột - Portal Project Assistant*
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

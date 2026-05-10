@@ -369,3 +369,7 @@ Route::prefix('gl/reports')
 - Ho tro 7 cach nhom: TK, KH, BP, HD, Phi, SPCT, TK_Du
 - Ho tro drilldown (F5) -> xem chi tiet CTGS
 - Template Crystal Report can chuyen doi sang HTML/PDF
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

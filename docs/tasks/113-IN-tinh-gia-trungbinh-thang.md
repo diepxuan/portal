@@ -175,3 +175,7 @@ Route::prefix('catalog/in/calculations')
 - [ ] Tao View tinh-gia-trung-binh-thang.blade.php
 - [ ] Them Routes
 - [ ] Test cac kieu phat sinh chenhlech
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

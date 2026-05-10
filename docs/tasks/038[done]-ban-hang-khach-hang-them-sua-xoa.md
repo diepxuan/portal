@@ -124,3 +124,8 @@ class SOCreate extends Component
 - PR: https://github.com/diepxuan/portal/pull/170
 - Issue: https://github.com/diepxuan/portal/issues/38
 - 16 files thay doi: 6 SP classes + 4 Models + 2 Livewire + 2 Views + 1 Routes + 1 Model updated
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

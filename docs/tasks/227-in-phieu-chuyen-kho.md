@@ -408,3 +408,7 @@ Route::prefix('catalog/in/chungtu')
 - [ ] Test auto create phieu nhap
 - [ ] Test kiem tra kho xuat != kho nhap
 - [ ] Test kiem tra ton kho
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -282,3 +282,7 @@ Route::prefix('catalog/ap/phan-bo-thanh-toan')
 - [ ] Them Routes
 - [ ] Test phan bo thanh toan
 - [ ] Test integration voi APTT
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

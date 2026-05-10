@@ -265,3 +265,8 @@ Route::prefix('catalog/co')
 - [ ] Them Routes
 - [ ] Test CRUD
 - [ ] Test xoa (update ngay_tkh = 01/01/1900)
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

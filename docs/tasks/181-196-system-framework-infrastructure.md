@@ -460,3 +460,7 @@ Day la **framework libraries** - cac DLLs nay cung cap:
 - [ ] Ghi nhan cau truc SMKS
 - [ ] Ghi nhan cau truc SMUserInfo
 - [ ] Ghi nhan cau truc ToolCommon
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

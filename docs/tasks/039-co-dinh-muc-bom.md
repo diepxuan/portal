@@ -98,3 +98,7 @@ class Dinhmuclom extends Component
 - [ ] Tao Livewire Dinhmuclom
 - [ ] Tao View (2 lưới)
 - [ ] Test CRUD
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -156,3 +156,7 @@ Route::get('/catalog/gl/baocao/ctgs01', [Ctgs01::class, 'render'])
 - [ ] Test loc so CT
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

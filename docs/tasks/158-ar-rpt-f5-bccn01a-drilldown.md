@@ -218,3 +218,7 @@ Route::prefix('catalog/ar/bao-cao')
 - [ ] Test export Excel
 - [ ] Test in bao cao (neu can)
 - [ ] Integration test voi module AR
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

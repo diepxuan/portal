@@ -302,3 +302,7 @@ Route::prefix('catalog/so/danhmuc')
 - [ ] Them Routes
 - [ ] Test Priority logic
 - [ ] Test Integration voi DMVT
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

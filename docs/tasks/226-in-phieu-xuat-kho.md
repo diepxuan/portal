@@ -445,3 +445,7 @@ Route::prefix('catalog/in/chungtu')
 - [ ] Test CRUD operations
 - [ ] Test Inventory check & gia dich danh
 - [ ] Test tinh tien tu dong (NT * TyGia)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

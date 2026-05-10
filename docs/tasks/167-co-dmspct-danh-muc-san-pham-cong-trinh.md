@@ -214,3 +214,7 @@ Route::get('/san-pham-cong-trinh/view', [SanPhamCongTrinh::class, 'render'])
 - [ ] Test CRUD operations
 - [ ] Test Integration voi DMNHSPCT
 - [ ] Test che do chi xem
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -417,3 +417,7 @@ Route::prefix('catalog/gl/bieumau')
 - Mau BCTC V02 la mau bao cao tai chinh theo Thong tu 200/2014/TT-BTC
 - Moi chi tieu co 1 tai khoan (tk_01)
 - Cong thuc tinh co the tham chieu den cac tai khoan khac
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

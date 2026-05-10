@@ -162,3 +162,7 @@ Route::prefix('catalog/si')
 - [ ] Implement SQL script export
 - [ ] Them Routes
 - [ ] Test tao package update
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

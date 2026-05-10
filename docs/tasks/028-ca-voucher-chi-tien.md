@@ -110,3 +110,7 @@ class Phieuchi extends Component
 - [ ] Tao Livewire Phieuchi
 - [ ] Tao View (có tab thuế)
 - [ ] Test CRUD
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

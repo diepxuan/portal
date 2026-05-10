@@ -400,3 +400,7 @@ Route::prefix('catalog/so')
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test chon hoa don vao grid
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

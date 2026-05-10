@@ -183,3 +183,7 @@ Route::prefix('catalog/gl/chungtu')
 - [ ] Test CRUD operations
 - [ ] Test validate
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -534,3 +534,7 @@ Route::prefix('catalog/so')
 - [ ] Them Routes
 - [ ] Test chon hoa don goc va lay thong tin
 - [ ] Test tinh toan thue & hach toan nguoc
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

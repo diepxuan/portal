@@ -385,3 +385,7 @@ Route::prefix('catalog/si')
 - [ ] Test Trim Ma
 - [ ] Test Backup thu cong
 - [ ] Test Auto Backup
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

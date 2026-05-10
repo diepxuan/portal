@@ -72,3 +72,7 @@ Chuyen doi chuc nang the tai san (bao cao bien dong) tu .NET sang PHP Laravel.
 - [ ] Tao Livewire Thetaisan
 - [ ] Tao View the-tai-san.blade.php (2 grid)
 - [ ] Them Routes
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

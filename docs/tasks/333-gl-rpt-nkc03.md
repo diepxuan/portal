@@ -158,3 +158,7 @@ Route::get('/catalog/gl/socai/nkc03', [Nkc03::class, 'render'])
 - [ ] Test loc ds_tk
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

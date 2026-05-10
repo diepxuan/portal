@@ -66,3 +66,7 @@ Chuyen doi chuc nang bang phan bo khau hao theo nhom tai san tu .NET sang PHP La
 - [ ] Tao Livewire Bangphanbokhauhao
 - [ ] Tao View bang-phan-bo-khau-hao.blade.php
 - [ ] Them Routes
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

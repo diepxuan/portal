@@ -94,3 +94,7 @@ class Xoalaikheuoc extends Component
 - [ ] Tao Livewire Xoalaikheuoc
 - [ ] Tao View
 - [ ] Test xoa lai
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -463,3 +463,7 @@ Route::prefix('catalog/ar/danhmuc')
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test Integration voi DMNHKH, DMPLKH
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

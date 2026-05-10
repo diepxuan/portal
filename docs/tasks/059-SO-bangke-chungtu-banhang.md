@@ -378,3 +378,7 @@ Route::prefix('catalog/so/reports')
 - [ ] Test Group by chi tieu
 - [ ] Test So ct range
 - [ ] Test Export Excel
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

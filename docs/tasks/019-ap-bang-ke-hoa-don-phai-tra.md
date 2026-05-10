@@ -287,3 +287,7 @@ Route::prefix('catalog/ap/bao-cao')
 - [ ] Test lay du lieu
 - [ ] Test loc nhieu tieu chi
 - [ ] Test in bao cao
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

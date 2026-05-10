@@ -35,3 +35,8 @@ Tinh nang login cho Simba.
 ## Ghi chu
 
 Issue co image mockup va chi tiet cac buoc can thuc hien.
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

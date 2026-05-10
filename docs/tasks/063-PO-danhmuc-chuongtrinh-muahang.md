@@ -262,3 +262,7 @@ Route::prefix('catalog/po/danhmuc')
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test Integration voi PO modules
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

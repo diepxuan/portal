@@ -207,3 +207,8 @@ Route::prefix('catalog/co')
 - [ ] Them Routes
 - [ ] Test bao cao voi cac filter
 - [ ] Test xuat Excel
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

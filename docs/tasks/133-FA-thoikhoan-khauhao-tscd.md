@@ -158,3 +158,7 @@ Route::prefix('catalog/fa')
 - [ ] Tao Views (list + edit)
 - [ ] Them Routes
 - [ ] Test kiem tra trung (ma_ts + ngay_dung_kh)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

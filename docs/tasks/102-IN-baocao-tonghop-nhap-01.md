@@ -209,3 +209,7 @@ Route::prefix('catalog/in/reports')
 - [ ] Implement Crystal Report viewer integration
 - [ ] Test cac tieu chi loc
 - [ ] Test export Excel / Print
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

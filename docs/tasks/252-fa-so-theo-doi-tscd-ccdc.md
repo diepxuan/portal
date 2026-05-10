@@ -109,3 +109,7 @@ class SoTheoDoiTsCc extends Component
 - [ ] Integrate report viewer
 - [ ] Them Routes
 - [ ] Test report generation
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

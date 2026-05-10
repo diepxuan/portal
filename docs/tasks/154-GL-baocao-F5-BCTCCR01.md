@@ -273,3 +273,7 @@ Route::prefix('gl/reports')
 - Ho tro drilldown (F5) - xem chi tiet chung tu
 - Ho tro xem den bac n (1-9)
 - Template Crystal Report can chuyen doi sang HTML/PDF
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

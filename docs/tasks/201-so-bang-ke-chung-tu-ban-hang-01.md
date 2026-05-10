@@ -467,3 +467,7 @@ Route::prefix('catalog/so')
 - [ ] Them Routes
 - [ ] Test export Excel/PDF
 - [ ] Test filter va loc chi tiet
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

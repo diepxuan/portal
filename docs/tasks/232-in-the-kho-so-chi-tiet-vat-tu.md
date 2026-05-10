@@ -151,3 +151,7 @@ Route::prefix('catalog/in/baocao')
 - [ ] Them Routes
 - [ ] Test report generation
 - [ ] Test in tat ca
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

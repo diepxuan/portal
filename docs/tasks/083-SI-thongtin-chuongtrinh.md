@@ -189,3 +189,7 @@ Route::prefix('catalog/si')
 - [ ] Test hien thi thong tin nguoi dung
 - [ ] Test hien thi thong tin cong ty
 - [ ] Test hien thi thong tin database
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

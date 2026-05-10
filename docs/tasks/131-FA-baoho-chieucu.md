@@ -98,3 +98,7 @@ class Baohochieurcu extends Component
 - [ ] Tao Livewire Baohochieurcu va BaohochieurcuEdit
 - [ ] Tao Views (tab them cho bao hong CC)
 - [ ] Them Routes
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

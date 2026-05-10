@@ -26,3 +26,8 @@ Task xay dung admin dashboard.
 ## Ghi chu
 
 Co image mockup tu GitHub attachments.
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

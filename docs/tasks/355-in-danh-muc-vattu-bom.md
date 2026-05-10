@@ -491,3 +491,8 @@ Route::prefix('catalog/in/danhmuc')
 - [ ] Test CRUD BOM (thêm/xóa linh kiện)
 - [ ] Test transaction (lưu vật tư + BOM cùng lúc)
 - [ ] Test Integration với DMNHVT, DMKHO, DMTK
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

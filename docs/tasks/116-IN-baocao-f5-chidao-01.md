@@ -150,3 +150,7 @@ Route::prefix('catalog/in/reports')
 - [ ] Tao View drilldown-cong-no-01.blade.php (hien thi DataGridView)
 - [ ] Them Routes
 - [ ] Test tuong tac voi bao cao cha
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

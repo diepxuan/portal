@@ -194,3 +194,7 @@ Route::prefix('catalog/in/transfers')
 - [ ] Test xac nhan 2 buoc (ma so)
 - [ ] Test chon kho (AutoLookup)
 - [ ] Test execute voi transaction
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

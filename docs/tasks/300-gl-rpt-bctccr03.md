@@ -168,3 +168,7 @@ class BCTCCR03Service
 - [ ] Test quan ly mau PL
 - [ ] Test drill-down
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

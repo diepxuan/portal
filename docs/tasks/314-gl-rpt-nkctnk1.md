@@ -146,3 +146,7 @@ Route::get('/catalog/gl/socai/nkctnk1', [Nkctnk1::class, 'render'])
 - [ ] Test validate
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

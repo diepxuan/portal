@@ -367,3 +367,7 @@ Route::prefix('catalog/ar/phanbo')
 - [ ] Them Routes
 - [ ] Implement logic phan bo FIFO
 - [ ] Test phan bo thanh toan
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

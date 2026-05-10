@@ -514,3 +514,7 @@ Route::prefix('catalog/so')
 - [ ] Test CRUD operations (dich vu, khong kho)
 - [ ] Test tinh nang sua CK va sua thue
 - [ ] Test Integration voi DMVT (dich vu)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

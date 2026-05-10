@@ -190,3 +190,8 @@ Route::get('/catalog/gl/baocao/bctccdtf03a', [Bctccdtf03a::class, 'render'])
 - [ ] Test drill-down (F5, Ctrl+F5, Shift+F5)
 - [ ] Test export Excel
 - [ ] Integration test voi menu system
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

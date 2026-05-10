@@ -140,3 +140,7 @@ Route::get('/catalog/gl/chuyendoi/transfer-glcdtk', [TransferGLCDTK::class, 'ren
 - [ ] Test chuyen so du
 - [ ] Test trang thai
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement
