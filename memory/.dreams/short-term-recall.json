@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "updatedAt": "2026-05-09T13:20:25.163Z",
+  "entries": {
+    "memory:memory/2026-04-12.md:1:50": {
+      "key": "memory:memory/2026-04-12.md:1:50",
+      "path": "memory/2026-04-12.md",
+      "startLine": 1,
+      "endLine": 50,
+      "source": "memory",
+      "snippet": "# 2026-04-12 ## Công việc đã thực hiện ### CA Procedures Documentation Integration **Yêu cầu:** Agent portal không thể hiểu AsCAGetPH2 - cần integration documentation từ SimbaSql **Vấn đề đã xác định:** 1. Config `extraPaths` đã đúng: `/root/.openclaw/workspace/projects/SimbaSql/docs` 2. Nhưng `memorySearch.sources` chỉ có `[\"memory\"]` - không có corpus cho docs 3. File SimbaSql/docs/procedures/CA/procedures.md không thuộc memory corpus format **Giải pháp đã thực hiện:** 1. **Copy documentation vào portal workspace:** - `docs/procedures/CA/README.md` (40KB) - `docs/procedures/CA/procedures.md` (46KB) 2. **Tạo memory reference:** - `memory/CA-procedures-reference.md` (1.3KB)",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.48941638767719264,
+      "maxScore": 0.48941638767719264,
+      "firstRecalledAt": "2026-05-09T13:20:25.163Z",
+      "lastRecalledAt": "2026-05-09T13:20:25.163Z",
+      "queryHashes": [
+        "be487a00e30d"
+      ],
+      "recallDays": [
+        "2026-05-09"
+      ],
+      "conceptTags": [
+        "memorysearch.sources",
+        "docs/procedures/ca/readme.md",
+        "docs/procedures/ca/procedures.md",
+        "1.3kb",
+        "công",
+        "việc",
+        "thực",
+        "hiện"
+      ]
+    },
+    "memory:memory/2026-03-28.md:33:74": {
+      "key": "memory:memory/2026-03-28.md:33:74",
+      "path": "memory/2026-03-28.md",
+      "startLine": 33,
+      "endLine": 74,
+      "source": "memory",
+      "snippet": "- `diepxuan/laravel-simba/README.md`: Thêm section kiến trúc Model 3 lớp và links docs - `PACKAGES.md`: Thêm laravel-simba documentation links 3. **Xóa thư mục docs/ rỗng** 4. **Commit:** `docs: Move MODEL_ARCHITECTURE.md to laravel-simba/docs` **Lý do:** - Documentation nên nằm gần code mà nó mô tả - Dễ maintain và tìm kiếm - Theo convention chuẩn của Laravel packages **Ghi chú:** Sếp yêu cầu \"Làm tương tự với những file khác\" - đã hoàn thành thêm với docs/project/*.md (thực tế là docs/MODEL_ARCHITECTURE.md). ### Đợt 3 (04:12) - Update WORKSPACE_GUIDE.md: **Yêu cầu từ Sếp:** dựa trên những gì thay đổi và những gì còn lại trong dự án, em cập nhật WORKSPACE_GUIDE.md 1. **Cập nhật",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.45345261394977565,
+      "maxScore": 0.45345261394977565,
+      "firstRecalledAt": "2026-05-09T13:20:25.163Z",
+      "lastRecalledAt": "2026-05-09T13:20:25.163Z",
+      "queryHashes": [
+        "be487a00e30d"
+      ],
+      "recallDays": [
+        "2026-05-09"
+      ],
+      "conceptTags": [
+        "diepxuan/laravel-simba/readme.md",
+        "packages.md",
+        "laravel-simba",
+        "model-architecture.md",
+        "laravel-simba/docs",
+        "docs/project",
+        "docs/model-architecture.md",
+        "workspace-guide.md"
+      ]
+    },
+    "memory:memory/2026-03-28.md:66:97": {
+      "key": "memory:memory/2026-03-28.md:66:97",
+      "path": "memory/2026-03-28.md",
+      "startLine": 66,
+      "endLine": 97,
+      "source": "memory",
+      "snippet": "**PR:** [#130](https://github.com/diepxuan/portal/pull/130) **Files di chuyển:** 4 - `SERVE-DEV-COMMANDS-DOCS.md` → `laravel-support/docs/` - `CORE_PACKAGE_LOADING_DOCS.md` → `laravel-core/docs/` - `PACKAGE_NAMESPACE_CONVENTIONS.md` → `laravel-core/docs/` - `MODEL_ARCHITECTURE.md` → `laravel-simba/docs/` **Files cập nhật:** 5 - `laravel-support/README.md` - `laravel-core/README.md` - `laravel-simba/README.md` - `PACKAGES.md` - `WORKSPACE_GUIDE.md` **Commits:** 4 1. `docs: Move package documentation to respective package docs folders` 2. `memory: Add 2026-03-28 daily log` 3. `docs: Move MODEL_ARCHITECTURE.md to laravel-simba/docs` 4. `memory: Update 2026-03-28 daily log` 5. `docs: Update W",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.4361134946346283,
+      "maxScore": 0.4361134946346283,
+      "firstRecalledAt": "2026-05-09T13:20:25.163Z",
+      "lastRecalledAt": "2026-05-09T13:20:25.163Z",
+      "queryHashes": [
+        "be487a00e30d"
+      ],
+      "recallDays": [
+        "2026-05-09"
+      ],
+      "conceptTags": [
+        "serve-dev-commands-docs.md",
+        "laravel-support/docs",
+        "core-package-loading-docs.md",
+        "laravel-core/docs",
+        "package-namespace-conventions.md",
+        "model-architecture.md",
+        "laravel-simba/docs",
+        "laravel-support/readme.md"
+      ]
+    },
+    "memory:memory/2026-03-28.md:1:44": {
+      "key": "memory:memory/2026-03-28.md:1:44",
+      "path": "memory/2026-03-28.md",
+      "startLine": 1,
+      "endLine": 44,
+      "source": "memory",
+      "snippet": "# 2026-03-28 ## Công việc đã thực hiện ### Documentation Reorganization **Yêu cầu từ Sếp:** Cập nhật tiếp đưa thảo ví dụ của anh về serve-dev-commands.md **Đã hoàn thành:** ### Đợt 1 (04:06) - Documentation reorganization: 1. **Di chuyển documentation vào package tương ứng:** - `SERVE-DEV-COMMANDS-DOCS.md` → `diepxuan/laravel-support/docs/SERVE-DEV-COMMANDS.md` - `CORE_PACKAGE_LOADING_DOCS.md` → `diepxuan/laravel-core/docs/CORE-PACKAGE-LOADING.md` - `PACKAGE_NAMESPACE_CONVENTIONS.md` → `diepxuan/laravel-core/docs/PACKAGE-NAMESPACE-CONVENTIONS.md` 2. **Cập nhật README.md cho các package:** - `diepxuan/laravel-support/README.md`: Thêm thông tin về serve:dev commands - `die",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.43277091979980464,
+      "maxScore": 0.43277091979980464,
+      "firstRecalledAt": "2026-05-09T13:20:25.163Z",
+      "lastRecalledAt": "2026-05-09T13:20:25.163Z",
+      "queryHashes": [
+        "be487a00e30d"
+      ],
+      "recallDays": [
+        "2026-05-09"
+      ],
+      "conceptTags": [
+        "serve-dev-commands.md",
+        "serve-dev-commands-docs.md",
+        "core-package-loading-docs.md",
+        "package-namespace-conventions.md",
+        "readme.md",
+        "công",
+        "việc",
+        "thực"
+      ]
+    }
+  }
+}

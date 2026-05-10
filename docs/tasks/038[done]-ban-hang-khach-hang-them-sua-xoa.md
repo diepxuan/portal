@@ -108,10 +108,19 @@ class SOCreate extends Component
 
 ## Progress Checklist
 
-- [ ] Phan tich yeu cau
-- [ ] Mo rong Model DMKH (truong giao hang)
-- [ ] Tao Livewire SOCreate
-- [ ] Tao Views
-- [ ] Them Routes
-- [ ] Test CRUD + truong giao hang
-- [ ] Test kiem tra no qua han
+- [x] Phan tich yeu cau
+- [x] Stored Procedures (6 SP classes trong laravel-simba)
+- [x] Models (ArDmKh, ArDmNhKh, ArDmPlKh — laravel-simba + laravel-catalog)
+- [x] Livewire Components (KhachhangList, KhachhangForm)
+- [x] Blade Views (khachhang.blade.php, khachhang-form.blade.php)
+- [x] Routes (/banhang/khachhang, create, edit/{id})
+- [x] Business Rules (validation, hasTransactions, soft delete)
+- [x] Test CRUD co ban
+- [x] Merge PR #170 (2026-05-05)
+
+## Trang thai
+
+**HOAN THANH** — 2026-05-05
+- PR: https://github.com/diepxuan/portal/pull/170
+- Issue: https://github.com/diepxuan/portal/issues/38
+- 16 files thay doi: 6 SP classes + 4 Models + 2 Livewire + 2 Views + 1 Routes + 1 Model updated
