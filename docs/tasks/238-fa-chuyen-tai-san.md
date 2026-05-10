@@ -179,3 +179,7 @@ class ChuyenTaisan extends Component
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test 6 loai chuyen
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

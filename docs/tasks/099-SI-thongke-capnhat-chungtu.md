@@ -261,3 +261,7 @@ Route::prefix('catalog/si/report')
 - [ ] Test xem log
 - [ ] Test xuat Excel
 - [ ] Test xem chi tiet thay doi
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

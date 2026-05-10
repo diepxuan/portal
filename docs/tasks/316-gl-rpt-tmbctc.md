@@ -144,3 +144,7 @@ Route::get('/catalog/gl/baocao/tmbctc', [Tmbctc::class, 'render'])
 - [ ] Test Crystal/Grid
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

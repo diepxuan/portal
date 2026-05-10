@@ -275,3 +275,7 @@ Route::prefix('catalog/co/danhmuc')
 - [ ] Test CRUD operations
 - [ ] Test Integration voi CODDSPCT
 - [ ] Test tinh gia thanh
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

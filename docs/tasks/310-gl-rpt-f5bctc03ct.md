@@ -154,3 +154,7 @@ Route::get('/catalog/gl/baocao/f5bctc03ct', [F5bctc03ct::class, 'render'])
 - [ ] Test drill-down
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

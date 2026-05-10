@@ -143,3 +143,7 @@ Route::prefix('catalog/si')
 - [ ] Tao View
 - [ ] Them Routes
 - [ ] Test chuyen doi nam tai chinh
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -355,3 +355,8 @@ Route::prefix('catalog/co')
 - [ ] Them Routes
 - [ ] Test CRUD
 - [ ] Test tinh toan tu dong (ng_gia, gt_cl, kh_ky)
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

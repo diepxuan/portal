@@ -446,3 +446,7 @@ Route::prefix('catalog/gl/danhmuc')
 - Ho tro nhap VND va ngoai te
 - Co 2 loai so du: dau nam va dau ky
 - Neu thang = 1 thi dau ky = dau nam
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

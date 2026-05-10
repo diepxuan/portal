@@ -149,3 +149,8 @@ class Nganhang extends Component
 - [ ] Them Routes
 - [ ] Test CRUD
 - [ ] Test lien ket voi voucher SO1/SO3
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

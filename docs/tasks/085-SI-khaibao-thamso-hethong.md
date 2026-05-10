@@ -234,3 +234,7 @@ Route::prefix('catalog/si')
 - [ ] Them Routes
 - [ ] Test chi cho sua isEdit = 1
 - [ ] Test refresh cau hinh
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -85,3 +85,8 @@ class Tinhkhauhao extends Component
 - [ ] Tao Livewire Tinhkhauhao
 - [ ] Tao View
 - [ ] Test cac phuong phap khau hao
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -62,3 +62,7 @@ Chuyen doi chuc nang bao cao tang giam tai san co dinh tu .NET sang PHP Laravel.
 - [ ] Tao Livewire Baocaotanggiam
 - [ ] Tao View baocao-tang-giam.blade.php
 - [ ] Them Routes
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

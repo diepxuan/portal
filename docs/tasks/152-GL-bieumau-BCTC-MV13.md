@@ -262,3 +262,7 @@ Route::prefix('catalog/gl/bieumau')
 
 - V13 la mau bao cao don gian voi 1 tai khoan
 - Theo Thong tu 200/2014/TT-BTC
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

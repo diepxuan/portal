@@ -313,3 +313,7 @@ Route::prefix('catalog/so')
 - [ ] Tao Views
 - [ ] Them Routes
 - [ ] Test drill-down tu bao cao tong hop
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

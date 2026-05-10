@@ -370,3 +370,7 @@ Route::prefix('catalog/so/voucher')
 - [ ] Test CRUD operations
 - [ ] Test Calculate logic
 - [ ] Test Integration voi Kho, KH
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

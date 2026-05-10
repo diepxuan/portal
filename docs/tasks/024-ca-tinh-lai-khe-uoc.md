@@ -98,3 +98,7 @@ class Tinhlaikheuoc extends Component
 - [ ] Tao Livewire Tinhlaikheuoc
 - [ ] Tao View
 - [ ] Test tinh lai theo thang
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

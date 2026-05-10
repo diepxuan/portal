@@ -218,3 +218,8 @@ class AsGetGiabanGiamGia extends StoredProcedure
 - [ ] Test pricing engine
 - [ ] Test document chain lookup
 - [ ] Test print control
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

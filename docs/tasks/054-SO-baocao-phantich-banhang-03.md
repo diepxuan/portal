@@ -391,3 +391,7 @@ Route::prefix('catalog/so/reports')
 - [ ] Test Drill-down F4
 - [ ] Test Export Excel
 - [ ] Test Full filter params
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

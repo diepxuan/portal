@@ -111,3 +111,8 @@ Route::prefix('catalog/so/reports')
 - [ ] Tao Livewire Baocaoloinhuan
 - [ ] Tao View
 - [ ] Test drill-down
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -283,3 +283,7 @@ Route::prefix('gl/reports')
 - Chi quan tri moi duoc phep sua so lieu
 - Ho tro tinh toan cong thuc tu dong
 - Theo quy dinh To khai GTGT cua Tong cuc Thue VN
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

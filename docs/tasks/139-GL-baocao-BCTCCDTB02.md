@@ -285,3 +285,7 @@ Route::prefix('gl/reports')
 - Du lieu duoc tao tu stored procedure
 - Ho tro drilldown (F5) - xem chi tiet chung tu
 - Template Crystal Report can chuyen doi sang HTML/PDF
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

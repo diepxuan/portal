@@ -22,3 +22,8 @@ Cong cu ho tro phat trien: chay `npm run watch` voi schedule.
 ## Ghi chu
 
 Issue co ghi chu: `- \`npm run watch\` with schedule`
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

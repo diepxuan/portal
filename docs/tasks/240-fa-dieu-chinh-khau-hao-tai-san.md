@@ -166,3 +166,7 @@ class DieuChinhKhauHao extends Component
 - [ ] Them Routes
 - [ ] Test adjustment operations
 - [ ] Test recalculate total
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

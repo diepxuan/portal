@@ -380,3 +380,7 @@ Route::prefix('catalog/po/voucher')
 - [ ] Test CRUD operations
 - [ ] Test tinh toan tu dong
 - [ ] Test Integration voi PO0
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

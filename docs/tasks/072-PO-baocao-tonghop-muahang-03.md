@@ -335,3 +335,7 @@ Route::prefix('catalog/po/report')
 - [ ] Test xem bao cao
 - [ ] Test drill-down (F5)
 - [ ] Test xuat Excel
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

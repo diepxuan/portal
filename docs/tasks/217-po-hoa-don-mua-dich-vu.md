@@ -396,3 +396,7 @@ Route::prefix('catalog/po')
 - [ ] Test tinh toan tien, thue
 - [ ] Test lay thue dau vao tu chi tiet
 - [ ] Test hach toan ke toan
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

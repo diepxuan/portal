@@ -70,3 +70,8 @@ class BaocaophantichTsod01 extends Component
 - [ ] Tao Livewire BaocaophantichTsod01
 - [ ] Tao View
 - [ ] Test xuat Excel
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

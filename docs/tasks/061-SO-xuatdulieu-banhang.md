@@ -331,3 +331,7 @@ Route::prefix('catalog/so/voucher')
 - [ ] Test Calculate logic
 - [ ] Test Multi-currency
 - [ ] Test Integration voi DMKH
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

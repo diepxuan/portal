@@ -170,3 +170,8 @@ Don hang ban (SO1) → Phieu xuat (SO2) → Hoa don ban (SO3) → Phieu nhap tra
 - [ ] Test chuoi chung tu (SO1->SO2->SO3)
 - [ ] Test in an, bao cao
 - [ ] Review va merge
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -224,3 +224,7 @@ Route::prefix('gl/reports')
 - Day la drilldown report, khong co filter rieng
 - Nhan tham so tu bao cao cha
 - Ho tro drilldown tiep theo (F5)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -404,3 +404,7 @@ Route::prefix('catalog/si')
 - [ ] Test auto backup (SQL Agent Job)
 - [ ] Test delete auto backup
 - [ ] Test quyen han (sysadmin required)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

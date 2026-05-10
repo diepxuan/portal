@@ -268,3 +268,7 @@ Route::prefix('catalog/po/voucher')
 - [ ] Test CRUD
 - [ ] Test tinh toan
 - [ ] Test Integration PO1
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

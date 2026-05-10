@@ -139,3 +139,7 @@ Route::prefix('catalog/si')
 - [ ] Implement background processing
 - [ ] Them Routes
 - [ ] Test sap xep lai so chung tu
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

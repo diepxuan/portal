@@ -276,3 +276,7 @@ Route::prefix('catalog/so/danhmuc')
 - [ ] Them Routes
 - [ ] Test Lookup VT
 - [ ] Test Integration voi DonHangBan
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

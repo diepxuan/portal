@@ -52,10 +52,10 @@ Chuyen doi chuc nang so tai san co dinh tu .NET sang PHP Laravel.
 ### 1. Livewire Component
 
 ```php
-// diepxuan/laravel-catalog/src/Http/Livewire/FA/Reports/Sotaisanco dinh.php
+// diepxuan/laravel-catalog/src/Http/Livewire/FA/Reports/Sotaisancodinh.php
 namespace Diepxuan\Catalog\Http\Livewire\FA\Reports;
 
-class Sotaisanco dinh extends Component
+class Sotaisancodinh extends Component
 {
     const MA_CT = 'FA';
     const REPORT_TYPE = 'SoTSCD';
@@ -78,7 +78,7 @@ class Sotaisanco dinh extends Component
 ### 2. Routes
 
 ```php
-Route::get('/so-tai-san-co-dinh', [Sotaisanco dinh::class, 'render'])
+Route::get('/so-tai-san-co-dinh', [Sotaisancodinh::class, 'render'])
     ->name('catalog.fa.reports.so-tai-san-co-dinh');
 ```
 
@@ -111,3 +111,8 @@ Route::get('/so-tai-san-co-dinh', [Sotaisanco dinh::class, 'render'])
 - [ ] Tao Livewire Sotaisanco dinh
 - [ ] Tao View so-tai-san-co-dinh.blade.php
 - [ ] Them Routes
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** FIXED — space trong tên class PHP (Sotaisanco dinh → Sotaisancodinh)
+- **Batch:** 2

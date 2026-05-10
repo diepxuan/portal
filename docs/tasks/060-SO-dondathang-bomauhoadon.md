@@ -404,3 +404,7 @@ Route::prefix('catalog/so/baomat')
 - [ ] Test Encrypt/Decrypt
 - [ ] Test MD5 hash
 - [ ] Test Verify logic
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

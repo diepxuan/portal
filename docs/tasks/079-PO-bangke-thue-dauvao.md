@@ -212,3 +212,7 @@ Route::prefix('catalog/po/danhmuc')
 - [ ] Them Routes
 - [ ] Test chi hien thi TAI
 - [ ] Test khong cho sua ma_ct khac TAI
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

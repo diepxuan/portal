@@ -169,3 +169,8 @@ Route::get('/co/bao-cao-khai-bao-cp', [Baocaokhaibaocp::class, 'render'])
 - [ ] Tao Livewire Baocaokhaibaocp
 - [ ] Tao View
 - [ ] Test report + filter + xuat Excel
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

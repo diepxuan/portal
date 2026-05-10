@@ -284,3 +284,7 @@ Route::prefix('catalog/in/danhmuc')
 - [ ] Tao Views (list + edit)
 - [ ] Them Routes
 - [ ] Test CRUD operations
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

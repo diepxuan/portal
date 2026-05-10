@@ -410,3 +410,7 @@ Route::prefix('catalog/si')
 - [ ] Test xoa theme
 - [ ] Test luu cau hinh
 - [ ] Test ap dung theme
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

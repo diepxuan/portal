@@ -331,3 +331,7 @@ Route::prefix('catalog/ar/baocao')
 - [ ] Them Routes
 - [ ] Implement export Excel
 - [ ] Test bao cao voi du lieu thuc
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

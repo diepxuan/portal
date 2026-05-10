@@ -157,3 +157,7 @@ resources/views/catalog/gl/quanlymau/
 - [ ] Test quan ly mau (frmGLMauBS01)
 - [ ] Test drill-down
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

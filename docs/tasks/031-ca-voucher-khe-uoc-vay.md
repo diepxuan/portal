@@ -110,3 +110,7 @@ class Kheuocvay extends Component
 - [ ] Tao Livewire Kheuocvay
 - [ ] Tao View (3 loại CT)
 - [ ] Test CRUD & cap nhat CADKU
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

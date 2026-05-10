@@ -239,3 +239,7 @@ Route::prefix('catalog/po/voucher')
 - [ ] Test tao chung tu CA2
 - [ ] Test tao chung tu CA4
 - [ ] Test Integration POHMN
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

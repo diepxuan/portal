@@ -629,3 +629,7 @@ Route::prefix('catalog/so')
 - [ ] Test CRUD operations voi chi tiet
 - [ ] Test tinh toan ty gia & chiet khau
 - [ ] Test Integration voi DMKH, DMVT, DMKHO
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

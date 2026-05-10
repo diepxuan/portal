@@ -141,3 +141,7 @@ Route::get('/xoa-but-toan-cc-gl', [Xoabuttoanccgl::class, 'render'])
 - [ ] Tao View xoa-but-toan-cc-gl.blade.php
 - [ ] Them Routes
 - [ ] Test kiem tra ngay khoa so
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement
