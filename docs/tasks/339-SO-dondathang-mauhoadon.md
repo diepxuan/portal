@@ -327,3 +327,7 @@ Route::prefix('catalog/so/danhmuc')
 - [ ] Them Routes
 - [ ] Test Auto-generate mau_so, so_seri
 - [ ] Test Integration voi SOND51phhd
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

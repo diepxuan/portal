@@ -147,3 +147,7 @@ Route::get('/catalog/gl/baocao/bctc04', [Bctc04::class, 'render'])
 - [ ] Test drill-down
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

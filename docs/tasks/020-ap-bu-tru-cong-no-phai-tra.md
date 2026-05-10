@@ -453,3 +453,7 @@ Route::prefix('catalog/ap/voucher')
 - [ ] Test CRUD voucher
 - [ ] Test tinh toan NT/VND
 - [ ] Test integration voi DMTK, DMKH
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -185,3 +185,7 @@ class NguonvonEdit extends Component
 - [ ] Tao Views
 - [ ] Them Routes
 - [ ] Test restricted CRUD (edit only)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

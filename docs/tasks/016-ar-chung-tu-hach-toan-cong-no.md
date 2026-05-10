@@ -139,3 +139,8 @@ Route::resource('ar-vch-ar4', ArVchAR4Controller::class);
 - [ ] Tao Controller ArVchAR4Controller
 - [ ] Tao View (Livewire)
 - [ ] Test CRUD
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -145,3 +145,7 @@ class BCTCCR04Service
 - [ ] Test quan ly mau CF
 - [ ] Test drill-down
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

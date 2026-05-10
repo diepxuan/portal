@@ -375,3 +375,7 @@ Route::prefix('catalog/in/chungtu')
 - [ ] Them Routes
 - [ ] Test CRUD operations
 - [ ] Test phan bo ky & tai khoan
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

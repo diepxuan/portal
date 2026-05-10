@@ -307,3 +307,7 @@ Route::prefix('catalog/gl/bieumau')
 - Mau BCTC I211 la mau bao cao tai chinh theo Thong tu 200/2014/TT-BTC
 - Su dung truong "cong_thuc" thay vi "cach_tinh"
 - Moi chi tieu co 1 tai khoan (tk_01)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

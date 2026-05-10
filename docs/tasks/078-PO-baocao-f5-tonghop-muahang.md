@@ -363,3 +363,7 @@ Route::prefix('catalog/po/report')
 - [ ] Test drill-down tu PORptBK03
 - [ ] Test drill-down tu PORptBCPT03
 - [ ] Test drill-down tiep theo (F5 -> F5)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

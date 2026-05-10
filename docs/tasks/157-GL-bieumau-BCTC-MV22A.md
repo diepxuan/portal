@@ -374,3 +374,7 @@ Route::prefix('catalog/gl/bieumau')
 - Co 12 tai khoan, loai phat sinh, nam phat sinh
 - Dung cho cac bao cao tai chinh phuc tap can nhieu TK
 - Theo Thong tu 200/2014/TT-BTC
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -226,3 +226,7 @@ Route::get('/catalog/in/baocao/bang-ke-phieu-nhap', [BangKePhieuNhap::class, 're
 - [ ] Test report generation
 - [ ] Test multi-filter combinations
 - [ ] Test export Excel/PDF
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

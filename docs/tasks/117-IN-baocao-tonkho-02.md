@@ -157,3 +157,7 @@ Route::prefix('catalog/in/reports')
 - [ ] Them Routes
 - [ ] Test chon DK/CK
 - [ ] Test loc qua ton toi da/thieu
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

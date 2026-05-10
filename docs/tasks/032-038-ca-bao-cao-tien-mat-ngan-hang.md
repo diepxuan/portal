@@ -96,3 +96,7 @@ class BaocaoTienmatNganhang extends Component
 - [ ] Tao Livewire BaocaoTienmatNganhang
 - [ ] Tao View (7 tab/loai)
 - [ ] Test drill-down
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -388,3 +388,7 @@ Route::prefix('catalog/in')
 - [ ] Test CRUD operations
 - [ ] Test chuc nang chuyen so du (btn_SDTK)
 - [ ] Test kiem tra gia_ton=2 khong cho sua/xoa
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

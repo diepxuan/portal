@@ -357,3 +357,7 @@ Route::prefix('catalog/so/danhmuc')
 - [ ] Test CRUD operations
 - [ ] Test Lookup tai khoan thue (chi_tiet=1)
 - [ ] Test checkbox KCT tu dong set thue suat = 0
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -475,3 +475,7 @@ Route::prefix('catalog/gl/danhmuc')
 - TK me duoc xac dinh tu do dai ma TK
 - Bold tu dong = 1 khi co con
 - Khong cho xoa TK co con hoac co phat sinh
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -488,3 +488,8 @@ Route::prefix('catalog/so/voucher')
 - [ ] Test lookup KH, HTTT
 - [ ] Test kiem tra gioi han cong no
 - [ ] Test in hoa don (Crystal Reports -> PHP PDF)
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

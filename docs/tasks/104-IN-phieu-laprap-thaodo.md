@@ -380,3 +380,7 @@ Route::prefix('catalog/in')
 - [ ] Test lap rap (Load BOM)
 - [ ] Test thao do (Phan bo gia)
 - [ ] Test tinh gia tri tu dong
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

@@ -162,3 +162,7 @@ Route::get('/bao-cao-chi-tiet-vat-tu', [Baocaochitietvattu::class, 'render'])
 - [ ] Them Routes
 - [ ] Validate bat buoc ma_vt, ma_kho
 - [ ] Test Crystal Report integration
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

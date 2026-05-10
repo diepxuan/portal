@@ -439,3 +439,7 @@ Route::prefix('catalog/ar/sodudaukhoi')
 - [ ] Them Routes
 - [ ] Implement tinh toan tu dong (tong_tt_nt, du_hd_nt)
 - [ ] Test CRUD operations
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

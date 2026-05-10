@@ -120,3 +120,8 @@ class DMKH_TT extends Model
 - [ ] Tao Livewire
 - [ ] Tao Views + Routes
 - [ ] Test CRUD
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

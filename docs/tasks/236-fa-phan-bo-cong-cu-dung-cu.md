@@ -158,3 +158,7 @@ Route::get('/catalog/fa/post/phan-bo-congcu', [PhanBoCongcu::class, 'render'])
 - [ ] Them Routes
 - [ ] Test post execution
 - [ ] Test locked period validation
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

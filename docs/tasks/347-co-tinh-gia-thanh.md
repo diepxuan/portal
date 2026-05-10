@@ -293,3 +293,8 @@ Route::prefix('catalog/co')
 - [ ] Test tinh gia thanh
 - [ ] Test xoa cap nhat
 - [ ] Test master-detail view
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

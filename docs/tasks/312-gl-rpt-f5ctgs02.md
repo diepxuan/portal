@@ -140,3 +140,7 @@ Route::get('/catalog/gl/baocao/f5ctgs02', [F5ctgs02::class, 'render'])
 - [ ] Test drill-down
 - [ ] Test export Excel
 - [ ] Integration test
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

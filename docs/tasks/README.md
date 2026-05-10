@@ -4,6 +4,19 @@ Tong quan: **338 DLL** (217 + 84 moi) da duoc decompile va phan tich
 
 ---
 
+## Audit Report — 2026-05-10
+
+Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
+
+**Kết quả nhanh:**
+- **298/318 files PENDING** (chưa implement)
+- **15 files NEEDS_UPDATE** (cần sửa spec)
+- **11 files WIP** (đã có progress)
+- **2 files DONE** (thực sự implement)
+- **7 files MISSING** (không tìm thấy file)
+
+---
+
 ## Tom tat
 
 | Nhom | So DLL | Tasks da tao |
@@ -23,7 +36,7 @@ Tong quan: **338 DLL** (217 + 84 moi) da duoc decompile va phan tich
 
 ---
 
-## Tasks da hoan thanh (14 tasks)
+## Tasks da hoan thanh (15 tasks)
 
 ### AR - Cong no phai thu (3 tasks)
 
@@ -56,6 +69,12 @@ Tong quan: **338 DLL** (217 + 84 moi) da duoc decompile va phan tich
 | 109 | in-danhmuc-nhomhang-vat | Danh muc nhom hang vat tu | ✅ DONE |
 | 114 | in-danhmuc-vattu | Danh muc vat tu | ✅ DONE |
 | 117 | in-baocao-tonkho-02 | Bao cao ton kho 02 | ✅ DONE |
+
+### SO - Don hang ban (1 task)
+
+| # | Task | Mo ta | Trang thai | PR |
+|---|------|-------|----------|-----|
+| 038 | ban-hang-khach-hang-them-sua-xoa | CRUD khách hàng | ✅ DONE | [#170](https://github.com/diepxuan/portal/pull/170) |
 
 ### PO - Don hang mua (1 task)
 

@@ -279,3 +279,7 @@ Route::prefix('gl/reports')
 - Day la report co nhieu tham so loc (6 TK + SPCT)
 - Ho tro drilldown (F5) - xem chi tiet chung tu
 - Template Crystal Report can chuyen doi sang HTML/PDF
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

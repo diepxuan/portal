@@ -295,3 +295,7 @@ Route::prefix('catalog/si/danhmuc')
 - [ ] Them Routes
 - [ ] Test CRUD
 - [ ] Test canh bao het han
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

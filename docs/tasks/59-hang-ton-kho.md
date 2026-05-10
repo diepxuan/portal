@@ -298,3 +298,8 @@ Route::prefix('catalog/in')
 - [ ] Test kiem tra ton kho
 - [ ] Test canh bao ton toi thieu/toi da
 - [ ] Test tong hop ton kho
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

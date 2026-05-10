@@ -741,3 +741,8 @@ class Phieubaono extends Component
                         <div class="form-group mb-3">
                             <label class="form-label">Tổng tiền VND</label>
                             <input-numeric wire:model="pT_Tien" readonly />
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

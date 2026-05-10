@@ -148,3 +148,7 @@ resources/views/catalog/in/reports/
 - [ ] Tao View baocao-tong-hop-hang-xuat.blade.php
 - [ ] Them Routes
 - [ ] Test Crystal Report integration
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

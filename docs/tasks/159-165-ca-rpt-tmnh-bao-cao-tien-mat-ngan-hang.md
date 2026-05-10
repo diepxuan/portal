@@ -286,3 +286,7 @@ Route::prefix('catalog/ca/bao-cao')
 - [ ] Tao Views cho 7 bao cao
 - [ ] Them Routes
 - [ ] Test CRUD & Export Excel
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

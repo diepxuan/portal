@@ -85,3 +85,8 @@ class ChuyensolieuSocai extends Component
 - [ ] Tao Livewire ChuyensolieuSocai
 - [ ] Tao View
 - [ ] Test kiem tra ngay khoa so
+
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

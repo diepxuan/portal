@@ -95,3 +95,7 @@ class BaonoNganhang extends Component
 - [ ] Tao Livewire BaonoNganhang
 - [ ] Tao View
 - [ ] Test CRUD
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

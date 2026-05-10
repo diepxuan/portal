@@ -70,10 +70,10 @@ Chuyen doi chuc nang bao cao bien dong tai san 07 tu .NET sang PHP Laravel.
 ### 1. Livewire Component
 
 ```php
-// diepxuan/laravel-catalog/src/Http/Livewire/FA/Reports/BaocaoBiendo ng07.php
+// diepxuan/laravel-catalog/src/Http/Livewire/FA/Reports/Baocaobiendong07.php
 namespace Diepxuan\Catalog\Http\Livewire\FA\Reports;
 
-class Baocaobiendo ng07 extends Component
+class Baocaobiendong07 extends Component
 {
     const MA_CT = 'FA';
     const REPORT_TYPE = 'BCTS07';
@@ -119,7 +119,7 @@ class Baocaobiendo ng07 extends Component
 ### 2. Routes
 
 ```php
-Route::get('/bao-cao-bien-dong-07', [Baocaobiendo ng07::class, 'render'])
+Route::get('/bao-cao-bien-dong-07', [Baocaobiendong07::class, 'render'])
     ->name('catalog.fa.reports.bien-dong-07');
 ```
 
@@ -153,3 +153,8 @@ Route::get('/bao-cao-bien-dong-07', [Baocaobiendo ng07::class, 'render'])
 - [ ] Tao View baocao-bien-dong-07.blade.php
 - [ ] Them Routes
 - [ ] Test logic nhom 3 cap
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** FIXED — space trong tên class PHP (Baocaobiendo ng07 → Baocaobiendong07)
+- **Batch:** 2

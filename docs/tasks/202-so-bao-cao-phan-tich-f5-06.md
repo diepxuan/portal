@@ -372,3 +372,7 @@ Route::prefix('catalog/so')
 - [ ] Them Routes
 - [ ] Test drill-down tu bao cao cha
 - [ ] Test drill-down tiep (multi-level)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement

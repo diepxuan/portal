@@ -392,3 +392,7 @@ Route::prefix('catalog/in')
 - [ ] Them Routes
 - [ ] Test CRUD operations voi chi tiet
 - [ ] Test tinh tien tu dong (NT * TyGia)
+---
+## Audit Status
+- **Ngày audit:** 2026-05-10
+- **Kết quả:** PENDING — spec đầy đủ, chưa implement
