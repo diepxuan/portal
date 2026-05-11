@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-02-25 00:40:30
+ * @lastupdate 2026-05-11 23:13:18
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -42,10 +42,6 @@ class Menu extends Component
 
     protected MenuTreeBuilder $treeBuilder;
 
-    protected $listeners = [
-        'refresh-menu' => 'refreshTree',
-    ];
-
     public function boot(MenuTreeBuilder $treeBuilder): void
     {
         $this->treeBuilder = $treeBuilder;
@@ -54,8 +50,6 @@ class Menu extends Component
     public function mount(): void
     {
         $this->refreshTree();
-        // Expand all nodes by default
-        // $this->expandedNodes = $this->nodes->pluck('id')->toArray();
         $this->updateVisibleNodes();
     }
 
@@ -85,6 +79,8 @@ class Menu extends Component
     {
         return \in_array($nodeId, $this->visibleNodes, true);
     }
+
+    // ─── CRUD ───────────────────────────────────────────────
 
     public function startEdit(int $nodeId): void
     {
@@ -118,17 +114,13 @@ class Menu extends Component
                 $this->editingRoute
             );
 
-            // Update local node data
             $node = $this->nodes->firstWhere('id', $this->editingNodeId);
             if ($node) {
                 $node->name  = $updated['name'];
                 $node->route = $updated['route'];
             }
 
-            // Highlight recently updated
             $this->recentlyUpdated[$this->editingNodeId] = true;
-
-            // Clear highlight after 2 seconds
             $this->dispatch('clear-highlight', nodeId: $this->editingNodeId)->delay(2_000);
 
             $this->cancelEdit();
@@ -170,7 +162,6 @@ class Menu extends Component
         $this->isSaving = true;
 
         try {
-            // Calculate new order based on drop position
             $newOrder    = 0;
             $newParentId = $this->dropTargetId;
 
@@ -185,42 +176,31 @@ class Menu extends Component
                     }
                 }
             } elseif ('inside' === $this->dropPosition) {
-                // Dropping inside a menu (as child)
-                $newParentId = $this->dropTargetId;
-                // Find max order among children of this parent
+                $newParentId   = $this->dropTargetId;
                 $maxChildOrder = $this->nodes->where('parent_id', $newParentId)->max('order') ?? -1;
                 $newOrder      = $maxChildOrder + 1;
             }
 
-            // Special case: dropping to root level (null parent)
             if (null === $this->dropTargetId) {
                 $newParentId = null;
-                // Find max order among root menus
-                $maxOrder = $this->nodes->where('parent_id', null)->max('order') ?? -1;
-                $newOrder = $maxOrder + 1;
+                $maxOrder    = $this->nodes->where('parent_id', null)->max('order') ?? -1;
+                $newOrder    = $maxOrder + 1;
             }
 
-            // Prevent dropping a menu inside itself or its own descendants
             if ($newParentId && $this->isDescendant($newParentId, $this->draggingNodeId)) {
                 $this->dispatch('show-error', message: 'Không thể di chuyển menu vào chính nó hoặc menu con của nó.');
 
                 return;
             }
 
-            // Update menu position in database
-            $updated = $this->treeBuilder->updateMenuPosition(
+            $this->treeBuilder->updateMenuPosition(
                 $this->draggingNodeId,
                 $newParentId,
                 $newOrder
             );
 
-            // Refresh tree to get updated structure
             $this->refreshTree();
 
-            // Dispatch event for other components
-            $this->dispatch('refresh-menu');
-
-            // Auto-expand parent if dropping inside
             if ('inside' === $this->dropPosition && $newParentId) {
                 if (!\in_array($newParentId, $this->expandedNodes, true)) {
                     $this->expandedNodes[] = $newParentId;
@@ -233,9 +213,6 @@ class Menu extends Component
         }
     }
 
-    /**
-     * Reorder menu (works for both root and child menus).
-     */
     public function reorderMenu(int $menuId, string $direction): void
     {
         $menu = $this->nodes->firstWhere('id', $menuId);
@@ -247,17 +224,12 @@ class Menu extends Component
 
         try {
             $this->treeBuilder->reorderMenu($menuId, $direction);
-
             $this->refreshTree();
-            $this->dispatch('refresh-menu');
         } finally {
             unset($this->nodeSaving[$menuId]);
         }
     }
 
-    /**
-     * Check if menu can be moved up.
-     */
     public function canMoveUp(int $menuId): bool
     {
         $menu = $this->nodes->firstWhere('id', $menuId);
@@ -266,22 +238,18 @@ class Menu extends Component
         }
 
         if (null === $menu->parent_id) {
-            // Root menu: can move up if order > 0
             $rootMenus    = $this->nodes->where('parent_id', null)->sortBy('order')->values();
             $currentIndex = $rootMenus->search(static fn ($item) => $item->id === $menuId);
 
             return $currentIndex > 0;
         }
-        // Child menu: check if there's a sibling before
+
         $siblings     = $this->nodes->where('parent_id', $menu->parent_id)->sortBy('order')->values();
         $currentIndex = $siblings->search(static fn ($item) => $item->id === $menuId);
 
         return $currentIndex > 0;
     }
 
-    /**
-     * Check if menu can be moved down.
-     */
     public function canMoveDown(int $menuId): bool
     {
         $menu = $this->nodes->firstWhere('id', $menuId);
@@ -290,13 +258,12 @@ class Menu extends Component
         }
 
         if (null === $menu->parent_id) {
-            // Root menu: can move down if not last
             $rootMenus    = $this->nodes->where('parent_id', null)->sortBy('order')->values();
             $currentIndex = $rootMenus->search(static fn ($item) => $item->id === $menuId);
 
             return false !== $currentIndex && $currentIndex < $rootMenus->count() - 1;
         }
-        // Child menu: check if there's a sibling after
+
         $siblings     = $this->nodes->where('parent_id', $menu->parent_id)->sortBy('order')->values();
         $currentIndex = $siblings->search(static fn ($item) => $item->id === $menuId);
 
@@ -305,23 +272,12 @@ class Menu extends Component
 
     public function deleteNode(int $nodeId): void
     {
-        if (!confirm('Bạn có chắc chắn muốn xóa menu này và tất cả menu con?')) {
-            return;
-        }
-
         $this->nodeSaving[$nodeId] = true;
 
         try {
             $this->treeBuilder->deleteMenu($nodeId);
-
-            // Remove from local nodes
             $this->nodes = $this->nodes->reject(static fn ($node) => $node->id === $nodeId);
-
-            // Update visible nodes
             $this->updateVisibleNodes();
-
-            // Dispatch event
-            $this->dispatch('refresh-menu');
         } finally {
             unset($this->nodeSaving[$nodeId]);
         }
@@ -335,18 +291,15 @@ class Menu extends Component
             'newMenu.parent_id' => 'nullable|exists:menus,id',
         ]);
 
-        $menu = NavigationMenu::create($this->newMenu);
+        NavigationMenu::create($this->newMenu);
 
-        // Reset form
         $this->newMenu = [
             'parent_id' => null,
             'name'      => '',
             'route'     => '',
         ];
 
-        // Refresh tree
         $this->refreshTree();
-        $this->dispatch('refresh-menu');
     }
 
     public function getParentOptionsProperty(): Collection
@@ -362,15 +315,13 @@ class Menu extends Component
     private function updateVisibleNodes(): void
     {
         $visible          = [];
-        $parentVisibility = [null => true]; // Root is always visible
+        $parentVisibility = [null => true];
 
         foreach ($this->nodes as $node) {
-            // Check if parent is expanded
             $isVisible = $parentVisibility[$node->parent_id] ?? false;
 
             if ($isVisible) {
-                $visible[] = $node->id;
-                // Children of this node are visible if this node is expanded
+                $visible[]                   = $node->id;
                 $parentVisibility[$node->id] = \in_array($node->id, $this->expandedNodes, true);
             } else {
                 $parentVisibility[$node->id] = false;
@@ -380,9 +331,6 @@ class Menu extends Component
         $this->visibleNodes = $visible;
     }
 
-    /**
-     * Check if a menu is descendant of another.
-     */
     private function isDescendant(int $potentialParentId, int $nodeId): bool
     {
         $node = $this->nodes->firstWhere('id', $nodeId);
