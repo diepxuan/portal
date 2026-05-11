@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:13:19
+ * @lastupdate 2026-05-11 23:45:32
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -48,12 +48,14 @@ class SimbaMenuTree extends Component
                 );
             }
 
+            $menuIds = $allMenus->pluck('menuid')->flip();
+
             $childrenMap = $allMenus
                 ->groupBy(static fn ($sm) => $sm->getParentMenuId() ?? '')
                 ->map(static fn ($items) => $items->sortBy('stt')->values())
             ;
 
-            return $this->buildRecursive($childrenMap, '');
+            return $this->buildRecursive($childrenMap, '', 0, $menuIds);
         } catch (\Throwable) {
             return collect();
         }
@@ -79,9 +81,13 @@ class SimbaMenuTree extends Component
     /**
      * Recursive tree builder.
      *
+     * When a group XX.80.00 has children but doesn't exist as a menu record,
+     * auto-create a synthetic "F5" group node under XX.00.00.
+     *
      * @param Collection<string, Collection> $childrenMap
+     * @param Collection<string, mixed>      $menuIds     flip of all menuid values
      */
-    protected function buildRecursive(Collection $childrenMap, ?string $parentId, int $depth = 0): Collection
+    protected function buildRecursive(Collection $childrenMap, ?string $parentId, int $depth = 0, ?Collection $menuIds = null): Collection
     {
         $result = collect();
 
@@ -100,7 +106,94 @@ class SimbaMenuTree extends Component
                 'isSetup'      => $sm->isSetup(),
                 'hasChildren'  => $childrenMap->has($sm->menuid),
             ]);
-            $result = $result->merge($this->buildRecursive($childrenMap, $sm->menuid, $depth + 1));
+            $result = $result->merge($this->buildRecursive($childrenMap, $sm->menuid, $depth + 1, $menuIds));
+        }
+
+        // Attach synthetic F5 group nodes under each root (only at top level)
+        // Insert right after the root's existing subtree, not at the very end
+        if (0 === $depth && null !== $menuIds) {
+            $ordered = collect();
+
+            // Get root IDs in order they appear in $result
+            $rootIds = [];
+            foreach ($result as $node) {
+                if (0 === $node->depth) {
+                    $rootIds[] = $node->menuid;
+                }
+            }
+
+            foreach ($rootIds as $rootId) {
+                $rootIndex = null;
+                foreach ($result as $i => $node) {
+                    if ($node->menuid === $rootId && 0 === $node->depth) {
+                        $rootIndex = $i;
+
+                        break;
+                    }
+                }
+                if (null === $rootIndex) {
+                    continue;
+                }
+
+                // Find the end of this root's subtree (next item at depth 0, or end)
+                $subtreeEnd = null;
+                for ($j = $rootIndex + 1; $j < $result->count(); ++$j) {
+                    if (0 === $result[$j]->depth) {
+                        $subtreeEnd = $j;
+
+                        break;
+                    }
+                }
+
+                // Add this root's subtree to ordered
+                $sliceEnd = $subtreeEnd ?? $result->count();
+                for ($i = $rootIndex; $i < $sliceEnd; ++$i) {
+                    $ordered->push($result[$i]);
+                }
+
+                // Insert synthetic F5 group if needed
+                $parts = explode('.', $rootId);
+                if (3 === \count($parts) && '00' === $parts[1] && '00' === $parts[2]) {
+                    $f5Parent = $parts[0] . '.80.00';
+                    if (!$menuIds->has($f5Parent)) {
+                        $orphans = $childrenMap->get($f5Parent, collect());
+                        if ($orphans->isNotEmpty()) {
+                            $ordered->push((object) [
+                                'menuid'       => $f5Parent,
+                                'name'         => 'F5',
+                                'dllName'      => null,
+                                'depth'        => 1,
+                                'type'         => SysMenu::TYPE_GROUP,
+                                'isRoot'       => false,
+                                'isGroup'      => true,
+                                'isVoucher'    => false,
+                                'isMasterData' => false,
+                                'isReport'     => false,
+                                'isSetup'      => false,
+                                'hasChildren'  => true,
+                            ]);
+                            foreach ($orphans as $sm) {
+                                $ordered->push((object) [
+                                    'menuid'       => $sm->menuid,
+                                    'name'         => $sm->getDisplayName(),
+                                    'dllName'      => $sm->dllName,
+                                    'depth'        => 2,
+                                    'type'         => $sm->type,
+                                    'isRoot'       => $sm->isRoot(),
+                                    'isGroup'      => $sm->isGroup(),
+                                    'isVoucher'    => $sm->isVoucher(),
+                                    'isMasterData' => $sm->isMasterData(),
+                                    'isReport'     => $sm->isReport(),
+                                    'isSetup'      => $sm->isSetup(),
+                                    'hasChildren'  => $childrenMap->has($sm->menuid),
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            $result = $ordered;
         }
 
         return $result;

@@ -51,6 +51,11 @@
         {{ $item->name ?: $item->menuid }}
     </span>
 
+    {{-- Menu ID (right-aligned) --}}
+    <span class="flex-shrink-0 font-mono text-[10px] text-gray-400">
+        {{ $item->menuid }}
+    </span>
+
     {{-- DLL badge --}}
     @if ($item->dllName)
         <span class="hidden flex-shrink-0 rounded bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] text-gray-500 group-hover:block" title="{{ $item->dllName }}">
