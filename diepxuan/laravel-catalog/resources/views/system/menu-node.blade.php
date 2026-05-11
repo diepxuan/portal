@@ -67,7 +67,7 @@
             {{-- Content --}}
             <div class="flex flex-1 items-center px-3 py-2">
                 {{-- Name --}}
-                <div class="col-span-5 w-5/12">
+                <div class="col-span-4 w-4/12">
                     @if ($isEditing)
                         <div class="flex items-center space-x-2">
                             <input type="text"
@@ -106,7 +106,7 @@
                 </div>
 
                 {{-- Route --}}
-                <div class="col-span-4 w-4/12">
+                <div class="col-span-3 w-3/12">
                     @if ($isEditing)
                         <input type="text"
                             class="w-full rounded-md border-gray-300 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -114,6 +114,18 @@
                             wire:keydown.escape="cancelEdit" placeholder="route.name" />
                     @else
                         <span class="text-sm text-gray-600">{{ $node->route ?? '—' }}</span>
+                    @endif
+                </div>
+
+                {{-- SimbaID --}}
+                <div class="col-span-2 w-24 text-center">
+                    @if ($isEditing)
+                        <input type="text"
+                            class="w-full rounded-md border-gray-300 py-1 text-sm font-mono shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            wire:model="editingSimbaid" wire:keydown.enter="saveEdit"
+                            wire:keydown.escape="cancelEdit" placeholder="02.00.00" />
+                    @else
+                        <span class="text-xs font-mono text-gray-500">{{ $node->simbaid ?? '—' }}</span>
                     @endif
                 </div>
 

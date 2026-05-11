@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:13:20
+ * @lastupdate 2026-05-11 23:58:46
  */
 
 namespace Diepxuan\Catalog\Models;
@@ -201,6 +201,7 @@ class NavigationMenu extends Model
             'order'     => ['nullable', 'integer', 'min:0'],
             'route'     => ['nullable', 'string', 'max:255'],
             'icon'      => ['nullable', 'string', 'max:255'],
+            'simbaid'   => ['nullable', 'string', 'max:20'],
             'parent_id' => ['nullable', 'exists:menus,id'],
         ])->after(function ($validator) use ($data): void {
             // Self-parent check

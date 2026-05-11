@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:13:18
+ * @lastupdate 2026-05-11 23:58:45
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -38,7 +38,10 @@ class Menu extends Component
         'parent_id' => null,
         'name'      => '',
         'route'     => '',
+        'simbaid'   => '',
     ];
+
+    public string $editingSimbaid = '';
 
     protected MenuTreeBuilder $treeBuilder;
 
@@ -86,17 +89,19 @@ class Menu extends Component
     {
         $node = $this->nodes->firstWhere('id', $nodeId);
         if ($node) {
-            $this->editingNodeId = $nodeId;
-            $this->editingName   = $node->name;
-            $this->editingRoute  = $node->route ?? '';
+            $this->editingNodeId  = $nodeId;
+            $this->editingName    = $node->name;
+            $this->editingRoute   = $node->route ?? '';
+            $this->editingSimbaid = $node->simbaid ?? '';
         }
     }
 
     public function cancelEdit(): void
     {
-        $this->editingNodeId = null;
-        $this->editingName   = '';
-        $this->editingRoute  = '';
+        $this->editingNodeId  = null;
+        $this->editingName    = '';
+        $this->editingRoute   = '';
+        $this->editingSimbaid = '';
     }
 
     public function saveEdit(): void
@@ -111,13 +116,15 @@ class Menu extends Component
             $updated = $this->treeBuilder->updateMenu(
                 $this->editingNodeId,
                 $this->editingName,
-                $this->editingRoute
+                $this->editingRoute,
+                $this->editingSimbaid
             );
 
             $node = $this->nodes->firstWhere('id', $this->editingNodeId);
             if ($node) {
-                $node->name  = $updated['name'];
-                $node->route = $updated['route'];
+                $node->name    = $updated['name'];
+                $node->route   = $updated['route'];
+                $node->simbaid = $updated['simbaid'] ?? '';
             }
 
             $this->recentlyUpdated[$this->editingNodeId] = true;
@@ -289,6 +296,7 @@ class Menu extends Component
             'newMenu.name'      => 'required|string|max:255',
             'newMenu.route'     => 'nullable|string|max:255',
             'newMenu.parent_id' => 'nullable|exists:menus,id',
+            'newMenu.simbaid'   => 'nullable|string|max:20',
         ]);
 
         NavigationMenu::create($this->newMenu);
@@ -297,6 +305,7 @@ class Menu extends Component
             'parent_id' => null,
             'name'      => '',
             'route'     => '',
+            'simbaid'   => '',
         ];
 
         $this->refreshTree();

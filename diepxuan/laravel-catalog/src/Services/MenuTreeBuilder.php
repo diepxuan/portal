@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:13:21
+ * @lastupdate 2026-05-11 23:58:47
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -44,6 +44,7 @@ class MenuTreeBuilder
                 'parent_id'    => $rootMenu->parent_id,
                 'name'         => $rootMenu->name,
                 'route'        => $rootMenu->route,
+                'simbaid'      => $rootMenu->simbaid,
                 'order'        => $rootMenu->order,
                 'level'        => 0,
                 'has_children' => $childrenMap->has($rootMenu->id),
@@ -166,19 +167,23 @@ class MenuTreeBuilder
     }
 
     /**
-     * Update menu name and route.
+     * Update menu name, route, and simbaid.
      */
-    public function updateMenu(int $menuId, string $name, ?string $route): array
+    public function updateMenu(int $menuId, string $name, ?string $route, ?string $simbaid = null): array
     {
         $menu        = NavigationMenu::findOrFail($menuId);
         $menu->name  = $name;
         $menu->route = $route;
+        if (null !== $simbaid) {
+            $menu->simbaid = $simbaid;
+        }
         $menu->save();
 
         return [
-            'id'    => $menu->id,
-            'name'  => $menu->name,
-            'route' => $menu->route,
+            'id'      => $menu->id,
+            'name'    => $menu->name,
+            'route'   => $menu->route,
+            'simbaid' => $menu->simbaid,
         ];
     }
 
@@ -226,6 +231,7 @@ class MenuTreeBuilder
                 'parent_id'    => $menu->parent_id,
                 'name'         => $menu->name,
                 'route'        => $menu->route,
+                'simbaid'      => $menu->simbaid,
                 'order'        => $menu->order,
                 'level'        => $level,
                 'has_children' => $childrenMap->has($menu->id),
