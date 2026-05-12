@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-12 13:56:43
+ * @lastupdate 2026-05-12 19:26:40
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -369,6 +369,38 @@ class Menu extends Component
         ];
 
         $this->refreshTree();
+    }
+
+    /**
+     * Check if a node has children.
+     */
+    public function hasChildren(int $nodeId): bool
+    {
+        $node = $this->nodes->firstWhere('id', $nodeId);
+
+        return (bool) $node?->has_children;
+    }
+
+    /**
+     * Expand all nodes in the Portal tree.
+     */
+    public function expandAll(): void
+    {
+        $this->expandedNodes = $this->nodes
+            ->filter(static fn ($node) => $node->has_children)
+            ->pluck('id')
+            ->toArray()
+        ;
+        $this->updateVisibleNodes();
+    }
+
+    /**
+     * Collapse all nodes in the Portal tree.
+     */
+    public function collapseAll(): void
+    {
+        $this->expandedNodes = [];
+        $this->updateVisibleNodes();
     }
 
     public function getParentOptionsProperty(): Collection

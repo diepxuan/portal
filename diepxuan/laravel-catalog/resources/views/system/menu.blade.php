@@ -131,13 +131,29 @@
             {{-- Tree Container --}}
             <div class="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="border-b border-gray-200 bg-gray-50 py-3 ps-3">
-                    <div class="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
-                        <div class="col-span-4">Tên menu</div>
-                        <div class="col-span-3">Route</div>
-                        <div class="col-span-2 text-center">SimbaID</div>
-                        <div class="col-span-1 text-center">ID</div>
-                        <div class="col-span-1 text-center">Thứ tự</div>
-                        <div></div>
+                    <div class="flex items-center justify-between">
+                        <div class="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
+                            <div class="col-span-4">Tên menu</div>
+                            <div class="col-span-3">Route</div>
+                            <div class="col-span-2 text-center">SimbaID</div>
+                            <div class="col-span-1 text-center">ID</div>
+                            <div class="col-span-1 text-center">Thứ tự</div>
+                            <div></div>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button type="button"
+                                    wire:click="expandAll()"
+                                    class="rounded border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
+                                    title="Mở rộng tất cả">
+                                Mở rộng
+                            </button>
+                            <button type="button"
+                                    wire:click="collapseAll()"
+                                    class="rounded border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
+                                    title="Thu gọn tất cả">
+                                Thu gọn
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -187,3 +203,27 @@
         ])
     </div>
 </div>
+
+@push('styles')
+<style>
+    @keyframes pulse-red-select {
+        0%, 100% { background-color: #fecaca !important; }
+        50% { background-color: #fca5a5 !important; }
+    }
+    @keyframes pulse-green-select {
+        0%, 100% { background-color: #bbf7d0 !important; }
+        50% { background-color: #86efac !important; }
+    }
+    .pulse-red-simba {
+        animation: pulse-red-select 1s ease-in-out infinite !important;
+        display: inline-block !important;
+        padding: 2px 6px !important;
+    }
+    .pulse-green-simba {
+        animation: pulse-green-select 1s ease-in-out infinite !important;
+        cursor: pointer !important;
+        display: inline-block !important;
+        padding: 2px 6px !important;
+    }
+</style>
+@endpush

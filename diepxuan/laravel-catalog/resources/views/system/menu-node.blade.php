@@ -203,7 +203,7 @@
                         <button type="button"
                             class="rounded-md p-1 text-red-500 hover:bg-red-100 hover:text-red-700"
                             wire:click="deleteNode({{ $nodeId }})"
-                            wire:confirm="Bạn có chắc chắn muốn xóa menu này và tất cả menu con?"
+                            wire:confirm="{{ $this->hasChildren($nodeId) ? 'Bạn có chắc chắn muốn xóa menu này và tất cả menu con?' : 'Bạn có chắc chắn muốn xóa menu này?' }}"
                             title="Xóa"
                             wire:loading.attr="disabled">
                             @if ($isSavingNode)
