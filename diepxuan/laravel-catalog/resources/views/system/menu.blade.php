@@ -16,7 +16,12 @@
          errorMessage: null,
          simbaSelectMode: false,
          simbaSelectNodeId: null,
+         /* Collapse state — client-side */
+         _ancestorMap: {{ Js::from($this->nodeAncestorMap) }},
+         _collapsedDefault: {{ Js::from($this->initiallyCollapsedIds) }},
+         collapsed: null,
          init() {
+             this.collapsed = new Set(this._collapsedDefault);
              /* Unified: listen for custom events dispatched from menu-node */
              window.addEventListener('simba-select-mode-enter', (e) => {
                  this.simbaSelectMode = true;
@@ -27,6 +32,20 @@
                  this.simbaSelectNodeId = null;
              });
              /* Livewire events */
+             /* Expose helpers for child partials */
+             this.isNodeVisible = function(id) {
+                 let a = this._ancestorMap[id];
+                 while (a) { if (this.collapsed.has(a)) return false; a = this._ancestorMap[a]; }
+                 return true;
+             };
+             this.isCollapsed = function(id) { return this.collapsed.has(id); };
+             this.toggleNode = function(id) {
+                 if (this.collapsed.has(id)) this.collapsed.delete(id);
+                 else this.collapsed.add(id);
+             };
+             this.expandAll = function() { this.collapsed.clear(); };
+             this.collapseAll = function() { {{ Js::from($this->initiallyCollapsedIds) }}.forEach(id => this.collapsed.add(id)); };
+
              Livewire.on('clear-highlight', (event) => {
                  setTimeout(() => { this.$wire.set('recentlyUpdated.' + event.nodeId, false); }, 2000);
              });
@@ -141,14 +160,12 @@
                             <div></div>
                         </div>
                         <div class="flex items-center gap-1">
-                            <button type="button"
-                                    wire:click="expandAll()"
+                            <button type="button" @click="expandAll()"
                                     class="rounded border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
                                     title="Mở rộng tất cả">
                                 Mở rộng
                             </button>
-                            <button type="button"
-                                    wire:click="collapseAll()"
+                            <button type="button" @click="collapseAll()"
                                     class="rounded border border-gray-200 bg-white px-2 py-0.5 text-[10px] font-medium text-gray-600 hover:bg-gray-50"
                                     title="Thu gọn tất cả">
                                 Thu gọn
@@ -173,13 +190,15 @@
                     @endif
 
                     {{-- Root drop zone --}}
-                    <div class="mt-2"
+                    <div class="mt-2 transition-all"
                         @dragover="if ($wire.draggingNodeId) { $wire.setDropTarget(null, 'after'); }"
                         @dragleave="if ($wire.dropTargetId === null) { $wire.clearDropTarget(); }"
-                        :class="{ 'border-2 border-dashed border-blue-400 bg-blue-50': $wire.dropTargetId === null && $wire.draggingNodeId }">
-                        @if ($this->dropTargetId === null && $this->draggingNodeId)
-                            <div class="p-4 text-center text-sm text-blue-600">Thả vào đây để chuyển thành menu gốc</div>
-                        @endif
+                        :class="{
+                            'opacity-0 pointer-events-none h-0': !$wire.draggingNodeId,
+                            'border-2 border-dashed border-blue-400 bg-blue-50': $wire.dropTargetId === null && $wire.draggingNodeId
+                        }">
+                        <div x-show="$wire.dropTargetId === null && $wire.draggingNodeId"
+                             class="p-4 text-center text-sm text-blue-600">Thả vào đây để chuyển thành menu gốc</div>
                     </div>
                 </div>
 
