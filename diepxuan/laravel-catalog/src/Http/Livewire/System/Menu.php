@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:58:45
+ * @lastupdate 2026-05-12 08:27:50
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -128,7 +128,7 @@ class Menu extends Component
             }
 
             $this->recentlyUpdated[$this->editingNodeId] = true;
-            $this->dispatch('clear-highlight', nodeId: $this->editingNodeId)->delay(2_000);
+            $this->dispatch('clear-highlight', nodeId: $this->editingNodeId);
 
             $this->cancelEdit();
         } finally {

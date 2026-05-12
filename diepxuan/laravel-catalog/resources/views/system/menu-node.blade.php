@@ -69,33 +69,10 @@
                 {{-- Name --}}
                 <div class="col-span-4 w-4/12">
                     @if ($isEditing)
-                        <div class="flex items-center space-x-2">
-                            <input type="text"
-                                class="w-full rounded-md border-gray-300 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                wire:model="editingName" wire:keydown.enter="saveEdit"
-                                wire:keydown.escape="cancelEdit" autofocus />
-                            <button type="button"
-                                class="rounded-md bg-green-100 p-1 text-green-700 hover:bg-green-200"
-                                wire:click="saveEdit" wire:loading.attr="disabled" wire:target="saveEdit">
-                                @if ($isSavingNode)
-                                    <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                @else
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                @endif
-                            </button>
-                            <button type="button"
-                                class="rounded-md bg-gray-100 p-1 text-gray-700 hover:bg-gray-200"
-                                wire:click="cancelEdit">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
+                        <input type="text"
+                            class="w-full rounded-md border-gray-300 py-1 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            wire:model="editingName" wire:keydown.enter="saveEdit"
+                            wire:keydown.escape="cancelEdit" autofocus />
                     @else
                         <button type="button"
                             class="text-left font-medium text-gray-900 hover:text-blue-600"
@@ -177,8 +154,34 @@
                 </div>
 
                 {{-- Actions --}}
-                <div class="ml-4 flex items-center space-x-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    @if (!$isEditing)
+                <div class="ml-4 flex items-center space-x-1 {{ $isEditing ? 'opacity-100' : 'opacity-0 transition-opacity group-hover:opacity-100' }}">
+                    @if ($isEditing)
+                        {{-- Save --}}
+                        <button type="button"
+                            class="rounded-md bg-green-100 p-1 text-green-700 hover:bg-green-200"
+                            wire:click="saveEdit" wire:loading.attr="disabled" wire:target="saveEdit"
+                            title="Lưu">
+                            @if ($isSavingNode)
+                                <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            @else
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            @endif
+                        </button>
+                        {{-- Cancel --}}
+                        <button type="button"
+                            class="rounded-md bg-gray-100 p-1 text-gray-700 hover:bg-gray-200"
+                            wire:click="cancelEdit" title="Hủy">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    @else
+                        {{-- Edit --}}
                         <button type="button"
                             class="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                             wire:click="startEdit({{ $nodeId }})" title="Chỉnh sửa">
@@ -187,25 +190,26 @@
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
                         </button>
+                        {{-- Delete --}}
+                        <button type="button"
+                            class="rounded-md p-1 text-red-500 hover:bg-red-100 hover:text-red-700"
+                            wire:click="deleteNode({{ $nodeId }})"
+                            wire:confirm="Bạn có chắc chắn muốn xóa menu này và tất cả menu con?"
+                            title="Xóa"
+                            wire:loading.attr="disabled">
+                            @if ($isSavingNode)
+                                <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            @else
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            @endif
+                        </button>
                     @endif
-                    <button type="button"
-                        class="rounded-md p-1 text-red-500 hover:bg-red-100 hover:text-red-700"
-                        wire:click="deleteNode({{ $nodeId }})"
-                        wire:confirm="Bạn có chắc chắn muốn xóa menu này và tất cả menu con?"
-                        title="Xóa"
-                        wire:loading.attr="disabled">
-                        @if ($isSavingNode)
-                            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        @else
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        @endif
-                    </button>
                 </div>
             </div>
         </div>
