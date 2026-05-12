@@ -1,7 +1,40 @@
+@php
+    /* Build collapse data for Alpine:
+     * - _ancestorMap: each node -> closest ancestor with children (the one that controls its visibility)
+     * - collapsedIds: nodes with depth >= 2 that have children → default collapsed (level 3+)
+     */
+    $ancestorMap = [];
+    $collapsedIds = [];
+    $stack = []; // stack of [depth, menuid] for ancestors with children
+
+    foreach ($this->tree as $item) {
+        /* Pop ancestors deeper than current */
+        while (!empty($stack) && end($stack)[0] >= $item->depth) {
+            array_pop($stack);
+        }
+        /* Closest ancestor with children = last item in stack */
+        if (!empty($stack) && $item->parentId) {
+            $ancestorMap[$item->menuid] = end($stack)[1];
+        }
+        /* Push if this node has children */
+        if ($item->hasChildren) {
+            $stack[] = [$item->depth, $item->menuid];
+            /* Default: collapse depth >= 1 with children (level 3+) */
+            if ($item->depth >= 1) {
+                $collapsedIds[] = $item->menuid;
+            }
+        }
+    }
+@endphp
+
 <div class="w-[360px] flex-shrink-0 rounded-lg border border-gray-200 bg-white shadow-sm"
      x-data="{
          simbaSelectMode: false,
          simbaSelectNodeId: null,
+         /* ancestor lookup: childId -> closest ancestor with children */
+         _ancestorMap: {{ Js::from($ancestorMap) }},
+         /* collapsed Set */
+         collapsed: new Set({{ Js::from($collapsedIds) }}),
          init() {
              window.addEventListener('simba-select-mode-enter', (e) => {
                  this.simbaSelectMode = true;
@@ -15,6 +48,25 @@
          selectMenuId(menuId) {
              if (!this.simbaSelectMode) return;
              window.dispatchEvent(new CustomEvent('simba-menu-selected', { detail: { menuId } }));
+         },
+         isCollapsed(menuId) {
+             return this.collapsed.has(menuId);
+         },
+         toggleCollapse(menuId) {
+             if (this.collapsed.has(menuId)) {
+                 this.collapsed.delete(menuId);
+             } else {
+                 this.collapsed.add(menuId);
+             }
+         },
+         isVisible(menuId) {
+             /* Walk up ancestor chain; if any is collapsed -> hidden */
+             let aid = this._ancestorMap[menuId];
+             while (aid) {
+                 if (this.collapsed.has(aid)) return false;
+                 aid = this._ancestorMap[aid];
+             }
+             return true;
          }
      }">
 

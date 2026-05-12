@@ -3,9 +3,25 @@
 @endphp
 
 <div class="group flex items-center gap-1.5 border-b border-gray-100 px-3 py-1.5 text-xs transition hover:bg-gray-50"
-     style="padding-left: {{ $depth * 16 + 8 }}px;">
+     style="padding-left: {{ $depth * 16 + 8 }}px;"
+     x-show="isVisible('{{ addslashes($item->menuid) }}')">
 
-    {{-- Icon by type — inline width/height to override viewBox 24x24 --}}
+    {{-- Collapse chevron (only for nodes with children) --}}
+    @if ($item->hasChildren)
+        <button type="button"
+                class="flex h-4 w-4 flex-shrink-0 items-center justify-center text-gray-400 hover:text-gray-600"
+                @click.stop="toggleCollapse('{{ addslashes($item->menuid) }}')">
+            <svg class="h-3 w-3 transition-transform duration-150"
+                 :class="{ 'rotate-90': !isCollapsed('{{ addslashes($item->menuid) }}') }"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    @else
+        <div class="w-4 flex-shrink-0"></div>
+    @endif
+
+    {{-- Icon by type --}}
     @if ($item->isRoot)
         <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -35,15 +51,6 @@
         <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-    @endif
-
-    {{-- Children indicator --}}
-    @if ($item->hasChildren)
-        <svg class="h-3 w-3 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    @else
-        <div class="w-3"></div>
     @endif
 
     {{-- Name --}}

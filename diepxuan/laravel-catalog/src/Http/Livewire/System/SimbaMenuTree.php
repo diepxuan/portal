@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-12 13:56:44
+ * @lastupdate 2026-05-12 14:30:44
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -107,6 +107,7 @@ class SimbaMenuTree extends Component
                 'name'          => $sm->getDisplayName(),
                 'dllName'       => $sm->dllName,
                 'depth'         => $depth,
+                'parentId'      => $parentId,
                 'type'          => $sm->type,
                 'isRoot'        => $sm->isRoot(),
                 'isGroup'       => $sm->isGroup(),
@@ -174,6 +175,7 @@ class SimbaMenuTree extends Component
                                 'name'          => 'F5',
                                 'dllName'       => null,
                                 'depth'         => 1,
+                                'parentId'      => $rootId,
                                 'type'          => SysMenu::TYPE_GROUP,
                                 'isRoot'        => false,
                                 'isGroup'       => true,
@@ -190,6 +192,7 @@ class SimbaMenuTree extends Component
                                     'name'          => $sm->getDisplayName(),
                                     'dllName'       => $sm->dllName,
                                     'depth'         => 2,
+                                    'parentId'      => $f5Parent,
                                     'type'          => $sm->type,
                                     'isRoot'        => $sm->isRoot(),
                                     'isGroup'       => $sm->isGroup(),
