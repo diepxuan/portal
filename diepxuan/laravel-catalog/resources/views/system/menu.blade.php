@@ -11,19 +11,37 @@
     </div>
 </x-slot>
 
-<div class="space-y-6" x-data="{
-    errorMessage: null,
-    showError(message) {
-        this.errorMessage = message;
-        setTimeout(() => { this.errorMessage = null; }, 5000);
-    },
-    init() {
-        Livewire.on('clear-highlight', (event) => {
-            setTimeout(() => { this.$wire.set('recentlyUpdated.' + event.nodeId, false); }, 2000);
-        });
-        Livewire.on('show-error', (event) => { this.showError(event.message); });
-    }
-}">
+<div class="space-y-6"
+     x-data="{
+         errorMessage: null,
+         simbaSelectMode: false,
+         simbaSelectNodeId: null,
+         init() {
+             /* Unified: listen for custom events dispatched from menu-node */
+             window.addEventListener('simba-select-mode-enter', (e) => {
+                 this.simbaSelectMode = true;
+                 this.simbaSelectNodeId = e.detail.nodeId;
+             });
+             window.addEventListener('simba-select-mode-exit', () => {
+                 this.simbaSelectMode = false;
+                 this.simbaSelectNodeId = null;
+             });
+             /* Livewire events */
+             Livewire.on('clear-highlight', (event) => {
+                 setTimeout(() => { this.$wire.set('recentlyUpdated.' + event.nodeId, false); }, 2000);
+             });
+             Livewire.on('show-error', (event) => { this.showError(event.message); });
+             /* SimbaERP tree dispatches this when a menuId is clicked */
+             window.addEventListener('simba-menu-selected', (e) => {
+                 this.$wire.call('selectSimbaid', e.detail.menuId);
+             });
+         },
+         showError(message) {
+             this.errorMessage = message;
+             setTimeout(() => { this.errorMessage = null; }, 5000);
+         }
+     }"
+     :class="{ 'simba-select-active': simbaSelectMode }">
 
     {{-- Error Notification --}}
     <div x-show="errorMessage" x-transition
@@ -164,6 +182,8 @@
         </div>
 
         {{-- SimbaERP Tree Panel (right) --}}
-        @livewire('catalog::system.simba-menu-tree')
+        @livewire('catalog::system.simba-menu-tree', [
+            'mappedSimbaIds' => $this->mappedSimbaIds,
+        ])
     </div>
 </div>

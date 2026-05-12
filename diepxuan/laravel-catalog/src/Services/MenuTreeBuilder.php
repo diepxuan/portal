@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:58:47
+ * @lastupdate 2026-05-12 13:56:45
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -185,6 +185,16 @@ class MenuTreeBuilder
             'route'   => $menu->route,
             'simbaid' => $menu->simbaid,
         ];
+    }
+
+    /**
+     * Update only the simbaid field without touching name/route.
+     */
+    public function updateSimbaidOnly(int $menuId, string $simbaid): void
+    {
+        $menu          = NavigationMenu::findOrFail($menuId);
+        $menu->simbaid = $simbaid;
+        $menu->save();
     }
 
     /**

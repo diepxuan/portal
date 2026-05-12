@@ -51,8 +51,16 @@
         {{ $item->name ?: $item->menuid }}
     </span>
 
-    {{-- Menu ID (right-aligned) --}}
-    <span class="flex-shrink-0 font-mono text-[10px] text-gray-400">
+    {{-- Menu ID (right-aligned, clickable in selection mode if available) --}}
+    <span
+        class="flex-shrink-0 rounded px-1 font-mono text-[10px] transition"
+        :class="{
+            'text-gray-400 cursor-default': !simbaSelectMode && !{{ $item->isAlreadyUsed ? 'true' : 'false' }},
+            'pulse-green-simba cursor-pointer': simbaSelectMode && !{{ $item->isAlreadyUsed ? 'true' : 'false' }},
+            'text-gray-300 line-through cursor-not-allowed': {{ $item->isAlreadyUsed ? 'true' : 'false' }}
+        }"
+        @click="selectMenuId('{{ addslashes($item->menuid) }}')"
+        title="{{ $item->isAlreadyUsed ? 'Đã sử dụng trong Portal' : 'Click để chọn' }}: {{ $item->menuid }}">
         {{ $item->menuid }}
     </span>
 

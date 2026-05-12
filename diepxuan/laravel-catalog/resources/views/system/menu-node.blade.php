@@ -102,7 +102,16 @@
                             wire:model="editingSimbaid" wire:keydown.enter="saveEdit"
                             wire:keydown.escape="cancelEdit" placeholder="02.00.00" />
                     @else
-                        <span class="text-xs font-mono text-gray-500">{{ $node->simbaid ?? '—' }}</span>
+                        <button type="button"
+                            class="w-full rounded px-1 text-xs font-mono transition-colors"
+                            :class="simbaSelectMode && simbaSelectNodeId === {{ $nodeId }}
+                                ? 'pulse-red-simba'
+                                : 'text-gray-500 hover:text-blue-600'"
+                            title="Click để chọn SimbaID"
+                            @click="$dispatch('simba-select-mode-enter', { nodeId: {{ $nodeId }} });
+                                   $wire.call('enterSimbaSelectMode', {{ $nodeId }})">
+                            {{ $node->simbaid ?? '—' }}
+                        </button>
                     @endif
                 </div>
 

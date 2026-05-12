@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-11 23:45:32
+ * @lastupdate 2026-05-12 13:56:44
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -25,6 +25,13 @@ use Livewire\Component;
 class SimbaMenuTree extends Component
 {
     public string $search = '';
+
+    /**
+     * SimbaIDs already mapped in Portal menus (passed from parent).
+     *
+     * @var list<string>
+     */
+    public array $mappedSimbaIds = [];
 
     /**
      * Build the SimbaERP menu tree.
@@ -55,7 +62,9 @@ class SimbaMenuTree extends Component
                 ->map(static fn ($items) => $items->sortBy('stt')->values())
             ;
 
-            return $this->buildRecursive($childrenMap, '', 0, $menuIds);
+            $mappedSet = array_flip($this->mappedSimbaIds);
+
+            return $this->buildRecursive($childrenMap, '', 0, $menuIds, $mappedSet);
         } catch (\Throwable) {
             return collect();
         }
@@ -86,25 +95,27 @@ class SimbaMenuTree extends Component
      *
      * @param Collection<string, Collection> $childrenMap
      * @param Collection<string, mixed>      $menuIds     flip of all menuid values
+     * @param array<string, int>             $mappedSet   flip of mapped simbaid values
      */
-    protected function buildRecursive(Collection $childrenMap, ?string $parentId, int $depth = 0, ?Collection $menuIds = null): Collection
+    protected function buildRecursive(Collection $childrenMap, ?string $parentId, int $depth = 0, ?Collection $menuIds = null, array $mappedSet = []): Collection
     {
         $result = collect();
 
         foreach ($childrenMap->get($parentId ?? '', collect()) as $sm) {
             $result->push((object) [
-                'menuid'       => $sm->menuid,
-                'name'         => $sm->getDisplayName(),
-                'dllName'      => $sm->dllName,
-                'depth'        => $depth,
-                'type'         => $sm->type,
-                'isRoot'       => $sm->isRoot(),
-                'isGroup'      => $sm->isGroup(),
-                'isVoucher'    => $sm->isVoucher(),
-                'isMasterData' => $sm->isMasterData(),
-                'isReport'     => $sm->isReport(),
-                'isSetup'      => $sm->isSetup(),
-                'hasChildren'  => $childrenMap->has($sm->menuid),
+                'menuid'        => $sm->menuid,
+                'name'          => $sm->getDisplayName(),
+                'dllName'       => $sm->dllName,
+                'depth'         => $depth,
+                'type'          => $sm->type,
+                'isRoot'        => $sm->isRoot(),
+                'isGroup'       => $sm->isGroup(),
+                'isVoucher'     => $sm->isVoucher(),
+                'isMasterData'  => $sm->isMasterData(),
+                'isReport'      => $sm->isReport(),
+                'isSetup'       => $sm->isSetup(),
+                'hasChildren'   => $childrenMap->has($sm->menuid),
+                'isAlreadyUsed' => isset($mappedSet[$sm->menuid]),
             ]);
             $result = $result->merge($this->buildRecursive($childrenMap, $sm->menuid, $depth + 1, $menuIds));
         }
@@ -159,33 +170,35 @@ class SimbaMenuTree extends Component
                         $orphans = $childrenMap->get($f5Parent, collect());
                         if ($orphans->isNotEmpty()) {
                             $ordered->push((object) [
-                                'menuid'       => $f5Parent,
-                                'name'         => 'F5',
-                                'dllName'      => null,
-                                'depth'        => 1,
-                                'type'         => SysMenu::TYPE_GROUP,
-                                'isRoot'       => false,
-                                'isGroup'      => true,
-                                'isVoucher'    => false,
-                                'isMasterData' => false,
-                                'isReport'     => false,
-                                'isSetup'      => false,
-                                'hasChildren'  => true,
+                                'menuid'        => $f5Parent,
+                                'name'          => 'F5',
+                                'dllName'       => null,
+                                'depth'         => 1,
+                                'type'          => SysMenu::TYPE_GROUP,
+                                'isRoot'        => false,
+                                'isGroup'       => true,
+                                'isVoucher'     => false,
+                                'isMasterData'  => false,
+                                'isReport'      => false,
+                                'isSetup'       => false,
+                                'hasChildren'   => true,
+                                'isAlreadyUsed' => isset($mappedSet[$f5Parent]),
                             ]);
                             foreach ($orphans as $sm) {
                                 $ordered->push((object) [
-                                    'menuid'       => $sm->menuid,
-                                    'name'         => $sm->getDisplayName(),
-                                    'dllName'      => $sm->dllName,
-                                    'depth'        => 2,
-                                    'type'         => $sm->type,
-                                    'isRoot'       => $sm->isRoot(),
-                                    'isGroup'      => $sm->isGroup(),
-                                    'isVoucher'    => $sm->isVoucher(),
-                                    'isMasterData' => $sm->isMasterData(),
-                                    'isReport'     => $sm->isReport(),
-                                    'isSetup'      => $sm->isSetup(),
-                                    'hasChildren'  => $childrenMap->has($sm->menuid),
+                                    'menuid'        => $sm->menuid,
+                                    'name'          => $sm->getDisplayName(),
+                                    'dllName'       => $sm->dllName,
+                                    'depth'         => 2,
+                                    'type'          => $sm->type,
+                                    'isRoot'        => $sm->isRoot(),
+                                    'isGroup'       => $sm->isGroup(),
+                                    'isVoucher'     => $sm->isVoucher(),
+                                    'isMasterData'  => $sm->isMasterData(),
+                                    'isReport'      => $sm->isReport(),
+                                    'isSetup'       => $sm->isSetup(),
+                                    'hasChildren'   => $childrenMap->has($sm->menuid),
+                                    'isAlreadyUsed' => isset($mappedSet[$sm->menuid]),
                                 ]);
                             }
                         }

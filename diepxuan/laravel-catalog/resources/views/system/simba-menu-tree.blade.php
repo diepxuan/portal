@@ -1,5 +1,22 @@
 <div class="w-[360px] flex-shrink-0 rounded-lg border border-gray-200 bg-white shadow-sm"
-     x-data="{ showAll: false }">
+     x-data="{
+         simbaSelectMode: false,
+         simbaSelectNodeId: null,
+         init() {
+             window.addEventListener('simba-select-mode-enter', (e) => {
+                 this.simbaSelectMode = true;
+                 this.simbaSelectNodeId = e.detail.nodeId;
+             });
+             window.addEventListener('simba-select-mode-exit', () => {
+                 this.simbaSelectMode = false;
+                 this.simbaSelectNodeId = null;
+             });
+         },
+         selectMenuId(menuId) {
+             if (!this.simbaSelectMode) return;
+             window.dispatchEvent(new CustomEvent('simba-menu-selected', { detail: { menuId } }));
+         }
+     }">
 
     {{-- Panel Header --}}
     <div class="border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3">
@@ -30,7 +47,8 @@
     </div>
 
     {{-- Tree --}}
-    <div class="max-h-[calc(100vh-280px)] overflow-y-auto">
+    <div class="max-h-[calc(100vh-280px)] overflow-y-auto"
+         :class="{ 'simba-select-active': simbaSelectMode }">
         @forelse ($this->tree as $item)
             @include('catalog::system.simba-node', ['item' => $item])
         @empty

@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-12 08:27:50
+ * @lastupdate 2026-05-12 13:56:43
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -42,6 +42,11 @@ class Menu extends Component
     ];
 
     public string $editingSimbaid = '';
+
+    /**
+     * Node currently in SimbaID selection mode (separate from editing).
+     */
+    public ?int $selectingNodeId = null;
 
     protected MenuTreeBuilder $treeBuilder;
 
@@ -93,6 +98,10 @@ class Menu extends Component
             $this->editingName    = $node->name;
             $this->editingRoute   = $node->route ?? '';
             $this->editingSimbaid = $node->simbaid ?? '';
+            // Entering edit mode exits selection mode
+            if (null !== $this->selectingNodeId) {
+                $this->selectingNodeId = null;
+            }
         }
     }
 
@@ -102,6 +111,57 @@ class Menu extends Component
         $this->editingName    = '';
         $this->editingRoute   = '';
         $this->editingSimbaid = '';
+    }
+
+    /**
+     * Enter SimbaID selection mode for a specific node.
+     * Visual state handled by Alpine; backend tracks for validation.
+     */
+    public function enterSimbaSelectMode(int $nodeId): void
+    {
+        if (null !== $this->editingNodeId && $this->editingNodeId !== $nodeId) {
+            return;
+        }
+
+        $this->selectingNodeId = $nodeId;
+    }
+
+    /**
+     * Set simbaid from SimbaERP menu selection and save directly (no edit mode).
+     */
+    public function selectSimbaid(string $menuId): void
+    {
+        if (!$this->selectingNodeId) {
+            return;
+        }
+
+        $nodeId                = $this->selectingNodeId;
+        $this->selectingNodeId = null;
+
+        $this->treeBuilder->updateSimbaidOnly($nodeId, $menuId);
+
+        $node = $this->nodes->firstWhere('id', $nodeId);
+        if ($node) {
+            $node->simbaid = $menuId;
+        }
+
+        $this->recentlyUpdated[$nodeId] = true;
+        $this->dispatch('clear-highlight', nodeId: $nodeId);
+        $this->dispatch('simba-select-mode-exit');
+    }
+
+    /**
+     * Get all simbaid values already used in Portal menus.
+     *
+     * @return array<string, string>
+     */
+    public function getMappedSimbaIdsProperty(): array
+    {
+        return NavigationMenu::whereNotNull('simbaid')
+            ->where('simbaid', '!=', '')
+            ->pluck('simbaid')
+            ->toArray()
+        ;
     }
 
     public function saveEdit(): void
