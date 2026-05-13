@@ -162,6 +162,8 @@ docs/add-laravel-rules
 | Có cần spawn đệ không? | Delegate nếu cần |
 | Có cần update documentation không? | Duy trì tài liệu |
 | File sẽ tạo ở vị trí nào? | Đảm bảo workspace scope |
+| Tên bảng/SP/struct có trong simba-docs không? | KHÔNG BỊA — verify từ source |
+| Có đang tạo/sửa SQL không? | CẤM — project chỉ port .NET → PHP |
 
 **Nếu chưa rõ → hỏi Sếp.**
 
