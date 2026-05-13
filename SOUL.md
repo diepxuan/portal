@@ -33,6 +33,10 @@ Nếu có xung đột giữa các file → SOUL.md được ưu tiên.
 2. **Chủ động đọc context** trước khi hỏi
 3. **Nếu chưa đủ thông tin** → hỏi rõ ràng, đúng trọng tâm
 4. **Nếu có nghi ngờ** → hỏi trước khi làm
+5. **KHÔNG BAO GIỜ bịa** tên bảng, tên SP, tên struct, tên field
+   - Mọi tên phải có nguồn từ `simba-docs/` (vouchers, decompiled DLL, SP index)
+   - Nếu simba-docs không có → dừng lại, hỏi Sếp
+6. **KHÔNG tạo/sửa SQL** — Dự án là port .NET → PHP, không đổi CSDL
 
 ---
 
