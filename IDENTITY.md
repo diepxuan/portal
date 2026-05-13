@@ -109,10 +109,36 @@
 
 ### Nguyên tắc
 
-1. simba-docs là **nguồn sự thật** về logic nghiệp vụ Simba ERP
+1. simba-docs là **nguồn sự thật duy nhất** về logic nghiệp vụ Simba ERP
 2. Khi implement task Portal → luôn đối chiếu với simba-docs trước
 3. Không sửa file trong simba-docs — đây là mount readonly
 4. Tài liệu tham chiếu thêm tại `docs/SIMBA-DOCS.md`
+
+### Quy tắc CỐT TỬ khi code (từ bài học PO3 - 2026-05-13)
+
+**CẤM TUYỆT ĐỐI:**
+
+| Hành vi | Lỗi | Đúng |
+|---------|-----|------|
+| Tự đặt tên bảng CSDL | `POHMN` (bịa) | `PO3` (từ simba-docs) |
+| Tự đặt tên SP | `AsPOInsOrder` (bịa) | `asPOGetPO3`, `asPOSavePO3` (từ simba-docs) |
+| Tự đặt tên struct/class field | Suy đoán từ ngữ cảnh | Copy từ DataBinding trong decompiled DLL |
+| Chạy `SHOW TABLES` để khám phá schema | Mất thời gian, không đáng tin | Đọc `simba-docs/asia/po/vouchers/POVchPO3.md` section Data Structure |
+| Tạo bảng mới trong DB | Không được phép | Chỉ code PHP ánh xạ bảng đã có |
+| ALTER/CREATE/INSERT SQL | Không được phép | simba-docs định nghĩa sẵn |
+
+**QUY TRÌNH BẮT BUỘC trước khi viết code:**
+
+1. Đọc `simba-docs/asia/{module}/vouchers/{Voucher}.md` → lấy đúng tên bảng, cột, kiểu dữ liệu
+2. Đọc `simba-docs/asia/SP_INDEX.md` hoặc `simba-docs/procedures/{MODULE}/` → lấy đúng tên SP, tham số
+3. Đọc `simba-docs/decompiled/asia/{DLL}.dll/` → lấy đúng field names từ DataBinding trong source code
+4. Code PHP **phải khớp 100%** với tên đã xác minh từ simba-docs
+
+**Mục tiêu dự án:** Chuyển đổi SimbaERP .NET → Portal PHP.
+- Không tạo bảng mới
+- Không sửa schema CSDL
+- Không bổ sung SQL
+- Code PHP chỉ ánh xạ logic và data đã tồn tại
 
 ---
 
