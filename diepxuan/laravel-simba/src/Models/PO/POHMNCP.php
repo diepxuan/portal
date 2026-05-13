@@ -14,19 +14,19 @@ declare(strict_types=1);
 namespace Diepxuan\Simba\Models\PO;
 
 use Diepxuan\Simba\Models\GlDmTk;
-use Diepxuan\Simba\SModel\PohnmcpModel as Model;
+use Diepxuan\Simba\SModel\POHMNCPModel as Model;
 
 /**
  * Class Pohnmcp — Chi phí hóa đơn mua hàng (PO3).
  *
  * Chi phí mua hàng kèm theo hóa đơn.
  */
-class Pohnmcp extends Model
+class POHMNCP extends Model
 {
     /** Quan hệ với header hóa đơn */
     public function pohnm()
     {
-        return $this->belongsTo(Pohnm::class, 'stt_rec', 'stt_rec');
+        return $this->belongsTo(POHMN::class, 'stt_rec', 'stt_rec');
     }
 
     /** Quan hệ với tài khoản chi phí */

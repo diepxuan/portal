@@ -15,15 +15,15 @@ namespace Diepxuan\Simba\Models\PO;
 
 use Diepxuan\Simba\Models\ArDmKh;
 use Diepxuan\Simba\Models\MmHttt;
-use Diepxuan\Simba\SModel\PohnmModel as Model;
+use Diepxuan\Simba\SModel\POHMNModel as Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Class Pohnm — Hóa đơn mua hàng (PO3).
+ * Class POHMN — Hóa đơn mua hàng (PO3).
  *
  * Header của chứng từ hóa đơn mua hàng.
  */
-class Pohnm extends Model
+class POHMN extends Model
 {
     /** Lọc theo mã công ty */
     public function scopeFilterByMaCty(Builder $query, ?string $maCty): Builder
@@ -87,13 +87,13 @@ class Pohnm extends Model
     /** Quan hệ với chi tiết vật tư */
     public function chiTiets()
     {
-        return $this->hasMany(Pohnmct::class, 'stt_rec', 'stt_rec');
+        return $this->hasMany(POHMNCT::class, 'stt_rec', 'stt_rec');
     }
 
     /** Quan hệ với chi phí mua hàng */
     public function chiPhis()
     {
-        return $this->hasMany(Pohnmcp::class, 'stt_rec', 'stt_rec');
+        return $this->hasMany(POHMNCP::class, 'stt_rec', 'stt_rec');
     }
 
     /** Quan hệ với nhà cung cấp */

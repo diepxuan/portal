@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\SModel;
 
-use Illuminate\Database\Eloquent\Model;
+use Diepxuan\Simba\SModel\SModel;
 
-class PohnmcpModel extends Model
+class POHMNCPModel extends SModel
 {
     public $incrementing  = false;
     public $timestamps    = false;

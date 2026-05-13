@@ -64,6 +64,7 @@ Module Mua hàng (Purchase Order) trong Simba ERP gồm các nhóm chức năng 
 | 6. Routes | ✅ DONE | muahang/hoadonmua, create, edit |
 | 7. Validation & tính toán | ✅ DONE | Auto-calc trong Edit component |
 | 8. Lookup NCC, HTTT, DMVT | 🔄 PARTIAL | NCC done, HTTT/DMVT cần input components |
+| 9. Fix connection bug | ✅ DONE | Thêm 'connection' => env('SIMBA_CONNECTION', 'sqlsrv') vào simba.php config |
 
 ## Nguyên tắc
 1. Mỗi bước = 1 commit

@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-13 11:29:52
+ * @lastupdate 2026-05-13 18:05:31
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Muahang;
 
-use Diepxuan\Simba\Models\PO\Pohnm;
+use Diepxuan\Simba\Models\PO\POHMN;
 use Diepxuan\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -47,7 +47,7 @@ class Hoadonmua extends Component
 
     public function loadData(): void
     {
-        $this->pohnms = Pohnm::filterBySearch($this->pSearch)
+        $this->pohnms = POHMN::filterBySearch($this->pSearch)
             ->filterByMaKh($this->pMa_Kh)
             ->filterByNgayCt($this->pNgayCt1, $this->pNgayCt2)
             ->orderByDesc('ngay_ct')

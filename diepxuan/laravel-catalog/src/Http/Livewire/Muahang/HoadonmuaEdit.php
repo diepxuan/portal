@@ -8,13 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-13 11:29:53
+ * @lastupdate 2026-05-13 18:05:32
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Muahang;
 
 use Diepxuan\Simba\Models\ArDmKh;
-use Diepxuan\Simba\Models\PO\Pohnm;
+use Diepxuan\Simba\Models\PO\POHMN;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -75,7 +75,7 @@ class HoadonmuaEdit extends Component
 
     public function loadInvoice(string $stt_rec): void
     {
-        $invoice = Pohnm::with(['chiTiets', 'chiPhis', 'nhaCungCap'])->find($stt_rec);
+        $invoice = POHMN::with(['chiTiets', 'chiPhis', 'nhaCungCap'])->find($stt_rec);
 
         if (!$invoice) {
             session()->flash('error', 'Không tìm thấy hóa đơn.');

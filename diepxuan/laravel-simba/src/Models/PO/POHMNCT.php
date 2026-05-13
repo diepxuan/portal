@@ -16,19 +16,19 @@ namespace Diepxuan\Simba\Models\PO;
 use Diepxuan\Simba\Models\GlDmTk;
 use Diepxuan\Simba\Models\InDmKho;
 use Diepxuan\Simba\Models\InDmVt;
-use Diepxuan\Simba\SModel\PohnmctModel as Model;
+use Diepxuan\Simba\SModel\POHMNCTModel as Model;
 
 /**
  * Class Pohnmct — Chi tiết hóa đơn mua hàng (PO3).
  *
  * Chi tiết vật tư trong hóa đơn mua hàng.
  */
-class Pohnmct extends Model
+class POHMNCT extends Model
 {
     /** Quan hệ với header hóa đơn */
     public function pohnm()
     {
-        return $this->belongsTo(Pohnm::class, 'stt_rec', 'stt_rec');
+        return $this->belongsTo(POHMN::class, 'stt_rec', 'stt_rec');
     }
 
     /** Quan hệ với vật tư */
