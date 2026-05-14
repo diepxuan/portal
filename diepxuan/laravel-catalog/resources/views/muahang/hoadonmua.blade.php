@@ -17,27 +17,34 @@
     </x-slot>
 
     {{-- Bộ lọc --}}
-    <div class="bg-white p-4 rounded-lg shadow mb-4">
-        <form wire:submit.prevent="loadData" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">Tìm kiếm</label>
-                <input type="text" wire:model.live.debounce.300ms="pSearch"
-                    placeholder="Số HĐ, số CT, mã NCC..."
-                    class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
+    <div class="bg-white p-4 rounded-lg shadow mb-4 border border-gray-100">
+        <form wire:submit.prevent="loadData" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Tìm kiếm</label>
+                    <input type="text" wire:model.defer="pSearch"
+                        placeholder="Số HĐ, số CT, mã NCC..."
+                        class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Từ ngày</label>
+                    <input type="date" wire:model.defer="pNgayCt1"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Đến ngày</label>
+                    <input type="date" wire:model.defer="pNgayCt2"
+                        class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
+                </div>
             </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">Từ ngày</label>
-                <input type="date" wire:model.live="pNgayCt1"
-                    class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1">Đến ngày</label>
-                <input type="date" wire:model.live="pNgayCt2"
-                    class="w-full border-gray-300 rounded-md shadow-sm text-xs focus:border-blue-500 focus:ring-blue-500" />
-            </div>
-            <div class="flex items-end">
+
+            <div class="flex items-center justify-end gap-2 border-t border-gray-100 pt-3">
+                <button type="button" wire:click="resetFilters"
+                    class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                    Xóa lọc
+                </button>
                 <button type="submit"
-                    class="w-full px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-500">
+                    class="inline-flex items-center px-6 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Lọc
                 </button>
             </div>
