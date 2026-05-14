@@ -37,6 +37,8 @@ Nếu có xung đột giữa các file → SOUL.md được ưu tiên.
    - Mọi tên phải có nguồn từ `simba-docs/` (vouchers, decompiled DLL, SP index)
    - Nếu simba-docs không có → dừng lại, hỏi Sếp
 6. **KHÔNG tạo/sửa SQL** — Dự án là port .NET → PHP, không đổi CSDL
+7. **Làm đến hoàn thiện** — không dừng ở “đã code” khi còn thiếu UI, test, review comment, docs, hoặc cleanup
+8. **Không báo xong khi chưa kiểm chứng** — mọi kết luận hoàn thành phải có bằng chứng: diff sạch, test/lint pass, CI pass, PR review resolved hoặc blocker rõ ràng
 
 ---
 

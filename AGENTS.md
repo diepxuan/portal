@@ -70,6 +70,7 @@ Quy trình vận hành workspace cho Portal Project.
 1. Task được tạo trong Issues
 2. Issues được thêm vào Project board
 3. Project board dùng để theo dõi tiến độ
+4. Khi triển khai task: phải đi theo vòng đời `Review → Implement → Verify → PR Review → Fix → CI → Cleanup → Report`
 
 ### 4.2 Issue Labels
 
@@ -129,6 +130,19 @@ docs/add-laravel-rules
 
 **Chỉ push khi Sếp nói:** "Em tạo PR đi"
 
+### 5.5 PR Completion Loop
+
+Sau khi có PR, Bột phải tiếp tục theo dõi đến khi Sếp dừng hoặc PR merge:
+
+1. Đọc toàn bộ review comments (`gh pr view --comments`, `gh api pulls/comments`)
+2. Phân loại blocker/P1/P2/nit
+3. Fix blocker/P1/P2 trước, không tranh luận vòng vo
+4. Chạy kiểm chứng local tối thiểu (`php -l`, test/lint phù hợp)
+5. Push commit mới vào đúng branch PR khi Sếp đã cho phép cập nhật PR đó
+6. Kiểm tra CI/checks sau push
+7. Lặp lại đến khi không còn blocker hoặc có quyết định của Sếp
+8. Merge chỉ khi Sếp yêu cầu rõ ràng
+
 ---
 
 ## 6. Sub-Agent Orchestration
@@ -164,8 +178,25 @@ docs/add-laravel-rules
 | File sẽ tạo ở vị trí nào? | Đảm bảo workspace scope |
 | Tên bảng/SP/struct có trong simba-docs không? | KHÔNG BỊA — verify từ source |
 | Có đang tạo/sửa SQL không? | CẤM — project chỉ port .NET → PHP |
+| UI có đủ nút/hành động chính chưa? | Tránh thiếu chức năng nhìn thấy |
+| Payload lưu có khớp fields thực tế chưa? | Tránh nhập một field, lưu field khác |
+| Có file thừa/untracked sinh nhầm không? | Dọn workspace trước khi báo xong |
+| Review comments/CI đã sạch chưa? | Không báo hoàn thiện khi còn blocker |
 
 **Nếu chưa rõ → hỏi Sếp.**
+
+## 7b. Definition of Done
+
+Một task chỉ được báo **hoàn thiện** khi đủ các điều kiện:
+
+1. Code đúng nguồn sự thật (`simba-docs/` hoặc codebase hiện hữu đã xác minh)
+2. UI/route/component/model/SP wrapper đủ cho flow được giao
+3. Không còn tên bảng/SP/field bịa hoặc legacy sai scope
+4. Không còn file thừa/untracked liên quan task
+5. `php -l` pass cho file PHP đã sửa; test/lint/build phù hợp đã chạy hoặc nêu rõ blocker
+6. PR review comments P1/P2 đã xử lý
+7. CI pass hoặc có báo cáo lỗi rõ ràng
+8. Task/docs được cập nhật nếu behavior/scope thay đổi
 
 ---
 
@@ -191,6 +222,14 @@ docs/add-laravel-rules
 3. **Không patch** — vào branch cũ
 4. **Branch mới** — nếu cần fix
 5. **Báo cáo** — Sếp rõ ràng
+
+**Nếu phát hiện đã làm sai hướng:**
+
+1. Xác định file/commit sai hướng
+2. Đối chiếu lại `simba-docs/` và task
+3. Xóa/dọn file sinh nhầm nếu chưa tracked; nếu đã tracked thì revert bằng commit riêng
+4. Ghi bài học vào task/docs hoặc identity nếu là lỗi quy trình lặp lại
+5. Không báo hoàn thành cho tới khi workspace sạch và hướng đúng được kiểm chứng
 
 ---
 
