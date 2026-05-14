@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-14 09:12:24
+ * @lastupdate 2026-05-14 15:51:45
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Muahang;
@@ -54,6 +54,17 @@ class Hoadonmua extends Component
             ->orderByDesc('so_hd')
             ->paginate($this->pPageSize, ['*'], 'page', $this->pPageIndex)
         ;
+    }
+
+    public function resetFilters(): void
+    {
+        $this->pSearch    = '';
+        $this->pMa_Kh     = null;
+        $this->pNgayCt1   = null;
+        $this->pNgayCt2   = null;
+        $this->pPageIndex = 1;
+
+        $this->loadData();
     }
 
     public function render(): View
