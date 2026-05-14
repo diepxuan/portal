@@ -221,11 +221,11 @@
                                 <tr>
                                     <th class="px-1 py-1 text-left">Mã CP</th>
                                     <th class="px-1 py-1 text-left">Tên CP</th>
-                                    <th class="px-1 py-1 text-right">SL</th>
-                                    <th class="px-1 py-1 text-right">Đơn giá NT</th>
-                                    <th class="px-1 py-1 text-right">Tiền NT</th>
+                                    <th class="px-1 py-1 text-right">Tiền CP NT</th>
+                                    <th class="px-1 py-1 text-right">Tiền CP</th>
                                     <th class="px-1 py-1 text-center">Thuế %</th>
                                     <th class="px-1 py-1 text-right">Thuế NT</th>
+                                    <th class="px-1 py-1 text-right">Tổng NT</th>
                                     <th class="px-1 py-1 text-center"></th>
                                 </tr>
                             </thead>
@@ -241,17 +241,14 @@
                                                 class="w-32 border-gray-300 rounded text-xs" />
                                         </td>
                                         <td class="px-1 py-1">
-                                            <input type="number" step="0.01" wire:model.live="pChiPhi.{{ $i }}.so_luong"
+                                            <input type="number" step="0.01" wire:model.live="pChiPhi.{{ $i }}.tien_cp_nt"
                                                 wire:change="calculateChiPhiRow({{ $i }})"
-                                                class="w-16 border-gray-300 rounded text-xs text-right" />
+                                                class="w-24 border-gray-300 rounded text-xs text-right" />
                                         </td>
                                         <td class="px-1 py-1">
-                                            <input type="number" step="0.01" wire:model.live="pChiPhi.{{ $i }}.don_gia_nt"
+                                            <input type="number" step="0.01" wire:model.live="pChiPhi.{{ $i }}.tien_cp"
                                                 wire:change="calculateChiPhiRow({{ $i }})"
-                                                class="w-20 border-gray-300 rounded text-xs text-right" />
-                                        </td>
-                                        <td class="px-1 py-1 text-right font-mono">
-                                            {{ number_format($row['tien_nt'] ?? 0, 0, ',', '.') }}
+                                                class="w-24 border-gray-300 rounded text-xs text-right" />
                                         </td>
                                         <td class="px-1 py-1">
                                             <input type="number" step="0.01" wire:model.live="pChiPhi.{{ $i }}.ts_gtgt"
@@ -260,6 +257,9 @@
                                         </td>
                                         <td class="px-1 py-1 text-right font-mono">
                                             {{ number_format($row['thue_gtgt_nt'] ?? 0, 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-1 py-1 text-right font-mono">
+                                            {{ number_format($row['tt_nt'] ?? 0, 0, ',', '.') }}
                                         </td>
                                         <td class="px-1 py-1 text-center">
                                             <button type="button" wire:click="removeChiPhiRow({{ $i }})"
