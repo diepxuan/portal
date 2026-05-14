@@ -25,8 +25,6 @@ class Hoadonmua extends Component
 {
     public string $pSearch   = '';
     public ?string $pMa_Kh   = null;
-    public ?string $pNgayCt1 = null;
-    public ?string $pNgayCt2 = null;
     public int $pPageIndex   = 1;
     public int $pPageSize    = 50;
 
@@ -49,7 +47,7 @@ class Hoadonmua extends Component
     {
         $this->invoices = PoPh3::filterBySearch($this->pSearch)
             ->filterByMaKh($this->pMa_Kh)
-            ->filterByNgayCt($this->pNgayCt1, $this->pNgayCt2)
+            ->filterByNgayCt(\CatalogService::timerFrom(), \CatalogService::timerTo())
             ->orderByDesc('ngay_ct')
             ->orderByDesc('so_hd')
             ->paginate($this->pPageSize, ['*'], 'page', $this->pPageIndex)
@@ -60,9 +58,10 @@ class Hoadonmua extends Component
     {
         $this->pSearch    = '';
         $this->pMa_Kh     = null;
-        $this->pNgayCt1   = null;
-        $this->pNgayCt2   = null;
         $this->pPageIndex = 1;
+
+        // Reset timer to current month
+        \CatalogService::timer(['id' => 't' . str_pad((string) now()->month, 2, '0', STR_PAD_LEFT)]);
 
         $this->loadData();
     }
