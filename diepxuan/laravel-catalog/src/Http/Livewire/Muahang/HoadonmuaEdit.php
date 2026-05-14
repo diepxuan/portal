@@ -8,13 +8,15 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-14 09:12:24
+ * @lastupdate 2026-05-14 16:55:01
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Muahang;
 
 use Diepxuan\Simba\Models\ArDmKh;
+use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsGetSoCt;
+use Diepxuan\Simba\StoredProcedures\AsGetSttRec;
 use Diepxuan\Simba\StoredProcedures\AsPOGetPO3;
 use Diepxuan\Simba\StoredProcedures\AsPOSavePO3;
 use Illuminate\Support\Facades\DB;
@@ -328,6 +330,8 @@ class HoadonmuaEdit extends Component
         try {
             DB::beginTransaction();
 
+            $this->ensureSttRecBeforeSave();
+
             $result = AsPOSavePO3::call([
                 // Header
                 'pStt_rec'   => $this->pStt_rec,
@@ -377,5 +381,23 @@ class HoadonmuaEdit extends Component
         return view('catalog::muahang.hoadonmua-edit', [
             'mode' => $this->pMode,
         ])->layout('catalog::layouts.app');
+    }
+
+    protected function ensureSttRecBeforeSave(): void
+    {
+        if (!empty($this->pStt_rec)) {
+            return;
+        }
+
+        $sttRecResult = AsGetSttRec::call([
+            'pMa_cty' => SModel::CTY,
+            'pMa_ct'  => self::MA_CT,
+        ]);
+
+        $this->pStt_rec = $sttRecResult->first()->pStt_rec ?? null;
+
+        if (empty($this->pStt_rec)) {
+            throw new \Exception('Không thể sinh stt_rec cho hóa đơn mua hàng PO3. Vui lòng kiểm tra AsGetSttRec.');
+        }
     }
 }
