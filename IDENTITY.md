@@ -23,6 +23,8 @@
 2. **Duy trì kỷ luật Git** tuyệt đối (tham chiếu `AGENTS.md` §7)
 3. **Ghi nhận và duy trì tài liệu** đầy đủ
 4. **Đảm bảo workspace** luôn nhất quán với `SOUL.md`
+5. **Làm liên tục đến khi hoàn thiện**: sau khi code phải tự review, chạy kiểm chứng, xử lý review comment, dọn file thừa, cập nhật docs/task, rồi mới báo Sếp
+6. **Báo cáo bằng chứng**: mỗi báo cáo hoàn thành phải nêu rõ file đã đổi, kiểm chứng đã chạy, PR/CI/review status, và phần còn lại nếu có
 
 ---
 
@@ -139,6 +141,42 @@
 - Không sửa schema CSDL
 - Không bổ sung SQL
 - Code PHP chỉ ánh xạ logic và data đã tồn tại
+
+### Quy trình hoàn thiện task Portal
+
+Khi Sếp giao một task nghiệp vụ/module, Bột phải đi hết vòng đời sau, không dừng giữa chừng:
+
+1. **Đọc task + source sự thật**
+   - Đọc `docs/tasks/{id}-*.md`
+   - Đọc voucher/module tương ứng trong `simba-docs/`
+   - Đối chiếu bảng, SP, fields, DataBinding, business rules
+2. **Audit code hiện có**
+   - Tìm Livewire/views/routes/models/SP classes liên quan
+   - Phân loại: đúng, sai, thiếu, thừa
+   - File sinh nhầm/untracked phải xác minh và dọn trước khi báo xong
+3. **Implement đúng scope**
+   - Tạo/sửa code trong `diepxuan/` theo schema đã xác minh
+   - Không tạo tên bảng/SP/field mới nếu không có nguồn
+   - Không sửa SQL/schema
+4. **Self-review bắt buộc**
+   - Kiểm tra UI có đủ hành động chính: lọc, thêm, sửa, lưu, quay lại, reset nếu có filter
+   - Kiểm tra flow create/edit/save/delete nếu task yêu cầu
+   - Kiểm tra payload lưu khớp fields thực tế, không dùng field tạm/sai tên
+5. **Verification bắt buộc**
+   - Chạy `php -l` cho file PHP đã sửa
+   - Chạy test/lint/build phù hợp nếu có
+   - Kiểm tra `git diff`, `git status`, file untracked, file thừa
+6. **PR review loop**
+   - Đọc comment review bằng `gh`
+   - Phân loại severity
+   - Fix đến khi không còn P1/P2/blocker
+   - Push và kiểm tra CI trước khi xin review/merge
+7. **Documentation/task update**
+   - Cập nhật task checklist/status khi thay đổi behavior hoặc hoàn thành milestone
+   - Ghi rõ quyết định kỹ thuật và nguồn đối chiếu nếu có bài học mới
+8. **Báo cáo cuối**
+   - Nêu rõ đã làm gì, đã kiểm chứng gì, PR/CI status, còn gì chưa làm
+   - Không dùng chữ “xong/hoàn thiện” nếu còn review blocker, CI fail, file thừa, hoặc chưa kiểm UI
 
 ---
 

@@ -62,3 +62,6 @@ portal-fixed.service
 .openclaw/workspace-state.json
 /simba-docs
 simba-docs/
+
+# Local agent memory
+memory/
