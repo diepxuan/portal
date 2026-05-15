@@ -3,7 +3,7 @@
 ## Nhom: GL (So cai tong hop)
 
 ## Muc tieu
-Chuyen doi module nghiệp vụ ngân hàng tu .NET sang PHP Laravel.
+Chuyen doi module chứng từ ngoại bảng tu .NET sang PHP Laravel.
 
 ## Chi tiet
 - **DLL:** GLNB.dll
@@ -14,7 +14,7 @@ Chuyen doi module nghiệp vụ ngân hàng tu .NET sang PHP Laravel.
 
 ## Cau truc du lieu
 
-### Bang: GLNB (Danh muc nghiệp vụ ngân hàng)
+### Bang: GLNB (Chứng từ ngoại bảng)
 
 | Truong | Kieu | Chieu dai | Mo ta |
 |--------|------|-----------|-------|
@@ -50,11 +50,11 @@ Chuyen doi module nghiệp vụ ngân hàng tu .NET sang PHP Laravel.
 
 | SP Name | Mo ta |
 |---------|-------|
-| SP_GL_NB_GET | Lay danh sach nghiệp vụ ngân hàng |
-| SP_GL_NB_GETBYID | Lay chi tiet 1 nghiệp vụ |
-| SP_GL_NB_INSERT | Them nghiệp vụ ngân hàng |
-| SP_GL_NB_UPDATE | Cap nhat nghiệp vụ ngân hàng |
-| SP_GL_NB_DELETE | Xoa nghiệp vụ ngân hàng |
+| SP_GL_NB_GET | Lay danh sach chứng từ ngoại bảng |
+| SP_GL_NB_GETBYID | Lay chi tiet 1 chứng từ |
+| SP_GL_NB_INSERT | Them chứng từ ngoại bảng |
+| SP_GL_NB_UPDATE | Cap nhat chứng từ ngoại bảng |
+| SP_GL_NB_DELETE | Xoa chứng từ ngoại bảng |
 
 ---
 
@@ -100,14 +100,22 @@ class GLNB extends Model
 
 ## Progress Checklist
 
-- [ ] Phan tich yeu cau & review DLL
+- [x] Phan tich yeu cau & review DLL
 - [ ] Tao Stored Procedure classes
-- [ ] Tao Model GLNB
-- [ ] Tao Livewire Components
-- [ ] Tao Views
-- [ ] Them Routes
+- [x] Tao Model GLNB
+- [x] Tao Livewire Components
+- [x] Tao Views
+- [x] Them Routes
 - [ ] Test CRUD operations
 ---
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Portal Update 2026-05-15
+
+- Đã mở route shell `gl.vch.nb1` theo active menu `02.10.17`.
+- `SiDmCt.md` có `ma_ct = NB1` nhưng để trống `ph/ct`; Portal không bịa tên `ph/ct`.
+- `sysVoucherInfo.md` xác nhận bảng `GLNB`, nên shell hiển thị theo `table_ph/table_ct = GLNB`.
+- Đã thêm model wrapper `Diepxuan\Simba\Models\GlNb` trỏ về `SModel\GlNbModel`.
+- CRUD/execute vẫn bị chặn cho đến khi đối chiếu đủ payload, validation và stored procedure từ `simba-docs`.

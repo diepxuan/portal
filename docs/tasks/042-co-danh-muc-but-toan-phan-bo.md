@@ -77,3 +77,8 @@ class ButtoanPhanboTudong extends Component
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route anchor `co.rpt.codmpb` qua generic `simba.report` theo `sysReportInfo`.
+- Chua mo CRUD/execute vi dictionary metadata CODMPB con thieu/lẹch carry fields trong `simba-docs`; khong goi SQL/SP/function.

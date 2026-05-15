@@ -279,3 +279,9 @@ Route::prefix('catalog/co/danhmuc')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route anchor `co.dict.codmbom` cho menu `18.90.11` qua generic `simba.dictionary`.
+- Route la alias theo `sysDictionaryInfo.table_name = CODMBOM`; source menuid trong dictionary metadata bi blank nen duoc ghi ro bang `source_menuid`.
+- Chua mo CRUD BOM/ghi/xoa vi can audit du payload, BOMPH/BOMCT va side effect tinh gia thanh; khong goi SQL/SP/function.

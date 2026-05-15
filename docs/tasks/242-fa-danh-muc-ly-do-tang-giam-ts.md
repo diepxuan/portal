@@ -157,3 +157,9 @@ class LyDoTsEdit extends Component
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route anchor `fa.dict.fadmldts` qua generic `simba.dictionary`.
+- Route la alias theo `sysMenu.code_name`; `source_menuid` that trong `sysDictionaryInfo` la `18.90.05`, active FA menu la `20.90.05`.
+- Chua mo CRUD ghi/xoa cho den khi audit du payload va side effect; khong goi SQL/SP/function.

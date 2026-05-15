@@ -168,3 +168,9 @@ class DMKC extends Model
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route anchor `gl.dict.gldmkc` cho menu `02.90.05` qua generic `simba.dictionary`.
+- Route la alias theo `sysDictionaryInfo.table_name = GLDMKC`; source menuid trong dictionary metadata bi blank nen duoc ghi ro bang `source_menuid`.
+- Chua mo CRUD ghi/xoa vi can audit du payload/validate/side effect; khong goi SQL/SP/function.

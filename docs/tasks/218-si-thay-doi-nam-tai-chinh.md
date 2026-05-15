@@ -147,3 +147,10 @@ Route::prefix('catalog/si')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route `system.year` cho menu Simba `90.30.02` (Chon nam lam viec).
+- Component `System\YearSelector` chi cap nhat session `year`; khong ghi SQL Server, khong execute SP/function.
+- Route table verify pass voi `LOG_CHANNEL=stderr php artisan route:list --name=system.year`.
+- Phan thay doi nam tai chinh co side effect he thong van blocked cho den khi co metadata/payload ro trong `simba-docs`.

@@ -144,3 +144,10 @@ Route::get('/catalog/gl/chuyendoi/transfer-glcdtk', [TransferGLCDTK::class, 'ren
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Portal Update 2026-05-15
+
+- Active Simba menu `90.40.14` (Nhập/Chuyển số dư) đã được map vào route hiện hữu `system.balance.index`.
+- Route chi tiết `system.balance.transfer` và component `System\Balance\Transfer` đã tồn tại trong codebase.
+- Component hiện có tham chiếu stored procedure `AsGLChuyenSdTk`, nhưng task chưa được đánh dấu hoàn tất execute vì session này không truy cập SQL Server và chưa audit đủ side effect theo `simba-docs`.
+- Giữ trạng thái blocked cho phần chạy chuyển số dư cho đến khi xác minh đầy đủ tham số, quyền chạy, ngày khóa sổ và rollback/error handling.

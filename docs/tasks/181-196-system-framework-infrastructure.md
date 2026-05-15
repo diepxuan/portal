@@ -464,3 +464,11 @@ Day la **framework libraries** - cac DLLs nay cung cap:
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Menu `90.20.02` da map vao route Portal hien huu `system.user.index`.
+- Menu `90.20.08` da map vao route Jetstream `profile.show` cho flow doi mat khau.
+- Menu `90.30.02` da co route `system.year`; chi cap nhat session `year`, khong ghi SQL Server.
+- Menu `90.40.17` da co route `system.company`; chi cap nhat session `selected_company` theo danh sach cong ty user duoc phan quyen, khong ghi SQL Server.
+- Cac DLL framework van duoc giu o muc infrastructure/documentation; khong port UI framework .NET thanh code PHP rieng neu Portal/Laravel da co primitive tuong duong.

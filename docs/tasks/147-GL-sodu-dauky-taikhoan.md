@@ -450,3 +450,9 @@ Route::prefix('catalog/gl/danhmuc')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Portal Mapping 2026-05-15
+
+- Active Simba menu `02.10.14` da map vao route Portal hien huu `system.balance.account-opening`.
+- Route duoc khai bao trong `SimbaRouteRegistry` de menu tree link thang vao man hinh so du thay vi generic process shell.
+- CRUD/execute van **blocked**: task nay co SP ghi/xoa/tinh tong (`SP_GL_CDTK_*`, `asGLCalSumCdTk`) nen chua duoc coi la hoan thanh khi khong truy cap SQL Server va chua audit day du side effect/payload.

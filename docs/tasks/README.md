@@ -8,6 +8,15 @@ Tong quan: **338 DLL** (217 + 84 moi) da duoc decompile va phan tich
 
 Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
 
+> Cập nhật triển khai 2026-05-15: xem `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md` và `../project/simba-router-menu-matrix.md` để đối chiếu route anchors theo `simba-docs`. Coverage mới tách rõ static screen, generic report/dictionary shell, read-only process shell và blocker chưa được phép execute. Các số PENDING/TODO bên dưới là snapshot audit cũ, không còn là trạng thái route/menu hiện tại.
+
+**Kết quả route/menu hiện tại (2026-05-15):**
+- `SimbaRouteRegistry::routes()` có 302 route anchors.
+- Active menu có metadata report/dictionary/voucher hoặc DLL/command/code_name đều có route anchor.
+- Còn 57 active menu không route; toàn bộ là root/group/section/dòng trống không có DLL/command/code_name.
+- Còn 48 generic `simba.process` read-only shell; không execute SQL/SP/function vì còn thiếu metadata hoặc có side effect.
+- Full registry/menu/voucher batch pass: `29 tests, 2805 assertions`.
+
 **Kết quả nhanh:**
 - **298/318 files PENDING** (chưa implement)
 - **15 files NEEDS_UPDATE** (cần sửa spec)

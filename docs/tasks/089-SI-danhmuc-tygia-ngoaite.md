@@ -232,3 +232,8 @@ Route::prefix('catalog/si/danhmuc')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Implementation Update 2026-05-15
+
+- Da co route anchor `ca.process.sidmtgnt` qua generic read-only `simba.process` cho menu `90.10.29`.
+- Chua mo CRUD/lookup ty gia vi active menu co DLL nhung khong co `sysDictionaryInfo` sach trong `simba-docs/data`; khong goi SQL/SP/function.

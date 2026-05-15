@@ -198,3 +198,9 @@ Route::prefix('catalog/in/transfers')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Portal Mapping 2026-05-15
+
+- Active Simba menu `14.10.38` da map vao route Portal hien huu `system.balance.inventory-transfer`.
+- Route anchor duoc khai bao trong `SimbaRouteRegistry` de menu tree mo dung man hinh chuyen ton kho sang nam sau.
+- Execute van **blocked**: chuc nang nay la transfer co side effect, can doi chieu SP/payload/transaction trong `simba-docs` truoc khi cho phep chay.

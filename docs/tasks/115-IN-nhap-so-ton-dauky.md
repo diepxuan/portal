@@ -392,3 +392,10 @@ Route::prefix('catalog/in')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Portal Mapping 2026-05-15
+
+- Active Simba menu `14.10.20` da map vao route Portal hien huu `system.balance.inventory-opening`.
+- Active Simba menu `14.10.23` da map vao route Portal hien huu `system.balance.inventory-opening-ntxt`.
+- Route anchors duoc khai bao trong `SimbaRouteRegistry` de menu tree mo dung man hinh ton dau ky thay vi generic process shell.
+- CRUD/chuyen so du van **blocked**: task nay co SP ghi/xoa va chuyen so du (`SP_IN_INCDVT_*`, `SP_IN_INCDVT_CHUYEN_SO_DU`) nen chua execute khi khong truy cap SQL Server va chua audit day du payload/side effect.
