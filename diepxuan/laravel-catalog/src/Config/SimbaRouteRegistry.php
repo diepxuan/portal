@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-16 00:27:50
+ * @lastupdate 2026-05-16 09:35:04
  */
 
 namespace Diepxuan\Catalog\Config;
@@ -536,6 +536,11 @@ final class SimbaRouteRegistry
                 'menuid'      => '06.30.50',
                 'source_type' => self::TYPE_REPORT,
             ],
+            'ar.rpt.bccn06' => [
+                'module'      => 'AR',
+                'menuid'      => '06.30.32',
+                'source_type' => self::TYPE_REPORT,
+            ],
             'ap.rpt.bk01' => [
                 'module'      => 'AP',
                 'menuid'      => '10.30.02',
@@ -638,6 +643,21 @@ final class SimbaRouteRegistry
             'ca.chi' => [
                 'module'      => 'CA',
                 'menuid'      => '04.20.11',
+                'source_type' => self::TYPE_REPORT,
+            ],
+            'ca.rpt.tmnh06' => [
+                'module'      => 'CA',
+                'menuid'      => '04.20.14',
+                'source_type' => self::TYPE_REPORT,
+            ],
+            'ca.rpt.bk01' => [
+                'module'      => 'CA',
+                'menuid'      => '04.20.29',
+                'source_type' => self::TYPE_REPORT,
+            ],
+            'ca.rpt.tmnh01a' => [
+                'module'      => 'CA',
+                'menuid'      => '04.20.32',
                 'source_type' => self::TYPE_REPORT,
             ],
             'ar.ph.hdbh' => [

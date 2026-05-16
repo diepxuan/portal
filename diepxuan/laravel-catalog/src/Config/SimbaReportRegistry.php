@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-16 00:27:49
+ * @lastupdate 2026-05-16 09:35:03
  */
 
 namespace Diepxuan\Catalog\Config;
@@ -51,6 +51,27 @@ final class SimbaReportRegistry
                 'ma_mau'  => '01',
                 'spname'  => 'asGLRptNKC03',
                 'rptname' => 'GLNKC032.rpt',
+            ],
+            'ca.rpt.tmnh06' => [
+                'module'  => 'CA',
+                'menuid'  => '04.20.14',
+                'ma_mau'  => '01',
+                'spname'  => 'asCARPTTMNH06',
+                'rptname' => 'CATMNH061.rpt',
+            ],
+            'ca.rpt.bk01' => [
+                'module'  => 'CA',
+                'menuid'  => '04.20.29',
+                'ma_mau'  => '01',
+                'spname'  => 'asGLRptBK02',
+                'rptname' => 'GLBK011.rpt',
+            ],
+            'ca.rpt.tmnh01a' => [
+                'module'  => 'CA',
+                'menuid'  => '04.20.32',
+                'ma_mau'  => '02',
+                'spname'  => 'asCARptTMNH01a',
+                'rptname' => 'CATMNH01a1.rpt',
             ],
             'gl.rpt.ctgs01' => [
                 'module'  => 'GL',
@@ -548,6 +569,13 @@ final class SimbaReportRegistry
                 'ma_mau'  => '02',
                 'spname'  => 'asARRptBCCN05',
                 'rptname' => 'ARBCCN052.rpt',
+            ],
+            'ar.rpt.bccn06' => [
+                'module'  => 'AR',
+                'menuid'  => '06.30.32',
+                'ma_mau'  => '01',
+                'spname'  => 'asARRptBCCN06',
+                'rptname' => 'ARBCCN061.rpt',
             ],
             'ap.rpt.bk01' => [
                 'module'  => 'AP',
