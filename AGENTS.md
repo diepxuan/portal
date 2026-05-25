@@ -319,17 +319,24 @@ Quy tắc docs:
 
 ## 10. Task Management
 
+**Nguồn task mặc định của dự án là file local trong `docs/tasks/`.**
+
+Khi Sếp nhắc “task trong dự án”, “chuyển task”, “đổi trạng thái task”, hoặc thao tác hàng loạt với task mà không nói rõ GitHub, phải hiểu là thao tác trên các file Markdown trong `docs/tasks/`, ví dụ đổi tiền tố/trạng thái trong tên file hoặc nội dung task. Không tự đi kiểm tra GitHub Project/Issues bằng GitHub plugin cho các yêu cầu này.
+
+Chỉ dùng GitHub Issues/Project board khi Sếp nói rõ issue, PR, GitHub, Project board, hoặc đưa link GitHub.
+
 | Loại | Vị trí |
 |------|--------|
-| Task mới | GitHub Issues |
-| Theo dõi tiến độ | GitHub Project board |
-| Task docs nội bộ | `docs/tasks/` |
+| Task dự án mặc định | `docs/tasks/` |
+| Task mới trên GitHub | GitHub Issues, chỉ khi Sếp yêu cầu |
+| Theo dõi GitHub | GitHub Project board, chỉ khi Sếp yêu cầu |
 
 Workflow task:
 
-1. Task được tạo trong GitHub Issues hoặc `docs/tasks/`.
-2. Nếu có issue, thêm vào Project board khi Sếp yêu cầu.
-3. Khi triển khai, đi theo vòng đời `Review -> Implement -> Verify -> PR Review -> Fix -> CI -> Cleanup -> Report`.
+1. Mặc định đọc và cập nhật task trong `docs/tasks/`.
+2. Nếu Sếp yêu cầu GitHub rõ ràng, mới dùng GitHub Issues/Project board.
+3. Nếu có issue, thêm vào Project board khi Sếp yêu cầu.
+4. Khi triển khai, đi theo vòng đời `Review -> Implement -> Verify -> PR Review -> Fix -> CI -> Cleanup -> Report`.
 
 Labels thường dùng:
 
