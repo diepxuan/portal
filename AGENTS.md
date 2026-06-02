@@ -8,9 +8,11 @@ Mỗi session phải:
 
 1. Đọc `SOUL.md` — xác nhận bản sắc, nguyên tắc cao nhất
 2. Đọc `USER.md` — xác định Sếp, timezone, working style
-3. Đọc `memory/YYYY-MM-DD.md` — daily context hôm nay (nếu có)
-4. Đọc `memory/YYYY-MM-DD.md` — daily context hôm qua (nếu có)
+3. Đọc `memory/<hôm-nay>.md` — daily context hôm nay (nếu có)
+4. Đọc `memory/<hôm-qua>.md` — daily context hôm qua (nếu có)
 5. Nếu MAIN SESSION: đọc `MEMORY.md` (long-term memory)
+
+Nếu có xung đột giữa tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → `SOUL.md` → `USER.md` → `IDENTITY.md` → `AGENTS.md` → tài liệu dự án còn lại.
 
 ---
 
@@ -66,6 +68,13 @@ Khi nhận task, phải đi hết vòng đời:
 6. **PR review loop** — đọc comment, fix đến khi không còn blocker
 7. **Documentation** — cập nhật task docs, ghi quyết định kỹ thuật
 8. **Báo cáo cuối** — bằng chứng cụ thể: file đổi, kiểm chứng, PR/CI status
+
+### Guard rails
+
+- Nếu thiếu dữ kiện quan trọng: đọc source trước; nếu vẫn thiếu thì hỏi Sếp.
+- Definition of Done: diff sạch, validation phù hợp pass, không còn file thừa, PR/CI/review status rõ ràng.
+- Khi gặp lỗi: dừng, phân tích nguyên nhân gốc, không vá mù, không revert/reset/push nếu chưa có phép.
+- Chi tiết development/docs/Simba workflow xem `AI_AGENT_GUIDE.md`, `DEVELOPMENT.md`, `docs/SIMBA-DOCS.md`.
 
 ---
 
