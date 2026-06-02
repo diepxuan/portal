@@ -17,7 +17,7 @@ Chuyen doi chuc nang CRUD khach hang trong module ban hang tu .NET sang PHP Lara
 
 ## Tai lieu tham khao
 - `/root/.openclaw/workspace/projects/SimbaSql/docs/decompiled/asia/ARDMKH.dll/README.md`
-- Task 001 (001-ar-danh-muc-khach-hang.md) - da day du
+- Task 001 (001[review]-ar-danh-muc-khach-hang.md) - da day du
 
 ---
 
@@ -39,7 +39,7 @@ Day la task CRUD co ban cho khach hang trong nganh SO, su dung chung danh muc vo
 
 ### Bang: DMKH (Danh muc khach hang)
 
-Xem chi tiet: `001-ar-danh-muc-khach-hang.md`
+Xem chi tiet: `001[review]-ar-danh-muc-khach-hang.md`
 
 ### Truong bo sung cho SO
 

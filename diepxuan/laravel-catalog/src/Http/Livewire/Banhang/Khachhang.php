@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-07 13:05:53
+ * @lastupdate 2026-05-16 00:27:54
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Banhang;
@@ -23,6 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\View\View;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 /**
  * Component Khachhang.
@@ -32,6 +33,8 @@ use Livewire\Component;
  */
 class Khachhang extends Component
 {
+    use WithPagination;
+
     /**
      * Từ khóa tìm kiếm.
      */

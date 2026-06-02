@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-14 15:51:45
+ * @lastupdate 2026-05-16 00:28:04
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Muahang;
@@ -23,10 +23,11 @@ use Livewire\Component;
  */
 class Hoadonmua extends Component
 {
-    public string $pSearch   = '';
-    public ?string $pMa_Kh   = null;
-    public int $pPageIndex   = 1;
-    public int $pPageSize    = 50;
+    public string $pSearch = '';
+    public ?string $pMa_Kh = null;
+    public int $pPageIndex = 1;
+    public int $pPageSize  = 50;
+    public int $timerKey   = 0;
 
     protected $invoices;
 
@@ -60,8 +61,8 @@ class Hoadonmua extends Component
         $this->pMa_Kh     = null;
         $this->pPageIndex = 1;
 
-        // Reset timer to current month
         \CatalogService::timer(['id' => 't' . str_pad((string) now()->month, 2, '0', STR_PAD_LEFT)]);
+        $this->timerKey++;
 
         $this->loadData();
     }
