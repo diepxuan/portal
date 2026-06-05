@@ -42,18 +42,18 @@ class Cungcap extends Component
 
     public function deleteDoiTuong(string $maKh): void
     {
-        $khachHang = \Diepxuan\Catalog\Models\ArDmKh::withoutGlobalScopes()
+        $nhaCungCap = \Diepxuan\Catalog\Models\ArDmKh::withoutGlobalScopes()
             ->where('ma_kh', $maKh)
             ->first()
         ;
 
-        if (!$khachHang) {
+        if (!$nhaCungCap) {
             $this->dispatch('error', message: 'Không tìm thấy nhà cung cấp.');
 
             return;
         }
 
-        if ($khachHang->hasTransactions()) {
+        if ($nhaCungCap->hasTransactions()) {
             $this->dispatch('error', message: 'Không thể xóa nhà cung cấp đã có giao dịch.');
 
             return;
