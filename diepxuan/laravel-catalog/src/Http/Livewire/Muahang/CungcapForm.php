@@ -133,7 +133,7 @@ class CungcapForm extends Component
                 'pIskh' => 0,
                 'pIsncc' => 1,
                 'pIsnv' => 0,
-                'pKsd' => 1,
+                'pKsd' => 0,
                 'pLUser' => $user,
             ]);
 

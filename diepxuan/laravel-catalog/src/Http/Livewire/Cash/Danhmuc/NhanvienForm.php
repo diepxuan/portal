@@ -79,7 +79,7 @@ class NhanvienForm extends CungcapForm
                 'pIskh' => 0,
                 'pIsncc' => 0,
                 'pIsnv' => 1,
-                'pKsd' => 1,
+                'pKsd' => 0,
                 'pLUser' => $user,
             ]);
 

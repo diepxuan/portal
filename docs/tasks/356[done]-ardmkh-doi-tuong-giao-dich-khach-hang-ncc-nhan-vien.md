@@ -12,7 +12,7 @@ Hoàn thiện nhóm menu/dictionary dùng chung bảng Simba `ARDMKH` / form `fr
 |------------|--------------|-----------|------------|---------|
 | `06.90.02` | `ar.khachhang` | Khách hàng / người mua | `MA_KH` | Đã có danh sách, thêm, sửa, xóa |
 | `10.90.22` | `po.cungcap` / `ar.cungcap` | Nhà cung cấp / người bán | `MA_NCC` | Bổ sung thêm, sửa, xóa |
-| `04.90.05` | `ca.nhanvien` | Nhân viên | `MA_NV` | Bổ sung danh sách, thêm, sửa, xóa |
+| `04.90.05` | `ca.nhanvien` | Nhân viên | `MA_KH` | Bổ sung danh sách, thêm, sửa, xóa; phân loại bằng `pModuleId=CA` và cờ `isnv` |
 
 ## Nguồn Simba đã dùng
 
@@ -21,10 +21,15 @@ Hoàn thiện nhóm menu/dictionary dùng chung bảng Simba `ARDMKH` / form `fr
   - `10.90.22` - Danh mục nhà cung cấp.
   - `04.90.05` - Danh mục nhân viên.
 - `simba-docs/data/sysDictionaryInfo.md`
-  - Các menu trên cùng trỏ nhóm ARDMKH / `frmARDMKH`.
+  - `MA_KH` trỏ ARDMKH / `frmARDMKH`.
+  - `MA_NCC` trỏ ARDMKH / `frmARDMKH`.
+  - Lưu ý: `MA_NV` trong sysDictionaryInfo là nguồn vốn `FADMNV` menu `20.90.02`, không dùng cho nhân viên ARDMKH menu `04.90.05`.
+- `simba-docs/data/sysMenu.md`
+  - Menu `04.90.05` dùng command/code `MA_KH` trên `ARDMKH`, phân biệt nhân viên qua module `CA` / cờ `isnv`.
 - Stored procedures có sẵn:
   - `asARGetDMKH`: tham số `pModuleId` phân loại `AR` khách hàng, `AP` nhà cung cấp, `CA` nhân viên.
   - `asARInsDMKH`, `asARUpdDMKH`, `asARDelDMKH`: lưu/xóa mềm theo field cờ `pIskh`, `pIsncc`, `pIsnv`.
+  - `pKsd=0` là đang sử dụng; lookup chứng từ validate ARDMKH với điều kiện `KSd=0`.
 
 ## Thay đổi chính
 
@@ -39,7 +44,7 @@ Hoàn thiện nhóm menu/dictionary dùng chung bảng Simba `ARDMKH` / form `fr
   - `/muahang/nhacungcap/edit/{id}` -> `po.cungcap.edit`.
 - Bổ sung mapping vào registry:
   - `SimbaRouteRegistry`: `ca.nhanvien` -> menu `04.90.05`.
-  - `SimbaDictionaryRegistry`: `ca.nhanvien` -> `MA_NV` / `ARDMKH`.
+  - `SimbaDictionaryRegistry`: `ca.nhanvien` -> `MA_KH` / `ARDMKH` theo command/code của menu `04.90.05`.
 
 ### Component/view
 

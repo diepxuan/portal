@@ -14,7 +14,7 @@ Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
 - Bổ sung Task 356: hoàn thiện nhóm `ARDMKH` / `frmARDMKH` cho khách hàng, nhà cung cấp, nhân viên.
 - `06.90.02` / `MA_KH` / `ar.khachhang`: đã có danh sách, thêm, sửa, xóa khách hàng.
 - `10.90.22` / `MA_NCC` / `po.cungcap`: bổ sung route form thêm/sửa và action xóa nhà cung cấp.
-- `04.90.05` / `MA_NV` / `ca.nhanvien`: bổ sung route danh sách, form thêm/sửa và action xóa nhân viên.
+- `04.90.05` / `MA_KH` / `ca.nhanvien`: bổ sung route danh sách, form thêm/sửa và action xóa nhân viên; `MA_NV` trong sysDictionaryInfo là nguồn vốn `FADMNV`, không phải nhân viên ARDMKH.
 - Ngân hàng khách hàng Task 034 vẫn giữ shell/task docs; chưa mở CRUD ghi dữ liệu khi chưa xác nhận đầy đủ metadata `ARDMKHNGH`/`ARDMKH_NH`.
 
 **Kết quả route/menu hiện tại (2026-05-15):**
