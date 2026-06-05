@@ -2,7 +2,9 @@
 
 ## Trạng thái
 
-Done - 2026-06-05.
+In progress - 2026-06-05.
+
+Ghi chú 2026-06-05: phần form nhân viên edit đã bổ sung field theo SimbaERP, nhưng task chưa hoàn tất vì người dùng vẫn chưa lưu được trên `/cash/nhanvien/edit/1LETRUONGLUAT`. Cần tiếp tục debug runtime lưu dữ liệu trước khi chuyển trạng thái Done.
 
 ## Phạm vi
 
