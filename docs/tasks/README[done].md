@@ -10,12 +10,19 @@ Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
 
 > Cập nhật triển khai 2026-05-15: xem `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md` và `../project/simba-router-menu-matrix.md` để đối chiếu route anchors theo `simba-docs`. Coverage mới tách rõ static screen, generic report/dictionary shell, read-only process shell và blocker chưa được phép execute. Các số PENDING/TODO bên dưới là snapshot audit cũ, không còn là trạng thái route/menu hiện tại.
 
+**Cập nhật nhóm ARDMKH đối tượng giao dịch (2026-06-05):**
+- Bổ sung Task 356: hoàn thiện nhóm `ARDMKH` / `frmARDMKH` cho khách hàng, nhà cung cấp, nhân viên.
+- `06.90.02` / `MA_KH` / `ar.khachhang`: đã có danh sách, thêm, sửa, xóa khách hàng.
+- `10.90.22` / `MA_NCC` / `po.cungcap`: bổ sung route form thêm/sửa và action xóa nhà cung cấp.
+- `04.90.05` / `MA_NV` / `ca.nhanvien`: bổ sung route danh sách, form thêm/sửa và action xóa nhân viên.
+- Ngân hàng khách hàng Task 034 vẫn giữ shell/task docs; chưa mở CRUD ghi dữ liệu khi chưa xác nhận đầy đủ metadata `ARDMKHNGH`/`ARDMKH_NH`.
+
 **Kết quả route/menu hiện tại (2026-05-15):**
-- `SimbaRouteRegistry::routes()` có 302 route anchors.
+- `SimbaRouteRegistry::routes()` có 302 route anchors trước cập nhật Task 356; sau Task 356 bổ sung thêm route anchor `ca.nhanvien`.
 - Active menu có metadata report/dictionary/voucher hoặc DLL/command/code_name đều có route anchor.
 - Còn 57 active menu không route; toàn bộ là root/group/section/dòng trống không có DLL/command/code_name.
 - Còn 48 generic `simba.process` read-only shell; không execute SQL/SP/function vì còn thiếu metadata hoặc có side effect.
-- Full registry/menu/voucher batch pass: `29 tests, 2805 assertions`.
+- Full registry/menu/voucher batch pass: `29 tests, 2805 assertions` là snapshot cũ, không phải test của Task 356.
 
 **Kết quả nhanh:**
 - **298/318 files PENDING** (chưa implement)

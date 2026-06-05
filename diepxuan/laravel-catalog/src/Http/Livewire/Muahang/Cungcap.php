@@ -40,6 +40,36 @@ class Cungcap extends Component
         $this->resetPage();
     }
 
+    public function deleteDoiTuong(string $maKh): void
+    {
+        $khachHang = \Diepxuan\Catalog\Models\ArDmKh::withoutGlobalScopes()
+            ->where('ma_kh', $maKh)
+            ->first()
+        ;
+
+        if (!$khachHang) {
+            $this->dispatch('error', message: 'Không tìm thấy nhà cung cấp.');
+
+            return;
+        }
+
+        if ($khachHang->hasTransactions()) {
+            $this->dispatch('error', message: 'Không thể xóa nhà cung cấp đã có giao dịch.');
+
+            return;
+        }
+
+        try {
+            \Diepxuan\Simba\StoredProcedures\AsARDelDMKH::call([
+                'pMa_cty' => SModel::CTY,
+                'pMa_kh'  => $maKh,
+            ]);
+            $this->dispatch('success', message: 'Đã xóa nhà cung cấp ' . $maKh);
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Không thể xóa nhà cung cấp: ' . $e->getMessage());
+        }
+    }
+
     public function render(): View
     {
         return view('catalog::muahang.cungcap', [
