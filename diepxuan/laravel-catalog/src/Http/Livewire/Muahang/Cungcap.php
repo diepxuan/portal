@@ -95,7 +95,7 @@ class Cungcap extends Component
 
     protected function normalizeRows($results): Collection
     {
-        return collect($results)->map(static fn ($item) => (object) [
+        return new Collection(collect($results)->map(static fn ($item) => (object) [
             'ma_kh'      => $item->ma_kh ?? $item->MA_KH ?? '',
             'ten_kh'     => $item->ten_kh ?? $item->TEN_KH ?? '',
             'dia_chi'    => $item->dia_chi ?? $item->DIA_CHI ?? '',
@@ -104,14 +104,14 @@ class Cungcap extends Component
             'ma_httt_po' => $item->ma_httt_po ?? $item->MA_HTTT_PO ?? '',
             'ma_so_thue' => $item->ma_so_thue ?? $item->MA_SO_THUE ?? '',
             'ma_nhkh'    => $item->ma_nhkh ?? $item->MA_NHKH ?? '',
-        ]);
+        ]));
     }
 
     protected function filterSearchResults(Collection $results): Collection
     {
         $search = mb_strtolower($this->search);
 
-        return $results->filter(static function ($item) use ($search): bool {
+        return new Collection($results->filter(static function ($item) use ($search): bool {
             foreach ([$item->ma_kh, $item->ten_kh, $item->dia_chi, $item->tel, $item->ma_so_thue] as $field) {
                 if (str_contains(mb_strtolower((string) $field), $search)) {
                     return true;
@@ -119,7 +119,7 @@ class Cungcap extends Component
             }
 
             return false;
-        })->values();
+        })->values());
     }
 
     protected function paginateCollection($items): LengthAwarePaginatorContract
