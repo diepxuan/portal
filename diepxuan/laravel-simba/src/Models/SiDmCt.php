@@ -62,6 +62,7 @@ class SiDmCt extends SModel
         'PhFieldlist2IN',
         'CtFieldlist2IN',
         'kieu_trung_so_ct',
+        'VoucherGetWhenOpenForm',
     ];
 
     protected $casts = [
@@ -76,9 +77,10 @@ class SiDmCt extends SModel
         'bp'              => 'boolean',
         'lo'              => 'boolean',
         'sd'              => 'boolean',
-        'vn_sequence'     => 'integer',
-        'vn_width'        => 'integer',
-        'kieu_trung_so_ct' => 'integer',
+        'vn_sequence'            => 'integer',
+        'vn_width'               => 'integer',
+        'kieu_trung_so_ct'       => 'integer',
+        'VoucherGetWhenOpenForm' => 'boolean',
     ];
 
     /**
