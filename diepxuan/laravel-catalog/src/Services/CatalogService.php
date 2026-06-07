@@ -26,8 +26,8 @@ use Illuminate\Support\Facades\Auth;
 class CatalogService
 {
     protected SysLanguage $sysLanguage;
-    protected User $user;
-    protected SysUserInfo $simbaUser;
+    protected ?User $user = null;
+    protected ?SysUserInfo $simbaUser = null;
     protected ?SysCompany $company = null;
     protected string $maNt;
     protected string $id;
@@ -41,17 +41,19 @@ class CatalogService
         // \Debugbar::info('ReportService instance đã được khởi tạo với ID: ' . $this->id);
     }
 
-    public function user()
+    public function user(): ?User
     {
-        return $this->user ?? $this->user = Auth::user();
+        return $this->user ??= Auth::user();
     }
 
     /**
      * Get Simba user.
      */
-    public function simbaUser(): SysUserInfo
+    public function simbaUser(): ?SysUserInfo
     {
-        return $this->simbaUser ?? $this->simbaUser = $this->user()->getSimbaUser();
+        $user = $this->user();
+
+        return $this->simbaUser ??= $user?->getSimbaUser();
     }
 
     public function language()
