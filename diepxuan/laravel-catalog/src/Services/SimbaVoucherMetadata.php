@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Services;
 
 use Diepxuan\Simba\Models\SiDmCt;
+use Diepxuan\Simba\SModel\SModel;
 
 final class SimbaVoucherMetadata
 {
@@ -27,6 +28,7 @@ final class SimbaVoucherMetadata
     {
         $normalizedCodes = array_values(array_unique(array_map('strtoupper', $codes)));
         $rows = SiDmCt::query()
+            ->where('ma_cty', self::companyCode())
             ->whereIn('ma_ct', $normalizedCodes)
             ->get()
             ->keyBy(static fn (SiDmCt $voucher): string => strtoupper((string) $voucher->ma_ct))
@@ -58,5 +60,14 @@ final class SimbaVoucherMetadata
     private static function tableName(string $source): string
     {
         return '' === trim($source) ? '' : strtoupper($source);
+    }
+
+    private static function companyCode(): string
+    {
+        if (class_exists(\CatalogService::class) && method_exists(\CatalogService::class, 'company')) {
+            return (string) (\CatalogService::company()?->ma_cty ?? SModel::CTY);
+        }
+
+        return SModel::CTY;
     }
 }
