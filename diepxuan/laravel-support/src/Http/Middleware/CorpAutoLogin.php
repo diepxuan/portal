@@ -50,11 +50,17 @@ class CorpAutoLogin
 
     private function shouldAutoLogin(Request $request): bool
     {
-        return $this->enabled()
+        return $this->isLocalEnvironment()
+            && $this->enabled()
             && Auth::guest()
             && $this->email() !== ''
             && $this->isAllowedHost($request)
             && $this->isAllowedServerAddress($request);
+    }
+
+    private function isLocalEnvironment(): bool
+    {
+        return app()->environment('local');
     }
 
     private function enabled(): bool

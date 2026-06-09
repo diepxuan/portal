@@ -33,12 +33,21 @@ class SupportServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (!app()->runningInConsole()) {
+        if (!app()->runningInConsole() && $this->shouldForceHttps()) {
             URL::forceScheme('https');
         }
 
         $this->commands([
             GenerateDockerfileSqlsrvCommand::class,
         ]);
+    }
+
+    private function shouldForceHttps(): bool
+    {
+        if (!app()->environment('local')) {
+            return true;
+        }
+
+        return filter_var(env('DX_CORP_AUTO_LOGIN_HTTPS', true), FILTER_VALIDATE_BOOL);
     }
 }
