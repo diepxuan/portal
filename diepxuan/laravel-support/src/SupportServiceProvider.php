@@ -15,6 +15,7 @@ namespace Diepxuan\Support;
 
 use Diepxuan\Support\Commands\GenerateDockerfileSqlsrvCommand;
 use Diepxuan\Support\Utils\DockerfileGenerator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,12 +34,21 @@ class SupportServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (!app()->runningInConsole()) {
+        if (!app()->runningInConsole() && !$this->isAllowedCorpHttpTarget(request())) {
             URL::forceScheme('https');
         }
 
         $this->commands([
             GenerateDockerfileSqlsrvCommand::class,
         ]);
+    }
+
+    private function isAllowedCorpHttpTarget(Request $request): bool
+    {
+        $host = strtolower($request->getHost());
+        $serverAddress = (string) $request->server('SERVER_ADDR', '');
+
+        return str_ends_with($host, '.diepxuan.corp')
+            && $serverAddress === '10.0.0.122';
     }
 }
