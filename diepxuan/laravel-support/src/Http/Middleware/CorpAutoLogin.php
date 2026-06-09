@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Diepxuan\Support\Http\Middleware;
 
-use Diepxuan\Catalog\Models\User;
 use Closure;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -29,16 +29,14 @@ class CorpAutoLogin
     public function handle(Request $request, Closure $next): Response
     {
         if ($this->shouldAutoLogin($request)) {
-            $user = User::query()
-                ->where('email', $this->email())
-                ->first();
+            $user = $this->findUserByEmail();
 
             if ($user !== null) {
                 Auth::login($user);
 
                 Log::info('Corp auto-login authenticated request.', [
-                    'user_id'     => $user->getKey(),
-                    'email'       => $user->email,
+                    'user_id'     => $user->getAuthIdentifier(),
+                    'email'       => $this->email(),
                     'host'        => $request->getHost(),
                     'server_addr' => $request->server('SERVER_ADDR'),
                     'path'        => $request->path(),
@@ -96,6 +94,13 @@ class CorpAutoLogin
     private function email(): string
     {
         return trim((string) env('DX_CORP_AUTO_LOGIN_EMAIL', ''));
+    }
+
+    private function findUserByEmail(): ?Authenticatable
+    {
+        return Auth::getProvider()->retrieveByCredentials([
+            'email' => $this->email(),
+        ]);
     }
 
     private function isAllowedHost(Request $request): bool
