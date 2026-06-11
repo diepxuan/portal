@@ -34,7 +34,7 @@
                 @if ($module['hasRoute'])
                     <a href="{{ route($module['route']) }}"
                        data-sidebar-module="{{ $module['menuid'] }}"
-                       :class="{ 'bg-blue-900/60 border-r-2 border-blue-400': $isActiveModule, 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': !$isActiveModule }"
+                       :class="{ 'bg-blue-900/60 border-r-2 border-blue-400': @js($isActiveModule), 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': @js(! $isActiveModule) }"
                        class="group flex items-center gap-2 rounded-r-md px-2 py-1.5 text-sm transition-colors"
                        title="{{ __($module['name']) }} ({{ $module['moduleid'] }})">
                         <span class="text-[10px] text-gray-600">{{ Str::substr($module['moduleid'], 0, 1) }}</span>
@@ -48,7 +48,7 @@
                     <button type="button"
                             data-sidebar-group="{{ $module['menuid'] }}"
                             class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors hover:bg-gray-800"
-                            :class="{ 'bg-blue-900/40 text-blue-300': $isActiveModule, 'text-gray-300 hover:text-gray-100': !$isActiveModule }"
+                            :class="{ 'bg-blue-900/40 text-blue-300': @js($isActiveModule), 'text-gray-300 hover:text-gray-100': @js(! $isActiveModule) }"
                             x-on:click="$dispatch('sidebar-expand', '{{ $module['menuid'] }}')">
                         <svg class="h-3.5 w-3.5 flex-shrink-0 text-gray-500 transition-transform duration-150"
                              style="transform: rotate(90deg)"
@@ -86,7 +86,7 @@
                                          class="border-l-2 border-gray-700 pl-1">
                                         <button type="button"
                                                 class="flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-xs transition-colors hover:bg-gray-800"
-                                                :class="{ 'text-blue-300': $itemIsActive, 'text-gray-400 hover:text-gray-200': !$itemIsActive }"
+                                                :class="{ 'text-blue-300': @js($itemIsActive), 'text-gray-400 hover:text-gray-200': @js(! $itemIsActive) }"
                                                 x-on:click.stop="$event.target.closest('[x-data]').expanded = !$event.target.closest('[x-data]').expanded">
                                             <svg class="h-3 w-3 text-gray-500 transition-transform duration-150"
                                                  style="transform: {{ $itemHasChildren ? 'rotate(0deg)' : 'rotate(-90deg)' }}"
@@ -102,10 +102,11 @@
                                              x-collapse>
                                             @foreach ($group['children'] as $item)
                                                 @if ($item['hasRoute'])
+                                                    @php $itemIsActiveLink = isset($item['isActive']) && $item['isActive']; @endphp
                                                     <a href="{{ route($item['route']) }}"
                                                        data-sidebar-active="{{ isset($item['isActive']) && $item['isActive'] ? $item['menuid'] : '' }}"
                                                        class="block flex items-center gap-2 rounded px-3 py-1 text-xs transition-colors"
-                                                       :class="{ 'bg-blue-900/30 text-blue-300': isset($item['isActive']) && $item['isActive'], 'border-l-2 border-blue-400': isset($item['isActive']) && $item['isActive'], 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': !(isset($item['isActive']) && $item['isActive']) }"
+                                                       :class="{ 'bg-blue-900/30 text-blue-300': @js($itemIsActiveLink), 'border-l-2 border-blue-400': @js($itemIsActiveLink), 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': @js(! $itemIsActiveLink) }"
                                                        title="{{ __($item['name']) }} ({{ $item['moduleid'] }})">
                                                         <span x-show="!collapsed" class="truncate">{{ __($item['name']) }}</span>
                                                     </a>
@@ -116,10 +117,11 @@
                                 </div>
                             @elseif ($group['hasRoute'])
                                 {{-- Direct leaf under module --}}
+                                @php $groupIsActiveLink = isset($group['isActive']) && $group['isActive']; @endphp
                                 <a href="{{ route($group['route']) }}"
                                    data-sidebar-active="{{ isset($group['isActive']) && $group['isActive'] ? $group['menuid'] : '' }}"
                                    class="flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors"
-                                   :class="{ 'bg-blue-900/30 text-blue-300': isset($group['isActive']) && $group['isActive'], 'border-l-2 border-blue-400': isset($group['isActive']) && $group['isActive'], 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': !(isset($group['isActive']) && $group['isActive']) }"
+                                   :class="{ 'bg-blue-900/30 text-blue-300': @js($groupIsActiveLink), 'border-l-2 border-blue-400': @js($groupIsActiveLink), 'text-gray-400 hover:bg-gray-800 hover:text-gray-200': @js(! $groupIsActiveLink) }"
                                    title="{{ __($group['name']) }} ({{ $group['menuid'] }})">
                                     <span x-show="!collapsed" class="truncate">{{ __($group['name']) }}</span>
                                 </a>
