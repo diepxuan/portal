@@ -22,10 +22,10 @@ use Illuminate\View\View;
 use Livewire\Component;
 
 /**
- * Displays the SimbaERP sysMenu tree for reference.
- * Decoupled from the Portal Menu management component.
+ * Reusable SimbaERP sysMenu tree component.
+ * Supports reference/select usage from system menu screens.
  */
-class SimbaMenuTree extends Component
+class SimbaErpMenus extends Component
 {
     public string $search = '';
 
@@ -95,7 +95,7 @@ class SimbaMenuTree extends Component
 
     public function render(): View
     {
-        return view('catalog::system.simba-menu-tree');
+        return view('catalog::system.simba-erp-menus');
     }
 
     /**
