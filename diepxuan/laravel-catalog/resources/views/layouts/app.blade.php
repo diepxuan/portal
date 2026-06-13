@@ -46,11 +46,8 @@
 
 <div class="min-h-screen bg-gray-100">
 
-    {{-- Persistent left sidebar --}}
-    @livewire('catalog::system.sidebar-menu')
-
-    {{-- Main content area (offset for sidebar) --}}
-    <div class="ps-16 transition-all duration-200 md:ps-64" x-data="{ collapsed: false }">
+    {{-- Main content area --}}
+    <div>
 
         {{-- Top navigation --}}
         @livewire('catalog::navigation-menu')
