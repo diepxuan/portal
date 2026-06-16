@@ -29,8 +29,16 @@
                     <p class="mt-2 text-sm">Sử dụng menu bên trái để mở chức năng theo URL chuẩn /simba/&lt;module&gt;/&lt;type&gt;/&lt;code&gt;.</p>
                 </div>
             @elseif (empty($target['component']))
-                <div class="rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                    Chưa resolve được component cho route <span class="font-mono">{{ $target['routeName'] }}</span>.
+                <div class="space-y-3">
+                    <div class="rounded border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                        Route <span class="font-mono">{{ $target['routeName'] }}</span> chưa có Livewire component.
+                        Portal mở shell tham chiếu metadata từ simba-docs để hỗ trợ audit.
+                    </div>
+                    @include('catalog::system.simba-page-metadata', [
+                        'routeName' => $target['routeName'],
+                        'sourceType' => $target['sourceType'],
+                        'metadata' => $target['metadata'],
+                    ])
                 </div>
             @else
                 @livewire($target['component'], $target['params'], key('simba-page-'.$target['routeName']))

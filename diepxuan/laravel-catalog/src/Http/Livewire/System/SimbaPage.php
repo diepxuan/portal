@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-14 02:00:00
+ * @lastupdate 2026-06-16 08:47:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\System;
@@ -26,12 +26,19 @@ class SimbaPage extends Component
     /** @var array<string,mixed>|null */
     public ?array $target = null;
 
-    public function mount(?string $module = null, ?string $kind = null, ?string $slug = null, SimbaMenuTargetResolver $resolver): void
+    protected SimbaMenuTargetResolver $resolver;
+
+    public function boot(SimbaMenuTargetResolver $resolver): void
+    {
+        $this->resolver = $resolver;
+    }
+
+    public function mount(?string $module = null, ?string $kind = null, ?string $slug = null): void
     {
         $this->module = $module;
         $this->kind   = $kind;
         $this->slug   = $slug;
-        $this->target = $resolver->resolvePath($module, $kind, $slug);
+        $this->target = $this->resolver->resolvePath($module, $kind, $slug);
 
         if (null !== $module && null === $this->target) {
             abort(404);

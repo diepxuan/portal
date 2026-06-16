@@ -8,11 +8,13 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-14 02:00:00
+ * @lastupdate 2026-06-15 13:00:00
  */
 
 namespace Diepxuan\Catalog\Services;
 
+use Diepxuan\Catalog\Config\SimbaDictionaryRegistry;
+use Diepxuan\Catalog\Config\SimbaReportRegistry;
 use Diepxuan\Catalog\Config\SimbaRouteRegistry;
 use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +59,7 @@ class SimbaMenuTargetResolver
         }
 
         $route = Route::getRoutes()->getByName($routeName);
+        $metadata = $this->enrichMetadata($routeName, $metadata);
 
         return [
             'routeName'   => $routeName,
@@ -68,6 +71,51 @@ class SimbaMenuTargetResolver
             'title'       => $this->titleFor($routeName, $metadata, $route),
             'sourceType'  => $metadata['source_type'] ?? SimbaRouteRegistry::TYPE_CUSTOM,
         ];
+    }
+
+    /**
+     * Merge full metadata from the appropriate Simba* registry into the route's
+     * base metadata (which only carries module/menuid/source_type). The merged
+     * metadata drives the read-only "shell" view shown when a route has no
+     * Livewire component yet.
+     *
+     * @param array<string, string> $metadata
+     *
+     * @return array<string, string>
+     */
+    private function enrichMetadata(string $routeName, array $metadata): array
+    {
+        $sourceType = $metadata['source_type'] ?? null;
+
+        $extra = match ($sourceType) {
+            SimbaRouteRegistry::TYPE_DICTIONARY => SimbaDictionaryRegistry::get($routeName) ?? [],
+            SimbaRouteRegistry::TYPE_REPORT     => SimbaReportRegistry::get($routeName) ?? [],
+            SimbaRouteRegistry::TYPE_CUSTOM     => $this->findProcessMetadata($routeName) ?? [],
+            default                             => [],
+        };
+
+        if ([] === $extra) {
+            return $metadata;
+        }
+
+        // Base metadata takes precedence so we never overwrite authoritative
+        // module/menuid/source_type with registry values.
+        return array_merge($extra, $metadata);
+    }
+
+    /**
+     * @return array<string, string>|null
+     */
+    private function findProcessMetadata(string $routeName): ?array
+    {
+        foreach (SimbaProcessMetadata::processes() as $route => $metadata) {
+            if ($route === $routeName) {
+                /** @var array<string, string> $metadata */
+                return $metadata;
+            }
+        }
+
+        return null;
     }
 
     public function urlForRouteName(string $routeName, ?array $metadata = null): string
