@@ -23,7 +23,6 @@ use Livewire\Component;
 
 /**
  * Reusable SimbaERP sysMenu tree component.
- * Supports reference/select usage from system menu screens.
  */
 class SimbaErpMenus extends Component
 {
