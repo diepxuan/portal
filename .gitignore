@@ -66,5 +66,8 @@ simba-docs/
 # Local agent memory
 memory/
 
+# Local analysis reports
+docs/reports/
+
 # Syncthing ignore file
 .stignore
