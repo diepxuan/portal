@@ -419,34 +419,52 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/si/congcu/backup-restore', TaskShell::class)->defaults('title', 'Sao lưu phục hồi dữ liệu')->defaults('dll', 'SIBackup.dll')->defaults('task', 'Task 097')->name('si.tool.backup');
     Route::get('/si/danhmuc/hop-dong', TaskShell::class)->defaults('title', 'Danh mục hợp đồng')->defaults('dll', 'SIDMHD.dll')->defaults('task', 'Task 098')->name('si.dict.hopdong');
     Route::get('/si/baocao/log-chung-tu', TaskShell::class)->defaults('title', 'Thống kê cập nhật chứng từ')->defaults('dll', 'SIRptLOGCT.dll')->defaults('task', 'Task 099')->name('si.rpt.logct');
-    Route::get('/in/danhmuc/cong-no-fifo', TaskShell::class)->defaults('title', 'Công nợ định mức FIFO')->defaults('dll', 'INCDFIFO.dll')->defaults('task', 'Task 101')->name('in.dict.cdfifo');
-    Route::get('/in/danhmuc/lo', TaskShell::class)->defaults('title', 'Danh mục lô')->defaults('dll', 'INDMLO.dll')->defaults('task', 'Task 106')->name('in.dict.lo');
-    Route::get('/in/danhmuc/nhom-hang-vat', TaskShell::class)->defaults('title', 'Danh mục nhóm hàng VAT')->defaults('dll', 'INDMNHVAT.dll')->defaults('task', 'Task 109')->name('in.dict.nhvat');
-    Route::get('/in/danhmuc/phan-loai-vat-tu', TaskShell::class)->defaults('title', 'Phân loại vật tư')->defaults('dll', 'INDMPLVT.dll')->defaults('task', 'Task 112')->name('in.dict.plvt');
-    Route::get('khohang/sanpham', Dmvt::class)->name('in.dmvt');
-    Route::get('khohang/nhomsanpham', Dmnhvt::class)->name('in.dmnhvt');
-    Route::get('khohang/khohang', Dmkho::class)->name('in.khohang');
-    Route::prefix('khohang/chungtu')->name('in.vch.')->group(static function (): void {
-        Route::get('/phieu-nhap-kho', InVoucherIndex::class)->defaults('voucherCode', 'IN1')->name('in1');
-        Route::get('/phieu-xuat-kho', InVoucherIndex::class)->defaults('voucherCode', 'IN2')->name('in2');
-        Route::get('/phieu-xuat-chuyen-kho', InVoucherIndex::class)->defaults('voucherCode', 'IN3')->name('in3');
-        Route::get('/phieu-nhap-dieu-chuyen', InVoucherIndex::class)->defaults('voucherCode', 'IN4')->name('in4');
-        Route::get('/phieu-xuat-cong-cu-dung-cu', InVoucherIndex::class)->defaults('voucherCode', 'IN5')->name('in5');
-        Route::get('/phieu-thao-do-lap-rap', InVoucherIndex::class)->defaults('voucherCode', 'IN6')->name('in6');
+    Route::prefix('simba/in')->name('in.')->group(static function (): void {
+        Route::prefix('dict')->name('dict.')->group(static function (): void {
+            Route::get('/dmvt', Dmvt::class)->name('dmvt');
+            Route::get('/dmnhvt', Dmnhvt::class)->name('dmnhvt');
+            Route::get('/dmkho', Dmkho::class)->name('dmkho');
+            Route::get('/cdfifo', TaskShell::class)->defaults('title', 'Công nợ định mức FIFO')->defaults('dll', 'INCDFIFO.dll')->defaults('task', 'Task 101')->name('cdfifo');
+            Route::get('/lo', TaskShell::class)->defaults('title', 'Danh mục lô')->defaults('dll', 'INDMLO.dll')->defaults('task', 'Task 106')->name('lo');
+            Route::get('/nhvat', TaskShell::class)->defaults('title', 'Danh mục nhóm hàng VAT')->defaults('dll', 'INDMNHVAT.dll')->defaults('task', 'Task 109')->name('nhvat');
+            Route::get('/plvt', TaskShell::class)->defaults('title', 'Phân loại vật tư')->defaults('dll', 'INDMPLVT.dll')->defaults('task', 'Task 112')->name('plvt');
+        });
+
+        Route::prefix('vch')->name('vch.')->group(static function (): void {
+            Route::get('/in1', InVoucherIndex::class)->defaults('voucherCode', 'IN1')->name('in1');
+            Route::get('/in2', InVoucherIndex::class)->defaults('voucherCode', 'IN2')->name('in2');
+            Route::get('/in3', InVoucherIndex::class)->defaults('voucherCode', 'IN3')->name('in3');
+            Route::get('/in4', InVoucherIndex::class)->defaults('voucherCode', 'IN4')->name('in4');
+            Route::get('/in5', InVoucherIndex::class)->defaults('voucherCode', 'IN5')->name('in5');
+            Route::get('/in6', InVoucherIndex::class)->defaults('voucherCode', 'IN6')->name('in6');
+        });
+
+        Route::prefix('rpt')->name('rpt.')->group(static function (): void {
+            Route::get('/tonkho', Tonkho::class)->name('tonkho');
+            Route::get('/ctvt01', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt01')->name('ctvt01');
+            Route::get('/ctvt02', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt02')->name('ctvt02');
+            Route::get('/cd01', InReportIndex::class)->defaults('routeName', 'in.rpt.cd01')->name('cd01');
+            Route::get('/bkn04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkn04')->name('bkn04');
+            Route::get('/thn01', InReportIndex::class)->defaults('routeName', 'in.rpt.thn01')->name('thn01');
+            Route::get('/thn02', InReportIndex::class)->defaults('routeName', 'in.rpt.thn02')->name('thn02');
+            Route::get('/bkx04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkx04')->name('bkx04');
+            Route::get('/thx01', InReportIndex::class)->defaults('routeName', 'in.rpt.thx01')->name('thx01');
+            Route::get('/thx02', InReportIndex::class)->defaults('routeName', 'in.rpt.thx02')->name('thx02');
+            Route::get('/bk01', InReportIndex::class)->defaults('routeName', 'in.rpt.bk01')->name('bk01');
+            Route::get('/banggiatb', InReportIndex::class)->defaults('routeName', 'in.rpt.banggiatb')->name('banggiatb');
+        });
     });
-    Route::get('khohang/tonkho', Tonkho::class)->name('in.tonkho');
-    Route::prefix('khohang/baocao')->name('in.rpt.')->group(static function (): void {
-        Route::get('/the-kho', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt01')->name('ctvt01');
-        Route::get('/the-kho-in-tat-ca', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt02')->name('ctvt02');
-        Route::get('/tonghop-nhapxuatton', InReportIndex::class)->defaults('routeName', 'in.rpt.cd01')->name('cd01');
-        Route::get('/bangke-phieu-nhap', InReportIndex::class)->defaults('routeName', 'in.rpt.bkn04')->name('bkn04');
-        Route::get('/tonghop-hang-nhap', InReportIndex::class)->defaults('routeName', 'in.rpt.thn01')->name('thn01');
-        Route::get('/tonghop-hang-nhap-hai-chitieu', InReportIndex::class)->defaults('routeName', 'in.rpt.thn02')->name('thn02');
-        Route::get('/bangke-phieu-xuat', InReportIndex::class)->defaults('routeName', 'in.rpt.bkx04')->name('bkx04');
-        Route::get('/tonghop-hang-xuat', InReportIndex::class)->defaults('routeName', 'in.rpt.thx01')->name('thx01');
-        Route::get('/tonghop-hang-xuat-hai-chitieu', InReportIndex::class)->defaults('routeName', 'in.rpt.thx02')->name('thx02');
-        Route::get('/thongtin-tinhgia-ntxt', InReportIndex::class)->defaults('routeName', 'in.rpt.bk01')->name('bk01');
-        Route::get('/banggia-trungbinh', InReportIndex::class)->defaults('routeName', 'in.rpt.banggiatb')->name('banggiatb');
+
+    Route::prefix('simba')->name('simba.')->group(static function (): void {
+        Route::get('/', SimbaPage::class)->name('index');
+        Route::get('/{module}/{kind}/{slug}', SimbaPage::class)
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+            ])
+            ->name('show')
+        ;
     });
 
     Route::get('/fa/tinh-khau-hao', TaskShell::class)->defaults('title', 'Tính khấu hao TSCĐ')->defaults('dll', 'FACalKHTS.dll')->defaults('task', 'Task 119')->name('fa.calc.khts');
@@ -521,18 +539,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::resource('hethong/website', SystemWebsiteController::class)->names('system.website');
     Route::get('hethong/menu', Menu::class)->name('system.menu');
     Route::get('hethong/year', YearSelector::class)->name('system.year');
-
-    Route::prefix('simba')->name('simba.')->group(static function (): void {
-        Route::get('/', SimbaPage::class)->name('index');
-        Route::get('/{module}/{kind}/{slug}', SimbaPage::class)
-            ->where([
-                'module' => '[a-z0-9-]+',
-                'kind'   => '[a-z0-9-]+',
-                'slug'   => '[a-z0-9_.-]+',
-            ])
-            ->name('show')
-        ;
-    });
 
     // Balance Management Routes - Livewire Components
     Route::prefix('hethong/balance')->name('system.balance.')->group(static function (): void {
