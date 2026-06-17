@@ -45,6 +45,13 @@ final class SimbaDictionaryRegistry
                 'pk'        => ['MA_CTY', 'MA_PLKH', 'LOAI'],
                 'fields'    => ['ma_cty', 'ma_plkh', 'ten_plkh', 'loai'],
             ],
+            'ar.dict.ardmnhkh' => [
+                'code_name' => 'MA_NHKH',
+                'table'     => 'ARDMNHKH',
+                'menuid'    => '06.90.14',
+                'pk'        => ['MA_CTY', 'MA_NHKH'],
+                'fields'    => ['ma_cty', 'ma_nhkh', 'ten_nhkh', 'ghi_chu', 'ksd'],
+            ],
             'po.cungcap' => [
                 'code_name' => 'MA_NCC',
                 'table'     => 'ARDMKH',

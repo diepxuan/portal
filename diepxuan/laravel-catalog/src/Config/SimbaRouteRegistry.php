@@ -766,6 +766,13 @@ final class SimbaRouteRegistry
                 'dictionary_key'  => 'MA_PLKH',
                 'simba_code_name' => 'ARDMPLKH',
             ],
+            'ar.dict.ardmnhkh' => [
+                'module'          => 'SO',
+                'menuid'          => '06.90.14',
+                'source_type'     => self::TYPE_DICTIONARY,
+                'dictionary_key'  => 'MA_NHKH',
+                'simba_code_name' => 'ARDMNHKH',
+            ],
             'po.cungcap' => [
                 'module'          => 'PO',
                 'menuid'          => '10.90.22',

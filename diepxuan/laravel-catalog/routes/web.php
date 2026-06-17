@@ -94,10 +94,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/co/danhmuc/dinh-muc-bom', Dmbom::class)->name('co.dmbom');
     Route::get('/co/danhmuc/dinh-muc-chi-tiet', Dinhmucchitiet::class)->name('co.dinhmucchitiet');
 
-    Route::get('/ar/danhmuc/nhom-khach-hang', Nhomkhachhang::class)->name('ar.nhomkhachhang');
-    Route::get('/ar/danhmuc/nhom-khach-hang/create', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.create');
-    Route::get('/ar/danhmuc/nhom-khach-hang/edit/{id}', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.edit');
-
     Route::get('/muahang/cungcap', Cungcap::class)->name('ar.cungcap');
     Route::get('/muahang/nhacungcap', Cungcap::class)->name('po.cungcap');
     Route::get('/muahang/nhacungcap/create', CungcapForm::class)->name('po.cungcap.create');
@@ -127,14 +123,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             });
         });
 
-        // SO — Bán hàng (sysMenu 06.*)
-        Route::prefix('so')->group(static function (): void {
-            Route::prefix('dict')->group(static function (): void {
-                Route::get('/phanloai-khachhang', Phanloaikhachhang::class)->name('so.dict.ardmplkh');
-                Route::get('/phanloai-khachhang/create', PhanloaikhachhangEdit::class)->name('so.dict.ardmplkh.create');
-                Route::get('/phanloai-khachhang/edit/{id}', PhanloaikhachhangEdit::class)->name('so.dict.ardmplkh.edit');
-            });
-        });
 
         // IN — Hàng tồn kho (sysMenu 14.*)
         Route::prefix('in')->group(static function (): void {
