@@ -752,7 +752,7 @@ final class SimbaRouteRegistry
                 'menuid'      => '06.20.89',
                 'source_type' => self::TYPE_REPORT,
             ],
-            'ar.khachhang' => [
+            'ar.dict.khachhang' => [
                 'module'          => 'SO',
                 'menuid'          => '06.90.02',
                 'source_type'     => self::TYPE_DICTIONARY,

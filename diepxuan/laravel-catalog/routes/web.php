@@ -94,9 +94,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/co/danhmuc/dinh-muc-bom', Dmbom::class)->name('co.dmbom');
     Route::get('/co/danhmuc/dinh-muc-chi-tiet', Dinhmucchitiet::class)->name('co.dinhmucchitiet');
 
-    Route::get('/banhang/khachhang', Khachhang::class)->name('ar.khachhang');
-    Route::get('/banhang/khachhang/create', KhachhangForm::class)->name('ar.khachhang.create');
-    Route::get('/banhang/khachhang/edit/{id}', KhachhangForm::class)->name('ar.khachhang.edit');
     Route::get('/ar/danhmuc/nhom-khach-hang', Nhomkhachhang::class)->name('ar.nhomkhachhang');
     Route::get('/ar/danhmuc/nhom-khach-hang/create', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.create');
     Route::get('/ar/danhmuc/nhom-khach-hang/edit/{id}', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.edit');
@@ -124,6 +121,15 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     // Source routes for SimbaERP screens. Canonical /simba/... aliases render
     // through SimbaPage; these internal named routes preserve component/defaults.
     Route::prefix('_simba-source')->group(static function (): void {
+        // AR — Công nợ phải thu (sysMenu 06.*)
+        Route::prefix('ar')->group(static function (): void {
+            Route::prefix('dict')->group(static function (): void {
+                Route::get('/khachhang', Khachhang::class)->name('ar.dict.khachhang');
+                Route::get('/khachhang/create', KhachhangForm::class)->name('ar.dict.khachhang.create');
+                Route::get('/khachhang/edit/{id}', KhachhangForm::class)->name('ar.dict.khachhang.edit');
+            });
+        });
+
         // IN — Hàng tồn kho (sysMenu 14.*)
         Route::prefix('in')->group(static function (): void {
 

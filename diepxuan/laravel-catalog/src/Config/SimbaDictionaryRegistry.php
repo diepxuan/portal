@@ -31,7 +31,7 @@ final class SimbaDictionaryRegistry
                 'pk'        => ['MA_CTY', 'TK'],
                 'fields'    => ['ma_cty', 'tk', 'ten_tk', 'ma_nt', 'chi_tiet', 'tk_me', 'bac_tk', 'tk_sc', 'tk_cn', 'pp_tinh_tggs_no', 'pp_tinh_tggs_co', 'kieu_sd', 'so_tk', 'ma_ngh', 'ten_ngh', 'tinh_tp'],
             ],
-            'ar.khachhang' => [
+            'ar.dict.khachhang' => [
                 'code_name' => 'MA_KH',
                 'table'     => 'ARDMKH',
                 'menuid'    => '06.90.02',
