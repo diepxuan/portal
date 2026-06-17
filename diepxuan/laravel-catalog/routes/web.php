@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-16 09:35:00
+ * @lastupdate 2026-06-17 14:27:54
  */
 
 use Diepxuan\Catalog\Http\Controllers\SellController;
@@ -164,10 +164,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/gl/task/153', TaskShell::class)->defaults('title', 'GL GL bieumau BCTC MV20C')->defaults('dll', 'GL task 153')->defaults('task', 'Task 153')->name('gl.task.153');
     Route::get('/gl/task/154', TaskShell::class)->defaults('title', 'GL GL baocao F5 BCTCCR01')->defaults('dll', 'GL task 154')->defaults('task', 'Task 154')->name('gl.task.154');
     Route::get('/gl/task/157', TaskShell::class)->defaults('title', 'GL GL bieumau BCTC MV22A')->defaults('dll', 'GL task 157')->defaults('task', 'Task 157')->name('gl.task.157');
-    Route::get('/in/phieu-xuat-kho', TaskShell::class)->defaults('title', 'Phiếu xuất kho')->defaults('dll', 'INVchIN2.dll')->defaults('task', 'Task 226')->name('in.vch.in2');
-    Route::get('/in/phieu-chuyen-kho', TaskShell::class)->defaults('title', 'Phiếu chuyển kho')->defaults('dll', 'INVchIN3.dll')->defaults('task', 'Task 227')->name('in.vch.in3');
-    Route::get('/in/xuat-cong-cu-dung-cu', TaskShell::class)->defaults('title', 'Xuất CCDC')->defaults('dll', 'INVchIN4.dll')->defaults('task', 'Task 228')->name('in.vch.in4');
-    Route::get('/in/tinh-gia-nhap-truoc-xuat-truoc', TaskShell::class)->defaults('title', 'Nhập trước xuất trước')->defaults('dll', 'INVchIN5.dll')->defaults('task', 'Task 235')->name('in.vch.in5');
+
     Route::get('/fa/phan-bo-cong-cu-dung-cu', TaskShell::class)->defaults('title', 'Phân bổ CCDC')->defaults('dll', 'FAAllocCC.dll')->defaults('task', 'Task 236')->name('fa.transfer.cc2gl');
     Route::get('/fa/phan-bo-tai-san', TaskShell::class)->defaults('title', 'Phân bổ TSCĐ')->defaults('dll', 'FAAllocTS.dll')->defaults('task', 'Task 237')->name('fa.transfer.ts2gl');
     Route::get('/fa/chuyen-tai-san', TaskShell::class)->defaults('title', 'Chuyển tài sản')->defaults('dll', 'FAChuyenTS.dll')->defaults('task', 'Task 238')->name('fa.vch.chuyents');
@@ -306,13 +303,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/so/bang-ke-hoa-don', TaskShell::class)->defaults('title', 'Bảng kê hóa đơn')->defaults('dll', 'SOBKHD.dll')->defaults('task', 'Task 213')->name('so.rpt.bkhd');
     Route::get('/so/thong-bao-mat-chay-hong', TaskShell::class)->defaults('title', 'Thông báo mất/cháy/hỏng hóa đơn')->defaults('dll', 'SOMCHHD.dll')->defaults('task', 'Task 215')->name('so.notice.mchhd');
     Route::get('/so/thong-bao-xoa-hoa-don', TaskShell::class)->defaults('title', 'Thông báo xóa hóa đơn')->defaults('dll', 'SOXoaHD.dll')->defaults('task', 'Task 216')->name('so.notice.xoahd');
-    Route::get('/si/nam-tai-chinh', TaskShell::class)->defaults('title', 'Thay đổi năm tài chính')->defaults('dll', 'SIChangeYear.dll')->defaults('task', 'Task 218')->name('si.year.change');
-    Route::get('/si/import-export', TaskShell::class)->defaults('title', 'Chuyển số liệu import/export')->defaults('dll', 'SIImportExport.dll')->defaults('task', 'Task 219')->name('si.tool.importexport');
-    Route::get('/si/thong-tin-san-pham', TaskShell::class)->defaults('title', 'Thông tin sản phẩm')->defaults('dll', 'SIProductInfo.dll')->defaults('task', 'Task 220')->name('si.info.product');
-    Route::get('/si/sap-xep-so-chung-tu', TaskShell::class)->defaults('title', 'Sắp xếp lại số chứng từ')->defaults('dll', 'SISortVoucher.dll')->defaults('task', 'Task 221')->name('si.tool.sortno');
-    Route::get('/si/cong-cu-he-thong-1', TaskShell::class)->defaults('title', 'Công cụ hệ thống')->defaults('dll', 'SITool.dll')->defaults('task', 'Task 222')->name('si.tool.system1');
-    Route::get('/si/cong-cu-he-thong-2', TaskShell::class)->defaults('title', 'Công cụ hệ thống 2')->defaults('dll', 'SITool2.dll')->defaults('task', 'Task 223')->name('si.tool.system2');
-    Route::get('/si/cap-nhat-log', TaskShell::class)->defaults('title', 'Cập nhật log')->defaults('dll', 'SILog.dll')->defaults('task', 'Task 224')->name('si.tool.log');
     Route::get('/so/danhmuc/chuyen-khoan', TaskShell::class)->defaults('title', 'Danh mục chuyển khoản')->defaults('dll', 'SODMCK.dll')->defaults('task', 'Task 205')->name('so.dict.ck');
     Route::get('/so/danhmuc/don-gia-vat-tu', TaskShell::class)->defaults('title', 'Đơn giá vật tư')->defaults('dll', 'SODMDGVT.dll')->defaults('task', 'Task 206')->name('so.dict.dgvt');
     Route::get('/so/danhmuc/dieu-khoan-thanh-toan', TaskShell::class)->defaults('title', 'Điều khoản thanh toán SO')->defaults('dll', 'SODMDKTT.dll')->defaults('task', 'Task 207')->name('so.dict.dktt');
@@ -414,254 +404,101 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         Route::get('/hoadonmuanhapkhau', PoVoucherIndex::class)->defaults('voucherCode', 'PO7')->name('po7');
     });
 
-    Route::get('/si/chungtu/phieu-nhap-kho', TaskShell::class)->defaults('title', 'Phiếu nhập kho SI')->defaults('dll', 'SIVchSI1.dll')->defaults('task', 'Task 096')->name('si.vch.si1');
-    Route::get('/si/congcu/backup-restore', TaskShell::class)->defaults('title', 'Sao lưu phục hồi dữ liệu')->defaults('dll', 'SIBackup.dll')->defaults('task', 'Task 097')->name('si.tool.backup');
-    Route::get('/si/danhmuc/hop-dong', TaskShell::class)->defaults('title', 'Danh mục hợp đồng')->defaults('dll', 'SIDMHD.dll')->defaults('task', 'Task 098')->name('si.dict.hopdong');
-    Route::get('/si/baocao/log-chung-tu', TaskShell::class)->defaults('title', 'Thống kê cập nhật chứng từ')->defaults('dll', 'SIRptLOGCT.dll')->defaults('task', 'Task 099')->name('si.rpt.logct');
-    Route::prefix('simba/in')->name('in.')->group(static function (): void {
-        Route::prefix('dict')->name('dict.')->group(static function (): void {
-            Route::get('/dmvt', Dmvt::class)->name('dmvt');
-            Route::get('/dmnhvt', Dmnhvt::class)->name('dmnhvt');
-            Route::get('/dmkho', Dmkho::class)->name('dmkho');
-            Route::get('/cdfifo', TaskShell::class)->defaults('title', 'Công nợ định mức FIFO')->defaults('dll', 'INCDFIFO.dll')->defaults('task', 'Task 101')->name('cdfifo');
-            Route::get('/lo', TaskShell::class)->defaults('title', 'Danh mục lô')->defaults('dll', 'INDMLO.dll')->defaults('task', 'Task 106')->name('lo');
-            Route::get('/nhvat', TaskShell::class)->defaults('title', 'Danh mục nhóm hàng VAT')->defaults('dll', 'INDMNHVAT.dll')->defaults('task', 'Task 109')->name('nhvat');
-            Route::get('/plvt', TaskShell::class)->defaults('title', 'Phân loại vật tư')->defaults('dll', 'INDMPLVT.dll')->defaults('task', 'Task 112')->name('plvt');
+    // Source routes for SimbaERP screens. Canonical /simba/... aliases render
+    // through SimbaPage; these internal named routes preserve component/defaults.
+    Route::prefix('_simba-source')->group(static function (): void {
+        // CA — Tiền mặt, Ngân hàng (sysMenu 04.*)
+        Route::prefix('ca')->name('ca.')->group(static function (): void {
+            Route::prefix('rpt')->name('rpt.')->group(static function (): void {
+                Route::get('/tmnh06', TaskShell::class)->defaults('title', 'Sổ chi tiết tiền vay')->defaults('dll', 'CARptTMNH06')->name('tmnh06');
+                Route::get('/bk01', TaskShell::class)->defaults('title', 'Bảng kê chứng từ')->defaults('dll', 'GLRptBK01')->name('bk01');
+                Route::get('/tmnh01a', TaskShell::class)->defaults('title', 'Sổ kế toán chi tiết quỹ tiền mặt')->defaults('dll', 'CARptTMNH01')->name('tmnh01a');
+            });
         });
 
-        Route::prefix('vch')->name('vch.')->group(static function (): void {
-            Route::get('/in1', InVoucherIndex::class)->defaults('voucherCode', 'IN1')->name('in1');
-            Route::get('/in2', InVoucherIndex::class)->defaults('voucherCode', 'IN2')->name('in2');
-            Route::get('/in3', InVoucherIndex::class)->defaults('voucherCode', 'IN3')->name('in3');
-            Route::get('/in4', InVoucherIndex::class)->defaults('voucherCode', 'IN4')->name('in4');
-            Route::get('/in5', InVoucherIndex::class)->defaults('voucherCode', 'IN5')->name('in5');
-            Route::get('/in6', InVoucherIndex::class)->defaults('voucherCode', 'IN6')->name('in6');
+        // IN — Hàng tồn kho (sysMenu 14.*)
+        Route::prefix('in')->group(static function (): void {
+            Route::prefix('vch')->group(static function (): void {
+                Route::get('/in1', InVoucherIndex::class)->defaults('voucherCode', 'IN1')->name('in.vch.in1');
+                Route::get('/in2', InVoucherIndex::class)->defaults('voucherCode', 'IN2')->name('in.vch.in2');
+                Route::get('/in3', InVoucherIndex::class)->defaults('voucherCode', 'IN3')->name('in.vch.in3');
+                Route::get('/in5', InVoucherIndex::class)->defaults('voucherCode', 'IN5')->name('in.vch.in5');
+                Route::get('/in6', InVoucherIndex::class)->defaults('voucherCode', 'IN6')->name('in.vch.in6');
+                Route::get('/in4', InVoucherIndex::class)->defaults('voucherCode', 'IN4')->name('in.vch.in4');
+            });
+
+            Route::prefix('rpt')->group(static function (): void {
+                Route::get('/ctvt01', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt01')->name('in.rpt.ctvt01');
+                Route::get('/ctvt02', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt02')->name('in.rpt.ctvt02');
+                Route::get('/cd01', InReportIndex::class)->defaults('routeName', 'in.rpt.cd01')->name('in.rpt.cd01');
+                Route::get('/tonkho', Tonkho::class)->name('in.tonkho');
+                Route::get('/bkn04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkn04')->name('in.rpt.bkn04');
+                Route::get('/thn01', InReportIndex::class)->defaults('routeName', 'in.rpt.thn01')->name('in.rpt.thn01');
+                Route::get('/thn02', InReportIndex::class)->defaults('routeName', 'in.rpt.thn02')->name('in.rpt.thn02');
+                Route::get('/bkx04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkx04')->name('in.rpt.bkx04');
+                Route::get('/thx01', InReportIndex::class)->defaults('routeName', 'in.rpt.thx01')->name('in.rpt.thx01');
+                Route::get('/thx02', InReportIndex::class)->defaults('routeName', 'in.rpt.thx02')->name('in.rpt.thx02');
+                Route::get('/bk01', InReportIndex::class)->defaults('routeName', 'in.rpt.bk01')->name('in.rpt.bk01');
+                Route::get('/banggiatb', InReportIndex::class)->defaults('routeName', 'in.rpt.banggiatb')->name('in.rpt.banggiatb');
+            });
+
+            Route::prefix('dict')->group(static function (): void {
+                Route::get('/dmvt', Dmvt::class)->name('in.dict.dmvt');
+                Route::get('/dmnhvt', Dmnhvt::class)->name('in.dict.dmnhvt');
+                Route::get('/dmkho', Dmkho::class)->name('in.dict.dmkho');
+                Route::get('/lo', TaskShell::class)->defaults('title', 'Danh mục lô')->defaults('dll', 'INDMLO')->defaults('task', 'Task 106')->name('in.dict.lo');
+                Route::get('/cdfifo', TaskShell::class)->defaults('title', 'Công nợ định mức FIFO')->defaults('dll', 'INCDFIFO')->defaults('task', 'Task 101')->name('in.dict.cdfifo');
+                Route::get('/nhvat', TaskShell::class)->defaults('title', 'Danh mục nhóm hàng VAT')->defaults('dll', 'INDMNHVAT')->defaults('task', 'Task 109')->name('in.dict.nhvat');
+                Route::get('/plvt', TaskShell::class)->defaults('title', 'Phân loại vật tư')->defaults('dll', 'INDMPLVT')->defaults('task', 'Task 112')->name('in.dict.plvt');
+            });
         });
 
-        Route::prefix('rpt')->name('rpt.')->group(static function (): void {
-            Route::get('/tonkho', Tonkho::class)->name('tonkho');
-            Route::get('/ctvt01', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt01')->name('ctvt01');
-            Route::get('/ctvt02', InReportIndex::class)->defaults('routeName', 'in.rpt.ctvt02')->name('ctvt02');
-            Route::get('/cd01', InReportIndex::class)->defaults('routeName', 'in.rpt.cd01')->name('cd01');
-            Route::get('/bkn04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkn04')->name('bkn04');
-            Route::get('/thn01', InReportIndex::class)->defaults('routeName', 'in.rpt.thn01')->name('thn01');
-            Route::get('/thn02', InReportIndex::class)->defaults('routeName', 'in.rpt.thn02')->name('thn02');
-            Route::get('/bkx04', InReportIndex::class)->defaults('routeName', 'in.rpt.bkx04')->name('bkx04');
-            Route::get('/thx01', InReportIndex::class)->defaults('routeName', 'in.rpt.thx01')->name('thx01');
-            Route::get('/thx02', InReportIndex::class)->defaults('routeName', 'in.rpt.thx02')->name('thx02');
-            Route::get('/bk01', InReportIndex::class)->defaults('routeName', 'in.rpt.bk01')->name('bk01');
-            Route::get('/banggiatb', InReportIndex::class)->defaults('routeName', 'in.rpt.banggiatb')->name('banggiatb');
+        // SI — Hệ thống (sysMenu 90.*)
+        Route::prefix('si')->group(static function (): void {
+            Route::prefix('dict')->group(static function (): void {
+                Route::get('/dmct', SiDictionaryIndex::class)->defaults('routeName', 'si.dmct')->name('si.dmct');
+                Route::get('/dmnt', SiDictionaryIndex::class)->defaults('routeName', 'si.dmnt')->name('si.dmnt');
+                Route::get('/dmphi', SiDictionaryIndex::class)->defaults('routeName', 'si.dmphi')->name('si.dmphi');
+                Route::get('/option10', TaskShell::class)->defaults('title', 'Danh mục tùy chọn 10')->defaults('dll', 'SIDM10')->defaults('task', 'Task 082')->name('si.dict.option10');
+                Route::get('/bophan', TaskShell::class)->defaults('title', 'Danh mục bộ phận')->defaults('dll', 'SIDMBP')->defaults('task', 'Task 084')->name('si.dict.bophan');
+                Route::get('/nhomhd', TaskShell::class)->defaults('title', 'Danh mục nhóm hợp đồng')->defaults('dll', 'SIDMNHHD')->defaults('task', 'Task 088')->name('si.dict.nhomhd');
+                Route::get('/tygia', TaskShell::class)->defaults('title', 'Tỷ giá ngoại tệ')->defaults('dll', 'SIDMTGNT')->defaults('task', 'Task 089')->name('si.dict.tygia');
+                Route::get('/nx', TaskShell::class)->defaults('title', 'Danh mục nhập xuất')->defaults('dll', 'SIDMNX')->defaults('task', 'Task 091')->name('si.dict.nx');
+                Route::get('/option9', TaskShell::class)->defaults('title', 'Danh mục tùy chọn 9')->defaults('dll', 'SIDM9')->defaults('task', 'Task 092')->name('si.dict.option9');
+                Route::get('/nganhang', TaskShell::class)->defaults('title', 'Danh mục ngân hàng')->defaults('dll', 'SIDMNH')->defaults('task', 'Task 095')->name('si.dict.nganhang');
+                Route::get('/hopdong', TaskShell::class)->defaults('title', 'Danh mục hợp đồng')->defaults('dll', 'SIDMHD')->defaults('task', 'Task 098')->name('si.dict.hopdong');
+            });
+            Route::prefix('tool')->group(static function (): void {
+                Route::get('sync', TaskShell::class)->defaults('title', 'Đồng bộ hệ thống')->defaults('dll', 'SIUtilities')->defaults('task', 'Task 081')->name('si.tool.sync');
+                Route::get('maintenance', TaskShell::class)->defaults('title', 'Bảo trì hệ thống')->defaults('dll', 'SIMaintenance')->defaults('task', 'Task 086')->name('si.tool.maintenance');
+                Route::get('backup', TaskShell::class)->defaults('title', 'Sao lưu phục hồi dữ liệu')->defaults('dll', 'SIBackup')->defaults('task', 'Task 097')->name('si.tool.backup');
+                Route::get('importexport', TaskShell::class)->defaults('title', 'Chuyển số liệu import/export')->defaults('dll', 'SIImportExport')->defaults('task', 'Task 219')->name('si.tool.importexport');
+                Route::get('sortno', TaskShell::class)->defaults('title', 'Sắp xếp lại số chứng từ')->defaults('dll', 'SISortVoucher')->defaults('task', 'Task 221')->name('si.tool.sortno');
+                Route::get('system1', TaskShell::class)->defaults('title', 'Công cụ hệ thống')->defaults('dll', 'SITool')->defaults('task', 'Task 222')->name('si.tool.system1');
+                Route::get('system2', TaskShell::class)->defaults('title', 'Công cụ hệ thống 2')->defaults('dll', 'SITool2')->defaults('task', 'Task 223')->name('si.tool.system2');
+                Route::get('log', TaskShell::class)->defaults('title', 'Cập nhật log')->defaults('dll', 'SILog')->defaults('task', 'Task 224')->name('si.tool.log');
+            });
+            Route::get('/info/program', TaskShell::class)->defaults('title', 'Thông tin chương trình')->defaults('dll', 'SIAbout')->defaults('task', 'Task 083')->name('si.info.program');
+            Route::get('/config/params', TaskShell::class)->defaults('title', 'Tham số hệ thống')->defaults('dll', 'SIOptions')->defaults('task', 'Task 085')->name('si.config.params');
+            Route::get('/config/theme', TaskShell::class)->defaults('title', 'Cấu hình theme giao diện')->defaults('dll', 'SITheme')->defaults('task', 'Task 090')->name('si.config.theme');
+            Route::get('/vch/si1', TaskShell::class)->defaults('title', 'Phiếu nhập kho SI')->defaults('dll', 'SIVchSI1')->defaults('task', 'Task 096')->name('si.vch.si1');
+            Route::get('/rpt/logct', TaskShell::class)->defaults('title', 'Thống kê cập nhật chứng từ')->defaults('dll', 'SIRptLOGCT')->defaults('task', 'Task 099')->name('si.rpt.logct');
+            Route::get('/year/change', TaskShell::class)->defaults('title', 'Thay đổi năm tài chính')->defaults('dll', 'SIChangeYear')->defaults('task', 'Task 218')->name('si.year.change');
+            Route::get('/info/product', TaskShell::class)->defaults('title', 'Thông tin sản phẩm')->defaults('dll', 'SIProductInfo')->defaults('task', 'Task 220')->name('si.info.product');
         });
     });
 
-    Route::prefix('simba/ap/rpt')->name('ap.rpt.')->group(static function (): void {
-        Route::get('/bccn01', SimbaPage::class)->name('bccn01');
-        Route::get('/bccn01a', SimbaPage::class)->name('bccn01a');
-        Route::get('/bccn01a-cont', SimbaPage::class)->name('bccn01a-cont');
-        Route::get('/bccn01sl', SimbaPage::class)->name('bccn01sl');
-        Route::get('/bccn02', SimbaPage::class)->name('bccn02');
-        Route::get('/bccn03', SimbaPage::class)->name('bccn03');
-        Route::get('/bccn03-close', SimbaPage::class)->name('bccn03-close');
-        Route::get('/bccn03-open', SimbaPage::class)->name('bccn03-open');
-        Route::get('/bccn04', SimbaPage::class)->name('bccn04');
-        Route::get('/bccn05', SimbaPage::class)->name('bccn05');
-        Route::get('/bccn05-detail', SimbaPage::class)->name('bccn05-detail');
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-    });
-    Route::prefix('simba/ap/vch')->name('ap.vch.')->group(static function (): void {
-        Route::get('/ap4', SimbaPage::class)->name('ap4');
-    });
-    Route::prefix('simba/ar/rpt')->name('ar.rpt.')->group(static function (): void {
-        Route::get('/bccn01', SimbaPage::class)->name('bccn01');
-        Route::get('/bccn01a', SimbaPage::class)->name('bccn01a');
-        Route::get('/bccn01a-cont', SimbaPage::class)->name('bccn01a-cont');
-        Route::get('/bccn01sl', SimbaPage::class)->name('bccn01sl');
-        Route::get('/bccn02', SimbaPage::class)->name('bccn02');
-        Route::get('/bccn03', SimbaPage::class)->name('bccn03');
-        Route::get('/bccn03-close', SimbaPage::class)->name('bccn03-close');
-        Route::get('/bccn03-open', SimbaPage::class)->name('bccn03-open');
-        Route::get('/bccn04', SimbaPage::class)->name('bccn04');
-        Route::get('/bccn05', SimbaPage::class)->name('bccn05');
-        Route::get('/bccn05-detail', SimbaPage::class)->name('bccn05-detail');
-        Route::get('/bccn06', SimbaPage::class)->name('bccn06');
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-    });
-    Route::prefix('simba/ar/vch')->name('ar.vch.')->group(static function (): void {
-        Route::get('/ar4', SimbaPage::class)->name('ar4');
-    });
-    Route::prefix('simba/ca/rpt')->name('ca.rpt.')->group(static function (): void {
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-        Route::get('/tmnh01a', SimbaPage::class)->name('tmnh01a');
-        Route::get('/tmnh06', SimbaPage::class)->name('tmnh06');
-    });
-    Route::prefix('simba/co/rpt')->name('co.rpt.')->group(static function (): void {
-        Route::get('/bccn04', SimbaPage::class)->name('bccn04');
-        Route::get('/bk02', SimbaPage::class)->name('bk02');
-        Route::get('/bkn04', SimbaPage::class)->name('bkn04');
-        Route::get('/bkx04', SimbaPage::class)->name('bkx04');
-        Route::get('/gt01', SimbaPage::class)->name('gt01');
-        Route::get('/gt02', SimbaPage::class)->name('gt02');
-        Route::get('/gt03', SimbaPage::class)->name('gt03');
-        Route::get('/gt03-dutoan', SimbaPage::class)->name('gt03-dutoan');
-        Route::get('/gt03-lailo', SimbaPage::class)->name('gt03-lailo');
-        Route::get('/khcp', SimbaPage::class)->name('khcp');
-        Route::get('/th01', SimbaPage::class)->name('th01');
-        Route::get('/thn01', SimbaPage::class)->name('thn01');
-        Route::get('/thn02', SimbaPage::class)->name('thn02');
-        Route::get('/thx01', SimbaPage::class)->name('thx01');
-        Route::get('/thx02', SimbaPage::class)->name('thx02');
-    });
-    Route::prefix('simba/fa/rpt')->name('fa.rpt.')->group(static function (): void {
-        Route::get('/bcpt10', SimbaPage::class)->name('bcpt10');
-        Route::get('/bcts01', SimbaPage::class)->name('bcts01');
-        Route::get('/bcts04', SimbaPage::class)->name('bcts04');
-        Route::get('/bcts05', SimbaPage::class)->name('bcts05');
-        Route::get('/bcts06', SimbaPage::class)->name('bcts06');
-        Route::get('/bcts07', SimbaPage::class)->name('bcts07');
-        Route::get('/bcts08', SimbaPage::class)->name('bcts08');
-        Route::get('/bcts09', SimbaPage::class)->name('bcts09');
-        Route::get('/bkn04', SimbaPage::class)->name('bkn04');
-        Route::get('/bkx04', SimbaPage::class)->name('bkx04');
-        Route::get('/thn01', SimbaPage::class)->name('thn01');
-        Route::get('/thx01', SimbaPage::class)->name('thx01');
-    });
-    Route::prefix('simba/gl/rpt')->name('gl.rpt.')->group(static function (): void {
-        Route::get('/bct01', SimbaPage::class)->name('bct01');
-        Route::get('/bct02', SimbaPage::class)->name('bct02');
-        Route::get('/bct03', SimbaPage::class)->name('bct03');
-        Route::get('/bct04', SimbaPage::class)->name('bct04');
-        Route::get('/bct05', SimbaPage::class)->name('bct05');
-        Route::get('/bct06', SimbaPage::class)->name('bct06');
-        Route::get('/bctc01', SimbaPage::class)->name('bctc01');
-        Route::get('/bctc02', SimbaPage::class)->name('bctc02');
-        Route::get('/bctc03', SimbaPage::class)->name('bctc03');
-        Route::get('/bctc04', SimbaPage::class)->name('bctc04');
-        Route::get('/bctccdtb02', SimbaPage::class)->name('bctccdtb02');
-        Route::get('/bctccdtb03', SimbaPage::class)->name('bctccdtb03');
-        Route::get('/bctccdtf02', SimbaPage::class)->name('bctccdtf02');
-        Route::get('/bctccdtf03a', SimbaPage::class)->name('bctccdtf03a');
-        Route::get('/bctccdtf03b', SimbaPage::class)->name('bctccdtf03b');
-        Route::get('/bctccdtf03c', SimbaPage::class)->name('bctccdtf03c');
-        Route::get('/bctccdtf03d', SimbaPage::class)->name('bctccdtf03d');
-        Route::get('/bk02', SimbaPage::class)->name('bk02');
-        Route::get('/ctgs01', SimbaPage::class)->name('ctgs01');
-        Route::get('/ctgs02', SimbaPage::class)->name('ctgs02');
-        Route::get('/ctgs03', SimbaPage::class)->name('ctgs03');
-        Route::get('/ctgs05', SimbaPage::class)->name('ctgs05');
-        Route::get('/nkc01', SimbaPage::class)->name('nkc01');
-        Route::get('/nkc02', SimbaPage::class)->name('nkc02');
-        Route::get('/nkc03', SimbaPage::class)->name('nkc03');
-        Route::get('/nkc03-chi', SimbaPage::class)->name('nkc03-chi');
-        Route::get('/nkc04', SimbaPage::class)->name('nkc04');
-        Route::get('/nkc05', SimbaPage::class)->name('nkc05');
-        Route::get('/nkc06', SimbaPage::class)->name('nkc06');
-        Route::get('/nkc07', SimbaPage::class)->name('nkc07');
-        Route::get('/th01', SimbaPage::class)->name('th01');
-        Route::get('/tmbctc', SimbaPage::class)->name('tmbctc');
-    });
-    Route::prefix('simba/gl/vch')->name('gl.vch.')->group(static function (): void {
-        Route::get('/gl1', SimbaPage::class)->name('gl1');
-        Route::get('/nb1', SimbaPage::class)->name('nb1');
-    });
-    Route::prefix('simba/in/dict')->name('in.dict.')->group(static function (): void {
-        Route::get('/dmkho', SimbaPage::class)->name('dmkho');
-        Route::get('/dmnhvt', SimbaPage::class)->name('dmnhvt');
-        Route::get('/dmvt', SimbaPage::class)->name('dmvt');
-    });
-    Route::prefix('simba/in/rpt')->name('in.rpt.')->group(static function (): void {
-        Route::get('/banggiatb', SimbaPage::class)->name('banggiatb');
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-        Route::get('/bkn04', SimbaPage::class)->name('bkn04');
-        Route::get('/bkx04', SimbaPage::class)->name('bkx04');
-        Route::get('/cd01', SimbaPage::class)->name('cd01');
-        Route::get('/ctvt01', SimbaPage::class)->name('ctvt01');
-        Route::get('/ctvt02', SimbaPage::class)->name('ctvt02');
-        Route::get('/thn01', SimbaPage::class)->name('thn01');
-        Route::get('/thn02', SimbaPage::class)->name('thn02');
-        Route::get('/thx01', SimbaPage::class)->name('thx01');
-        Route::get('/thx02', SimbaPage::class)->name('thx02');
-    });
-    Route::prefix('simba/in/vch')->name('in.vch.')->group(static function (): void {
-        Route::get('/in1', SimbaPage::class)->name('in1');
-        Route::get('/in2', SimbaPage::class)->name('in2');
-        Route::get('/in3', SimbaPage::class)->name('in3');
-        Route::get('/in4', SimbaPage::class)->name('in4');
-        Route::get('/in5', SimbaPage::class)->name('in5');
-        Route::get('/in6', SimbaPage::class)->name('in6');
-    });
-    Route::prefix('simba/po/rpt')->name('po.rpt.')->group(static function (): void {
-        Route::get('/bcpt03', SimbaPage::class)->name('bcpt03');
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-        Route::get('/bk02', SimbaPage::class)->name('bk02');
-        Route::get('/bk03', SimbaPage::class)->name('bk03');
-        Route::get('/nkc05', SimbaPage::class)->name('nkc05');
-        Route::get('/th01', SimbaPage::class)->name('th01');
-        Route::get('/th02', SimbaPage::class)->name('th02');
-        Route::get('/th03', SimbaPage::class)->name('th03');
-    });
-    Route::prefix('simba/so/rpt')->name('so.rpt.')->group(static function (): void {
-        Route::get('/bcpt03', SimbaPage::class)->name('bcpt03');
-        Route::get('/bcpt03-net', SimbaPage::class)->name('bcpt03-net');
-        Route::get('/bcpt04', SimbaPage::class)->name('bcpt04');
-        Route::get('/bcpt04-nv', SimbaPage::class)->name('bcpt04-nv');
-        Route::get('/bcpt06', SimbaPage::class)->name('bcpt06');
-        Route::get('/bk01', SimbaPage::class)->name('bk01');
-        Route::get('/bk02', SimbaPage::class)->name('bk02');
-        Route::get('/lailo', SimbaPage::class)->name('lailo');
-        Route::get('/lailo-th', SimbaPage::class)->name('lailo-th');
-        Route::get('/nkc04', SimbaPage::class)->name('nkc04');
-        Route::get('/th01', SimbaPage::class)->name('th01');
-        Route::get('/th02', SimbaPage::class)->name('th02');
-    });
-    Route::get('/simba/po/dict/cungcap', SimbaPage::class)->name('ar.cungcap');
-    Route::get('/simba/so/dict/khachhang', SimbaPage::class)->name('ar.khachhang');
-    Route::get('/simba/so/vch/hdbh', SimbaPage::class)->name('ar.ph.hdbh');
-    Route::get('/simba/so/vch/so1', SimbaPage::class)->name('banhang.so1');
-    Route::get('/simba/so/vch/so4', SimbaPage::class)->name('banhang.so4');
-    Route::get('/simba/so/vch/so5', SimbaPage::class)->name('banhang.so5');
-    Route::get('/simba/ca/rpt/chi', SimbaPage::class)->name('ca.chi');
-    Route::get('/simba/ca/vch/baoco', SimbaPage::class)->name('ca.nganhang.baoco');
-    Route::get('/simba/ca/vch/baono', SimbaPage::class)->name('ca.nganhang.baono');
-    Route::get('/simba/ca/rpt/quy', SimbaPage::class)->name('ca.nganhang.quy');
-    Route::get('/simba/ca/dict/nhanvien', SimbaPage::class)->name('ca.nhanvien');
-    Route::get('/simba/ca/rpt/thu', SimbaPage::class)->name('ca.thu');
-    Route::get('/simba/ca/vch/chi', SimbaPage::class)->name('ca.tienmat.chi');
-    Route::get('/simba/ca/rpt/quy', SimbaPage::class)->name('ca.tienmat.quy');
-    Route::get('/simba/ca/vch/thu', SimbaPage::class)->name('ca.tienmat.thu');
-    Route::get('/simba/co/dict/dmnhspct', SimbaPage::class)->name('co.dmnhspct');
-    Route::get('/simba/co/dict/dmsp', SimbaPage::class)->name('co.dmsp');
-    Route::get('/simba/co/dict/dmspct', SimbaPage::class)->name('co.dmspct');
-    Route::get('/simba/fa/dict/dmbpsd', SimbaPage::class)->name('fa.dmbpsd');
-    Route::get('/simba/fa/dict/dmnv', SimbaPage::class)->name('fa.dmnv');
-    Route::get('/simba/gl/dict/taikhoan', SimbaPage::class)->name('gl.taikhoan');
-    Route::get('/simba/in/rpt/tonkho', SimbaPage::class)->name('in.tonkho');
-    Route::get('/simba/po/vch/hoadonmua', SimbaPage::class)->name('muahang.hoadonmua');
-    Route::get('/simba/po/vch/po1', SimbaPage::class)->name('muahang.po1');
-    Route::get('/simba/po/vch/po4', SimbaPage::class)->name('muahang.po4');
-    Route::get('/simba/po/vch/po5', SimbaPage::class)->name('muahang.po5');
-    Route::get('/simba/po/vch/po6', SimbaPage::class)->name('muahang.po6');
-    Route::get('/simba/po/vch/po7', SimbaPage::class)->name('muahang.po7');
-    Route::get('/simba/po/dict/cungcap', SimbaPage::class)->name('po.cungcap');
-    Route::get('/simba/po/dict/dmcp', SimbaPage::class)->name('po.dmcp');
-    Route::get('/simba/si/custom/show', SimbaPage::class)->name('profile.show');
-    Route::get('/simba/si/dict/dmct', SimbaPage::class)->name('si.dmct');
-    Route::get('/simba/si/dict/dmnt', SimbaPage::class)->name('si.dmnt');
-    Route::get('/simba/si/dict/dmphi', SimbaPage::class)->name('si.dmphi');
-    Route::get('/simba/gl/custom/account-opening', SimbaPage::class)->name('system.balance.account-opening');
-    Route::get('/simba/po/custom/accounts-payable', SimbaPage::class)->name('system.balance.accounts-payable');
-    Route::get('/simba/so/custom/accounts-receivable', SimbaPage::class)->name('system.balance.accounts-receivable');
-    Route::get('/simba/co/custom/cumulative-transactions', SimbaPage::class)->name('system.balance.cumulative-transactions');
-    Route::get('/simba/si/custom/index', SimbaPage::class)->name('system.balance.index');
-    Route::get('/simba/in/custom/inventory-opening', SimbaPage::class)->name('system.balance.inventory-opening');
-    Route::get('/simba/in/custom/inventory-opening-ntxt', SimbaPage::class)->name('system.balance.inventory-opening-ntxt');
-    Route::get('/simba/in/custom/inventory-transfer', SimbaPage::class)->name('system.balance.inventory-transfer');
-    Route::get('/simba/gl/custom/transfer', SimbaPage::class)->name('system.balance.transfer');
-    Route::get('/simba/co/custom/work-in-progress', SimbaPage::class)->name('system.balance.work-in-progress');
-    Route::get('/simba/si/custom/company', SimbaPage::class)->name('system.company');
-    Route::get('/simba/si/custom/index', SimbaPage::class)->name('system.user.index');
-    Route::get('/simba/si/custom/year', SimbaPage::class)->name('system.year');
+    // Canonical Simba shell entrypoint. Source routes above keep component/defaults;
+    // public /simba/... URLs always render through SimbaPage.
     Route::prefix('simba')->name('simba.')->group(static function (): void {
         Route::get('/', SimbaPage::class)->name('index');
+        Route::get('/{module}/{kind}', SimbaPage::class)
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+            ])
+            ->name('show-short')
+        ;
         Route::get('/{module}/{kind}/{slug}', SimbaPage::class)
             ->where([
                 'module' => '[a-z0-9-]+',
@@ -721,23 +558,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         Route::get('/nhom-cong-trinh', CoDictionaryIndex::class)->defaults('routeName', 'co.dmnhspct')->name('dmnhspct');
     });
 
-    Route::get('/si/congcu/dong-bo-he-thong', TaskShell::class)->defaults('title', 'Đồng bộ hệ thống')->defaults('dll', 'SIUtilities.dll')->defaults('task', 'Task 081')->name('si.tool.sync');
-    Route::get('/si/danhmuc/tuy-chon-10', TaskShell::class)->defaults('title', 'Danh mục tùy chọn 10')->defaults('dll', 'SIDM10.dll')->defaults('task', 'Task 082')->name('si.dict.option10');
-    Route::get('/si/thongtin/chuong-trinh', TaskShell::class)->defaults('title', 'Thông tin chương trình')->defaults('dll', 'SIAbout.dll')->defaults('task', 'Task 083')->name('si.info.program');
-    Route::get('/si/danhmuc/bo-phan', TaskShell::class)->defaults('title', 'Danh mục bộ phận')->defaults('dll', 'SIDMBP.dll')->defaults('task', 'Task 084')->name('si.dict.bophan');
-    Route::get('/si/cauhinh/tham-so', TaskShell::class)->defaults('title', 'Tham số hệ thống')->defaults('dll', 'SIOptions.dll')->defaults('task', 'Task 085')->name('si.config.params');
-    Route::get('/si/congcu/bao-tri', TaskShell::class)->defaults('title', 'Bảo trì hệ thống')->defaults('dll', 'SIMaintenance.dll')->defaults('task', 'Task 086')->name('si.tool.maintenance');
-    Route::get('/si/danhmuc/nhom-hop-dong', TaskShell::class)->defaults('title', 'Danh mục nhóm hợp đồng')->defaults('dll', 'SIDMNHHD.dll')->defaults('task', 'Task 088')->name('si.dict.nhomhd');
-    Route::get('/si/danhmuc/ty-gia', TaskShell::class)->defaults('title', 'Tỷ giá ngoại tệ')->defaults('dll', 'SIDMTGNT.dll')->defaults('task', 'Task 089')->name('si.dict.tygia');
-    Route::get('/si/cauhinh/theme', TaskShell::class)->defaults('title', 'Cấu hình theme giao diện')->defaults('dll', 'SITheme.dll')->defaults('task', 'Task 090')->name('si.config.theme');
-    Route::get('/si/danhmuc/nhap-xuat', TaskShell::class)->defaults('title', 'Danh mục nhập xuất')->defaults('dll', 'SIDMNX.dll')->defaults('task', 'Task 091')->name('si.dict.nx');
-    Route::get('/si/danhmuc/tuy-chon-9', TaskShell::class)->defaults('title', 'Danh mục tùy chọn 9')->defaults('dll', 'SIDM9.dll')->defaults('task', 'Task 092')->name('si.dict.option9');
-    Route::get('/si/danhmuc/ngan-hang', TaskShell::class)->defaults('title', 'Danh mục ngân hàng')->defaults('dll', 'SIDMNH.dll')->defaults('task', 'Task 095')->name('si.dict.nganhang');
-    Route::prefix('hethong/danhmuc')->name('si.')->group(static function (): void {
-        Route::get('/chung-tu', SiDictionaryIndex::class)->defaults('routeName', 'si.dmct')->name('dmct');
-        Route::get('/khoan-muc-phi', SiDictionaryIndex::class)->defaults('routeName', 'si.dmphi')->name('dmphi');
-        Route::get('/ngoai-te', SiDictionaryIndex::class)->defaults('routeName', 'si.dmnt')->name('dmnt');
-    });
 
     Route::prefix('hethong')->name('system.')->group(static function (): void {
         Route::get('system', Dashboard::class)->name('system');
