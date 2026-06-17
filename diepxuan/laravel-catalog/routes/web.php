@@ -97,9 +97,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/ar/danhmuc/nhom-khach-hang', Nhomkhachhang::class)->name('ar.nhomkhachhang');
     Route::get('/ar/danhmuc/nhom-khach-hang/create', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.create');
     Route::get('/ar/danhmuc/nhom-khach-hang/edit/{id}', NhomkhachhangEdit::class)->name('ar.nhomkhachhang.edit');
-    Route::get('/ar/danhmuc/phan-loai-khach-hang', Phanloaikhachhang::class)->name('ar.phanloaikhachhang');
-    Route::get('/ar/danhmuc/phan-loai-khach-hang/create', PhanloaikhachhangEdit::class)->name('ar.phanloaikhachhang.create');
-    Route::get('/ar/danhmuc/phan-loai-khach-hang/edit/{id}', PhanloaikhachhangEdit::class)->name('ar.phanloaikhachhang.edit');
 
     Route::get('/muahang/cungcap', Cungcap::class)->name('ar.cungcap');
     Route::get('/muahang/nhacungcap', Cungcap::class)->name('po.cungcap');
@@ -127,6 +124,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 Route::get('/khachhang', Khachhang::class)->name('ar.dict.khachhang');
                 Route::get('/khachhang/create', KhachhangForm::class)->name('ar.dict.khachhang.create');
                 Route::get('/khachhang/edit/{id}', KhachhangForm::class)->name('ar.dict.khachhang.edit');
+                Route::get('/phanloai-khachhang', Phanloaikhachhang::class)->name('ar.dict.phanloaikhachhang');
+                Route::get('/phanloai-khachhang/create', PhanloaikhachhangEdit::class)->name('ar.dict.phanloaikhachhang.create');
+                Route::get('/phanloai-khachhang/edit/{id}', PhanloaikhachhangEdit::class)->name('ar.dict.phanloaikhachhang.edit');
             });
         });
 
