@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-17 14:49:51
+ * @lastupdate 2026-06-17 15:21:16
  */
 
 use Diepxuan\Catalog\Http\Controllers\SellController;
@@ -41,7 +41,6 @@ use Diepxuan\Catalog\Http\Livewire\Co\Danhmuc\Dinhmucchitiet;
 use Diepxuan\Catalog\Http\Livewire\Co\Danhmuc\Dmbom;
 use Diepxuan\Catalog\Http\Livewire\Fa\FaDictionaryIndex;
 use Diepxuan\Catalog\Http\Livewire\Fa\FaReportIndex;
-use Diepxuan\Catalog\Http\Livewire\FinanceVoucherIndex;
 use Diepxuan\Catalog\Http\Livewire\Gl\GlReportIndex;
 use Diepxuan\Catalog\Http\Livewire\Gl\Taikhoan;
 use Diepxuan\Catalog\Http\Livewire\Home\Dashboard as DashboardLivewire;
@@ -90,8 +89,6 @@ use Illuminate\Support\Facades\Route;
 // Route::domain(env('APP_URL','portal.diepxuan.io.vn'))->middleware(['clearcache', 'auth'])->group(static function (): void {
 Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/gl/taikhoan', Taikhoan::class)->name('gl.taikhoan');
-    Route::get('/gl/phieu-ke-toan', FinanceVoucherIndex::class)->defaults('voucherCode', 'GL1')->name('gl.vch.gl1');
-    Route::get('/gl/chung-tu-ngoai-bang', FinanceVoucherIndex::class)->defaults('voucherCode', 'NB1')->name('gl.vch.nb1');
     Route::prefix('gl/baocao')->name('gl.rpt.')->group(static function (): void {
         Route::get('/so-dang-ky-ctgs', GlReportIndex::class)->defaults('routeName', 'gl.rpt.ctgs01')->name('ctgs01');
         Route::get('/chung-tu-ghi-so', GlReportIndex::class)->defaults('routeName', 'gl.rpt.ctgs02')->name('ctgs02');
@@ -144,7 +141,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('banhang/dondathang', SoVoucherIndex::class)->defaults('voucherCode', 'SO1')->name('banhang.so1');
     Route::get('banhang/nhap-hang-ban-tra-lai', SoVoucherIndex::class)->defaults('voucherCode', 'SO4')->name('banhang.so4');
     Route::get('banhang/hoadon-dichvu', SoVoucherIndex::class)->defaults('voucherCode', 'SO5')->name('banhang.so5');
-    Route::get('banhang/bu-tru-cong-no', FinanceVoucherIndex::class)->defaults('voucherCode', 'AR4')->name('ar.vch.ar4');
     Route::resource('banhang/bangkebanhang', SellController::class)->names('sell.list');
     Route::get('/co/danhmuc/dinh-muc-bom', Dmbom::class)->name('co.dmbom');
     Route::get('/co/danhmuc/dinh-muc-chi-tiet', Dinhmucchitiet::class)->name('co.dinhmucchitiet');
@@ -193,7 +189,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/muahang/nhacungcap/create', CungcapForm::class)->name('po.cungcap.create');
     Route::get('/muahang/nhacungcap/edit/{id}', CungcapForm::class)->name('po.cungcap.edit');
     Route::get('/muahang/chiphimuahang/danhmuc', PoDmCpIndex::class)->name('po.dmcp');
-    Route::get('/muahang/bu-tru-cong-no', FinanceVoucherIndex::class)->defaults('voucherCode', 'AP4')->name('ap.vch.ap4');
     Route::prefix('muahang/baocao')->name('po.rpt.')->group(static function (): void {
         Route::get('/bangke-muahang', PoReportIndex::class)->defaults('routeName', 'po.rpt.bk01')->name('bk01');
         Route::get('/bangke-muahang-nhom', PoReportIndex::class)->defaults('routeName', 'po.rpt.bk02')->name('bk02');
@@ -235,8 +230,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::prefix('_simba-source')->group(static function (): void {
         // CA — Tiền mặt, Ngân hàng (sysMenu 04.*)
         Route::prefix('ca')->name('ca.')->group(static function (): void {
-            Route::prefix('rpt')->name('rpt.')->group(static function (): void {
-            });
+            Route::prefix('rpt')->name('rpt.')->group(static function (): void {});
         });
 
         // IN — Hàng tồn kho (sysMenu 14.*)
@@ -279,8 +273,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 Route::get('/dmnt', SiDictionaryIndex::class)->defaults('routeName', 'si.dmnt')->name('si.dmnt');
                 Route::get('/dmphi', SiDictionaryIndex::class)->defaults('routeName', 'si.dmphi')->name('si.dmphi');
             });
-            Route::prefix('tool')->group(static function (): void {
-            });
+            Route::prefix('tool')->group(static function (): void {});
         });
     });
 
