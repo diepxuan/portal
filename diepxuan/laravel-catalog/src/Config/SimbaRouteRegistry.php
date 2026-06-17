@@ -759,7 +759,7 @@ final class SimbaRouteRegistry
                 'dictionary_key'  => 'MA_KH',
                 'simba_code_name' => 'ARDMKH',
             ],
-            'ar.dict.phanloaikhachhang' => [
+            'so.dict.ardmplkh' => [
                 'module'          => 'SO',
                 'menuid'          => '06.90.11',
                 'source_type'     => self::TYPE_DICTIONARY,

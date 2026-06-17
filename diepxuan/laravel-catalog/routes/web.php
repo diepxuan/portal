@@ -124,9 +124,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 Route::get('/khachhang', Khachhang::class)->name('ar.dict.khachhang');
                 Route::get('/khachhang/create', KhachhangForm::class)->name('ar.dict.khachhang.create');
                 Route::get('/khachhang/edit/{id}', KhachhangForm::class)->name('ar.dict.khachhang.edit');
-                Route::get('/phanloai-khachhang', Phanloaikhachhang::class)->name('ar.dict.phanloaikhachhang');
-                Route::get('/phanloai-khachhang/create', PhanloaikhachhangEdit::class)->name('ar.dict.phanloaikhachhang.create');
-                Route::get('/phanloai-khachhang/edit/{id}', PhanloaikhachhangEdit::class)->name('ar.dict.phanloaikhachhang.edit');
+                Route::get('/phanloai-khachhang', Phanloaikhachhang::class)->name('so.dict.ardmplkh');
+                Route::get('/phanloai-khachhang/create', PhanloaikhachhangEdit::class)->name('so.dict.ardmplkh.create');
+                Route::get('/phanloai-khachhang/edit/{id}', PhanloaikhachhangEdit::class)->name('so.dict.ardmplkh.edit');
             });
         });
 
