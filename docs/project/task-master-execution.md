@@ -172,10 +172,6 @@ Verification da chay:
 | `php -l diepxuan/laravel-catalog/routes/web.php` | Pass |
 | `php -l diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php` | Pass |
 | `./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php` | Pass; 3 tests, 25 assertions |
-| `php -l diepxuan/laravel-catalog/src/Config/PoVoucherRegistry.php` | Pass |
-| `php -l diepxuan/laravel-catalog/src/Http/Livewire/Muahang/PoVoucherIndex.php` | Pass |
-| `php -l diepxuan/laravel-catalog/tests/Unit/Config/PoVoucherRegistryTest.php` | Pass |
-| `./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/PoVoucherRegistryTest.php` | Pass; 2 tests, 45 assertions |
 | `./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php` | Pass; 3 tests, 35 assertions |
 | `php -l diepxuan/laravel-catalog/src/Config/SimbaReportRegistry.php` | Pass |
 | `php -l diepxuan/laravel-catalog/tests/Unit/Config/SimbaReportRegistryTest.php` | Pass |

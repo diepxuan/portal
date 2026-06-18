@@ -72,21 +72,21 @@ System balance/process menus da co route Portal hien huu:
 | MA_TT_PO Điều khoản thanh toán mua | 10.90.05 | Blocked |  | `sysMenu` inactive, no route opened |
 | MA_NV Nguồn vốn | 20.90.02 | `fa.dmnv` | `Fa\FaDictionaryIndex` | `FADMNV` |
 | MA_BPSD Bộ phận sử dụng | 20.90.08 | `fa.dmbpsd` | `Fa\FaDictionaryIndex` | `FADMBPSD` |
-| MA_LDTG Lý do tăng giảm tài sản | 20.90.05 | `fa.dict.fadmldts` | `System\SimbaDictionaryIndex` | Alias theo `sysMenu.code_name`; source menuid `18.90.05` |
-| MA_NHTS Nhóm tài sản | 20.90.11 | `fa.rpt.fadmnhts` | `System\SimbaReportIndex` | Master-data list shell theo `sysReportInfo`; chua co dictionary metadata sach |
+| MA_LDTG Lý do tăng giảm tài sản | 20.90.05 | `fa.dict.fadmldts` | `System\SimbaPage` | Alias theo `sysMenu.code_name`; source menuid `18.90.05` |
+| MA_NHTS Nhóm tài sản | 20.90.11 | `fa.rpt.fadmnhts` | `System\SimbaPage` | Master-data list shell theo `sysReportInfo`; chua co dictionary metadata sach |
 | MA_SP Sản phẩm CO | 18.90.02 | `co.dmsp` | `Co\CoDictionaryIndex` | `CODMSPCT` |
 | MA_SPCT Công trình | 18.90.05 | `co.dmspct` | `Co\CoDictionaryIndex` | `CODMSPCT` |
 | MA_NHSPCT Nhóm công trình | 18.90.08 | `co.dmnhspct` | `Co\CoDictionaryIndex` | `CODMNHSPCT` |
-| GLDMKC Bút toán kết chuyển tự động | 18.90.17 | `co.dict.gldmkc` | `System\SimbaDictionaryIndex` | Alias theo `sysDictionaryInfo.table_name`, source menuid blank |
-| CODMPB Bút toán phân bổ tự động | 18.90.20 | `co.rpt.codmpb` | `System\SimbaReportIndex` | Master-data list shell; dictionary metadata PB thieu/lẹch carry fields |
+| GLDMKC Bút toán kết chuyển tự động | 18.90.17 | `co.dict.gldmkc` | `System\SimbaPage` | Alias theo `sysDictionaryInfo.table_name`, source menuid blank |
+| CODMPB Bút toán phân bổ tự động | 18.90.20 | `co.rpt.codmpb` | `System\SimbaPage` | Master-data list shell; dictionary metadata PB thieu/lẹch carry fields |
 | SIDMCT Khai báo chứng từ | 90.10.02 | `si.dmct` | `System\SiDictionaryIndex` | `SIDMCT` |
 | MA_PHI Khoản mục phí | 90.10.20 | `si.dmphi` | `System\SiDictionaryIndex` | `SIDMPHI` |
 | MA_NT Ngoại tệ | 90.10.26 | `si.dmnt` | `System\SiDictionaryIndex` | `SIDMNT` |
 | Nhập/Chuyển số dư | 90.40.14 | `system.balance.index` | `System\Balance\Index` | Existing Portal balance route |
 | MA_NHHD Nhóm hợp đồng | 90.10.14 | Blocked |  | `sysMenu` inactive |
 | MA_HD Hợp đồng | 90.10.17 | Blocked |  | `sysMenu` inactive |
-| MA_BP Bộ phận | 90.10.23 | `gl.dict.sidmbp` | `System\SimbaDictionaryIndex` | Alias theo `sysMenu.code_name`; source menuid `06.90.35` |
-| MA_TGNT Tỷ giá ngoại tệ | 90.10.29 | `ca.process.sidmtgnt` | `System\SimbaProcessIndex` | Read-only process shell; active menu co DLL nhung thieu `sysDictionaryInfo` |
+| MA_BP Bộ phận | 90.10.23 | `gl.dict.sidmbp` | `System\SimbaPage` | Alias theo `sysMenu.code_name`; source menuid `06.90.35` |
+| MA_TGNT Tỷ giá ngoại tệ | 90.10.29 | `ca.process.sidmtgnt` | `System\SimbaPage` | Read-only process shell; active menu co DLL nhung thieu `sysDictionaryInfo` |
 | MA_VT Hàng hoá, vật tư | 14.90.02 | `in.dmvt` | `In\Dmvt` | Registry verified as `dictionary` |
 | MA_NHVT Nhóm vật tư | 14.90.05 | `in.dmnhvt` | `In\Dmnhvt` | Registry verified as `dictionary` |
 | MA_KHO Kho hàng | 14.90.14 | `in.khohang` | `In\Dmkho` | Registry verified as `dictionary` |
@@ -304,7 +304,7 @@ Kiem chung:
 
 - `php -l` pass cho cac file registry/component moi sua.
 - `phpunit` pass cho route/report/dictionary/process/voucher/menu repository tests.
-- `LOG_CHANNEL=stderr php artisan route:list --name=simba` load duoc 3 generic shell routes: `simba.dictionary`, `simba.report`, `simba.process`.
+- `LOG_CHANNEL=stderr php artisan route:list --name=simba` load duoc generic shell routes qua `System\SimbaPage`.
 - Them test coverage bat buoc: moi active menu co metadata report/dictionary/voucher hoac co DLL/command/code_name phai co route anchor trong `SimbaRouteRegistry`.
 - Dynamic report khong tu mo route cho voucher menu, de tranh phan loai sai cac dong in chung tu trong `sysReportInfo`; da co test rieng bat report route phai gan voi menu type report.
 - Process shell khong duoc duplicate menu da co report/dictionary/voucher route; da co test rieng bat regression nay.
