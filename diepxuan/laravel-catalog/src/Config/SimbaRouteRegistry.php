@@ -752,7 +752,7 @@ final class SimbaRouteRegistry
                 'menuid'      => '06.20.89',
                 'source_type' => self::TYPE_REPORT,
             ],
-            'ar.dict.khachhang' => [
+            'so.dict.ardmkh' => [
                 'module'          => 'SO',
                 'menuid'          => '06.90.02',
                 'source_type'     => self::TYPE_DICTIONARY,
@@ -766,7 +766,7 @@ final class SimbaRouteRegistry
                 'dictionary_key'  => 'MA_PLKH',
                 'simba_code_name' => 'ARDMPLKH',
             ],
-            'ar.dict.ardmnhkh' => [
+            'so.dict.ardmnhkh' => [
                 'module'          => 'SO',
                 'menuid'          => '06.90.14',
                 'source_type'     => self::TYPE_DICTIONARY,
