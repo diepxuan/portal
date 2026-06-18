@@ -254,13 +254,13 @@ Unique voucher codes: 51.
 | IN6 | IN | Lắp ráp, tháo dỡ | inPh6 | inCt6 |  | `in.vch.in6`; active menu/sysVoucherInfo `14.10.14` |
 | IN9 | IN | Điều chỉnh kiểm kê cuối kỳ | inPh9 | inCt9 | 14.10.34 | Blocked: `sysMenu` inactive/no `sysVoucherInfo` |
 | PO0 | PO | Phiếu đề nghị mua hàng | poPh0 | poCt0 | 10.10.01 | Blocked: `sysMenu` row inactive/mismatch |
-| PO1 | PO | Đơn hàng mua | poPh1 | poCt1 | 10.10.02 | `muahang.po1`; active menu `10.10.05` |
+| PO1 | PO | Đơn hàng mua | poPh1 | poCt1 | 10.10.02 | `po.vch.po1`; active menu `10.10.05` |
 | PO2 | PO | Phiếu nhập mua | poPh2 | poCt2 | 10.10.04 | Blocked: `sysMenu` row inactive/mismatch |
 | PO3 | PO | Hoá đơn mua hàng trong nước | poPh3 | poCt3 | 10.10.14 | `muahang.hoadonmua` |
-| PO4 | PO | Phiếu chi phí mua hàng | poPh4 | poCt4 | 10.10.20 | `muahang.po4` |
-| PO5 | PO | Phiếu xuất trả lại nhà cung cấp | poPh5 | poCt5 | 10.10.23 | `muahang.po5` |
-| PO6 | PO | Hoá đơn mua dịch vụ | poPh6 | poCt6 | 10.10.26 | `muahang.po6` |
-| PO7 | PO | Hoá đơn mua hàng nhập khẩu | poPh3 | poCt3 | 10.10.17 | `muahang.po7` |
+| PO4 | PO | Phiếu chi phí mua hàng | poPh4 | poCt4 | 10.10.20 | `po.vch.po4` |
+| PO5 | PO | Phiếu xuất trả lại nhà cung cấp | poPh5 | poCt5 | 10.10.23 | `po.vch.po5` |
+| PO6 | PO | Hoá đơn mua dịch vụ | poPh6 | poCt6 | 10.10.26 | `po.vch.po6` |
+| PO7 | PO | Hoá đơn mua hàng nhập khẩu | poPh3 | poCt3 | 10.10.17 | `po.vch.po7` |
 | PO8 | PO | Phiếu nhập mua xuất thẳng | poPh3 | poCt3 | 10.10.05 | Blocked: `sysMenu` row inactive/mismatch |
 | SO0 | SO | Kế hoạch bán hàng | soPh0 | soCt0 | 06.10.12 | Blocked: no `sysVoucherInfo` |
 | SO1 | SO | Đơn đặt hàng | soPh1 | soCt1 | 06.10.01 | `banhang.so1`; active menu/sysVoucherInfo `06.10.02` |

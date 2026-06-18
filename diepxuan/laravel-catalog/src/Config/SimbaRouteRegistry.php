@@ -813,31 +813,31 @@ final class SimbaRouteRegistry
                 'source_type' => self::TYPE_VOUCHER,
                 'ma_ct'       => 'PO3',
             ],
-            'muahang.po1' => [
+            'po.vch.po1' => [
                 'module'      => 'PO',
                 'menuid'      => '10.10.05',
                 'source_type' => self::TYPE_VOUCHER,
                 'ma_ct'       => 'PO1',
             ],
-            'muahang.po4' => [
+            'po.vch.po4' => [
                 'module'      => 'PO',
                 'menuid'      => '10.10.20',
                 'source_type' => self::TYPE_VOUCHER,
                 'ma_ct'       => 'PO4',
             ],
-            'muahang.po5' => [
+            'po.vch.po5' => [
                 'module'      => 'PO',
                 'menuid'      => '10.10.23',
                 'source_type' => self::TYPE_VOUCHER,
                 'ma_ct'       => 'PO5',
             ],
-            'muahang.po6' => [
+            'po.vch.po6' => [
                 'module'      => 'PO',
                 'menuid'      => '10.10.26',
                 'source_type' => self::TYPE_VOUCHER,
                 'ma_ct'       => 'PO6',
             ],
-            'muahang.po7' => [
+            'po.vch.po7' => [
                 'module'      => 'PO',
                 'menuid'      => '10.10.17',
                 'source_type' => self::TYPE_VOUCHER,
