@@ -22,7 +22,7 @@ Quy tac:
 
 ## Route anchor coverage
 
-`SimbaRouteRegistry::routes()` hien co 302 route anchors.
+`SimbaMenuRouteMetadata::routes()` hien co 302 route anchors.
 
 | Source type | Count | Y nghia |
 |---|---:|---|
@@ -124,7 +124,7 @@ Danh sach chi tiet: `docs/project/unmapped-active-menu.md`.
 
 Process shell con lai: `docs/project/remaining-process-shells.md`.
 
-Neu mot dong trong nhom nay sau nay duoc bo sung DLL/command/code_name hoac metadata report/dictionary/voucher trong `simba-docs`, `SimbaRouteRegistryTest::testEveryActionableActiveMenuHasRouteAnchor` se bat loi cho den khi Portal co route anchor.
+Neu mot dong trong nhom nay sau nay duoc bo sung DLL/command/code_name hoac metadata report/dictionary/voucher trong `simba-docs`, `SimbaMenuRouteMetadataTest` se bat loi cho den khi Portal co route anchor.
 
 ## Blockers
 
@@ -148,15 +148,12 @@ Voucher metadata mismatches dang duoc chan:
 
 Regression tests khoa coverage:
 
-- `SimbaRouteRegistryTest::testRouteAnchorCountsBySourceType`
-- `SimbaRouteRegistryTest::testRouteAnchorCountsByModuleAndSourceType`
-- `SimbaRouteRegistryTest::testRemainingActiveMenusWithoutRoutesAreNonActionableContainers`
-- `SimbaProcessRegistryTest::testRemainingProcessShellCountsByModule`
+- `SimbaMenuRouteMetadataTest`
 
 Da chay:
 
 ```bash
-./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SoVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/InVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/FinanceVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaReportRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaDictionaryRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaProcessRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Services/SimbaDocsMenuRepositoryTest.php
+./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
 ```
 
-Ket qua: 29 tests, 2805 assertions.
+Ket qua sau khi xoa registry wrapper: 5 tests, 10 assertions.

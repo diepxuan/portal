@@ -287,31 +287,30 @@ Batch B should fix foundation inconsistencies before adding new forms:
 
 ## 5. Dynamic docs-backed coverage
 
-Ngay 2026-05-15, route registry duoc mo rong tu source docs:
+Ngay 2026-06-19, Simba menu route metadata duoc lay truc tiep tu Simba menu-backed service:
 
-- `SimbaReportRegistry` giu cac route ten than thien da khai bao tay, sau do tu dong bo sung report route cho moi active menu co row trong `sysReportInfo.md` hoac `zSysReportInfo.md`.
-- `SimbaDictionaryRegistry` giu cac route danh muc da khai bao tay, sau do tu dong bo sung dictionary route cho moi active menu co row trong `sysDictionaryInfo.md`.
-- `SimbaRouteRegistry` gom ca static routes va dynamic routes; hien tai co 302 route anchors docs-backed.
-- `System\SimbaMenuTree` hien link truc tiep cho menu da map. Static route se mo route cu; dynamic report/dictionary route se mo qua `simba.report` hoac `simba.dictionary`.
+- `SimbaMenuRouteMetadata` sinh route anchors tu `sysMenu`/`zsysmenu` va enrich tu report/dictionary/voucher metadata.
+- Cac `Simba*Registry` wrapper cu da bi xoa; caller dung truc tiep `SimbaMenuRouteMetadata`.
+- `System\SimbaMenuTree`/`System\SimbaErpMenus` hien link truc tiep cho menu da map. Report/dictionary/voucher/process route mo qua generic `/simba/{module}/{kind}/{slug}` va `System\SimbaPage`.
 - Dynamic report/dictionary shell chi hien metadata docs-backed. Filter, payload, save/delete va goi SP chua duoc mo neu chua doi chieu tham so trong `simba-docs`.
 - F5/drilldown routes trong `sysReportDrillDownInfo.md` duoc phan loai la `report` va mo qua `simba.report`, chi hien DLL/command/source menu/key F5 cho den khi audit du tham so va logic.
 - Active master-data menu co `code_name` khop `sysDictionaryInfo` nhung menuid trong source bi trong/lẹch duoc mo qua `simba.dictionary` voi `source_menuid`; khong mo CRUD cho den khi audit payload va quyen sua/xoa.
 - Master-data menu co DLL/code khop `sysDictionaryInfo.table_name` cung duoc mo qua `simba.dictionary` voi `source_menuid`, vi day la source table ro rang nhung menuid trong dictionary bi trong/lẹch.
 - Master-data menu co `sysReportInfo` nhung khong co dictionary metadata sach duoc mo qua `simba.report` nhu list/report shell read-only; dictionary exact/alias luon duoc uu tien truoc report/list. Menu F5 co `sysMenu.report = 1` cung duoc mo nhu report/list shell khi co `sysReportInfo`.
-- `SimbaProcessRegistry` bo sung read-only shell cho active menu co DLL/command/code_name nhung khong co metadata report/dictionary/voucher du chuan. Process shell mo qua `simba.process`, chi hien anchor ky thuat va chan execute.
+- Process metadata trong `SimbaMenuRouteMetadata` bo sung read-only shell cho active menu co DLL/command/code_name nhung khong co metadata report/dictionary/voucher du chuan. Process shell mo qua `proc`, chi hien anchor ky thuat va chan execute.
 
 Kiem chung:
 
 - `php -l` pass cho cac file registry/component moi sua.
 - `phpunit` pass cho route/report/dictionary/process/voucher/menu repository tests.
 - `LOG_CHANNEL=stderr php artisan route:list --name=simba` load duoc generic shell routes qua `System\SimbaPage`.
-- Them test coverage bat buoc: moi active menu co metadata report/dictionary/voucher hoac co DLL/command/code_name phai co route anchor trong `SimbaRouteRegistry`.
+- Them test coverage bat buoc: moi active menu co metadata report/dictionary/voucher hoac co DLL/command/code_name phai co route anchor trong `SimbaMenuRouteMetadata`.
 - Dynamic report khong tu mo route cho voucher menu, de tranh phan loai sai cac dong in chung tu trong `sysReportInfo`; da co test rieng bat report route phai gan voi menu type report.
 - Process shell khong duoc duplicate menu da co report/dictionary/voucher route; da co test rieng bat regression nay.
-- Kiem chung moi nhat: 29 tests, 2805 assertions.
+- Kiem chung moi nhat sau khi xoa registry wrapper: 5 tests, 10 assertions.
 
 Con lai sau dynamic coverage:
 
-- `SimbaRouteRegistry::routes()` hien co 302 route anchors.
+- `SimbaMenuRouteMetadata::routes()` hien co 302 route anchors.
 - 57 active menu chua co route anchor; day la root/group/section menu hoac dong trong `sysMenu` khong co DLL/command/code_name de gan route an toan.
 - Process dang bi chan o shell den khi audit du DLL/command/procedure/payload trong `simba-docs`: GL transfer/posting, IN tinh gia/chuyen ton, CO tinh gia thanh/phan bo/post sang GL, FA tinh/xoa khau hao/chuyen GL, SI maintenance/backup/sync tools.

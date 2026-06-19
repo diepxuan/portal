@@ -2,14 +2,14 @@
 
 Ngay cap nhat: 2026-05-15
 
-Danh sach nay la 57 active menu con lai sau khi `SimbaRouteRegistry` da map tat ca menu actionable co metadata report/dictionary/voucher, co DLL/command/code_name, hoac co route he thong hien huu.
+Danh sach nay la 57 active menu con lai sau khi `SimbaMenuRouteMetadata` da map tat ca menu actionable co metadata report/dictionary/voucher, co DLL/command/code_name, hoac co route he thong hien huu.
 
 Quy tac doc:
 
 - Cac dong co `dllName`, `command`, hoac `code_name` rong khong duoc tao process route.
 - Cac dong nay la root/group/section menu hoac dong trong cua `sysMenu`.
-- Neu `simba-docs` sau nay bo sung anchor ky thuat/metadata cho bat ky dong nao, test `SimbaRouteRegistryTest::testEveryActionableActiveMenuHasRouteAnchor` se bat buoc them route.
-- Test `SimbaRouteRegistryTest::testRemainingActiveMenusWithoutRoutesAreNonActionableContainers` khoa so 57 dong va dam bao khong dong nao co DLL/command/code_name.
+- Neu `simba-docs` sau nay bo sung anchor ky thuat/metadata cho bat ky dong nao, `SimbaMenuRouteMetadataTest` se bat buoc them route.
+- `SimbaMenuRouteMetadataTest` khoa so 57 dong va dam bao khong dong nao co DLL/command/code_name.
 - `90.40.14` da duoc map vao route hien huu `system.balance.index`; do do khong con trong danh sach nay.
 - `90.40.17` da duoc map vao route hien huu `system.company`; route nay chi cap nhat session don vi dang chon.
 
