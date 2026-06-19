@@ -5,8 +5,7 @@ Ngay cap nhat: 2026-05-15
 Nguon:
 
 - `simba-docs/data/sysMenu.md`
-- `SimbaProcessRegistry`
-- `SimbaRouteRegistry`
+- `Diepxuan\Catalog\Services\SimbaMenuRouteMetadata`
 
 Sau cac batch route/report/dictionary/voucher, con 48 route `simba.process`.
 Nhom nay khong duoc execute vi con thieu metadata payload/SP/function sach hoac co side effect ghi/xoa/chuyen so lieu.
@@ -47,7 +46,7 @@ Nhom nay khong duoc execute vi con thieu metadata payload/SP/function sach hoac 
 Full registry/menu batch pass:
 
 ```bash
-./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SoVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/InVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/FinanceVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaReportRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaDictionaryRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaProcessRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Services/SimbaDocsMenuRepositoryTest.php
+./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
 ```
 
-Ket qua moi nhat: `29 tests, 2805 assertions`.
+Ket qua moi nhat sau khi xoa registry wrapper: `5 tests, 10 assertions`.
