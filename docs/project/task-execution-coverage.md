@@ -108,9 +108,9 @@ Cot `Custom routes` la toan bo source_type `custom`: gom route Portal hien huu, 
 
 | Route | Component | Scope |
 |---|---|---|
-| `simba.report` | `System\SimbaReportIndex` | Hien `module`, `menuid`, `ma_mau`, `spname`, `rptname` |
-| `simba.dictionary` | `System\SimbaDictionaryIndex` | Hien `code_name`, `table`, `PK`, `carry_field_list` source |
-| `simba.process` | `System\SimbaProcessIndex` | Hien `dllName`, `command`, `code_name`; khong execute |
+| `simba.report` | `System\SimbaPage` | Hien metadata report qua `simba-page-metadata` khi chua co component rieng |
+| `simba.dictionary` | `System\SimbaPage` | Hien metadata dictionary qua `simba-page-metadata` khi chua co component rieng |
+| `simba.process` | `System\SimbaPage` | Hien metadata process qua `simba-page-metadata`; khong execute |
 
 ## Remaining active menu without route
 
@@ -156,7 +156,7 @@ Regression tests khoa coverage:
 Da chay:
 
 ```bash
-./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/PoVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SoVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/InVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/FinanceVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaReportRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaDictionaryRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaProcessRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Services/SimbaDocsMenuRepositoryTest.php
+./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Config/SimbaRouteRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SoVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/InVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/FinanceVoucherRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaReportRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaDictionaryRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Config/SimbaProcessRegistryTest.php diepxuan/laravel-catalog/tests/Unit/Services/SimbaDocsMenuRepositoryTest.php
 ```
 
 Ket qua: 29 tests, 2805 assertions.
