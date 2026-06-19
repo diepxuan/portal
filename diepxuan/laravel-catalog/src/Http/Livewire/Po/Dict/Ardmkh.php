@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 00:28:04
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Muahang;
+namespace Diepxuan\Catalog\Http\Livewire\Po\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
@@ -23,7 +23,7 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Cungcap extends Component
+class Ardmkh extends Component
 {
     use WithPagination;
 
@@ -72,7 +72,7 @@ class Cungcap extends Component
 
     public function render(): View
     {
-        return view('catalog::muahang.cungcap', [
+        return view('catalog::po.dict.ardmkh', [
             'arDmKhs' => $this->getSuppliersPaginated(),
         ])->layout('catalog::layouts.app');
     }

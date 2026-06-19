@@ -28,8 +28,8 @@ use Diepxuan\Catalog\Http\Livewire\Home\Dashboard as DashboardLivewire;
 use Diepxuan\Catalog\Http\Livewire\In\Dmkho;
 use Diepxuan\Catalog\Http\Livewire\In\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Dmvt;
-use Diepxuan\Catalog\Http\Livewire\Muahang\Cungcap;
-use Diepxuan\Catalog\Http\Livewire\Muahang\CungcapForm;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Muahang\PoDmCpIndex;
 use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountOpening;
 use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountsPayable;
@@ -64,9 +64,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     Route::get('/cash/nhanvien/edit/{id}', NhanvienForm::class)->name('ca.nhanvien.edit');
 
     Route::resource('banhang/bangkebanhang', SellController::class)->names('sell.list');
-
-    Route::get('/muahang/nhacungcap/create', CungcapForm::class)->name('po.cungcap.create');
-    Route::get('/muahang/nhacungcap/edit/{id}', CungcapForm::class)->name('po.cungcap.edit');
 
     // Source routes for SimbaERP screens generated from simba-docs/data/sysMenu.md + zsysmenu.md.
     // Menus with concrete Livewire screens point to the component; the rest render the metadata shell.
@@ -223,7 +220,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'in/vch/invchin3', 'name' => 'in.vch.invchin3', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin3', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin5', 'name' => 'in.vch.invchin5', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin5', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin6', 'name' => 'in.vch.invchin6', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin6', 'component' => SimbaPage::class],
-            ['uri' => 'po/dict/ardmkh', 'name' => 'po.dict.ardmkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Cungcap::class],
+            ['uri' => 'po/dict/ardmkh', 'name' => 'po.dict.ardmkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Ardmkh::class],
+            ['uri' => 'po/dict/ardmkh/create', 'name' => 'po.dict.ardmkh.create', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
+            ['uri' => 'po/dict/ardmkh/{id}/edit', 'name' => 'po.dict.ardmkh.edit', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
             // ['uri' => 'po/dict/ardmplkh', 'name' => 'po.dict.ardmplkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => SimbaPage::class],
             ['uri' => 'po/dict/podmcp', 'name' => 'po.dict.podmcp', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmcp', 'component' => PoDmCpIndex::class],
             // ['uri' => 'po/dict/podmgiamua', 'name' => 'po.dict.podmgiamua', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmgiamua', 'component' => SimbaPage::class],

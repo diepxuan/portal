@@ -11,14 +11,14 @@ declare(strict_types=1);
  * @lastupdate 2026-06-05 00:00:00
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Muahang;
+namespace Diepxuan\Catalog\Http\Livewire\Po\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class CungcapForm extends Component
+class ArdmkhForm extends Component
 {
     public string $mode = 'create';
     public ?string $ma_kh = null;
@@ -62,17 +62,17 @@ class CungcapForm extends Component
             }
 
             $row = $result->first();
-            $this->ma_kh = $row['MA_KH'] ?? $maKh;
-            $this->ten_kh = $row['TEN_KH'] ?? '';
-            $this->dia_chi = $row['DIA_CHI'] ?? '';
-            $this->ma_so_thue = $row['MA_SO_THUE'] ?? '';
-            $this->dien_thoai = $row['TEL'] ?? '';
-            $this->fax = $row['FAX'] ?? '';
-            $this->email = $row['EMAIL'] ?? '';
-            $this->nguoi_gd = $row['NGUOI_GD'] ?? null;
-            $this->tk_cn = $row['TK'] ?? null;
-            $this->ma_httt_po = $row['MA_HTTT_PO'] ?? null;
-            $this->ghi_chu = $row['GHI_CHU'] ?? null;
+            $this->ma_kh       = $this->field($row, 'ma_kh', 'MA_KH', $maKh);
+            $this->ten_kh      = $this->field($row, 'ten_kh', 'TEN_KH', '');
+            $this->dia_chi     = $this->field($row, 'dia_chi', 'DIA_CHI', '');
+            $this->ma_so_thue  = $this->field($row, 'ma_so_thue', 'MA_SO_THUE', '');
+            $this->dien_thoai  = $this->field($row, 'tel', 'TEL', '');
+            $this->fax         = $this->field($row, 'fax', 'FAX', '');
+            $this->email       = $this->field($row, 'email', 'EMAIL', '');
+            $this->nguoi_gd    = $this->field($row, 'nguoi_gd', 'NGUOI_GD');
+            $this->tk_cn       = $this->field($row, 'tk', 'TK');
+            $this->ma_httt_po  = $this->field($row, 'ma_httt_po', 'MA_HTTT_PO');
+            $this->ghi_chu     = $this->field($row, 'ghi_chu', 'GHI_CHU');
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Không thể tải nhà cung cấp: ' . $e->getMessage());
         }
@@ -90,7 +90,7 @@ class CungcapForm extends Component
 
     public function render(): View
     {
-        return view('catalog::muahang.cungcap-form')->layout('catalog::layouts.app');
+        return view('catalog::po.dict.ardmkh-form')->layout('catalog::layouts.app');
     }
 
     protected function rules(): array
@@ -108,6 +108,18 @@ class CungcapForm extends Component
             'ma_httt_po' => 'nullable|string|max:20',
             'ghi_chu' => 'nullable|string|max:500',
         ];
+    }
+
+    /**
+     * @param object|array<string, mixed> $row
+     */
+    private function field(object|array $row, string $lower, string $upper, mixed $default = null): mixed
+    {
+        if (is_array($row)) {
+            return $row[$lower] ?? $row[$upper] ?? $default;
+        }
+
+        return $row->{$lower} ?? $row->{$upper} ?? $default;
     }
 
     protected function persist(string $procedureClass): void
@@ -138,7 +150,7 @@ class CungcapForm extends Component
             ]);
 
             $this->dispatch('success', message: 'Đã lưu nhà cung cấp ' . $maKh);
-            $this->redirect(route('po.cungcap'), navigate: true);
+            $this->redirect(route('po.dict.ardmkh'), navigate: true);
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Không thể lưu nhà cung cấp: ' . $e->getMessage());
         }

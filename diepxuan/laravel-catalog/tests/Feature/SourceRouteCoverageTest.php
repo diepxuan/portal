@@ -45,17 +45,51 @@ final class SourceRouteCoverageTest extends TestCase
         }
     }
 
-    public function testLegacyCreateEditUrlsStillResolve(): void
+    public function testCanonicalPoSupplierCreateEditUrlsResolve(): void
+    {
+        foreach ([
+            '/_simba-source/po/dict/ardmkh/create' => 'po.dict.ardmkh.create',
+            '/_simba-source/po/dict/ardmkh/1CHIBANRAO/edit' => 'po.dict.ardmkh.edit',
+        ] as $url => $routeName) {
+            $resolved = Route::getRoutes()->match(request()->create($url, 'GET'));
+
+            self::assertSame($routeName, $resolved->getName(), "Canonical PO supplier URL {$url} resolved incorrectly");
+            self::assertSame('po', $resolved->defaults['module'] ?? null);
+            self::assertSame('dict', $resolved->defaults['kind'] ?? null);
+            self::assertSame('ardmkh', $resolved->defaults['slug'] ?? null);
+        }
+    }
+
+    public function testLegacyPoSupplierCreateEditUrlsDoNotResolve(): void
+    {
+        foreach ([
+            '/muahang/nhacungcap/create',
+            '/muahang/nhacungcap/edit/1CHIBANRAO',
+        ] as $url) {
+            self::assertFalse($this->urlResolves($url), "Legacy PO supplier URL {$url} should not resolve");
+        }
+    }
+
+    public function testLegacyEmployeeCreateEditUrlsStillResolve(): void
     {
         foreach ([
             '/cash/nhanvien/create',
             '/cash/nhanvien/edit/1',
-            '/muahang/nhacungcap/create',
-            '/muahang/nhacungcap/edit/1',
         ] as $url) {
             $resolved = Route::getRoutes()->match(request()->create($url, 'GET'));
 
-            self::assertNotNull($resolved->getName(), "Legacy URL {$url} did not resolve to a named route");
+            self::assertNotNull($resolved->getName(), "Legacy employee URL {$url} did not resolve to a named route");
+        }
+    }
+
+    private function urlResolves(string $url): bool
+    {
+        try {
+            Route::getRoutes()->match(request()->create($url, 'GET'));
+
+            return true;
+        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return false;
         }
     }
 
