@@ -6,7 +6,20 @@ Ngày audit: 2026-06-19
 
 Loại bỏ các registry Simba hard-code trong `diepxuan/laravel-catalog/src/Config`; route/menu metadata phải lấy từ chính MSSQL SimbaERP thông qua các model Simba hiện hữu.
 
-## Trạng thái môi trường
+## Trạng thái sau PR #206
+
+PR #206 (`cleanup: remove Simba config registries`) đã merge vào `main`. Các file registry hard-code/compatibility wrapper trong `diepxuan/laravel-catalog/src/Config` đã bị xóa hoàn toàn:
+
+- `SimbaRouteRegistry.php`
+- `SimbaDictionaryRegistry.php`
+- `SimbaReportRegistry.php`
+- `SimbaProcessRegistry.php`
+
+Các test tương ứng trong `tests/Unit/Config/Simba*` cũng đã được xóa cùng đợt refactor vì không còn class để cover.
+
+Sau #206, không còn caller runtime trỏ về các registry trên trong `diepxuan/laravel-catalog/src`, `diepxuan/laravel-catalog/tests`, `scripts`.
+
+## Trạng thái môi trường smoke
 
 Lệnh smoke đọc runtime từ database bị chặn bởi môi trường local thiếu Microsoft ODBC Driver for SQL Server:
 
@@ -14,32 +27,24 @@ Lệnh smoke đọc runtime từ database bị chặn bởi môi trường local
 PDOException SQLSTATE[IMSSP]: This extension requires the Microsoft ODBC Driver for SQL Server to communicate with SQL Server.
 ```
 
-Vì vậy runtime count từ database chưa lấy được trong môi trường hiện tại. Code đã chuyển sang dùng `SimbaMenuRepository::activeMenus()` để đọc dữ liệu MSSQL SimbaERP thay vì PHP array hard-code.
+Vì vậy runtime count từ database chưa lấy được trong môi trường local. Trên server `web` (qua SSH), audit runtime đã chạy trực tiếp và lấy được số liệu, xem chi tiết tại `docs/project/simba-menu-route-review.md`.
 
-## Registry đã loại bỏ
-
-Các file registry hard-code/compatibility wrapper trong `src/Config` đã bị xóa:
-
-- `SimbaRouteRegistry.php`
-- `SimbaDictionaryRegistry.php`
-- `SimbaReportRegistry.php`
-- `SimbaProcessRegistry.php`
-
-Không còn caller runtime trỏ về các registry này trong `diepxuan/laravel-catalog/src`, `diepxuan/laravel-catalog/tests`, `scripts`.
-
-## Source of truth hiện tại
+## Source of truth hiện tại (sau #206 / #207)
 
 - Service trung tâm: `Diepxuan\Catalog\Services\SimbaMenuRouteMetadata`.
+- File code: `diepxuan/laravel-catalog/src/Services/SimbaMenuRouteMetadata.php`.
+- Unit test: `diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php`.
 - Menu active lấy từ `SimbaMenuRepository::activeMenus()`.
 - `SimbaMenuRepository` merge `SysMenu` và `Zsysmenu`, lọc `menuid` rỗng, unique theo `menuid`, rồi filter `active`.
 - Metadata phụ enrich từ các model Simba tương ứng:
   - dictionary: `SysDictionaryInfo`
   - report: `SysReportInfo`, `ZSysReportInfo`, `SysReportDrillDownInfo`
   - voucher/process/custom: field trên menu
+- Constants: `TYPE_DICTIONARY`, `TYPE_VOUCHER`, `TYPE_REPORT`, `TYPE_CUSTOM`.
 
 ## Public API thay thế
 
-Các caller dùng trực tiếp `SimbaMenuRouteMetadata`:
+Các caller hiện dùng trực tiếp `SimbaMenuRouteMetadata`:
 
 - `routes()`
 - `routesWithoutProcesses()`
@@ -47,6 +52,14 @@ Các caller dùng trực tiếp `SimbaMenuRouteMetadata`:
 - `reports()`
 - `processes()`
 - constants `TYPE_DICTIONARY`, `TYPE_VOUCHER`, `TYPE_REPORT`, `TYPE_CUSTOM`
+
+## Tài liệu tham chiếu
+
+- `docs/project/simba-menu-route-review.md` — review classifier theo menu thực tế từ MSSQL SimbaERP, PR #207.
+- `docs/project/simba-router-menu-matrix.md` — ma trận route/menu.
+- `docs/project/task-execution-coverage.md` — độ phủ task.
+- `docs/project/unmapped-active-menu.md` — menu active chưa map route.
+- `docs/project/remaining-process-shells.md` — process shell còn lại.
 
 ## Verification
 
