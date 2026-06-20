@@ -8,18 +8,18 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-20 12:54:00
+ * @lastupdate 2026-06-20 00:00:00
  */
 
 namespace Diepxuan\Catalog\Models;
 
-use Diepxuan\Simba\Models\Zsysmenu as SimbaModel;
-
 /**
  * Model Zsysmenu - SimbaERP z menu metadata (catalog layer).
  *
- * Mở rộng từ Simba Zsysmenu để Catalog dùng model nội bộ thay vì import trực tiếp model Simba.
+ * zsysmenu has the same column structure as sysMenu in simba-docs/tables,
+ * so Catalog treats it as the same menu contract with a different table.
  */
-class Zsysmenu extends SimbaModel
+class Zsysmenu extends SysMenu
 {
+    protected $table = 'zsysmenu';
 }
