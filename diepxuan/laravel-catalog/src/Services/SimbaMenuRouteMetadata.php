@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Services;
 
 use Diepxuan\Simba\Models\SysDictionaryInfo;
-use Diepxuan\Simba\Models\SysMenu;
+use Diepxuan\Catalog\Models\SysMenu;
 use Diepxuan\Simba\Models\SysReportDrillDownInfo;
 use Diepxuan\Simba\Models\SysReportInfo;
 use Diepxuan\Simba\Models\ZSysReportInfo;

@@ -11,15 +11,14 @@ declare(strict_types=1);
  * @lastupdate 2026-06-20 13:02:00
  */
 
-namespace Diepxuan\Simba\Models;
-
-use Diepxuan\Simba\SModel\ZsysmenuModel as Model;
+namespace Diepxuan\Simba\SModel;
 
 /**
  * Model zsysmenu - SimbaERP z menu metadata.
  *
- * Mở rộng từ ZsysmenuModel.
+ * Source: simba-docs/data/zsysmenu.md.
  */
-class Zsysmenu extends Model
+class ZsysmenuModel extends SysMenuModel
 {
+    protected $table = 'zsysmenu';
 }
