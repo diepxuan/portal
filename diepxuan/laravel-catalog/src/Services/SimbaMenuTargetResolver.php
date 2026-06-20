@@ -202,6 +202,11 @@ class SimbaMenuTargetResolver
             return null;
         }
 
+        $defaults = $route->defaults;
+        if (isset($defaults['component']) && class_exists((string) $defaults['component'])) {
+            return (string) $defaults['component'];
+        }
+
         $action = $route->getActionName();
         if (!str_contains($action, '@') && class_exists($action)) {
             return $action;
@@ -220,7 +225,7 @@ class SimbaMenuTargetResolver
         }
 
         $defaults = $route->defaults;
-        unset($defaults['controller'], $defaults['namespace'], $defaults['prefix'], $defaults['where'], $defaults['as']);
+        unset($defaults['component'], $defaults['controller'], $defaults['namespace'], $defaults['prefix'], $defaults['where'], $defaults['as']);
 
         return $defaults;
     }

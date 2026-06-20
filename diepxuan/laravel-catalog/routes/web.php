@@ -291,10 +291,11 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         ];
 
         foreach ($sourceRoutes as $sourceRoute) {
-            Route::get($sourceRoute['uri'], $sourceRoute['component'])
+            Route::redirect($sourceRoute['uri'], "/simba/{$sourceRoute['uri']}")
                 ->defaults('module', $sourceRoute['module'])
                 ->defaults('kind', $sourceRoute['kind'])
                 ->defaults('slug', $sourceRoute['slug'])
+                ->defaults('component', $sourceRoute['component'])
                 ->name($sourceRoute['name'])
             ;
         }

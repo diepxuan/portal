@@ -21,15 +21,17 @@ final class SourceRouteCoverageTest extends TestCase
         }
     }
 
-    public function testComponentBackedSourceRouteUrlsResolveToExpectedRouteNames(): void
+    public function testComponentBackedSourceRouteUrlsRedirectToCanonicalSimbaUrls(): void
     {
         foreach ($this->componentBackedSourceRoutes() as $route) {
             $resolved = Route::getRoutes()->match(request()->create($route['url'], 'GET'));
 
             self::assertSame($route['routeName'], $resolved->getName(), "Route resolve mismatch for {$route['url']}");
-            self::assertSame($route['module'], $resolved->defaults['module'] ?? null);
-            self::assertSame($route['kind'], $resolved->defaults['kind'] ?? null);
-            self::assertSame($route['slug'], $resolved->defaults['slug'] ?? null);
+            self::assertStringContainsString('RedirectController', $resolved->getActionName());
+            self::assertSame(
+                '/simba/' . $route['module'] . '/' . $route['kind'] . '/' . $route['slug'],
+                $resolved->defaults['destination'] ?? null
+            );
         }
     }
 
@@ -48,15 +50,15 @@ final class SourceRouteCoverageTest extends TestCase
     public function testCanonicalPoSupplierCreateEditUrlsResolve(): void
     {
         foreach ([
-            '/_simba-source/po/dict/ardmkh/create' => 'po.dict.ardmkh.create',
-            '/_simba-source/po/dict/ardmkh/1CHIBANRAO/edit' => 'po.dict.ardmkh.edit',
+            '/simba/po/dict/ardmkh/create' => 'simba.create',
+            '/simba/po/dict/ardmkh/1CHIBANRAO/edit' => 'simba.edit',
         ] as $url => $routeName) {
             $resolved = Route::getRoutes()->match(request()->create($url, 'GET'));
 
             self::assertSame($routeName, $resolved->getName(), "Canonical PO supplier URL {$url} resolved incorrectly");
-            self::assertSame('po', $resolved->defaults['module'] ?? null);
-            self::assertSame('dict', $resolved->defaults['kind'] ?? null);
-            self::assertSame('ardmkh', $resolved->defaults['slug'] ?? null);
+            self::assertSame('po', $resolved->parameter('module'));
+            self::assertSame('dict', $resolved->parameter('kind'));
+            self::assertSame('ardmkh', $resolved->parameter('slug'));
         }
     }
 
