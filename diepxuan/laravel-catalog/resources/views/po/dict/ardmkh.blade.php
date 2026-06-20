@@ -10,7 +10,7 @@
                 <p class="text-sm text-gray-500">ARDMKH - Danh mục nhà cung cấp - menu PO 10.90.22</p>
             </div>
             <a
-                href="{{ route('po.dict.ardmkh.create') }}"
+                href="{{ simbaroute('po.dict.ardmkh.create') }}"
                 class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
             >
                 Thêm nhà cung cấp
@@ -82,7 +82,7 @@
                         <td class="border-b border-gray-100 px-3 py-2 text-right">
                             <div class="flex justify-end gap-2">
                                 <a
-                                    href="{{ route('po.dict.ardmkh.edit', $arDmKh->ma_kh) }}"
+                                    href="{{ simbaroute('po.dict.ardmkh.edit', $arDmKh->ma_kh) }}"
                                     class="rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-700 hover:bg-yellow-200"
                                 >
                                     Sửa

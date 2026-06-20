@@ -319,6 +319,25 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ])
             ->name('show')
         ;
+        Route::get('/{module}/{kind}/{slug}/create', SimbaPage::class)
+            ->defaults('action', 'create')
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+            ])
+            ->name('create')
+        ;
+        Route::get('/{module}/{kind}/{slug}/{id}/edit', SimbaPage::class)
+            ->defaults('action', 'edit')
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+                'id'     => '[^/]+',
+            ])
+            ->name('edit')
+        ;
     });
 
     Route::prefix('hethong')->name('system.')->group(static function (): void {

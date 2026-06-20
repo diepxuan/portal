@@ -150,7 +150,7 @@ class ArdmkhForm extends Component
             ]);
 
             $this->dispatch('success', message: 'Đã lưu nhà cung cấp ' . $maKh);
-            $this->redirect(route('po.dict.ardmkh'), navigate: true);
+            $this->redirect(simbaroute('po.dict.ardmkh'), navigate: true);
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Không thể lưu nhà cung cấp: ' . $e->getMessage());
         }

@@ -4,7 +4,7 @@
     <x-slot name="header">
         <div class="flex items-center gap-4">
             <a
-                href="{{ route('po.dict.ardmkh') }}"
+                href="{{ simbaroute('po.dict.ardmkh') }}"
                 class="rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300"
             >
                 Quay lại
@@ -169,7 +169,7 @@
 
         <div class="flex justify-end gap-2">
             <a
-                href="{{ route('po.dict.ardmkh') }}"
+                href="{{ simbaroute('po.dict.ardmkh') }}"
                 class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
             >
                 Hủy
