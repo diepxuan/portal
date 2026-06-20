@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-19 14:14:20
+ * @lastupdate 2026-06-20 11:17:03
  */
 
 use Diepxuan\Catalog\Http\Controllers\SellController;
@@ -28,9 +28,9 @@ use Diepxuan\Catalog\Http\Livewire\Home\Dashboard as DashboardLivewire;
 use Diepxuan\Catalog\Http\Livewire\In\Dmkho;
 use Diepxuan\Catalog\Http\Livewire\In\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Dmvt;
+use Diepxuan\Catalog\Http\Livewire\Muahang\PoDmCpIndex;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
-use Diepxuan\Catalog\Http\Livewire\Muahang\PoDmCpIndex;
 use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountOpening;
 use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountsPayable;
 use Diepxuan\Catalog\Http\Livewire\System\Balance\AccountsReceivable;
@@ -68,6 +68,10 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     // Source routes for SimbaERP screens generated from simba-docs/data/sysMenu.md + zsysmenu.md.
     // Menus with concrete Livewire screens point to the component; the rest render the metadata shell.
     Route::prefix('_simba-source')->group(static function (): void {
+        Route::redirect('{path}', '/simba/{path}')
+            ->where('path', '.*')
+        ;
+
         $sourceRoutes = [
             ['uri' => 'ca/dict/ardmkh', 'name' => 'ca.dict.ardmkh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Nhanvien::class],
             // ['uri' => 'ca/dict/sidmngh', 'name' => 'ca.dict.sidmngh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmngh', 'component' => SimbaPage::class],
@@ -291,18 +295,13 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         ];
 
         foreach ($sourceRoutes as $sourceRoute) {
-            Route::redirect($sourceRoute['uri'], "/simba/{$sourceRoute['uri']}")
+            Route::get($sourceRoute['uri'], $sourceRoute['component'])
                 ->defaults('module', $sourceRoute['module'])
                 ->defaults('kind', $sourceRoute['kind'])
                 ->defaults('slug', $sourceRoute['slug'])
-                ->defaults('component', $sourceRoute['component'])
                 ->name($sourceRoute['name'])
             ;
         }
-
-        Route::redirect('{path}', '/simba/{path}')
-            ->where('path', '.*')
-        ;
     });
 
     // Canonical Simba shell entrypoint. Source routes above keep component/defaults;
