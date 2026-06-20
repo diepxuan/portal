@@ -299,6 +299,10 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 ->name($sourceRoute['name'])
             ;
         }
+
+        Route::redirect('{path}', '/simba/{path}')
+            ->where('path', '.*')
+        ;
     });
 
     // Canonical Simba shell entrypoint. Source routes above keep component/defaults;
