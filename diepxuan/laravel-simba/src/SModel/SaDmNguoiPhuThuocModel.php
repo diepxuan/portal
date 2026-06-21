@@ -19,7 +19,7 @@ class SaDmNguoiPhuThuocModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Thang';
 
     /**
      * Indicates if the model should be timestamped.

@@ -19,7 +19,7 @@ class PoDmTtModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_tt_po';
 
     /**
      * Indicates if the model should be timestamped.

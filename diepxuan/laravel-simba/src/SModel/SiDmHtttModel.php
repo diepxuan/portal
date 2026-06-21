@@ -19,7 +19,7 @@ class SiDmHtttModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_httt';
 
     /**
      * Indicates if the model should be timestamped.

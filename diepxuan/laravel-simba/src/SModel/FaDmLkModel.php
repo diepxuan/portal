@@ -19,7 +19,7 @@ class FaDmLkModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Ma_Ts';
 
     /**
      * Indicates if the model should be timestamped.

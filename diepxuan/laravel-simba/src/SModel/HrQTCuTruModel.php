@@ -19,7 +19,7 @@ class HrQTCuTruModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Id';
 
     /**
      * Indicates if the model should be timestamped.

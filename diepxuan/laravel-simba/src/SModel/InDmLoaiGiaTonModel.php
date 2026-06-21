@@ -19,7 +19,7 @@ class InDmLoaiGiaTonModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'id';
 
     /**
      * Indicates if the model should be timestamped.

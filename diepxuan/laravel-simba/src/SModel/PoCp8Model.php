@@ -19,7 +19,7 @@ class PoCp8Model extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'stt_rec';
 
     /**
      * Indicates if the model should be timestamped.

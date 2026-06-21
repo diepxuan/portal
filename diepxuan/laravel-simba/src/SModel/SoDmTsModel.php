@@ -19,7 +19,7 @@ class SoDmTsModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_thue';
 
     /**
      * Indicates if the model should be timestamped.

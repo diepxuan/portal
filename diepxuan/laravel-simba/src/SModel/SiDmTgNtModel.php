@@ -19,7 +19,7 @@ class SiDmTgNtModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nt';
 
     /**
      * Indicates if the model should be timestamped.

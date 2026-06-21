@@ -19,7 +19,7 @@ class HrDmThangBangLuongModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Ma_tbl';
 
     /**
      * Indicates if the model should be timestamped.

@@ -19,7 +19,7 @@ class CaLaiKuModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ngay_tra';
 
     /**
      * Indicates if the model should be timestamped.

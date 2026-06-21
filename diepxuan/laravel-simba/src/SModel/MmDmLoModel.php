@@ -19,7 +19,7 @@ class MmDmLoModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_lo_tp';
 
     /**
      * Indicates if the model should be timestamped.

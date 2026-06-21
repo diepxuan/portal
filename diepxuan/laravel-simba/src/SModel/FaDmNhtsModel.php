@@ -19,7 +19,7 @@ class FaDmNhtsModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nhts';
 
     /**
      * Indicates if the model should be timestamped.

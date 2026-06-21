@@ -19,7 +19,7 @@ class SiDmNhHdModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nhhd';
 
     /**
      * Indicates if the model should be timestamped.

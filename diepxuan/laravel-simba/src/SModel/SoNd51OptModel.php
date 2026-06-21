@@ -19,7 +19,7 @@ class SoNd51OptModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_opt';
 
     /**
      * Indicates if the model should be timestamped.

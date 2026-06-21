@@ -19,7 +19,7 @@ class SaBangLuongModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'thang';
 
     /**
      * Indicates if the model should be timestamped.

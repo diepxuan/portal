@@ -19,7 +19,7 @@ class HrDmKhacModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Code_name';
 
     /**
      * Indicates if the model should be timestamped.

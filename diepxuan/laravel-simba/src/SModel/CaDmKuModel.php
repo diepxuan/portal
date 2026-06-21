@@ -19,7 +19,7 @@ class CaDmKuModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_ku';
 
     /**
      * Indicates if the model should be timestamped.

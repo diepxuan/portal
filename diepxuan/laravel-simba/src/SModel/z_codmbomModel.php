@@ -19,7 +19,7 @@ class z_codmbomModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'stt_rec_lenh';
 
     /**
      * Indicates if the model should be timestamped.

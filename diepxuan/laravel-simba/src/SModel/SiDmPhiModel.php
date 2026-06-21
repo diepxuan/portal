@@ -19,7 +19,7 @@ class SiDmPhiModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_phi';
 
     /**
      * Indicates if the model should be timestamped.

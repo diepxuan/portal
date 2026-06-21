@@ -19,7 +19,7 @@ class InDmNhVatModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nhvat';
 
     /**
      * Indicates if the model should be timestamped.

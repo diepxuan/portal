@@ -19,7 +19,7 @@ class SaDmThueTNCNModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Bac_thue';
 
     /**
      * Indicates if the model should be timestamped.

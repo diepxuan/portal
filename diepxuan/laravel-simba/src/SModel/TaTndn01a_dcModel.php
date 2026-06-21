@@ -19,7 +19,7 @@ class TaTndn01a_dcModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'Id';
 
     /**
      * Indicates if the model should be timestamped.

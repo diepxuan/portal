@@ -19,7 +19,7 @@ class GlBctcTMIXModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ngay1';
 
     /**
      * Indicates if the model should be timestamped.

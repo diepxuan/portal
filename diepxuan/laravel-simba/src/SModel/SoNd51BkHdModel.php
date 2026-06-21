@@ -19,7 +19,7 @@ class SoNd51BkHdModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_tb';
 
     /**
      * Indicates if the model should be timestamped.

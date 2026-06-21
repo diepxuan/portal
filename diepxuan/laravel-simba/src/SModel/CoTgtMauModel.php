@@ -19,7 +19,7 @@ class CoTgtMauModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_so';
 
     /**
      * Indicates if the model should be timestamped.

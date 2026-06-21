@@ -19,7 +19,7 @@ class InDmNxModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nx';
 
     /**
      * Indicates if the model should be timestamped.

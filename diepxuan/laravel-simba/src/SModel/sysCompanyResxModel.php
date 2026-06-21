@@ -19,7 +19,7 @@ class sysCompanyResxModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'language';
 
     /**
      * Indicates if the model should be timestamped.

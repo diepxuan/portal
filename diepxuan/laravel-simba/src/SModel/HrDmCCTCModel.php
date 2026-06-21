@@ -19,7 +19,7 @@ class HrDmCCTCModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Id_CCTC';
 
     /**
      * Indicates if the model should be timestamped.

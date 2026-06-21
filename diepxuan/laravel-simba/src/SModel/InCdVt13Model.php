@@ -19,7 +19,7 @@ class InCdVt13Model extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_kho';
 
     /**
      * Indicates if the model should be timestamped.

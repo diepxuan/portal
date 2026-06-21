@@ -19,7 +19,7 @@ class HrDmCheDoNghiModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_cdn';
 
     /**
      * Indicates if the model should be timestamped.

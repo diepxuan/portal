@@ -19,7 +19,7 @@ class GlBctcTmVI0708Model extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'mau';
 
     /**
      * Indicates if the model should be timestamped.

@@ -42,9 +42,9 @@ class SiSetup extends SModel
     /**
      * The primary key associated with the table.
      *
-     * @var string
+     * @var string|null
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = null;
 
     /**
      * The attributes that are mass assignable.

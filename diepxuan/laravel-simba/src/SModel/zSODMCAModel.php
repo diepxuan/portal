@@ -19,7 +19,7 @@ class zSODMCAModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ca';
 
     /**
      * Indicates if the model should be timestamped.

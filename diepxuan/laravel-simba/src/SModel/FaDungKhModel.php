@@ -19,7 +19,7 @@ class FaDungKhModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_ts';
 
     /**
      * Indicates if the model should be timestamped.

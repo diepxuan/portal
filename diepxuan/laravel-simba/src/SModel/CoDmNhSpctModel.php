@@ -19,7 +19,7 @@ class CoDmNhSpctModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_nhspct';
 
     /**
      * Indicates if the model should be timestamped.

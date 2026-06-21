@@ -19,7 +19,7 @@ class InDmBarcodeModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'ma_cty';
+    protected $primaryKey = 'ma_vach';
 
     /**
      * Indicates if the model should be timestamped.

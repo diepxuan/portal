@@ -19,7 +19,7 @@ class HrDmTCDanhGiaCTModel extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'Ma_cty';
+    protected $primaryKey = 'Ma_tcdg';
 
     /**
      * Indicates if the model should be timestamped.
