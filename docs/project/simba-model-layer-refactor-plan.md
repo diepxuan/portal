@@ -161,14 +161,36 @@ Hướng xử lý:
 Các bước còn lại:
 
 - [x] Audit SModel generated đã tồn tại.
-- [ ] Refactor `SysDictionaryInfo`.
-- [ ] Refactor `SysReportInfo`.
-- [ ] Refactor `SysReportDrillDownInfo`.
-- [ ] Refactor `SiDmCt`.
-- [ ] Lint + autoload + diff check.
-- [ ] Đối chiếu casts sai lệch với `simba-docs/tables`.
-- [ ] Cập nhật README nếu cần.
+- [x] Refactor `SysDictionaryInfo`.
+- [x] Refactor `SysReportInfo`.
+- [x] Refactor `SysReportDrillDownInfo`.
+- [x] Refactor `SiDmCt`.
+- [x] Lint + autoload + diff check.
+- [x] Đối chiếu casts sai lệch với `simba-docs/tables`.
+- [x] Cập nhật README nếu cần.
 - [ ] Tạo PR Phase 3.
+
+Kết quả sau khi refactor:
+
+- 4 Model chỉ extend SModel generated, không khai báo lại schema.
+- 3 Model có composite PK dùng `HasSimbaCompositeKey`:
+  - `SysReportInfo` -> PK `(menuid, ma_mau)`
+  - `SysReportDrillDownInfo` -> PK `(menuid, ma_mau, press_key_name)`
+  - `SiDmCt` -> PK `(ma_cty, ma_ct)`
+- Behavior Simba-level giữ nguyên:
+  - `SysDictionaryInfo`: `primaryKeyFields()`, `carryFields()`, `scopeCodeName`, `scopeMenuId`
+  - `SiDmCt`: `scopeVoucher`, `scopeMenuId`, `headerFieldsForInventory()`, `detailFieldsForInventory()`
+- Lint: 4/4 pass.
+- `class_exists` + parent class + trait check: pass.
+- `git diff --check` pass.
+- Caller `diepxuan/laravel-catalog/src/Services/SimbaMetadataService.php`, `SimbaVoucherMetadata.php`, `Models/SysDictionaryInfo.php` chỉ dùng query/attribute thường; không phụ thuộc schema declaration trong Model nên không phá API.
+
+Đối chiếu casts:
+
+- `SysReportInfo`: SModel cast `isdefault` boolean. Cột `bang_chu`/`bang_chu0` (NVARCHAR 50) và `hasNT` (NVARCHAR 1) từ docs không phải boolean; Model cũ cast boolean là sai -> đã loại bỏ.
+- `SiDmCt`: SModel cast `VoucherGetWhenOpenForm` integer (theo DB thật). Docs không liệt kê cột này; Model cũ cast boolean không có nguồn docs -> đã loại bỏ.
+
+Branch: `task/simba-model-layer-phase3-schema-refactor`
 
 ---
 
