@@ -29,6 +29,8 @@ Tách rõ trách nhiệm 3 lớp model:
 ## Trạng thái đã làm trong PR #217
 
 PR: https://github.com/diepxuan/portal/pull/217
+Merge commit: `ac8212c08` — `refactor: document simba model layers (#217)`
+Commit cuối trong PR: `48be82c74` — `feat(simba): add direct models for generated schema`
 
 Đã hoàn tất:
 
@@ -50,6 +52,34 @@ PR: https://github.com/diepxuan/portal/pull/217
   - `SysUserInfo` -> `sysUserInfoModel`
 - `SysMenu` giữ trỏ về `SysMenuModel` mới/chuẩn vì file này đã có metadata đầy đủ hơn generated cũ `sysMenuModel`.
 - Không đổi public model class để tránh phá caller hiện tại.
+- Quy tắc primary key đã chốt và áp dụng cho toàn bộ 441 SModel:
+  - Bỏ `ma_cty` làm `$primaryKey` generic.
+  - Composite PK > 3 cột dùng `null` + `PRIMARY_KEY_COLUMNS`.
+  - Composite PK 2-3 cột chọn key đại diện không phải `ma_cty` (ưu tiên `stt_rec`).
+  - Bảng setup chỉ có `ma_cty` thì `null` + `PRIMARY_KEY_COLUMNS`.
+- Xóa 13 file SModel legacy không hậu tố `Model` không còn tham chiếu.
+- Tạo `diepxuan/laravel-simba/src/Models/Concerns/HasSimbaCompositeKey.php` với:
+  - `getPrimaryKeyColumns()`
+  - `getRepresentativeKeyName()`
+  - `scopeForCompositeKey()` (bắt buộc đủ PRIMARY_KEY_COLUMNS)
+  - `scopeForCompany()`
+  - `findByCompositeKey()`
+  - `updateByCompositeKey()`
+  - `deleteByCompositeKey()`
+  - `compositeKeyAttributes()`
+  - `compositeKeyString()`
+  - `assertCompositeKey()`
+- Bổ sung đầy đủ Models trực tiếp cho từng SModel:
+  - SModel classes: 441
+  - Models files: 445 (441 direct table + 4 alias hiện hữu)
+  - Models có `HasSimbaCompositeKey`: 342
+- Cập nhật `diepxuan/laravel-simba/README.md` cho đúng chuẩn `<Table>Model` và ví dụ code.
+
+Số liệu cuối PR #217:
+- Lint pass: 446 file PHP trong Models + Concerns
+- `class_exists` check: 445/445 pass
+- `git diff --check` pass
+- CI PR #217: 14/14 pass, mergeable, mergeStateStatus CLEAN.
 
 ---
 
@@ -96,6 +126,49 @@ Cần kiểm tra SModel generated tương ứng rồi refactor để:
 - Schema nằm ở `SModel`.
 - Behavior/helper nằm ở `Models`.
 - Catalog cache/service nằm ở `laravel-catalog`.
+
+### Trạng thái Phase 3 (đang thực hiện)
+
+PR: `task/simba-model-layer-phase3-schema-refactor`
+
+Audit SModel generated đã có:
+
+| Model | SModel generated | PRIMARY_KEY_COLUMNS | Ghi chú |
+|-------|------------------|----------------------|---------|
+| `SysDictionaryInfo` | `sysDictionaryInfoModel` | (single PK `code_name`) | Có behavior: `primaryKeyFields`, `carryFields`, `scopeCodeName`, `scopeMenuId` |
+| `SysReportInfo` | `sysReportInfoModel` | `['menuid', 'ma_mau']` | Composite 2 cột, không có behavior, model cũ dùng `SModel` base |
+| `SysReportDrillDownInfo` | `sysReportDrillDownInfoModel` | `['menuid', 'ma_mau', 'press_key_name']` | Composite 3 cột, không có behavior, model cũ dùng `SModel` base |
+| `SiDmCt` | `SiDmCtModel` | `['ma_cty', 'ma_ct']` | Có behavior: `scopeVoucher`, `scopeMenuId`, `headerFieldsForInventory`, `detailFieldsForInventory` |
+
+Sai lệch schema cần đối chiếu giữa Model cũ và SModel generated:
+
+- `SysReportInfo`:
+  - Model cũ cast `bang_chu`, `bang_chu0`, `hasNT` là `boolean`.
+  - SModel generated chỉ cast `isdefault` là `boolean`.
+  - Cần đối chiếu `simba-docs/tables/sysReportInfo.md` để xác định đúng; mặc định lấy theo SModel generated vì là nguồn sinh từ docs.
+- `SiDmCt`:
+  - Model cũ cast `VoucherGetWhenOpenForm` là `boolean`.
+  - SModel generated cast là `integer`.
+  - Cần đối chiếu `simba-docs/tables/SiDmCt.md` để xác định đúng.
+
+Hướng xử lý:
+
+1. Refactor 4 Model để chỉ extend SModel generated, không khai báo lại schema (`$table`, `$primaryKey`, `$keyType`, `$fillable`, `$casts`, `$timestamps`, `$incrementing`, `$connection`).
+2. Sử dụng `HasSimbaCompositeKey` trait cho các Model có composite PK (`SysReportInfo`, `SysReportDrillDownInfo`, `SiDmCt`).
+3. Behavior hiện có giữ nguyên trong Model.
+4. Các sai lệch casts nếu được chứng minh đúng từ docs sẽ được ghi đè trong Model bằng cast override, có comment giải thích nguồn từ docs.
+
+Các bước còn lại:
+
+- [x] Audit SModel generated đã tồn tại.
+- [ ] Refactor `SysDictionaryInfo`.
+- [ ] Refactor `SysReportInfo`.
+- [ ] Refactor `SysReportDrillDownInfo`.
+- [ ] Refactor `SiDmCt`.
+- [ ] Lint + autoload + diff check.
+- [ ] Đối chiếu casts sai lệch với `simba-docs/tables`.
+- [ ] Cập nhật README nếu cần.
+- [ ] Tạo PR Phase 3.
 
 ---
 
