@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
+use Diepxuan\Simba\Models\Concerns\HasSimbaCompositeKey;
 use Diepxuan\Simba\SModel\SoPh3Model as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\DB;
  */
 class SoPh3 extends Model
 {
+    use HasSimbaCompositeKey;
+
     /**
      * Gọi stored procedure asSoFilt3 để lấy dữ liệu danh sách bán hàng.
      */

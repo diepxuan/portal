@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
+use Diepxuan\Simba\Models\Concerns\HasSimbaCompositeKey;
 use Diepxuan\Simba\SModel\GlCdTkModel as Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class GlCdTk extends Model
 {
+    use HasSimbaCompositeKey;
+
     /** Filter theo danh sách tài khoản */
     public function scopeFilterByTkList(Builder $query, ?string $list): Builder
     {
