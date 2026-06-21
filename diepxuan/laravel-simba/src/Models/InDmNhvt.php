@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\InDmNhvt as Model;
+use Diepxuan\Simba\SModel\InDmNhvtModel as Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

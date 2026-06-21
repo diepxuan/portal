@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\GlCdTk as Model;
+use Diepxuan\Simba\SModel\GlCdTkModel as Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

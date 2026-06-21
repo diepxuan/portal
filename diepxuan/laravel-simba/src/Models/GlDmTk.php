@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\GlDmTk as Model;
+use Diepxuan\Simba\SModel\GlDmTkModel as Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class GlDmTk extends Model

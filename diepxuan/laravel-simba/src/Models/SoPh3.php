@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\SoPh3 as Model;
+use Diepxuan\Simba\SModel\SoPh3Model as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

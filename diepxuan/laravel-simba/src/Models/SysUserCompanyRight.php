@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\SysUserCompanyRight as Model;
+use Diepxuan\Simba\SModel\sysUserCompanyRightModel as Model;
 
 class SysUserCompanyRight extends Model
 {

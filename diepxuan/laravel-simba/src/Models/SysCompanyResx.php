@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Diepxuan\Simba\Models;
 
-use Diepxuan\Simba\SModel\SysCompanyResx as Model;
+use Diepxuan\Simba\SModel\sysCompanyResxModel as Model;
 
 class SysCompanyResx extends Model
 {
