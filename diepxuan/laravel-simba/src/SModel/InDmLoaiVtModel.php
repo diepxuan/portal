@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class InDmLoaiVtModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'id',
+    ];
+
     /**
      * The table associated with the model.
      *

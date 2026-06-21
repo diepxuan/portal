@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class GlMauBctc06Model extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'stt',
+        'ma_so',
+    ];
+
     /**
      * The table associated with the model.
      *

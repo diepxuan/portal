@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class CoDmPbCachTinhHsModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'id',
+        'moduleID',
+    ];
+
     /**
      * The table associated with the model.
      *

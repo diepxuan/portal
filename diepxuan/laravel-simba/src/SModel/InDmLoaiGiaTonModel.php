@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class InDmLoaiGiaTonModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'id',
+        'language',
+    ];
+
     /**
      * The table associated with the model.
      *

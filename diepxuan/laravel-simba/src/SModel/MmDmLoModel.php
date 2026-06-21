@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class MmDmLoModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_lo_tp',
+    ];
+
     /**
      * The table associated with the model.
      *

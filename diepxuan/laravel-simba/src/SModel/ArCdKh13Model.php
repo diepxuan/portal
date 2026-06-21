@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class ArCdKh13Model extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_kh',
+    ];
+
     /**
      * The table associated with the model.
      *

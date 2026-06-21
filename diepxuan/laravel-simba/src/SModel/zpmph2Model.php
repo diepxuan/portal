@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class zpmph2Model extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'stt_rec',
+    ];
+
     /**
      * The table associated with the model.
      *

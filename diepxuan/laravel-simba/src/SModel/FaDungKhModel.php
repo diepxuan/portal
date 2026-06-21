@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class FaDungKhModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_ts',
+        'ngay_dung_kh',
+    ];
+
     /**
      * The table associated with the model.
      *

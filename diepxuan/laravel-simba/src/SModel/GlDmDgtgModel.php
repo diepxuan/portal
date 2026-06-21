@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class GlDmDgtgModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'loai_dg',
+        'tk_dgtg',
+    ];
+
     /**
      * The table associated with the model.
      *

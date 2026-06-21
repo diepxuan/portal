@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class CaCdKuModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'nam',
+        'ma_ku',
+    ];
+
     /**
      * The table associated with the model.
      *

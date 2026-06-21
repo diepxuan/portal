@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SaBangLuongFieldsModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Ten',
+    ];
+
     /**
      * The table associated with the model.
      *

@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class HrDmKQDanhGiaModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Ma_kqdg',
+    ];
+
     /**
      * The table associated with the model.
      *

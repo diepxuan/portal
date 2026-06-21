@@ -26,6 +26,43 @@ Thư mục này chứa các model raw/table schema của SimbaERP.
 - Logic route/auth/session/request/UI.
 - Logic phục vụ Portal/Catalog use-case.
 
+## Quy tắc primary key
+
+Laravel Eloquent core chỉ hỗ trợ một `$primaryKey`, trong khi nhiều bảng Simba dùng composite primary key có `ma_cty` làm company scope.
+
+Quy tắc trong `SModel`:
+
+- Không dùng `ma_cty` làm `$primaryKey` generic, trừ bảng danh sách công ty thật sự như `sysCompany`.
+- Nếu bảng có composite primary key nhiều hơn 3 cột, đặt:
+
+```php
+protected $primaryKey = null;
+
+public const PRIMARY_KEY_COLUMNS = [
+    'ma_cty',
+    // các cột khóa thật từ simba-docs/tables
+];
+```
+
+- Nếu bảng có 2 hoặc 3 primary key, bỏ `ma_cty` khỏi lựa chọn key đại diện và chọn cột định danh hợp lý hơn, ưu tiên `stt_rec` nếu có.
+- Vẫn khai báo `PRIMARY_KEY_COLUMNS` cho composite key để code biết đầy đủ khóa thật của bảng.
+- Với bảng detail có `stt_rec`, `stt_rec0`, có thể dùng `stt_rec` làm key đại diện:
+
+```php
+protected $primaryKey = 'stt_rec';
+```
+
+nhưng không được dùng blind `$model->save()`, `$model->delete()` hoặc update chỉ dựa trên key đơn. Khi update/delete detail phải query đủ composite key:
+
+```php
+static::where('ma_cty', $maCty)
+    ->where('stt_rec', $sttRec)
+    ->where('stt_rec0', $sttRec0)
+    ->update([...]);
+```
+
+- Với bảng có `$primaryKey = null`, chỉ dùng model như raw query/read schema hoặc thao tác bằng query builder đủ điều kiện khóa.
+
 ## Quy tắc cập nhật
 
 - Không tự đặt tên bảng/cột/SP. Nguồn sự thật là `simba-docs/tables` và các tài liệu Simba readonly liên quan.

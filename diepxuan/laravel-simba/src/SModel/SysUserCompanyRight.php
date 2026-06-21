@@ -18,6 +18,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SysUserCompanyRight extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Username',
+        'Ma_cty',
+    ];
+
     /**
      * Indicates if the IDs are auto-incrementing.
      *
@@ -44,7 +49,7 @@ class SysUserCompanyRight extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'Username';
 
     /**
      * The attributes that are mass assignable.

@@ -17,6 +17,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class InPh3Model extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'stt_rec',
+    ];
+
     public const CREATED_AT = 'cdate';
     public const UPDATED_AT = 'ldate';
 

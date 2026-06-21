@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SaDmThueTNCNModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Bac_thue',
+    ];
+
     /**
      * The table associated with the model.
      *

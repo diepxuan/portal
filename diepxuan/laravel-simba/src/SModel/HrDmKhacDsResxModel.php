@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class HrDmKhacDsResxModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Code_name',
+        'Language',
+    ];
+
     /**
      * The table associated with the model.
      *

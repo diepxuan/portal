@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class InDmViTriModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_kho',
+        'ma_vitri',
+    ];
+
     /**
      * The table associated with the model.
      *

@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class CaLaiKuModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ngay_tra',
+        'ma_ku',
+    ];
+
     /**
      * The table associated with the model.
      *

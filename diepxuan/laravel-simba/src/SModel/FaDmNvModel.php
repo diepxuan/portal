@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class FaDmNvModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_nv',
+    ];
+
     /**
      * The table associated with the model.
      *

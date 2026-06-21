@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SoDmKmModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_km',
+    ];
+
     /**
      * The table associated with the model.
      *

@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SiDmTgNtModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_nt',
+        'ngay_tg',
+    ];
+
     /**
      * The table associated with the model.
      *

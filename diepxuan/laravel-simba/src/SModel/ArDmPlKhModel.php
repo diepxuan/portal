@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class ArDmPlKhModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_plkh',
+        'loai',
+    ];
+
     /**
      * The table associated with the model.
      *

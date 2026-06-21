@@ -18,6 +18,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class InCT3 extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'stt_rec',
+        'stt_rec0',
+    ];
+
     public const CREATED_AT = 'cDate';
     public const UPDATED_AT = 'lDate';
 

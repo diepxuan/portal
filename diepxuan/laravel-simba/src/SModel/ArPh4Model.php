@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class ArPh4Model extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_ct',
+        'stt_rec',
+    ];
+
     /**
      * The table associated with the model.
      *

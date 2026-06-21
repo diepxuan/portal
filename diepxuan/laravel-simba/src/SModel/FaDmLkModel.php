@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class FaDmLkModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Ma_Ts',
+        'Ma_Lk',
+    ];
+
     /**
      * The table associated with the model.
      *

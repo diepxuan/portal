@@ -21,6 +21,11 @@ class InDmKho extends SModel
     use HasCompositePrimaryKey;
 use Diepxuan\Simba\SModel\SModel;
 
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_kho',
+    ];
+
     public const CREATED_AT = 'cdate';
     public const UPDATED_AT = 'ldate';
 

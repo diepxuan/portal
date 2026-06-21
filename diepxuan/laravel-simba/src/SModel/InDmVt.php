@@ -17,6 +17,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class InDmVt extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_vt',
+    ];
+
     public const CREATED_AT = 'cDate';
     public const UPDATED_AT = 'lDate';
 

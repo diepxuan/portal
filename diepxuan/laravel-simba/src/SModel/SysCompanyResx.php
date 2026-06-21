@@ -18,6 +18,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SysCompanyResx extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'language',
+    ];
+
     /**
      * Indicates if the IDs are auto-incrementing.
      *
@@ -44,7 +49,7 @@ class SysCompanyResx extends SModel
      *
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'language';
 
     /**
      * The attributes that are mass assignable.

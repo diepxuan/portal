@@ -7,6 +7,11 @@ use Diepxuan\Simba\SModel\SModel;
 
 class SiDmPhiModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'ma_cty',
+        'ma_phi',
+    ];
+
     /**
      * The table associated with the model.
      *

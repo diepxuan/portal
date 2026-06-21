@@ -7,6 +7,12 @@ use Diepxuan\Simba\SModel\SModel;
 
 class HrDTLopModel extends SModel
 {
+    public const PRIMARY_KEY_COLUMNS = [
+        'Ma_cty',
+        'Ma_kdt',
+        'Ma_ldt',
+    ];
+
     /**
      * The table associated with the model.
      *
