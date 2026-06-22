@@ -822,6 +822,7 @@ git grep -n "<moved-method-or-class>" diepxuan
 - [x] Audit bổ sung catalog layer `diepxuan/laravel-catalog/src/Models` — đã có `scripts/audit-catalog-model-layer.php` với 4 classification: `concern_business`, `inline_business`, `catalog_utility`, `passthrough`. Output hiện tại: 35 file, 12 có behavior (5 concern_business, 7 catalog_utility).
 - [x] Refactor `CaCt2`/`CaPh2`/`CaPh3` từ extend SModel sang có Simba Model riêng (gỡ TODO khỏi whitelist test) — 3 Catalog Model đã chuyển sang `extends Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`; test gate 8 method pass.
 - [x] Tích hợp audit script vào CI gate — `tests.yml` chạy `audit-model-layer-responsibility.php` + `audit-catalog-model-layer.php` trước khi phpunit.
+- [x] Rà soát Gl* và Ap* theo Task 8 — tất cả `GlCt`, `GlCt1`, `GlCdTk`, `GlDmTk`, `ApCt1` chỉ có scope filter + Simba-Simba relation, không có business method, đều `keep_simba` đúng policy. PR #227.
 - [ ] Fix pre-existing CI failures: `Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác. Đây là tech debt ngoài scope refactor model layer; cần PR riêng sau khi điều tra root cause (DB config, env, hoặc test cũ).
 
 ### 14.4. Implementation tasks (lịch sử)
@@ -834,7 +835,7 @@ git grep -n "<moved-method-or-class>" diepxuan
 | 3. Thêm baseline audit report | DONE | #219 |
 | 4-6. ARDMKH boundary cleanup | DONE | #220 |
 | 7. Chuẩn hóa SysMenu/Zsysmenu model boundaries | DONE | #217 |
-| 8. Chuẩn hóa GL/PO model theo pattern đã chốt | PARTIAL | #222 (PoCt1); còn Gl*, Ap*, Ca* — Ca* đã có Simba Model (CaCt1/CaCt2/CaCt3/CaPh1/CaPh2/CaPh3) từ #217; còn Gl* (GlCt, GlCt1, GlCdTk, GlDmTk) và Ap* (ApCt1) chưa rà soát. |
+| 8. Chuẩn hóa GL/PO/CA theo pattern đã chốt | DONE | #222 (PoCt1), #217 (Ca* Simba Models), #227 (audit kết luận Gl* & Ap* chỉ scope/relation, đều `keep_simba`) |
 | 9. Thêm CI non-blocking trước, strict sau | DONE | #225 — audit script gắn vào `.github/workflows/tests.yml` chạy trước phpunit; phpunit chạy 8 test pass; full phpunit còn pre-existing fail (ngoài scope). |
 
 ### 14.5. PR split (lịch sử)
