@@ -194,6 +194,44 @@ Branch: `task/simba-model-layer-phase3-schema-refactor`
 
 ---
 
+## Phase 1: Audit behavior trong Models (đang thực hiện)
+
+Mục tiêu: phân loại behavior hiện có trong `diepxuan/laravel-simba/src/Models` để biết cần giữ ở Simba hay tách sang laravel-catalog.
+
+### Trạng thái Phase 1
+
+PR: `task/simba-model-layer-phase1-behavior-audit`
+
+Deliverables:
+
+- `scripts/audit-model-layer-responsibility.php` — script PHP thuần, không cần composer, parse file Models và phân loại:
+  - `keep_simba`: scope filter Simba-Simba, relation Simba-Simba, accessor parse enum/display từ field schema, method kiểu `isXxx()/getXxx()` đọc field trực tiếp.
+  - `move_catalog`: business logic (tính toán, mở service), ngữ nghĩa nghiệp vụ (KH/NCC/NV).
+  - Hỗ trợ `--json` và `--filter=Substring`.
+- `docs/project/model-layer-audit-baseline.md` — kết quả audit đầy đủ với bảng chi tiết.
+
+Kết quả:
+
+- 445 Model files; 28 có behavior.
+- 24 `keep_simba`.
+- 4 `move_catalog`:
+  - `ArDmKh`: accessor `IsKhachHang`, `IsNhaCungCap`, `IsNhanVien`.
+  - `InDmKho`: methods `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`.
+  - `PoCt1`: method `getReceiptRate`.
+  - `SysCompany`: method `resxByLanguage`.
+
+Các bước còn lại:
+
+- [x] Tạo audit script.
+- [x] Tạo baseline doc.
+- [ ] Phân tích 4 file `move_catalog` xem cần tách sang `diepxuan/laravel-catalog` hay giữ dưới dạng helper.
+- [ ] Cập nhật README cho laravel-catalog liên quan đến `Catalog\Models\ArDmKh`, `Catalog\Models\InDmKho`, ...
+- [ ] Tạo PR Phase 1.
+
+Branch: `task/simba-model-layer-phase1-behavior-audit`
+
+---
+
 ## Phase tiếp theo (theo cụm nhỏ)
 
 ### Phase 1: Audit behavior trong `laravel-simba/src/Models`
