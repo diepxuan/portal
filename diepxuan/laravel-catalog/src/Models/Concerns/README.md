@@ -1,8 +1,7 @@
 # Catalog Models Concerns
 
 Thư mục này chứa các **business concern** (trait) dùng chung cho Catalog Model
-trong `diepxuan/laravel-catalog/src/Models`. Tài liệu policy tổng xem
-[`docs/project/simba-model-layer-refactor-plan.md`](../../../../../docs/project/simba-model-layer-refactor-plan.md).
+trong `diepxuan/laravel-catalog/src/Models`.
 
 ## Vai trò
 

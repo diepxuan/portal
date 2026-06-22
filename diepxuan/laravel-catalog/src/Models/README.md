@@ -1,8 +1,7 @@
 # Catalog Models layer
 
 Thư mục này chứa các model Eloquent ở lớp 3 (Catalog/Portal) trong pattern
-**3-layer Model**. Tài liệu policy tổng xem
-[`docs/project/simba-model-layer-refactor-plan.md`](../../../../docs/project/simba-model-layer-refactor-plan.md).
+**3-layer Model** (`SModel` / `Simba\Models` / `Catalog\Models`).
 
 ## Vai trò
 
