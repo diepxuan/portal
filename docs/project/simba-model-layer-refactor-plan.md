@@ -279,6 +279,55 @@ Các bước còn lại:
 
 Mỗi cụm một PR nhỏ.
 
+
+---
+
+## Phase 4: Test bảo vệ ranh giới (đang thực hiện)
+
+Mục tiêu: thiết lập rào chắn tự động, đảm bảo các PR sau không xâm phạm ranh giới 3 lớp.
+
+### Trạng thái Phase 4
+
+Branch: `task/simba-model-layer-responsibility-tests`
+
+Test file: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`
+
+7 test method:
+
+1. `testSModelGeneratedClassesHaveNoBehavior` — quét SModel generated, đảm bảo không có scope/relation/accessor/mutator/business method.
+2. `testSModelClassesDoNotCallParentBoot` — đảm bảo SModel generated không gọi `parent::boot()`.
+3. `testSimbaModelsDoNotExposeBusinessMethods` — kiểm tra business method đã move sang Catalog không còn trên `Simba\Models`.
+4. `testSimbaModelsBootedDoesNotCallParentBoot` — đảm bảo `booted()` trong Simba Models không gọi `parent::boot()`.
+5. `testCatalogModelsDoNotRedefineDbMetadata` — đảm bảo Catalog Models không khai báo DB metadata trực tiếp, trừ whitelist có lý do.
+6. `testCatalogModelsBootedDoesNotCallParentBoot` — đảm bảo Catalog Models không gọi `parent::boot()` trong `booted()`.
+7. `testCatalogModelsExtendSimbaModel` — kiểm tra parent class hợp lệ (Simba Models hoặc whitelist alias/utility).
+
+Phát hiện/fix khi viết test:
+
+- `Catalog\Models\ArDmKh::booted()` gọi `parent::boot()` không cần thiết → đã gỡ.
+- `Simba\Models\SoCt1` còn business/report methods bị bỏ sót ở Phase 2 → tạo `Catalog\Models\Concerns\HasSoCt1SalesMetrics` + `Catalog\Models\SoCt1`, gỡ method khỏi `Simba\Models\SoCt1`.
+
+Whitelist hiện tại:
+
+- `Zsysmenu`: alias table cùng schema SysMenu.
+- `System`, `SystemConfig`: catalog subclass alias.
+- `User`: extends `App\Models\User`.
+- `UserLink`: extends `AbstractModel`, utility link table.
+- `Params`: utility params model.
+- `InDmNhvt`: custom cast `CategoryMagento` ở catalog layer.
+- `CaCt2`, `CaPh2`, `CaPh3`: tạm thời extend SModel trực tiếp vì chưa có Simba Model tương ứng (TODO tạo lớp `Simba\Models`).
+
+Verify:
+
+```bash
+php -l tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
+vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
+```
+
+Kết quả: 7 tests, 9 assertions, OK.
+
+Full `vendor/bin/phpunit` hiện còn lỗi pre-existing (`Core\PackageConfigTest`, `Feature\ExampleTest`) không liên quan PR này.
+
 ---
 
 ## Phase tiếp theo (theo cụm nhỏ)
