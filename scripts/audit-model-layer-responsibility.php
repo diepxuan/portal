@@ -15,6 +15,9 @@ declare(strict_types=1);
  *   php scripts/audit-model-layer-responsibility.php --json     # in JSON
  *   php scripts/audit-model-layer-responsibility.php --filter=ApCt1
  *
+ * Xem bảng baseline (28 file) và policy 3 lớp tại:
+ *   docs/project/simba-model-layer-refactor-plan.md
+ *
  * Không phụ thuộc composer autoload; chỉ parse file.
  */
 

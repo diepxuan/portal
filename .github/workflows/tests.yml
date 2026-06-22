@@ -43,5 +43,10 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Run model layer audit
+        run: |
+          php scripts/audit-model-layer-responsibility.php
+          php scripts/audit-catalog-model-layer.php
+
       - name: Execute tests
         run: vendor/bin/phpunit
