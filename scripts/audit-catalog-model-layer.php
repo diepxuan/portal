@@ -17,9 +17,6 @@ declare(strict_types=1);
  *   php scripts/audit-catalog-model-layer.php --json     # in JSON
  *   php scripts/audit-catalog-model-layer.php --filter=Ar
  *
- * Xem policy 3 lớp tại:
- *   docs/project/simba-model-layer-refactor-plan.md
- *
  * Không phụ thuộc composer autoload; chỉ parse file.
  */
 
