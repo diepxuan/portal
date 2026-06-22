@@ -273,9 +273,9 @@ Các bước còn lại:
 
 ### Plan cho các cụm còn lại (Phase 1 audit đã chỉ ra)
 
-- `InDmKho` (cụm Inventory): method `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`. Tạo `HasInDmKhInventoryOperations` ở catalog.
-- `PoCt1` (cụm PO voucher): method `getReceiptRate`. Tạo `HasPoCt1ReceiptRate` ở catalog hoặc giữ helper query nếu thuần tính toán trên row.
-- `SysCompany` (cụm Sys): method `resxByLanguage`. Helper nghiệp vụ, chuyển sang catalog.
+- [x] `InDmKho` (cụm Inventory): method `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`. Tạo `HasInDmKhoInventoryOperations` ở catalog.
+- [x] `PoCt1` (cụm PO voucher): method `getTotalPurchaseByProduct`, `getTotalQuantityByProduct`, `getTotalPurchaseBySupplier`, `getReceiptRate`, `getPORptMH01`, `getPORptDH01`, `getPORptNH01`. Tạo `HasPoCt1PurchaseMetrics` ở catalog.
+- [x] `SysCompany` (cụm Sys): method `resxByLanguage`. Helper nghiệp vụ, chuyển sang catalog qua `HasSysCompanyLocalizedResx`.
 
 Mỗi cụm một PR nhỏ.
 
