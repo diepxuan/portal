@@ -16,12 +16,13 @@ Plan tổng hợp 3 tài liệu về model layer trong hệ thống:
 5. Phase 1 — Deduplicate schema 4 model metadata (PR #218).
 6. Phase 2 — Audit behavior baseline (PR #219).
 7. Phase 3 — Tách behavior sang Catalog (PR #220, #222, #223).
-8. Phase 4 — Test gate 7 method (PR #223).
-9. Phase 5 — Doc policy 3 lớp (PR #224).
-10. Hiện trạng audit ban đầu (lưu trước refactor).
-11. Ranh giới trách nhiệm (final).
-12. Nguyên tắc refactor.
-13. Validation checklist + Definition of Done.
+8. Phase 4 — Test gate 8 method (PR #223, #225).
+9. Phase 4b — Cleanup còn lại + audit Catalog + CI gate (PR #225).
+10. Phase 5 — Doc policy 3 lớp (PR #224).
+11. Hiện trạng audit ban đầu (lưu trước refactor).
+12. Ranh giới trách nhiệm (final).
+13. Nguyên tắc refactor.
+14. Validation checklist + Definition of Done.
 
 ---
 
@@ -138,9 +139,10 @@ Khi review PR liên quan model layer:
 
 ### 1.7. Công cụ kiểm tra tự động
 
-- **Test:** `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (7 test).
-- **Audit script:** `scripts/audit-model-layer-responsibility.php` (Phase 2 PR #219).
-- **Test chạy trong:** `.github/workflows/tests.yml` (root phpunit).
+- **Test:** `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (8 test, 10 assertion - tăng từ 7 test ở PR #225).
+- **Audit script Simba:** `scripts/audit-model-layer-responsibility.php` (Phase 2 PR #219, output: 445 file / 28 behavior đều `keep_simba`).
+- **Audit script Catalog:** `scripts/audit-catalog-model-layer.php` (Phase 4b PR #225, output: 35 file / 12 behavior).
+- **CI gate:** `.github/workflows/tests.yml` chạy 2 audit script trước `vendor/bin/phpunit` (PR #225).
 
 ---
 
@@ -154,15 +156,18 @@ Khi review PR liên quan model layer:
 | 3a | Move ArDmKh KH/NCC/NV sang Catalog | #220 | MERGED |
 | 3b | Move InDmKho + PoCt1 + SysCompany sang Catalog | #222 | MERGED |
 | 3c | Move SoCt1 sales metrics sang Catalog + fix ArDmKh::booted | #223 | MERGED |
-| 4 | Test gate 7 method | #223 (cùng) | MERGED |
-| 5 | Doc policy 3 lớp | #224 | READY |
+| 4 | Test gate 7 method (gốc 7, mở rộng 8) | #223 + #225 | MERGED |
+| 4b | Cleanup còn lại (CaCt2/CaPh2/CaPh3, audit Catalog, CI gate) | #225 | MERGED |
+| 5 | Doc policy 3 lớp | #224 | MERGED |
 
 Trạng thái hiện tại:
 
-- SModel layer: sạch, chỉ schema mapping.
-- Simba\Models layer: không còn business method nghiệp vụ (đã move hết sang Catalog).
-- Catalog\Models layer: nhận tất cả business method nghiệp vụ qua 5 concern (HasArDmKhCategories, HasInDmKhoInventoryOperations, HasPoCt1PurchaseMetrics, HasSoCt1SalesMetrics, HasSysCompanyLocalizedResx) + 1 model mới `SoCt1`.
-- Test gate: 7 test ở `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`, chạy trong root phpunit.
+- SModel layer: sạch, chỉ schema mapping (442 file, không còn file legacy thiếu hậu tố `Model`).
+- Simba\Models layer: 445 file, không còn business method nghiệp vụ (đã move hết sang Catalog). 346 model dùng `HasSimbaCompositeKey`.
+- Catalog\Models layer: 35 file, nhận tất cả business method nghiệp vụ qua 5 concern (HasArDmKhCategories, HasInDmKhoInventoryOperations, HasPoCt1PurchaseMetrics, HasSoCt1SalesMetrics, HasSysCompanyLocalizedResx) + 2 model mới `Catalog\PoCt1` (PR #222) và `Catalog\SoCt1` (PR #223).
+- Test gate: 8 test, 10 assertion ở `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`, chạy trong root phpunit.
+- Audit script: 2 file (`audit-model-layer-responsibility.php` cho Simba, `audit-catalog-model-layer.php` cho Catalog) gắn trong `.github/workflows/tests.yml` trước khi chạy phpunit (PR #225).
+- Số liệu cuối: 442 SModel, 445 Simba Models, 346 composite-key Models, 35 Catalog Models, 5 Catalog concerns.
 
 ---
 
@@ -230,9 +235,12 @@ With behavior: 28
 ### 3.5. Cách tái tạo audit
 
 ```bash
-php scripts/audit-model-layer-responsibility.php          # bảng tóm tắt
-php scripts/audit-model-layer-responsibility.php --json   # JSON đầy đủ
+php scripts/audit-model-layer-responsibility.php          # bảng tóm tắt Simba Models
+php scripts/audit-model-layer-responsibility.php --json   # JSON đầy đủ Simba
 php scripts/audit-model-layer-responsibility.php --filter=ApCt1
+php scripts/audit-catalog-model-layer.php                 # bảng tóm tắt Catalog Models (PR #225)
+php scripts/audit-catalog-model-layer.php --json          # JSON đầy đủ Catalog
+php scripts/audit-catalog-model-layer.php --filter=Ar
 ```
 
 ---
@@ -520,7 +528,7 @@ Verify:
 
 - `php -l`: 5/5 pass.
 - Reflection: `Catalog\SoCt1` parent=`Simba\SoCt1`, có `getTotalRevenueByProduct=1`, `getSORptBH01=1`, v.v.
-- 7 test gate pass.
+- 7 test gate pass (PR #223 lúc đó có 7 method; PR #225 thêm test 8 nâng lên 8 method, 10 assertion).
 
 CI: 14/14 pass, mergeable, mergeStateStatus CLEAN.
 
@@ -536,9 +544,12 @@ CI: 14/14 pass, mergeable, mergeStateStatus CLEAN.
 
 ---
 
-## 8. Phase 4 — Test gate 7 method (PR #223)
+## 8. Phase 4 — Test gate 8 method (PR #223, #225)
 
-File mới: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (359 dòng, 7 test method, 9 assertion).
+File mới: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`.
+
+- PR #223 thêm 7 test method, 9 assertion.
+- PR #225 thêm test 8 (`testCatalogModelsDoNotExtendSModelDirectly`) + 1 assertion = 8 test, 10 assertion.
 
 8 test method:
 
@@ -549,7 +560,7 @@ File mới: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (3
 5. `testCatalogModelsDoNotRedefineDbMetadata` — đảm bảo Catalog Models không khai báo DB metadata trực tiếp, trừ whitelist có lý do.
 6. `testCatalogModelsBootedDoesNotCallParentBoot` — đảm bảo Catalog Models không gọi `parent::boot()` trong `booted()`.
 7. `testCatalogModelsExtendSimbaModel` — kiểm tra parent class hợp lệ (Simba Models hoặc whitelist alias/utility).
-8. `testCatalogModelsDoNotExtendSModelDirectly` — đảm bảo Catalog Models không extend trực tiếp `Diepxuan\Simba\SModel\*`.
+8. `testCatalogModelsDoNotExtendSModelDirectly` (PR #225) — đảm bảo Catalog Models không extend trực tiếp `Diepxuan\Simba\SModel\*`.
 
 Phát hiện/fix khi viết test:
 
@@ -571,7 +582,12 @@ Kết quả hiện tại: 8 tests, 10 assertions, OK.
 
 Full `vendor/bin/phpunit` hiện còn lỗi pre-existing (`Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác) không liên quan các PR này.
 
-### Phase 4b: Cleanup còn lại sau test gate
+## 9. Phase 4b — Cleanup còn lại + audit Catalog + CI gate (PR #225)
+
+PR: https://github.com/diepxuan/portal/pull/225
+Merge commit: `36478d777` — merged lúc `2026-06-22T12:44:38Z`
+
+### Trạng thái Phase 4b
 
 - Tạo `scripts/audit-catalog-model-layer.php` để audit riêng `diepxuan/laravel-catalog/src/Models`.
   - Output hiện tại: 35 file, 12 có behavior.
@@ -594,23 +610,22 @@ Kết quả: Simba audit 445 file/28 behavior đều `keep_simba`; Catalog audit
 
 ---
 
-## 9. Phase 5 — Doc policy 3 lớp (PR #224)
+## 10. Phase 5 — Doc policy 3 lớp (PR #224)
 
 PR: https://github.com/diepxuan/portal/pull/224
+Merge commit: `ccaa2befa` — merged lúc `2026-06-22T11:04:06Z`
 
-File mới: `docs/project/model-layer-responsibility.md` (147 dòng).
-
-Nội dung: tóm tắt policy 3 lớp, whitelist, quy trình thêm behavior, review checklist, công cụ kiểm tra tự động.
+Nội dung PR gốc tạo `docs/project/model-layer-responsibility.md` (147 dòng) — tóm tắt policy 3 lớp, whitelist, quy trình thêm behavior, review checklist, công cụ kiểm tra tự động.
 
 > Từ PR kế tiếp sau doc này, file `model-layer-responsibility.md` đã được gộp vào plan này (section 1). Doc hiện tại là nguồn tham chiếu duy nhất cho model layer refactor.
 
 ---
 
-## 10. Hiện trạng audit ban đầu (lưu trước refactor)
+## 11. Hiện trạng audit ban đầu (lưu trước refactor)
 
 > Phần này mô tả hiện trạng trước khi refactor để tham chiếu.
 
-### 10.1. Hiện trạng `diepxuan/laravel-simba/src/SModel`
+### 11.1. Hiện trạng `diepxuan/laravel-simba/src/SModel`
 
 Số file hiện tại: 455 PHP files.
 
@@ -637,7 +652,7 @@ Nhận xét:
 - Nhưng `SModel.php` hiện hơi rộng: có hành vi query/save/delete chung, có thể gây side effect khó kiểm soát.
 - Các generated model nên giữ càng thuần càng tốt, không chứa nghiệp vụ.
 
-### 10.2. Hiện trạng `diepxuan/laravel-simba/src/Models`
+### 11.2. Hiện trạng `diepxuan/laravel-simba/src/Models`
 
 Số file hiện tại: 49 PHP files.
 
@@ -664,7 +679,7 @@ Nhận xét:
 - Relations giữa các bảng Simba cũng có thể đặt ở đây nếu là quan hệ dữ liệu gốc, không phụ thuộc Portal module.
 - Nhưng SP wrapper và một số relation/domain method có thể cần phân loại lại: nếu là thao tác nghiệp vụ Portal thì nên đưa lên Catalog/service.
 
-### 10.3. Hiện trạng `diepxuan/laravel-catalog/src/Models`
+### 11.3. Hiện trạng `diepxuan/laravel-catalog/src/Models`
 
 Số file hiện tại: 35 PHP files.
 
@@ -691,11 +706,11 @@ Nhận xét:
 
 ---
 
-## 11. Ranh giới trách nhiệm (final)
+## 12. Ranh giới trách nhiệm (final)
 
 > Tóm tắt khả thi thi hành ở section 1.
 
-### 11.1. `laravel-simba/src/SModel`: Base DB schema/config only
+### 12.1. `laravel-simba/src/SModel`: Base DB schema/config only
 
 **Được phép chứa:**
 
@@ -712,7 +727,7 @@ Nhận xét:
 - Stored procedure wrapper theo nghiệp vụ.
 - Override `save/delete/all/query` nếu không có lý do bắt buộc và test bảo vệ.
 
-### 11.2. `laravel-simba/src/Models`: Direct Laravel model for Simba tables
+### 12.2. `laravel-simba/src/Models`: Direct Laravel model for Simba tables
 
 **Được phép chứa:**
 
@@ -734,7 +749,7 @@ Nhận xét:
 - Business policy của Portal như `hasTransactions()` nếu dùng để quyết định UI/action trong Catalog.
 - Stored procedure orchestration phức tạp; ưu tiên để ở `StoredProcedures` hoặc service/domain layer.
 
-### 11.3. `laravel-catalog/src/Models`: Portal/Catalog domain model
+### 12.3. `laravel-catalog/src/Models`: Portal/Catalog domain model
 
 **Được phép chứa:**
 
@@ -755,7 +770,7 @@ Nhận xét:
 
 ---
 
-## 12. Nguyên tắc refactor
+## 13. Nguyên tắc refactor
 
 1. Không đổi tên bảng/cột/SP nếu chưa đối chiếu `simba-docs` hoặc source wrapper hiện có.
 2. Không tạo/ALTER/INSERT SQL.
@@ -767,9 +782,9 @@ Nhận xét:
 
 ---
 
-## 13. Validation checklist + Definition of Done
+## 14. Validation checklist + Definition of Done
 
-### 13.1. Validation checklist chung
+### 14.1. Validation checklist chung
 
 Chạy trước khi báo xong mỗi PR model layer:
 
@@ -789,38 +804,40 @@ vendor/bin/phpunit <new-or-related-test.php>
 git grep -n "<moved-method-or-class>" diepxuan
 ```
 
-### 13.2. Definition of Done
+### 14.2. Definition of Done
 
 - [x] Có tài liệu policy rõ ràng cho 3 lớp model (section 1 của doc này).
-- [x] Có audit script chạy được và tái lập được baseline (`scripts/audit-model-layer-responsibility.php`).
-- [x] Có test gate 7 method (`SimbaModelLayerResponsibilityTest`).
+- [x] Có audit script chạy được và tái lập được baseline cho cả Simba (`scripts/audit-model-layer-responsibility.php`) và Catalog (`scripts/audit-catalog-model-layer.php`).
+- [x] Có test gate 8 method (`SimbaModelLayerResponsibilityTest`, 10 assertion).
 - [x] Không còn logic nghiệp vụ trong `SModel` ngoài DB config/schema.
 - [x] `Simba\Models` giữ direct table behavior, không phụ thuộc Portal UI/route/auth.
 - [x] `Catalog\Models` giữ domain/helper/relation phục vụ Portal, không khai báo DB config trùng base.
 - [x] Các model trọng yếu ARDMKH, SysMenu/Zsysmenu, SoCt1 có test bảo vệ.
 - [x] Không làm đổi route/source metadata ngoài expected.
 - [x] Không push/merge khi chưa có lệnh của Sếp.
+- [x] Audit script đã gắn vào CI gate `.github/workflows/tests.yml` (chạy tự động trong PR).
 
-### 13.3. Còn lại (chưa xong)
+### 14.3. Còn lại (chưa xong)
 
-- [ ] Audit bổ sung catalog layer `diepxuan/laravel-catalog/src/Models` (chưa có script riêng; chỉ có test gate check parent class + DB metadata).
-- [ ] Refactor `CaCt2`/`CaPh2`/`CaPh3` từ extend SModel sang có Simba Model riêng (gỡ TODO khỏi whitelist test).
-- [ ] Fix pre-existing CI failures: `Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác.
-- [ ] Tích hợp audit script vào CI gate (chạy tự động trong PR).
+- [x] Audit bổ sung catalog layer `diepxuan/laravel-catalog/src/Models` — đã có `scripts/audit-catalog-model-layer.php` với 4 classification: `concern_business`, `inline_business`, `catalog_utility`, `passthrough`. Output hiện tại: 35 file, 12 có behavior (5 concern_business, 7 catalog_utility).
+- [x] Refactor `CaCt2`/`CaPh2`/`CaPh3` từ extend SModel sang có Simba Model riêng (gỡ TODO khỏi whitelist test) — 3 Catalog Model đã chuyển sang `extends Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`; test gate 8 method pass.
+- [x] Tích hợp audit script vào CI gate — `tests.yml` chạy `audit-model-layer-responsibility.php` + `audit-catalog-model-layer.php` trước khi phpunit.
+- [ ] Fix pre-existing CI failures: `Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác. Đây là tech debt ngoài scope refactor model layer; cần PR riêng sau khi điều tra root cause (DB config, env, hoặc test cũ).
 
-### 13.4. Implementation tasks (lịch sử)
+### 14.4. Implementation tasks (lịch sử)
 
 | Task | Trạng thái | PR |
 |------|------------|-----|
 | 1. Chốt policy bằng docs | DONE | #224 |
-| 2. Tạo audit script cho model layer | DONE | #219 |
+| 2. Tạo audit script cho model layer (Simba) | DONE | #219 |
+| 2b. Tạo audit script cho Catalog layer | DONE | #225 |
 | 3. Thêm baseline audit report | DONE | #219 |
 | 4-6. ARDMKH boundary cleanup | DONE | #220 |
 | 7. Chuẩn hóa SysMenu/Zsysmenu model boundaries | DONE | #217 |
-| 8. Chuẩn hóa GL/PO model theo pattern đã chốt | PARTIAL | #222 (PoCt1); còn Gl*, Ap*, Ca* |
-| 9. Thêm CI non-blocking trước, strict sau | PARTIAL | audit script + test gate ở repo; chưa gắn strict CI tự động |
+| 8. Chuẩn hóa GL/PO model theo pattern đã chốt | PARTIAL | #222 (PoCt1); còn Gl*, Ap*, Ca* — Ca* đã có Simba Model (CaCt1/CaCt2/CaCt3/CaPh1/CaPh2/CaPh3) từ #217; còn Gl* (GlCt, GlCt1, GlCdTk, GlDmTk) và Ap* (ApCt1) chưa rà soát. |
+| 9. Thêm CI non-blocking trước, strict sau | DONE | #225 — audit script gắn vào `.github/workflows/tests.yml` chạy trước phpunit; phpunit chạy 8 test pass; full phpunit còn pre-existing fail (ngoài scope). |
 
-### 13.5. PR split (lịch sử)
+### 14.5. PR split (lịch sử)
 
 | PR | Phase | Tóm tắt |
 |----|-------|---------|
@@ -830,7 +847,8 @@ git grep -n "<moved-method-or-class>" diepxuan
 | #220 | 3a | Move ArDmKh KH/NCC/NV sang Catalog concern |
 | #222 | 3b | Move InDmKho + PoCt1 + SysCompany sang Catalog concern + tạo `Catalog\PoCt1` |
 | #223 | 3c + 4 | Move SoCt1 sang Catalog concern + 7 test gate + fix `ArDmKh::booted` |
-| #224 | 5 | Doc policy 3 lớp |
+| #224 | 5 | Doc policy 3 lớp (gộp vào plan section 1) |
+| #225 | 4b | Cleanup CaCt2/CaPh2/CaPh3 + audit Catalog + CI gate + test gate 8 method |
 
 ---
 
@@ -839,7 +857,9 @@ git grep -n "<moved-method-or-class>" diepxuan
 - `simba-router-menu-matrix.md` — plan riêng về menu/route, không thuộc doc này.
 - `diepxuan/laravel-simba/src/SModel/README.md` — raw/table schema layer.
 - `diepxuan/laravel-simba/src/Models/README.md` — model layer extend từ SModel.
-- `diepxuan/laravel-catalog/src/Models/Concerns/` — 5 concern nghiệp vụ.
+- `diepxuan/laravel-catalog/src/Models/Concerns/` — 5 concern nghiệp vụ (HasArDmKhCategories, HasInDmKhoInventoryOperations, HasPoCt1PurchaseMetrics, HasSoCt1SalesMetrics, HasSysCompanyLocalizedResx).
 - `simba-docs/tables/` — schema Simba là nguồn sự thật.
-- `scripts/audit-model-layer-responsibility.php` — audit script.
-- `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` — test gate 7 method.
+- `scripts/audit-model-layer-responsibility.php` — audit Simba Models (445 file, 28 behavior).
+- `scripts/audit-catalog-model-layer.php` — audit Catalog Models (35 file, 12 behavior).
+- `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` — test gate 8 method, 10 assertion.
+- `.github/workflows/tests.yml` — CI gate chạy 2 audit script trước phpunit.
