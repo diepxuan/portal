@@ -4,7 +4,6 @@ Package catalog cho DXPanel.
 
 ## 📚 Documentation
 
-- **Project Docs:** [Model layer responsibility & 3-layer pattern](../../docs/project/simba-model-layer-refactor-plan.md) - policy SModel / Simba\Models / Catalog\Models
 - **Package Docs:** [`src/Models/README.md`](src/Models/README.md) - Catalog Models layer
 - **Package Docs:** [`src/Models/Concerns/README.md`](src/Models/Concerns/README.md) - business concerns
 
