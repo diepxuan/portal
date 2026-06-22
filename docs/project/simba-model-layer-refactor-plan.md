@@ -103,8 +103,11 @@ static::where('ma_cty', $maCty)
 
 - Với bảng có `$primaryKey = null`, chỉ dùng model như raw query/read schema hoặc thao tác bằng query builder đủ điều kiện khóa.
 
-Kết quả hiện tại (sau PR #217):
+Kết quả hiện tại:
 
+- 442 SModel PHP files, không còn file legacy thiếu hậu tố `Model`.
+- 445 Simba Model PHP files.
+- 346 Simba Model dùng `HasSimbaCompositeKey`.
 - 84 model composite PK > 3 cột đều `null` và có `PRIMARY_KEY_COLUMNS`.
 - 267 model composite PK 2-3 cột đều chọn key đại diện không phải `ma_cty`, có `PRIMARY_KEY_COLUMNS`.
 - 32 model PK đơn.
@@ -292,7 +295,7 @@ Branch: `task/simba-model-layer-responsibility-tests`
 
 Test file: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`
 
-7 test method:
+8 test method:
 
 1. `testSModelGeneratedClassesHaveNoBehavior` — quét SModel generated, đảm bảo không có scope/relation/accessor/mutator/business method.
 2. `testSModelClassesDoNotCallParentBoot` — đảm bảo SModel generated không gọi `parent::boot()`.
@@ -301,6 +304,7 @@ Test file: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`
 5. `testCatalogModelsDoNotRedefineDbMetadata` — đảm bảo Catalog Models không khai báo DB metadata trực tiếp, trừ whitelist có lý do.
 6. `testCatalogModelsBootedDoesNotCallParentBoot` — đảm bảo Catalog Models không gọi `parent::boot()` trong `booted()`.
 7. `testCatalogModelsExtendSimbaModel` — kiểm tra parent class hợp lệ (Simba Models hoặc whitelist alias/utility).
+8. `testCatalogModelsDoNotExtendSModelDirectly` — đảm bảo Catalog Models không extend trực tiếp `Diepxuan\Simba\SModel\*`.
 
 Phát hiện/fix khi viết test:
 
@@ -315,7 +319,8 @@ Whitelist hiện tại:
 - `UserLink`: extends `AbstractModel`, utility link table.
 - `Params`: utility params model.
 - `InDmNhvt`: custom cast `CategoryMagento` ở catalog layer.
-- `CaCt2`, `CaPh2`, `CaPh3`: tạm thời extend SModel trực tiếp vì chưa có Simba Model tương ứng (TODO tạo lớp `Simba\Models`).
+
+Ghi chú: `CaCt2`, `CaPh2`, `CaPh3` trước đây tạm whitelist vì Catalog extend trực tiếp SModel; hiện đã chuyển sang `Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`, không còn nằm trong whitelist.
 
 Verify:
 
@@ -324,9 +329,30 @@ php -l tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
 vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
 ```
 
-Kết quả: 7 tests, 9 assertions, OK.
+Kết quả hiện tại: 8 tests, 10 assertions, OK.
 
 Full `vendor/bin/phpunit` hiện còn lỗi pre-existing (`Core\PackageConfigTest`, `Feature\ExampleTest`) không liên quan PR này.
+
+### Phase 4b: Cleanup còn lại sau test gate
+
+- Tạo `scripts/audit-catalog-model-layer.php` để audit riêng `diepxuan/laravel-catalog/src/Models`.
+  - Output hiện tại: 35 file, 12 có behavior.
+  - Classification: `concern_business`, `inline_business`, `catalog_utility`, `passthrough`.
+- Tích hợp CI gate trong `.github/workflows/tests.yml`:
+  - `php scripts/audit-model-layer-responsibility.php`
+  - `php scripts/audit-catalog-model-layer.php`
+- Chuyển `Catalog\Models\CaCt2`, `Catalog\Models\CaPh2`, `Catalog\Models\CaPh3` sang extend `Diepxuan\Simba\Models\*` thay vì `Diepxuan\Simba\SModel\*`.
+- Thêm test `testCatalogModelsDoNotExtendSModelDirectly` để khóa rule.
+
+Verify:
+
+```bash
+php scripts/audit-model-layer-responsibility.php
+php scripts/audit-catalog-model-layer.php
+vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
+```
+
+Kết quả: Simba audit 445 file/28 behavior đều `keep_simba`; Catalog audit 35 file/12 behavior; PHPUnit 8 tests, 10 assertions, OK.
 
 ---
 
@@ -444,7 +470,7 @@ Nhận xét:
 
 ### 1.3 `diepxuan/laravel-catalog/src/Models`
 
-Số file hiện tại: 33 PHP files.
+Số file hiện tại: 35 PHP files.
 
 Thống kê nhanh:
 - 7 file có relations.

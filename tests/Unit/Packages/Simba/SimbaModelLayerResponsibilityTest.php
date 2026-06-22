@@ -89,8 +89,9 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
      * - App\Models\User (Laravel auth) - User.
      * - Illuminate\Database\Eloquent\Model - Params, AbstractModel.
      * - Catalog\Models (subclass catalog alias) - System, SystemConfig, Zsysmenu, UserLink.
-     * - Simba\SModel (chưa có Simba Model tương ứng) - CaCt2, CaPh2, CaPh3.
-     *   TODO: tạo Simba\Models tương ứng để dùng qua lớp 2.
+     *
+     * Lưu ý: CaCt2/CaPh2/CaPh3 trước đây whitelist SModel vì chưa có Simba Model
+     * tương ứng; từ PR này cả 3 đã chuyển sang extends Diepxuan\Simba\Models\*.
      */
     private const CATALOG_EXTENDS_WHITELIST = [
         'Params'      => 'Illuminate\\Database\\Eloquent\\Model',
@@ -99,9 +100,6 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
         'SystemConfig'=> 'Diepxuan\\Catalog\\Models\\SiSetup',
         'UserLink'    => 'Diepxuan\\Catalog\\Models\\AbstractModel',
         'Zsysmenu'    => 'Diepxuan\\Catalog\\Models\\SysMenu',
-        'CaCt2'       => 'Diepxuan\\Simba\\SModel\\CaCt2Model',  // TODO
-        'CaPh2'       => 'Diepxuan\\Simba\\SModel\\CaPh2Model',  // TODO
-        'CaPh3'       => 'Diepxuan\\Simba\\SModel\\CaPh3Model',  // TODO
     ];
 
     /**
@@ -325,6 +323,39 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
             $violations[] = "Catalog\\Models\\{$shortName}: parent {$parentName} không thuộc Diepxuan\\Simba\\Models";
         }
         self::assertSame([], $violations, "Catalog\\Models extend sai:\n" . implode("\n", $violations));
+    }
+
+    /**
+     * Catalog Model không được extends trực tiếp `Diepxuan\Simba\SModel\*` -
+     * phải đi qua lớp `Simba\Models\*` (lớp 2).
+     *
+     * Lý do: SModel là raw schema mapping; Catalog phải dùng Simba Model để
+     * thừa hưởng helper/composite-key trait.
+     */
+    public function testCatalogModelsDoNotExtendSModelDirectly(): void
+    {
+        $files = glob(self::CATALOG_DIR . '/*.php') ?: [];
+        $violations = [];
+        foreach ($files as $file) {
+            $shortName = basename($file, '.php');
+            $class     = $this->resolveClass('Diepxuan\\Catalog\\Models', $shortName);
+            if ($class === null) {
+                continue;
+            }
+            $reflection = new \ReflectionClass($class);
+            if ($reflection->isAbstract() || $reflection->isInterface() || $reflection->isTrait()) {
+                continue;
+            }
+            $parent = $reflection->getParentClass();
+            if ($parent === false) {
+                continue;
+            }
+            $parentName = $parent->getName();
+            if (str_starts_with($parentName, 'Diepxuan\\Simba\\SModel\\')) {
+                $violations[] = "Catalog\\Models\\{$shortName}: extends {$parentName} trực tiếp - phải đi qua Diepxuan\\Simba\\Models\\*";
+            }
+        }
+        self::assertSame([], $violations, "Catalog\\Models extends SModel trực tiếp:\n" . implode("\n", $violations));
     }
 
     private function resolveClass(string $namespace, string $shortName): ?string
