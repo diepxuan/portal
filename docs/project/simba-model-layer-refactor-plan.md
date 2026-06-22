@@ -232,6 +232,55 @@ Branch: `task/simba-model-layer-phase1-behavior-audit`
 
 ---
 
+## Phase 2: Tách behavior theo cụm (đang thực hiện)
+
+Mục tiêu: tách các method `move_catalog` (từ Phase 1 audit) ra khỏi Simba Models sang laravel-catalog.
+
+### Trạng thái Phase 2 - cụm ArDmKh
+
+Branch: `task/simba-model-layer-phase2-ardmkh-catalog`
+
+Đã làm:
+
+- Tạo `Diepxuan\Catalog\Models\Concerns\HasArDmKhCategories` chứa:
+  - scope `laKhachHang`, `laNhaCungCap`, `laNhanVien`
+  - accessor `is_khach_hang`, `is_nha_cung_cap`, `is_nhan_vien`
+- Gắn trait vào `Diepxuan\Catalog\Models\ArDmKh`.
+- Gỡ các method/accessor tương ứng khỏi `Diepxuan\Simba\Models\ArDmKh`.
+- Giữ nguyên trong `Simba\Models\ArDmKh`:
+  - `booted()` với global scope `ksd`.
+  - `scopeSearch`, `scopeOrderByMaKh` (helper query thuần dữ liệu).
+  - relation `glCts()`.
+  - stored procedure wrapper `AsGetSoDuKh()`.
+- Caller `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputKhachhang.php` đã dùng `Catalog\ArDmKh` sẵn từ trước nên không cần sửa.
+
+Verify:
+
+- php -l: 3/3 pass.
+- `git diff --check`: pass.
+- Reflection (không boot app):
+  - `Simba\ArDmKh`: `scopeLaKhachHang`=0, `getIsKhachHangAttribute`=0, `scopeSearch`=1, `scopeOrderByMaKh`=1.
+  - `Catalog\ArDmKh`: `scopeLaKhachHang`=1, `getIsKhachHangAttribute`=1, `scopeSearch`=1 (inherited), parent=`Simba\ArDmKh`.
+
+Các bước còn lại:
+
+- [x] Tạo concern trong catalog.
+- [x] Gắn trait vào `Catalog\ArDmKh`.
+- [x] Gỡ method tương ứng khỏi `Simba\ArDmKh`.
+- [x] Verify reflection.
+- [ ] Lint + autoload Catalog composer dump.
+- [ ] Tạo PR Phase 2 - cụm ArDmKh.
+
+### Plan cho các cụm còn lại (Phase 1 audit đã chỉ ra)
+
+- `InDmKho` (cụm Inventory): method `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`. Tạo `HasInDmKhInventoryOperations` ở catalog.
+- `PoCt1` (cụm PO voucher): method `getReceiptRate`. Tạo `HasPoCt1ReceiptRate` ở catalog hoặc giữ helper query nếu thuần tính toán trên row.
+- `SysCompany` (cụm Sys): method `resxByLanguage`. Helper nghiệp vụ, chuyển sang catalog.
+
+Mỗi cụm một PR nhỏ.
+
+---
+
 ## Phase tiếp theo (theo cụm nhỏ)
 
 ### Phase 1: Audit behavior trong `laravel-simba/src/Models`
