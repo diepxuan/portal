@@ -1,32 +1,243 @@
-# Model Layer Responsibility Refactor Implementation Plan
+# Simba Model Layer Refactor Plan
 
-> **For Hermes:** Use subagent-driven-development skill to implement this plan task-by-task.
+Plan tổng hợp 3 tài liệu về model layer trong hệ thống:
+- Trách nhiệm 3 lớp (SModel / Simba Models / Catalog Models).
+- Lịch sử refactor Phase 0 → 5 + PR liên quan.
+- Audit baseline 28 file có behavior.
 
-**Goal:** Tách rõ trách nhiệm 3 lớp model: `laravel-simba/src/SModel` chỉ giữ cấu hình database/schema SQL Server, `laravel-simba/src/Models` giữ Eloquent model trực tiếp tới bảng Simba, và `laravel-catalog/src/Models` giữ logic nghiệp vụ phục vụ Portal/Catalog.
+> `simba-router-menu-matrix.md` là plan riêng về menu/route, không thuộc doc này.
 
-**Architecture:** Dùng mô hình 3 tầng: Raw DB metadata -> Simba Eloquent -> Catalog domain model. `SModel/*Model.php` là lớp generated/base, chứa connection/table/key/casts/timestamps/fillable tối thiểu. `Simba\Models` kế thừa SModel để thêm scope/accessor/mutator/normalized query sát bảng Simba. `Catalog\Models` kế thừa Simba model để thêm relations nội bộ Portal, computed helpers, policy/business methods, không khai báo lại DB metadata nếu không cần.
+## Mục lục
 
-**Tech Stack:** Laravel Eloquent, SQL Server connection `simba.connection`, PHPUnit, PHP 8.2.
+1. Tóm tắt policy 3 lớp.
+2. Tóm tắt tiến độ refactor.
+3. Audit baseline (28 file).
+4. Phase 0 — Composite PK + alias + trait (PR #217).
+5. Phase 1 — Deduplicate schema 4 model metadata (PR #218).
+6. Phase 2 — Audit behavior baseline (PR #219).
+7. Phase 3 — Tách behavior sang Catalog (PR #220, #222, #223).
+8. Phase 4 — Test gate 7 method (PR #223).
+9. Phase 5 — Doc policy 3 lớp (PR #224).
+10. Hiện trạng audit ban đầu (lưu trước refactor).
+11. Ranh giới trách nhiệm (final).
+12. Nguyên tắc refactor.
+13. Validation checklist + Definition of Done.
 
 ---
 
-## Mục tiêu
+## 1. Tóm tắt policy 3 lớp
 
-Tách rõ trách nhiệm 3 lớp model:
+Schema Simba là nguồn sự thật duy nhất (`simba-docs/tables`).
 
-1. `diepxuan/laravel-simba/src/SModel`
-   - Chỉ giữ raw/table schema của SimbaERP.
-   - Không chứa business/query behavior.
-2. `diepxuan/laravel-simba/src/Models`
-   - Extend từ `SModel` tương ứng.
-   - Chỉ giữ helper/query/relation/accessor sát bảng Simba.
-   - Không chứa logic Portal/Catalog.
-3. `diepxuan/laravel-catalog/src/Models` và services Catalog
-   - Chứa business behavior, use-case, workflow, UI/navigation integration.
+### 1.1. `SModel` (`Diepxuan\Simba\SModel\*`)
+
+Vai trò: ánh xạ schema Simba sang Eloquent. Không có business logic.
+
+**Allowed:**
+
+- Khai báo `$table`, `$connection`, `$primaryKey`, `$keyType`, `$incrementing`, `$timestamps`.
+- Khai báo `$fillable`, `$guarded`, `$hidden`, `$casts`, `$attributes`.
+- Hằng số `PRIMARY_KEY_COLUMNS` cho composite PK.
+- Method helper DB hợp lệ (set connection theo cty, transaction begin/commit/rollback).
+- Scope Simba-level: `scopeIsEnable`, filter theo field Simba.
+- Global scope `onlyFirstCompany` ở `SModel` base.
+- Relation Simba-Simba (theo key thật).
+
+**Not allowed:**
+
+- Scope, relation, accessor, mutator theo ngữ nghĩa nghiệp vụ (ví dụ: `scopeLaKhachHang`, `getIsXxxAttribute`).
+- Method business (tính tổng, gọi SP báo cáo, nghiệp vụ KH/NCC/NV).
+- Khai báo behavior cụm (inventory, sales, purchase) trên bảng gốc.
+
+### 1.2. `Simba\Models` (`Diepxuan\Simba\Models\*`)
+
+Vai trò: lớp 2, bọc SModel + helper nghiệp vụ dữ liệu thuần Simba.
+
+**Allowed:**
+
+- Extend SModel tương ứng.
+- Dùng trait `HasSimbaCompositeKey` cho bảng composite PK.
+- Scope filter theo field Simba (`scopeFilterByMaCty`, `scopeFilterByMaVt`, `scopeFilterByMaKho`, `scopeFilterByMaKh`, `scopeFilterByMaNvkd`, `scopeFilterByMaBp`, `scopeFilterByNgayCt`, `scopeSearch`, `scopeOrderByMaKh`, v.v.).
+- Relation Simba-Simba (`belongsTo`, `hasMany`).
+- Wrapper gọi stored procedure đơn giản (mapping param) — chỉ khi bản thân SP không phải logic nghiệp vụ phức tạp, ví dụ `getAsINGetDMKHO`, `getAsINRptCD01`. Hạn chế; ưu tiên catalog.
+- Accessor/mutator chuẩn hóa dữ liệu thuần Simba.
+- Global scope khi cần (ví dụ `ksd` lọc soft-deleted).
+
+**Not allowed:**
+
+- Business method (tính tổng doanh thu, số lượng, nghiệp vụ KH/NCC/NV, công thức tính giá, tỉ lệ nhập, v.v.).
+- Report method (các `getSORpt*`, `getPORpt*`, `getINRpt*`).
+- Gọi `parent::boot()` trong `booted()` (SModel base đã set connection trong `__construct`).
+- Khi gỡ behavior phải đảm bảo caller chuyển sang Catalog.
+
+### 1.3. `Catalog\Models` (`Diepxuan\Catalog\Models\*`)
+
+Vai trò: lớp 3, business logic phục vụ Portal/Catalog UI.
+
+**Allowed:**
+
+- Extend `Simba\Models\*` (mặc định).
+- Concern `HasArDmKhCategories`, `HasInDmKhoInventoryOperations`, `HasPoCt1PurchaseMetrics`, `HasSoCt1SalesMetrics`, `HasSysCompanyLocalizedResx` — khi cần business logic cụm.
+- Scope nghiệp vụ (`scopeLaKhachHang`, `scopeLaNhaCungCap`).
+- Accessor nghiệp vụ (`getIsKhachHangAttribute`, `getIsNhaCungCapAttribute`).
+- Method business: `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`, `getTotalPurchaseByProduct`, `getReceiptRate`, `resxByLanguage`.
+- Method report (chạy SP báo cáo): `getSORpt*`, `getPORpt*`.
+- Custom cast class ở `$casts` (ví dụ `CategoryMagento` cho `InDmNhvt`).
+- Global scope nghiệp vụ (ví dụ `orderByMaKh` ở `ArDmKh`).
+
+**Not allowed:**
+
+- Khai báo `$table`/`$connection`/`$primaryKey` trực tiếp (đã có SModel), trừ alias subclass đặc biệt (`Zsysmenu` cùng schema SysMenu bảng khác).
+- Gọi `parent::boot()` trong `booted()`.
+
+### 1.4. Whitelist (Catalog Models được phép lệch rule)
+
+| Model | Lý do |
+|-------|-------|
+| `Zsysmenu` | Alias table cùng schema SysMenu |
+| `System`, `SystemConfig` | Catalog subclass alias |
+| `User` | Extends `App\Models\User` (Laravel auth) |
+| `UserLink` | Extends `AbstractModel`, utility link table |
+| `Params` | Utility params model, không có SModel |
+| `InDmNhvt` | Custom cast `CategoryMagento` ở catalog |
+
+Ghi chú (cập nhật từ PR #225): `CaCt2`, `CaPh2`, `CaPh3` trước đây tạm whitelist vì Catalog extend trực tiếp SModel; hiện đã chuyển sang `Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`, không còn nằm trong whitelist.
+
+Khi thêm Catalog Model mới mà cần lệch rule, **phải thêm vào whitelist kèm comment lý do** trong:
+
+- `SimbaModelLayerResponsibilityTest::$CATALOG_DB_METADATA_WHITELIST`
+- `SimbaModelLayerResponsibilityTest::$CATALOG_EXTENDS_WHITELIST`
+
+### 1.5. Quy trình thêm behavior mới
+
+1. Có behavior cần thêm?
+   - Có ý nghĩa nghiệp vụ? → Catalog (Concern hoặc trực tiếp).
+   - Chỉ là filter/relation Simba-Simba? → Simba Models.
+   - Cần thêm cột/bảng/schema? → SModel + `simba-docs/tables`.
+2. Catalog Concern là lựa chọn ưu tiên nếu:
+   - Áp dụng được cho nhiều Catalog Model cùng pattern.
+   - Có dependency vào các model khác (đặt vào trait để tránh circular).
+3. Với method gọi SP:
+   - Wrapper param mapping đơn giản có thể ở Simba Models (nếu nhiều Catalog Model cùng dùng).
+   - Logic nghiệp vụ (tính tổng, lọc, aggregate) ở Catalog.
+4. Mỗi concern phải có docblock mô tả lý do tách và nhóm method.
+
+### 1.6. Review checklist
+
+Khi review PR liên quan model layer:
+
+- [ ] SModel generated không thêm scope/relation/method.
+- [ ] Simba Models không thêm business method.
+- [ ] Business method mới ở Catalog Models (hoặc concern).
+- [ ] Catalog Models không khai báo DB metadata trùng SModel (trừ whitelist).
+- [ ] `booted()` không gọi `parent::boot()` ở cả 3 lớp.
+- [ ] Tên concern có pattern `Has<Model><Group>`.
+- [ ] Chạy `vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`.
+- [ ] Chạy `php scripts/audit-model-layer-responsibility.php` (nếu có audit liên quan).
+- [ ] Cập nhật bảng audit baseline ở section 3 nếu thêm/bớt method.
+
+### 1.7. Công cụ kiểm tra tự động
+
+- **Test:** `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (7 test).
+- **Audit script:** `scripts/audit-model-layer-responsibility.php` (Phase 2 PR #219).
+- **Test chạy trong:** `.github/workflows/tests.yml` (root phpunit).
 
 ---
 
-## Trạng thái đã làm trong PR #217
+## 2. Tóm tắt tiến độ refactor
+
+| Phase | Mô tả | PR | Trạng thái |
+|-------|-------|----|------------|
+| 0 | Composite PK + alias + trait `HasSimbaCompositeKey` | #217 | MERGED |
+| 1 | Deduplicate schema 4 model metadata | #218 | MERGED |
+| 2 | Audit behavior baseline | #219 | MERGED |
+| 3a | Move ArDmKh KH/NCC/NV sang Catalog | #220 | MERGED |
+| 3b | Move InDmKho + PoCt1 + SysCompany sang Catalog | #222 | MERGED |
+| 3c | Move SoCt1 sales metrics sang Catalog + fix ArDmKh::booted | #223 | MERGED |
+| 4 | Test gate 7 method | #223 (cùng) | MERGED |
+| 5 | Doc policy 3 lớp | #224 | READY |
+
+Trạng thái hiện tại:
+
+- SModel layer: sạch, chỉ schema mapping.
+- Simba\Models layer: không còn business method nghiệp vụ (đã move hết sang Catalog).
+- Catalog\Models layer: nhận tất cả business method nghiệp vụ qua 5 concern (HasArDmKhCategories, HasInDmKhoInventoryOperations, HasPoCt1PurchaseMetrics, HasSoCt1SalesMetrics, HasSysCompanyLocalizedResx) + 1 model mới `SoCt1`.
+- Test gate: 7 test ở `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`, chạy trong root phpunit.
+
+---
+
+## 3. Audit baseline (28 file)
+
+Generated: 2026-06-22T02:01:32+00:00
+Source: `diepxuan/laravel-simba/src/Models`
+Total Models: 445
+With behavior: 28
+
+### 3.1. Phân loại
+
+- `keep_simba`: scope/relation/accessor đọc trực tiếp field schema, hoặc method kiểu `isXxx()/getXxx()` parse enum/display từ field. Phù hợp giữ ở Simba Models.
+- `move_catalog`: business logic, tính toán, mở service, ngữ nghĩa nghiệp vụ (KH/NCC/NV). Nên tách sang `diepxuan/laravel-catalog`.
+
+### 3.2. Bảng behavior
+
+| File | scop | rel | acc | mut | meth | boot | classification | chi tiết |
+|------|------|-----|-----|-----|------|------|----------------|----------|
+| `ApCt1.php` | 7 | 3 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterBySoHd, FilterByMaNcc, FilterByMaBp, FilterByMaNt, FilterByNgayHd...<br/>rel: apDmNcc:belongsTo, sysDepartment:belongsTo, glDmTk:belongsTo |
+| `ArCt1.php` | 7 | 3 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterBySoHd, FilterByMaKh, FilterByMaBp, FilterByMaNt, FilterByNgayHd...<br/>rel: arDmKh:belongsTo, sysDepartment:belongsTo, glDmTk:belongsTo |
+| `ArDmKh.php` | 5 | 1 | 3 | 0 | 0 | - | `move_catalog` | scope: LaKhachHang, LaNhaCungCap, LaNhanVien, Search, OrderByMaKh<br/>rel: glCts:hasMany<br/>acc: IsKhachHang, IsNhaCungCap, IsNhanVien |
+| `ArDmNhKh.php` | 2 | 0 | 0 | 0 | 0 | - | `keep_simba` | scope: Search, OrderByMaNhkh |
+| `ArDmPlKh.php` | 3 | 0 | 0 | 0 | 0 | - | `keep_simba` | scope: Loai, Search, OrderByMaPlkh |
+| `CaCt1.php` | 6 | 4 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterByTk, FilterByTkList, FilterByMaKh, FilterByMaBp, FilterByNgayCt<br/>rel: caPh3:belongsTo, glDmTk:belongsTo, arDmKh:belongsTo, sysDepartment:belongsTo |
+| `FaDmLk.php` | 4 | 1 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterByMaTs, FilterByMaLk, FilterByKsd<br/>rel: faDmTs:belongsTo |
+| `GlCdTk.php` | 2 | 0 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByTkList, FilterByMaNt |
+| `GlCt.php` | 4 | 1 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByTkList, FilterByTkduList, FilterByMaBp, FilterByMaNt<br/>rel: arDmKh:belongsTo |
+| `GlCt1.php` | 6 | 4 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterByTk, FilterByTkList, FilterByMaKh, FilterByMaBp, FilterByMaNt<br/>rel: glDmTk:belongsTo, arDmKh:belongsTo, sysDepartment:belongsTo, glCt:belongsTo |
+| `InDmKho.php` | 7 | 4 | 0 | 0 | 3 | - | `move_catalog` | scope: FilterByMaCty, FilterByMaKho, FilterByTenKho, FilterByKhoDl, FilterByKsd, Active...<br/>rel: glDmTk:belongsTo, inDmViTri:hasMany, inCtNhap:hasMany, inCtXuat:hasMany<br/>meth: getInventoryByProduct, getInventoryList, getInventoryValue |
+| `InDmNhvt.php` | 2 | 2 | 0 | 0 | 0 | - | `keep_simba` | scope: IsRoot, HasParent<br/>rel: catChildrens:hasMany, catParent:belongsTo |
+| `InDmVt.php` | 1 | 0 | 0 | 0 | 0 | - | `keep_simba` | scope: WithQuantity |
+| `MmCt3.php` | 6 | 6 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterBySoDh, FilterByMaVt, FilterByMaKho, FilterByMaLo, FilterByMaBp<br/>rel: mmPh3:belongsTo, inDmVt:belongsTo, inDmKho:belongsTo, inDmViTri:belongsTo, inDmLo:belongsTo |
+| `PoCp3.php` | 2 | 1 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCp, FilterByMaBp<br/>rel: poPh3:belongsTo |
+| `PoCt1.php` | 6 | 8 | 0 | 0 | 1 | - | `move_catalog` | scope: FilterByMaCty, FilterByMaVt, FilterByMaKho, FilterByMaNcc, FilterByMaBp, FilterByNgayCt<br/>rel: poPh3:belongsTo, inDmVt:belongsTo, inDmKho:belongsTo, inDmViTri:belongsTo, inDmLo:belongsTo<br/>meth: getReceiptRate |
+| `PoCt3.php` | 2 | 3 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaVt, FilterByMaKho<br/>rel: poPh3:belongsTo, inDmVt:belongsTo, inDmKho:belongsTo |
+| `PoPh3.php` | 3 | 3 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterBySearch, FilterByMaKh, FilterByNgayCt<br/>rel: chiTiets:hasMany, chiPhis:hasMany, nhaCungCap:belongsTo |
+| `SiDmCt.php` | 2 | 0 | 0 | 0 | 2 | - | `keep_simba` | scope: Voucher, MenuId<br/>meth: headerFieldsForInventory, detailFieldsForInventory |
+| `SoCt1.php` | 7 | 7 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByMaCty, FilterByMaVt, FilterByMaKho, FilterByMaKh, FilterByMaNvkd, FilterByMaBp...<br/>rel: soPh3:belongsTo, inDmVt:belongsTo, inDmKho:belongsTo, inDmViTri:belongsTo, inDmLo:belongsTo |
+| `SoPh3.php` | 1 | 0 | 0 | 0 | 0 | - | `keep_simba` | scope: FilterByNgayCt |
+| `SysCompany.php` | 0 | 3 | 0 | 0 | 1 | - | `move_catalog` | rel: userRights:hasMany, resx:hasMany, users:belongsToMany<br/>meth: resxByLanguage |
+| `SysCompanyResx.php` | 0 | 2 | 0 | 0 | 0 | - | `keep_simba` | rel: language:belongsTo, company:belongsTo |
+| `SysDictionaryInfo.php` | 2 | 0 | 0 | 0 | 2 | - | `keep_simba` | scope: CodeName, MenuId<br/>meth: primaryKeyFields, carryFields |
+| `SysLanguage.php` | 2 | 2 | 0 | 0 | 0 | - | `keep_simba` | scope: IsEnable, Current<br/>rel: resx:hasMany, companies:belongsToMany |
+| `SysMenu.php` | 0 | 0 | 0 | 0 | 8 | - | `keep_simba` | meth: getDisplayName, getParentMenuId, isRoot, isGroup, isVoucher, isMasterData |
+| `SysUserCompanyRight.php` | 0 | 2 | 0 | 0 | 0 | - | `keep_simba` | rel: user:belongsTo, company:belongsTo |
+| `SysUserInfo.php` | 3 | 2 | 0 | 0 | 0 | - | `keep_simba` | scope: IsEnable, IsAdmin, IsGrand<br/>rel: companyRights:hasMany, companies:belongsToMany |
+
+### 3.3. Tổng hợp classification
+
+| Classification | Count |
+|----------------|-------|
+| `keep_simba` | 24 |
+| `move_catalog` | 4 |
+
+### 3.4. `move_catalog` (đã tách sang laravel-catalog trong Phase 3)
+
+- `ArDmKh.php` — accessors: IsKhachHang, IsNhaCungCap, IsNhanVien.
+- `InDmKho.php` — methods: getInventoryByProduct, getInventoryList, getInventoryValue.
+- `PoCt1.php` — method: getReceiptRate (audit gốc chỉ phát hiện 1 method, Phase 3 mở rộng ra 6 method + 1 SP report).
+- `SysCompany.php` — method: resxByLanguage.
+
+`SoCt1.php` bị bỏ sót trong audit gốc, phát hiện trong Phase 4 khi viết test gate: 6 business/report method đã tách sang `HasSoCt1SalesMetrics` ở #223.
+
+### 3.5. Cách tái tạo audit
+
+```bash
+php scripts/audit-model-layer-responsibility.php          # bảng tóm tắt
+php scripts/audit-model-layer-responsibility.php --json   # JSON đầy đủ
+php scripts/audit-model-layer-responsibility.php --filter=ApCt1
+```
+
+---
+
+## 4. Phase 0 — Composite PK + alias + trait (PR #217)
 
 PR: https://github.com/diepxuan/portal/pull/217
 Merge commit: `ac8212c08` — `refactor: document simba model layers (#217)`
@@ -76,14 +287,13 @@ Commit cuối trong PR: `48be82c74` — `feat(simba): add direct models for gene
 - Cập nhật `diepxuan/laravel-simba/README.md` cho đúng chuẩn `<Table>Model` và ví dụ code.
 
 Số liệu cuối PR #217:
+
 - Lint pass: 446 file PHP trong Models + Concerns
 - `class_exists` check: 445/445 pass
 - `git diff --check` pass
 - CI PR #217: 14/14 pass, mergeable, mergeStateStatus CLEAN.
 
----
-
-## Quy tắc primary key (đã chốt và đang áp dụng)
+### 4.1. Quy tắc primary key (đã chốt và đang áp dụng)
 
 Laravel Eloquent core chỉ hỗ trợ một `$primaryKey`, trong khi nhiều bảng Simba dùng composite primary key có `ma_cty` làm company scope.
 
@@ -111,30 +321,15 @@ Kết quả hiện tại:
 - 84 model composite PK > 3 cột đều `null` và có `PRIMARY_KEY_COLUMNS`.
 - 267 model composite PK 2-3 cột đều chọn key đại diện không phải `ma_cty`, có `PRIMARY_KEY_COLUMNS`.
 - 32 model PK đơn.
-- 13 file SModel không hậu tố `Model` đã được xóa vì không còn tham chiếu ngoài; mapping 1-1 theo chuẩn `<Table>Model` đang giữ.
 
 ---
 
-## Cụm model còn phải chuẩn hóa schema duplication
+## 5. Phase 1 — Deduplicate schema 4 model metadata (PR #218)
 
-Một số model trong `laravel-simba/src/Models` hiện còn tự khai báo schema thay vì extend SModel generated:
+PR: https://github.com/diepxuan/portal/pull/218
+Merge commit: `fa0e44ebe8`
 
-- `SysDictionaryInfo`
-- `SysReportInfo`
-- `SysReportDrillDownInfo`
-- `SiDmCt`
-
-Cần kiểm tra SModel generated tương ứng rồi refactor để:
-
-- Schema nằm ở `SModel`.
-- Behavior/helper nằm ở `Models`.
-- Catalog cache/service nằm ở `laravel-catalog`.
-
-### Trạng thái Phase 3 (đang thực hiện)
-
-PR: `task/simba-model-layer-phase3-schema-refactor`
-
-Audit SModel generated đã có:
+Mục tiêu: 4 model trong `laravel-simba/src/Models` còn tự khai báo schema thay vì extend SModel generated. Refactor để chỉ SModel chứa schema.
 
 | Model | SModel generated | PRIMARY_KEY_COLUMNS | Ghi chú |
 |-------|------------------|----------------------|---------|
@@ -148,30 +343,18 @@ Sai lệch schema cần đối chiếu giữa Model cũ và SModel generated:
 - `SysReportInfo`:
   - Model cũ cast `bang_chu`, `bang_chu0`, `hasNT` là `boolean`.
   - SModel generated chỉ cast `isdefault` là `boolean`.
-  - Cần đối chiếu `simba-docs/tables/sysReportInfo.md` để xác định đúng; mặc định lấy theo SModel generated vì là nguồn sinh từ docs.
+  - Đã đối chiếu `simba-docs/tables/sysReportInfo.md`; lấy theo SModel generated (nguồn sinh từ docs).
 - `SiDmCt`:
   - Model cũ cast `VoucherGetWhenOpenForm` là `boolean`.
   - SModel generated cast là `integer`.
-  - Cần đối chiếu `simba-docs/tables/SiDmCt.md` để xác định đúng.
+  - Đã đối chiếu `simba-docs/tables/SiDmCt.md`; xác nhận theo SModel generated.
 
-Hướng xử lý:
+Hướng xử lý đã chốt:
 
-1. Refactor 4 Model để chỉ extend SModel generated, không khai báo lại schema (`$table`, `$primaryKey`, `$keyType`, `$fillable`, `$casts`, `$timestamps`, `$incrementing`, `$connection`).
-2. Sử dụng `HasSimbaCompositeKey` trait cho các Model có composite PK (`SysReportInfo`, `SysReportDrillDownInfo`, `SiDmCt`).
+1. Refactor 4 Model để chỉ extend SModel generated, không khai báo lại schema.
+2. Sử dụng `HasSimbaCompositeKey` trait cho các Model có composite PK.
 3. Behavior hiện có giữ nguyên trong Model.
-4. Các sai lệch casts nếu được chứng minh đúng từ docs sẽ được ghi đè trong Model bằng cast override, có comment giải thích nguồn từ docs.
-
-Các bước còn lại:
-
-- [x] Audit SModel generated đã tồn tại.
-- [x] Refactor `SysDictionaryInfo`.
-- [x] Refactor `SysReportInfo`.
-- [x] Refactor `SysReportDrillDownInfo`.
-- [x] Refactor `SiDmCt`.
-- [x] Lint + autoload + diff check.
-- [x] Đối chiếu casts sai lệch với `simba-docs/tables`.
-- [x] Cập nhật README nếu cần.
-- [ ] Tạo PR Phase 3.
+4. Các sai lệch casts đã được xác minh từ docs; ghi đè trong Model bằng cách bỏ cast sai, có comment giải thích nguồn từ docs.
 
 Kết quả sau khi refactor:
 
@@ -193,17 +376,14 @@ Kết quả sau khi refactor:
 - `SysReportInfo`: SModel cast `isdefault` boolean. Cột `bang_chu`/`bang_chu0` (NVARCHAR 50) và `hasNT` (NVARCHAR 1) từ docs không phải boolean; Model cũ cast boolean là sai -> đã loại bỏ.
 - `SiDmCt`: SModel cast `VoucherGetWhenOpenForm` integer (theo DB thật). Docs không liệt kê cột này; Model cũ cast boolean không có nguồn docs -> đã loại bỏ.
 
-Branch: `task/simba-model-layer-phase3-schema-refactor`
-
 ---
 
-## Phase 1: Audit behavior trong Models (đang thực hiện)
+## 6. Phase 2 — Audit behavior baseline (PR #219)
+
+PR: https://github.com/diepxuan/portal/pull/219
+Merge commit: `6ce2931a08` — merged lúc `2026-06-22T02:07:01Z`
 
 Mục tiêu: phân loại behavior hiện có trong `diepxuan/laravel-simba/src/Models` để biết cần giữ ở Simba hay tách sang laravel-catalog.
-
-### Trạng thái Phase 1
-
-PR: `task/simba-model-layer-phase1-behavior-audit`
 
 Deliverables:
 
@@ -211,39 +391,32 @@ Deliverables:
   - `keep_simba`: scope filter Simba-Simba, relation Simba-Simba, accessor parse enum/display từ field schema, method kiểu `isXxx()/getXxx()` đọc field trực tiếp.
   - `move_catalog`: business logic (tính toán, mở service), ngữ nghĩa nghiệp vụ (KH/NCC/NV).
   - Hỗ trợ `--json` và `--filter=Substring`.
-- `docs/project/model-layer-audit-baseline.md` — kết quả audit đầy đủ với bảng chi tiết.
+- Bảng audit baseline 28 file (lưu trong section 3 của doc này).
 
 Kết quả:
 
 - 445 Model files; 28 có behavior.
 - 24 `keep_simba`.
-- 4 `move_catalog`:
+- 4 `move_catalog` (theo audit Phase 2):
   - `ArDmKh`: accessor `IsKhachHang`, `IsNhaCungCap`, `IsNhanVien`.
   - `InDmKho`: methods `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`.
   - `PoCt1`: method `getReceiptRate`.
   - `SysCompany`: method `resxByLanguage`.
-
-Các bước còn lại:
-
-- [x] Tạo audit script.
-- [x] Tạo baseline doc.
-- [ ] Phân tích 4 file `move_catalog` xem cần tách sang `diepxuan/laravel-catalog` hay giữ dưới dạng helper.
-- [ ] Cập nhật README cho laravel-catalog liên quan đến `Catalog\Models\ArDmKh`, `Catalog\Models\InDmKho`, ...
-- [ ] Tạo PR Phase 1.
-
-Branch: `task/simba-model-layer-phase1-behavior-audit`
+- Sau Phase 3, phát hiện thêm 1 cụm bị bỏ sót:
+  - `SoCt1`: 3 accessor + 4 report method (chuyển trong #223).
 
 ---
 
-## Phase 2: Tách behavior theo cụm (đang thực hiện)
+## 7. Phase 3 — Tách behavior sang Catalog (PR #220, #222, #223)
 
-Mục tiêu: tách các method `move_catalog` (từ Phase 1 audit) ra khỏi Simba Models sang laravel-catalog.
+Mục tiêu: tách các method `move_catalog` (từ Phase 2 audit) ra khỏi Simba Models sang laravel-catalog.
 
-### Trạng thái Phase 2 - cụm ArDmKh
+Quyết định: mỗi nhóm một concern riêng ở `diepxuan/laravel-catalog/src/Models/Concerns/`, gắn vào Catalog Model tương ứng.
 
-Branch: `task/simba-model-layer-phase2-ardmkh-catalog`
+### 7.1. Phase 3a: Cụm ArDmKh (PR #220)
 
-Đã làm:
+PR: https://github.com/diepxuan/portal/pull/220
+Merge commit: `6ce2931a08` (cùng base) — merged
 
 - Tạo `Diepxuan\Catalog\Models\Concerns\HasArDmKhCategories` chứa:
   - scope `laKhachHang`, `laNhaCungCap`, `laNhanVien`
@@ -265,35 +438,107 @@ Verify:
   - `Simba\ArDmKh`: `scopeLaKhachHang`=0, `getIsKhachHangAttribute`=0, `scopeSearch`=1, `scopeOrderByMaKh`=1.
   - `Catalog\ArDmKh`: `scopeLaKhachHang`=1, `getIsKhachHangAttribute`=1, `scopeSearch`=1 (inherited), parent=`Simba\ArDmKh`.
 
-Các bước còn lại:
+### 7.2. Phase 3b: Cụm InDmKho + PoCt1 + SysCompany (PR #222)
 
-- [x] Tạo concern trong catalog.
-- [x] Gắn trait vào `Catalog\ArDmKh`.
-- [x] Gỡ method tương ứng khỏi `Simba\ArDmKh`.
-- [x] Verify reflection.
-- [ ] Lint + autoload Catalog composer dump.
-- [ ] Tạo PR Phase 2 - cụm ArDmKh.
+PR: https://github.com/diepxuan/portal/pull/222
+Merge commit: `84cf00213` — merged lúc `2026-06-22T03:38:36Z`
 
-### Plan cho các cụm còn lại (Phase 1 audit đã chỉ ra)
+3 concern mới + 1 model mới:
 
-- [x] `InDmKho` (cụm Inventory): method `getInventoryByProduct`, `getInventoryList`, `getInventoryValue`. Tạo `HasInDmKhoInventoryOperations` ở catalog.
-- [x] `PoCt1` (cụm PO voucher): method `getTotalPurchaseByProduct`, `getTotalQuantityByProduct`, `getTotalPurchaseBySupplier`, `getReceiptRate`, `getPORptMH01`, `getPORptDH01`, `getPORptNH01`. Tạo `HasPoCt1PurchaseMetrics` ở catalog.
-- [x] `SysCompany` (cụm Sys): method `resxByLanguage`. Helper nghiệp vụ, chuyển sang catalog qua `HasSysCompanyLocalizedResx`.
+- `HasInDmKhoInventoryOperations` (3 method):
+  - `getInventoryByProduct`
+  - `getInventoryList`
+  - `getInventoryValue`
+- `HasPoCt1PurchaseMetrics` (7 method + 1 helper):
+  - `getTotalPurchaseByProduct`
+  - `getTotalQuantityByProduct`
+  - `getTotalPurchaseBySupplier`
+  - `getReceiptRate`
+  - `getPORptMH01`
+  - `getPORptDH01`
+  - `getPORptNH01`
+  - `executeRptSp` (helper dùng chung cho 3 SP report)
+- `HasSysCompanyLocalizedResx` (1 method):
+  - `resxByLanguage`
+- `Catalog\Models\PoCt1` (tạo mới, dùng `HasPoCt1PurchaseMetrics`).
 
-Mỗi cụm một PR nhỏ.
+Simba gỡ:
 
+- `Simba\InDmKho.php`: -69 dòng, gỡ 3 method inventory.
+- `Simba\PoCt1.php`: -130 dòng, gỡ 7 method report/metrics.
+- `Simba\SysCompany.php`: -7 dòng, gỡ `resxByLanguage`.
+
+Catalog gắn:
+
+- `Catalog\InDmKho.php`: thêm `use HasInDmKhoInventoryOperations;`.
+- `Catalog\PoCt1.php`: tạo mới, dùng `HasPoCt1PurchaseMetrics`.
+- `Catalog\SysCompany.php`: thêm `use HasSysCompanyLocalizedResx;`.
+
+Verify:
+
+- `php -l`: 9/9 file pass.
+- `git diff --check`: pass.
+- Reflection:
+  - `Simba\InDmKho`: `getInventoryByProduct`=0, `getAsINGetDMKHO`=1.
+  - `Simba\PoCt1`: `getReceiptRate`=0, `getPORptMH01`=0, `getTotalPurchaseByProduct`=0.
+  - `Simba\SysCompany`: `resxByLanguage`=0, `resx`=1, `users`=1.
+  - `Catalog\InDmKho`: `getInventoryByProduct`=1, `getAsINGetDMKHO`=1 (inherited).
+  - `Catalog\PoCt1`: `getReceiptRate`=1, `getPORptMH01`=1, `getTotalPurchaseByProduct`=1.
+  - `Catalog\SysCompany`: `resxByLanguage`=1, `resx`=1 (inherited), `users`=1 (inherited).
+- Caller ngoài audit:
+  - `getInventory*`, `getReceiptRate`, `getPORpt*`, `getTotal*`, `resxByLanguage`: không có caller bên ngoài.
+  - `getAsINGetDMKHO`: chỉ `Catalog\InDmKho` gọi qua `parent::` (vẫn còn trên Simba base), không cần sửa.
+  - `getAsINRptCD01`, `getPORpt*`: không có caller bên ngoài (giữ trên Simba base, đề phòng tương lai).
+
+CI: 14/14 pass, mergeable, mergeStateStatus CLEAN.
+
+### 7.3. Phase 3c: Cụm SoCt1 + fix `ArDmKh::booted` (PR #223)
+
+PR: https://github.com/diepxuan/portal/pull/223
+Merge commit: `e1d771907` — merged lúc `2026-06-22T04:59:35Z`
+
+Phát hiện khi viết test gate:
+
+- `Catalog\Models\ArDmKh::booted()` đang gọi `parent::boot()` không cần thiết; SModel base đã set connection trong `__construct`. → gỡ.
+- `Simba\Models\SoCt1` còn 7 business/report method bị bỏ sót ở Phase 2:
+  - `getTotalRevenueByProduct`
+  - `getTotalQuantityByProduct`
+  - `getTotalRevenueBySalesperson`
+  - `getSORptBH01`
+  - `getSORptDT01`
+  - `getSORptSL01`
+  - (3 method bổ sung ngoài audit gốc 1 method `getReceiptRate` đã move ở #222)
+
+Xử lý:
+
+- Tạo `Diepxuan\Catalog\Models\Concerns\HasSoCt1SalesMetrics` (6 method + 1 helper `executeSORptSp`).
+- Tạo `Diepxuan\Catalog\Models\SoCt1` (tương tự PoCt1, extends Simba + dùng trait).
+- Gỡ 7 method trên khỏi `Simba\Models\SoCt1`. Chỉ giữ scope filter + relation Simba-Simba.
+- Gỡ `parent::boot()` trong `Catalog\Models\ArDmKh::booted()`.
+
+Verify:
+
+- `php -l`: 5/5 pass.
+- Reflection: `Catalog\SoCt1` parent=`Simba\SoCt1`, có `getTotalRevenueByProduct=1`, `getSORptBH01=1`, v.v.
+- 7 test gate pass.
+
+CI: 14/14 pass, mergeable, mergeStateStatus CLEAN.
+
+### 7.4. Tổng kết Catalog Concerns
+
+| Concern | Owner Model | Method |
+|---------|-------------|--------|
+| `HasArDmKhCategories` | `Catalog\Models\ArDmKh` | 3 scope + 3 accessor |
+| `HasInDmKhoInventoryOperations` | `Catalog\Models\InDmKho` | 3 method |
+| `HasPoCt1PurchaseMetrics` | `Catalog\Models\PoCt1` | 7 method + 1 helper |
+| `HasSoCt1SalesMetrics` | `Catalog\Models\SoCt1` | 6 method + 1 helper |
+| `HasSysCompanyLocalizedResx` | `Catalog\Models\SysCompany` | 1 method |
 
 ---
 
-## Phase 4: Test bảo vệ ranh giới (đang thực hiện)
+## 8. Phase 4 — Test gate 7 method (PR #223)
 
-Mục tiêu: thiết lập rào chắn tự động, đảm bảo các PR sau không xâm phạm ranh giới 3 lớp.
-
-### Trạng thái Phase 4
-
-Branch: `task/simba-model-layer-responsibility-tests`
-
-Test file: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php`
+File mới: `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` (359 dòng, 7 test method, 9 assertion).
 
 8 test method:
 
@@ -311,16 +556,9 @@ Phát hiện/fix khi viết test:
 - `Catalog\Models\ArDmKh::booted()` gọi `parent::boot()` không cần thiết → đã gỡ.
 - `Simba\Models\SoCt1` còn business/report methods bị bỏ sót ở Phase 2 → tạo `Catalog\Models\Concerns\HasSoCt1SalesMetrics` + `Catalog\Models\SoCt1`, gỡ method khỏi `Simba\Models\SoCt1`.
 
-Whitelist hiện tại:
+Whitelist hiện tại: xem section 1.4.
 
-- `Zsysmenu`: alias table cùng schema SysMenu.
-- `System`, `SystemConfig`: catalog subclass alias.
-- `User`: extends `App\Models\User`.
-- `UserLink`: extends `AbstractModel`, utility link table.
-- `Params`: utility params model.
-- `InDmNhvt`: custom cast `CategoryMagento` ở catalog layer.
-
-Ghi chú: `CaCt2`, `CaPh2`, `CaPh3` trước đây tạm whitelist vì Catalog extend trực tiếp SModel; hiện đã chuyển sang `Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`, không còn nằm trong whitelist.
+Ghi chú (cập nhật từ PR #225): `CaCt2`, `CaPh2`, `CaPh3` trước đây tạm whitelist vì Catalog extend trực tiếp SModel; hiện đã chuyển sang `Diepxuan\Simba\Models\CaCt2/CaPh2/CaPh3`, không còn nằm trong whitelist.
 
 Verify:
 
@@ -331,7 +569,7 @@ vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.p
 
 Kết quả hiện tại: 8 tests, 10 assertions, OK.
 
-Full `vendor/bin/phpunit` hiện còn lỗi pre-existing (`Core\PackageConfigTest`, `Feature\ExampleTest`) không liên quan PR này.
+Full `vendor/bin/phpunit` hiện còn lỗi pre-existing (`Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác) không liên quan các PR này.
 
 ### Phase 4b: Cleanup còn lại sau test gate
 
@@ -356,74 +594,28 @@ Kết quả: Simba audit 445 file/28 behavior đều `keep_simba`; Catalog audit
 
 ---
 
-## Phase tiếp theo (theo cụm nhỏ)
+## 9. Phase 5 — Doc policy 3 lớp (PR #224)
 
-### Phase 1: Audit behavior trong `laravel-simba/src/Models`
+PR: https://github.com/diepxuan/portal/pull/224
 
-Mục tiêu: phân loại từng method hiện có.
+File mới: `docs/project/model-layer-responsibility.md` (147 dòng).
 
-Nhóm giữ lại trong Simba Models:
+Nội dung: tóm tắt policy 3 lớp, whitelist, quy trình thêm behavior, review checklist, công cụ kiểm tra tự động.
 
-- Scope filter trực tiếp theo cột thật.
-- Relation trực tiếp giữa các bảng Simba bằng key thật.
-- Accessor/mutator chuẩn hóa dữ liệu thuần Simba.
-- Helper query nhỏ không phụ thuộc Portal/Catalog.
-
-Nhóm chuyển sang Catalog:
-
-- Business rule create/edit/save/delete.
-- Helper phục vụ màn hình Portal/Livewire.
-- Navigation/menu/route resolver.
-- Product/Magento mapping nếu phục vụ Catalog sync.
-- Report workflow/use-case service.
-- Policy/authorization/session/request/UI logic.
-
-Deliverable:
-
-- Tạo bảng audit theo file/method/phân loại/đích chuyển.
-- Không code move trong phase này nếu chưa có danh sách caller.
-
-### Phase 2: Tách behavior theo từng cụm nhỏ
-
-Làm từng PR nhỏ theo module/use-case, không gom toàn bộ:
-
-1. Inventory/Product group
-   - `InDmVt`, `InDmNhvt`, `Product`-related behavior.
-   - Chuyển helper Catalog/Magento sang `laravel-catalog`.
-2. Menu/metadata group
-   - `SysMenu`, report/dictionary metadata models.
-   - Giữ Simba metadata thuần ở Simba; resolver/cache/use-case ở Catalog.
-3. Finance report/query group
-   - `Gl*`, `Ar*`, `Ap*`, `Ca*` report helpers.
-   - Query sát bảng có thể giữ; report workflow/service chuyển Catalog.
-4. Purchase/Sales voucher group
-   - `Po*`, `So*`, `PhieuChuyenKho*`.
-   - Tách alias/use-case ra Catalog nếu đang là Portal concept.
-
-### Phase 3: Chuẩn hóa schema duplication
-
-Một số model trong `laravel-simba/src/Models` hiện còn tự khai báo schema thay vì extend SModel generated:
-
-- `SysDictionaryInfo`
-- `SysReportInfo`
-- `SysReportDrillDownInfo`
-- `SiDmCt`
-
-Cần kiểm tra SModel generated tương ứng rồi refactor để:
-
-- Schema nằm ở `SModel`.
-- Behavior/helper nằm ở `Models`.
-- Catalog cache/service nằm ở `laravel-catalog`.
+> Từ PR kế tiếp sau doc này, file `model-layer-responsibility.md` đã được gộp vào plan này (section 1). Doc hiện tại là nguồn tham chiếu duy nhất cho model layer refactor.
 
 ---
 
-## 1. Hiện trạng audit nhanh
+## 10. Hiện trạng audit ban đầu (lưu trước refactor)
 
-### 1.1 `diepxuan/laravel-simba/src/SModel`
+> Phần này mô tả hiện trạng trước khi refactor để tham chiếu.
+
+### 10.1. Hiện trạng `diepxuan/laravel-simba/src/SModel`
 
 Số file hiện tại: 455 PHP files.
 
 Vai trò hiện tại:
+
 - Phần lớn là generated base model, mỗi file khai báo trực tiếp:
   - `$table`
   - `$primaryKey`
@@ -440,15 +632,17 @@ Vai trò hiện tại:
   - một số helper mang tính runtime/database operation.
 
 Nhận xét:
+
 - Đúng hướng khi `SModel` là nơi giữ cấu hình DB.
 - Nhưng `SModel.php` hiện hơi rộng: có hành vi query/save/delete chung, có thể gây side effect khó kiểm soát.
 - Các generated model nên giữ càng thuần càng tốt, không chứa nghiệp vụ.
 
-### 1.2 `diepxuan/laravel-simba/src/Models`
+### 10.2. Hiện trạng `diepxuan/laravel-simba/src/Models`
 
 Số file hiện tại: 49 PHP files.
 
 Thống kê nhanh:
+
 - 24 file có local scopes.
 - 6 file có accessor.
 - 4 file có relations.
@@ -456,6 +650,7 @@ Thống kê nhanh:
 - 8 file vẫn có DB config trực tiếp.
 
 Ví dụ hiện tại:
+
 - `Diepxuan\Simba\Models\ArDmKh` đang có:
   - global scope `ksd`
   - scopes `laKhachHang`, `laNhaCungCap`, `laNhanVien`, `search`, `orderByMaKh`
@@ -464,21 +659,24 @@ Ví dụ hiện tại:
   - accessor `is_khach_hang`, `is_nha_cung_cap`, `is_nhan_vien`
 
 Nhận xét:
+
 - Scope/accessor thuộc lớp Simba model là hợp lý nếu nó biểu diễn trực tiếp field/table Simba.
 - Relations giữa các bảng Simba cũng có thể đặt ở đây nếu là quan hệ dữ liệu gốc, không phụ thuộc Portal module.
 - Nhưng SP wrapper và một số relation/domain method có thể cần phân loại lại: nếu là thao tác nghiệp vụ Portal thì nên đưa lên Catalog/service.
 
-### 1.3 `diepxuan/laravel-catalog/src/Models`
+### 10.3. Hiện trạng `diepxuan/laravel-catalog/src/Models`
 
 Số file hiện tại: 35 PHP files.
 
 Thống kê nhanh:
+
 - 7 file có relations.
 - 5 file có scopes.
 - 1 file có accessor.
 - 2 file có DB config trực tiếp.
 
 Ví dụ hiện tại:
+
 - `Diepxuan\Catalog\Models\ArDmKh` kế thừa `Diepxuan\Simba\Models\ArDmKh`, có:
   - relations Portal/Catalog: `nhomKhachHang`, `phanLoaiKhachHang1/2/3`
   - helper `getSoduKh()`
@@ -486,44 +684,38 @@ Ví dụ hiện tại:
   - global scope `orderByMaKh`
 
 Nhận xét:
+
 - Catalog model là nơi phù hợp cho relation/use-case của Portal.
 - Nhưng cần tránh duplicate scope đã có ở Simba model, ví dụ order/scope/search có thể bị trùng hoặc thay đổi semantic.
 - `booted()` trong `Catalog\Models\ArDmKh` đang gọi `parent::boot()` thay vì `parent::booted()`; cần review kỹ vì có thể bỏ qua hoặc gọi sai lifecycle.
 
 ---
 
-## 2. Ranh giới trách nhiệm đề xuất
+## 11. Ranh giới trách nhiệm (final)
 
-### 2.1 `laravel-simba/src/SModel`: Base DB schema/config only
+> Tóm tắt khả thi thi hành ở section 1.
 
-Được phép chứa:
-- Connection:
-  - `protected $connection`
-  - `getSimbaConnectionName()` hoặc cơ chế tương đương.
-- Table metadata:
-  - `$table`
-  - `$primaryKey`
-  - `$keyType`
-  - `$incrementing`
-  - `$timestamps`
-- Eloquent metadata:
-  - `$fillable` hoặc `$guarded`
-  - `$casts`
-  - date format nếu SQL Server cần.
-- Base helpers an toàn, không nghiệp vụ:
-  - normalize table name fallback.
-  - SQL Server connection resolver.
+### 11.1. `laravel-simba/src/SModel`: Base DB schema/config only
 
-Không nên chứa:
+**Được phép chứa:**
+
+- Connection: `$connection`, `getSimbaConnectionName()` hoặc cơ chế tương đương.
+- Table metadata: `$table`, `$primaryKey`, `$keyType`, `$incrementing`, `$timestamps`.
+- Eloquent metadata: `$fillable` hoặc `$guarded`, `$casts`, date format nếu SQL Server cần.
+- Base helpers an toàn, không nghiệp vụ: normalize table name fallback, SQL Server connection resolver.
+
+**Không nên chứa:**
+
 - Scope nghiệp vụ.
 - Accessor/mutator mang ý nghĩa nghiệp vụ.
 - Relations.
 - Stored procedure wrapper theo nghiệp vụ.
 - Override `save/delete/all/query` nếu không có lý do bắt buộc và test bảo vệ.
 
-### 2.2 `laravel-simba/src/Models`: Direct Laravel model for Simba tables
+### 11.2. `laravel-simba/src/Models`: Direct Laravel model for Simba tables
 
-Được phép chứa:
+**Được phép chứa:**
+
 - Scope bám trực tiếp vào field Simba:
   - `scopeActive()`/`scopeDangSuDung()` cho `ksd` nếu field có thật.
   - `scopeCompany($maCty)` cho `ma_cty`.
@@ -531,35 +723,39 @@ Không nên chứa:
 - Accessor/cast normalize field:
   - boolean flag từ SQL Server bit/int.
   - tên accessor alias giúp code PHP đọc rõ hơn.
-- Relations trực tiếp giữa bảng Simba nếu key có thật và ổn định:
-  - `belongsTo`, `hasMany` giữa bảng danh mục/chứng từ/sổ cái.
+- Relations trực tiếp giữa bảng Simba nếu key có thật và ổn định.
 - Query helper thuần dữ liệu, không UI/use-case.
+- Wrapper SP thuần param mapping đơn giản (giữ hạn chế; ưu tiên catalog).
 
-Không nên chứa:
+**Không nên chứa:**
+
 - Logic chỉ phục vụ Catalog UI.
 - Điều hướng route, Livewire, request/session/auth.
 - Business policy của Portal như `hasTransactions()` nếu dùng để quyết định UI/action trong Catalog.
 - Stored procedure orchestration phức tạp; ưu tiên để ở `StoredProcedures` hoặc service/domain layer.
 
-### 2.3 `laravel-catalog/src/Models`: Portal/Catalog domain model
+### 11.3. `laravel-catalog/src/Models`: Portal/Catalog domain model
 
-Được phép chứa:
+**Được phép chứa:**
+
 - Relations phục vụ module Portal/Catalog.
-- Helper tính toán nghiệp vụ cho màn hình, ví dụ:
-  - `hasTransactions()`
-  - `getSoduKh()` nếu là API tiện ích cho Catalog.
-  - computed status/display helpers.
+- Helper tính toán nghiệp vụ cho màn hình, ví dụ `hasTransactions()`, `getSoduKh()` nếu là API tiện ích cho Catalog, computed status/display helpers.
 - Scopes theo use-case Portal, ví dụ danh sách mặc định, filter UI.
+- Business method: `getInventoryByProduct`, `getTotalPurchaseByProduct`, `getReceiptRate`, `resxByLanguage`, v.v.
+- Report method (chạy SP báo cáo): `getSORpt*`, `getPORpt*`.
+- Custom cast class ở `$casts` (ví dụ `CategoryMagento` cho `InDmNhvt`).
+- Global scope nghiệp vụ (ví dụ `orderByMaKh` ở `ArDmKh`).
 - Bridge giữa Simba raw data và Portal module.
 
-Không nên chứa:
-- Khai báo lại `$table`, `$primaryKey`, `$connection`, `$casts` nếu lớp cha Simba đã có.
+**Không nên chứa:**
+
+- Khai báo lại `$table`, `$primaryKey`, `$connection`, `$casts` nếu lớp cha Simba đã có (trừ whitelist alias).
 - Logic SQL Server connection.
 - Stored procedure low-level call nếu đã có wrapper/service.
 
 ---
 
-## 3. Nguyên tắc refactor
+## 12. Nguyên tắc refactor
 
 1. Không đổi tên bảng/cột/SP nếu chưa đối chiếu `simba-docs` hoặc source wrapper hiện có.
 2. Không tạo/ALTER/INSERT SQL.
@@ -571,265 +767,16 @@ Không nên chứa:
 
 ---
 
-## 4. Deliverables
+## 13. Validation checklist + Definition of Done
 
-1. Tài liệu ranh giới model layer:
-   - `docs/project/model-layer-responsibility.md`
-2. Static audit script:
-   - `scripts/audit-model-layer-responsibility.php`
-   - In ra các vi phạm:
-     - SModel có `scope*`, relation, accessor, SP call.
-     - Simba Model có `$table/$primaryKey/$connection` trùng base.
-     - Catalog Model có DB metadata trực tiếp.
-     - Catalog Model gọi `parent::boot()` trong `booted()`.
-3. Test bảo vệ base model:
-   - `diepxuan/laravel-simba/tests/Unit/SModelResponsibilityTest.php` hoặc test suite hiện hữu tương ứng.
-   - `diepxuan/laravel-catalog/tests/Unit/Models/CatalogModelResponsibilityTest.php` nếu catalog package đang có test namespace.
-4. Refactor từng nhóm model ưu tiên:
-   - Nhóm ARDMKH: `ArDmKh`, `ArDmNhKh`, `ArDmPlKh`.
-   - Nhóm SysMenu/Zsysmenu: vì đang là source route/menu.
-   - Nhóm GL account: `GlDmTk`, `GlCt`, `GlCdTk`.
-   - Nhóm PO voucher: `PoPh*`, `PoCt*`, `PoCp*` sau.
+### 13.1. Validation checklist chung
 
----
-
-## 5. Implementation tasks
-
-### Task 1: Chốt policy bằng docs
-
-**Objective:** Tạo tài liệu chính thức về trách nhiệm 3 lớp model.
-
-**Files:**
-- Create: `docs/project/model-layer-responsibility.md`
-
-**Steps:**
-1. Viết tài liệu gồm 3 section:
-   - `SModel: database schema/config`
-   - `Simba Models: direct table behavior`
-   - `Catalog Models: Portal domain behavior`
-2. Thêm bảng `Allowed / Not allowed` cho từng lớp.
-3. Thêm checklist review PR model.
-4. Chạy:
-   ```bash
-   git diff --check docs/project/model-layer-responsibility.md
-   ```
-
-**Expected:** không có whitespace error.
-
-### Task 2: Tạo audit script cho model layer
-
-**Objective:** Có công cụ lặp lại để phát hiện model đặt sai trách nhiệm.
-
-**Files:**
-- Create: `scripts/audit-model-layer-responsibility.php`
-
-**Rules cần check:**
-- Trong `diepxuan/laravel-simba/src/SModel/**/*.php`:
-  - fail nếu có `function scope[A-Z]` ngoài whitelist.
-  - fail nếu có relation return types/imports: `BelongsTo`, `HasMany`, `HasOne`, `BelongsToMany`, `Morph*`.
-  - fail nếu có accessor `get*Attribute` hoặc `Attribute::make`.
-  - fail nếu có `StoredProcedures` hoặc `::call(` không thuộc base utility whitelist.
-- Trong `diepxuan/laravel-simba/src/Models/**/*.php`:
-  - warn nếu khai báo `$table`, `$primaryKey`, `$connection` mà SModel base tương ứng đã có.
-  - warn nếu gọi route/auth/session/request/view.
-- Trong `diepxuan/laravel-catalog/src/Models/**/*.php`:
-  - warn nếu khai báo DB config trực tiếp.
-  - fail nếu `booted()` gọi `parent::boot()` thay vì `parent::booted()`.
-
-**Verification:**
-```bash
-php -l scripts/audit-model-layer-responsibility.php
-php scripts/audit-model-layer-responsibility.php
-```
-
-**Expected:** script chạy được, ban đầu có thể báo violations hiện hữu nhưng exit code nên cấu hình `--strict` mới fail để không phá CI ngay.
-
-### Task 3: Thêm baseline audit report
-
-**Objective:** Ghi lại hiện trạng trước refactor để tránh làm mù.
-
-**Files:**
-- Create: `docs/project/model-layer-audit-baseline.md`
-
-**Steps:**
-1. Chạy audit script ở non-strict mode.
-2. Ghi summary counts:
-   - SModel files: 455
-   - Simba Models: 49
-   - Catalog Models: 33
-3. Ghi nhóm vi phạm ưu tiên sửa.
-4. Chạy `git diff --check`.
-
-### Task 4: Viết tests cho ARDMKH model boundaries
-
-**Objective:** Bảo vệ nhóm ARDMKH trước khi refactor.
-
-**Files:**
-- Add/modify tests dưới package phù hợp:
-  - `diepxuan/laravel-catalog/tests/Unit/Models/ArDmKhModelTest.php`
-  - hoặc test namespace hiện có nếu khác.
-
-**Test cases:**
-1. `Catalog\Models\ArDmKh` kế thừa `Simba\Models\ArDmKh`.
-2. `Catalog\Models\ArDmKh::hasTransactions()` dùng relation `glCts()` và trả bool.
-3. `Simba\Models\ArDmKh` vẫn có scopes field-level:
-   - customer/supplier/employee.
-4. `Catalog\Models\ArDmKh` không khai báo `$connection/$table/$primaryKey` riêng.
-
-**Verification:**
-```bash
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Models/ArDmKhModelTest.php
-```
-
-### Task 5: Sửa lifecycle bug trong Catalog ArDmKh nếu test xác nhận
-
-**Objective:** Đưa `booted()` về đúng Laravel lifecycle.
-
-**Files:**
-- Modify: `diepxuan/laravel-catalog/src/Models/ArDmKh.php`
-
-**Change dự kiến:**
-```php
-protected static function booted(): void
-{
-    parent::booted();
-
-    static::addGlobalScope('orderByMaKh', static function ($query): void {
-        $query->orderBy('ma_kh');
-    });
-}
-```
-
-**Note:** Nếu parent không có `booted()` custom thì vẫn hợp lệ vì Laravel Model có static boot flow; cần chạy test để xác nhận.
-
-**Verification:**
-```bash
-php -l diepxuan/laravel-catalog/src/Models/ArDmKh.php
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Models/ArDmKhModelTest.php
-```
-
-### Task 6: Phân loại lại `Simba\Models\ArDmKh`
-
-**Objective:** Tách logic nào là direct-table, logic nào là Catalog domain.
-
-**Files:**
-- Review: `diepxuan/laravel-simba/src/Models/ArDmKh.php`
-- Review: `diepxuan/laravel-catalog/src/Models/ArDmKh.php`
-
-**Decision matrix:**
-- Giữ ở Simba:
-  - scopes theo field `isKh/isNcc/isNv/ksd`.
-  - accessor boolean alias.
-  - search nếu search chỉ là query trực tiếp theo các cột ARDMKH.
-- Chuyển/giữ ở Catalog:
-  - `hasTransactions()`.
-  - relation dùng model Catalog nếu phục vụ UI Catalog.
-  - `getSoduKh()` nếu dùng cho Portal workflow.
-- Đưa ra service nếu là SP orchestration:
-  - tạo service `Catalog\Services\CustomerBalanceService` nếu `AsGetSoDuKh` cần logic tham số/ngày/tài khoản.
-
-**Verification:**
-```bash
-git grep -n "AsGetSoDuKh\|getSoduKh\|hasTransactions\|laNhaCungCap\|laKhachHang" diepxuan
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Models/ArDmKhModelTest.php
-```
-
-### Task 7: Chuẩn hóa SysMenu/Zsysmenu model boundaries
-
-**Objective:** Vì menu route đang là source of truth, cần model rõ ràng và ít side effect.
-
-**Files:**
-- Review: `diepxuan/laravel-simba/src/Models/SysMenu.php`
-- Review: `diepxuan/laravel-simba/src/Models/Zsysmenu.php`
-- Review: `diepxuan/laravel-catalog/src/Models/SysMenu.php`
-- Review: `diepxuan/laravel-catalog/src/Models/Zsysmenu.php`
-- Tests liên quan: `diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php`
-
-**Rules:**
-- Simba model: scopes/accessors field-level only.
-- Catalog model/service: route/menu semantics, module placement, URL target.
-- Không để route resolver logic trong Simba model.
-
-**Verification:**
-```bash
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
-php scripts/generate-simba-source-routes.php --json
-```
-
-### Task 8: Chuẩn hóa GL/PO model theo pattern đã chốt
-
-**Objective:** Áp dụng pattern sau khi ARDMKH và SysMenu ổn.
-
-**Files ưu tiên:**
-- GL: `GlDmTk`, `GlCt`, `GlCdTk`
-- PO: `PoPh*`, `PoCt*`, `PoCp*`
-
-**Steps:**
-1. Chạy audit script lọc theo nhóm.
-2. Viết test cho 1-2 model đại diện mỗi nhóm.
-3. Di chuyển logic nếu sai layer.
-4. Chạy module tests.
-
-**Verification:**
-```bash
-php scripts/audit-model-layer-responsibility.php --group=gl
-php scripts/audit-model-layer-responsibility.php --group=po
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit
-```
-
-### Task 9: Thêm CI non-blocking trước, strict sau
-
-**Objective:** Đưa audit vào workflow an toàn, không làm vỡ CI ngay.
-
-**Phase 1:** non-blocking/report only.
-```bash
-php scripts/audit-model-layer-responsibility.php --format=github
-```
-
-**Phase 2:** strict cho rule đã sạch.
-```bash
-php scripts/audit-model-layer-responsibility.php --strict=smodel
-```
-
-**DoD:**
-- CI báo warning rõ ràng.
-- Không fail trên legacy violations chưa xử lý.
-- Khi một nhóm đã clean thì bật strict riêng nhóm đó.
-
----
-
-## 6. Suggested PR split
-
-### PR 1: docs + audit baseline
-- Add `model-layer-responsibility.md`.
-- Add `audit-model-layer-responsibility.php` non-strict.
-- Add `model-layer-audit-baseline.md`.
-- Không refactor model.
-
-### PR 2: ARDMKH boundary cleanup
-- Tests cho `ArDmKh`.
-- Sửa lifecycle `booted()` nếu xác nhận.
-- Phân loại `AsGetSoDuKh`, `hasTransactions`, relations.
-
-### PR 3: SysMenu/Zsysmenu cleanup
-- Đảm bảo menu metadata vẫn pass.
-- Không làm đổi route count ngoài expected.
-
-### PR 4+: GL/PO model groups
-- Mỗi module/group một PR.
-- Mỗi PR có test + audit delta.
-
----
-
-## 7. Validation checklist chung
-
-Chạy trước khi báo xong mỗi PR:
+Chạy trước khi báo xong mỗi PR model layer:
 
 ```bash
 php -l scripts/audit-model-layer-responsibility.php
 php scripts/audit-model-layer-responsibility.php
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
-vendor/bin/phpunit diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php
+vendor/bin/phpunit tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php
 git diff --check
 git status --short
 ```
@@ -842,15 +789,57 @@ vendor/bin/phpunit <new-or-related-test.php>
 git grep -n "<moved-method-or-class>" diepxuan
 ```
 
+### 13.2. Definition of Done
+
+- [x] Có tài liệu policy rõ ràng cho 3 lớp model (section 1 của doc này).
+- [x] Có audit script chạy được và tái lập được baseline (`scripts/audit-model-layer-responsibility.php`).
+- [x] Có test gate 7 method (`SimbaModelLayerResponsibilityTest`).
+- [x] Không còn logic nghiệp vụ trong `SModel` ngoài DB config/schema.
+- [x] `Simba\Models` giữ direct table behavior, không phụ thuộc Portal UI/route/auth.
+- [x] `Catalog\Models` giữ domain/helper/relation phục vụ Portal, không khai báo DB config trùng base.
+- [x] Các model trọng yếu ARDMKH, SysMenu/Zsysmenu, SoCt1 có test bảo vệ.
+- [x] Không làm đổi route/source metadata ngoài expected.
+- [x] Không push/merge khi chưa có lệnh của Sếp.
+
+### 13.3. Còn lại (chưa xong)
+
+- [ ] Audit bổ sung catalog layer `diepxuan/laravel-catalog/src/Models` (chưa có script riêng; chỉ có test gate check parent class + DB metadata).
+- [ ] Refactor `CaCt2`/`CaPh2`/`CaPh3` từ extend SModel sang có Simba Model riêng (gỡ TODO khỏi whitelist test).
+- [ ] Fix pre-existing CI failures: `Core\PackageConfigTest` currency config, `Feature\ExampleTest` redirect 302, 31 errors khác.
+- [ ] Tích hợp audit script vào CI gate (chạy tự động trong PR).
+
+### 13.4. Implementation tasks (lịch sử)
+
+| Task | Trạng thái | PR |
+|------|------------|-----|
+| 1. Chốt policy bằng docs | DONE | #224 |
+| 2. Tạo audit script cho model layer | DONE | #219 |
+| 3. Thêm baseline audit report | DONE | #219 |
+| 4-6. ARDMKH boundary cleanup | DONE | #220 |
+| 7. Chuẩn hóa SysMenu/Zsysmenu model boundaries | DONE | #217 |
+| 8. Chuẩn hóa GL/PO model theo pattern đã chốt | PARTIAL | #222 (PoCt1); còn Gl*, Ap*, Ca* |
+| 9. Thêm CI non-blocking trước, strict sau | PARTIAL | audit script + test gate ở repo; chưa gắn strict CI tự động |
+
+### 13.5. PR split (lịch sử)
+
+| PR | Phase | Tóm tắt |
+|----|-------|---------|
+| #217 | 0 | Composite PK + alias + trait `HasSimbaCompositeKey` |
+| #218 | 1 | Deduplicate schema 4 model metadata |
+| #219 | 2 | Audit script + baseline doc |
+| #220 | 3a | Move ArDmKh KH/NCC/NV sang Catalog concern |
+| #222 | 3b | Move InDmKho + PoCt1 + SysCompany sang Catalog concern + tạo `Catalog\PoCt1` |
+| #223 | 3c + 4 | Move SoCt1 sang Catalog concern + 7 test gate + fix `ArDmKh::booted` |
+| #224 | 5 | Doc policy 3 lớp |
+
 ---
 
-## 8. Definition of Done
+## Tài liệu liên quan
 
-- Có tài liệu policy rõ ràng cho 3 lớp model.
-- Có audit script chạy được và tái lập được baseline.
-- Không còn logic nghiệp vụ trong `SModel` ngoài DB config/schema.
-- `Simba\Models` giữ direct table behavior, không phụ thuộc Portal UI/route/auth.
-- `Catalog\Models` giữ domain/helper/relation phục vụ Portal, không khai báo DB config trùng base.
-- Các model trọng yếu ARDMKH, SysMenu/Zsysmenu có test bảo vệ.
-- Không làm đổi route/source metadata ngoài expected.
-- Không push/merge khi chưa có lệnh của Sếp.
+- `simba-router-menu-matrix.md` — plan riêng về menu/route, không thuộc doc này.
+- `diepxuan/laravel-simba/src/SModel/README.md` — raw/table schema layer.
+- `diepxuan/laravel-simba/src/Models/README.md` — model layer extend từ SModel.
+- `diepxuan/laravel-catalog/src/Models/Concerns/` — 5 concern nghiệp vụ.
+- `simba-docs/tables/` — schema Simba là nguồn sự thật.
+- `scripts/audit-model-layer-responsibility.php` — audit script.
+- `tests/Unit/Packages/Simba/SimbaModelLayerResponsibilityTest.php` — test gate 7 method.
