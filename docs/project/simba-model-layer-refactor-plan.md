@@ -238,6 +238,7 @@ Mục tiêu: tách các method `move_catalog` (từ Phase 1 audit) ra khỏi Sim
 
 ### Trạng thái Phase 2 - cụm ArDmKh
 
+PR: https://github.com/diepxuan/portal/pull/220 (merged 2026-06-22)
 Branch: `task/simba-model-layer-phase2-ardmkh-catalog`
 
 Đã làm:
@@ -261,6 +262,7 @@ Verify:
 - Reflection (không boot app):
   - `Simba\ArDmKh`: `scopeLaKhachHang`=0, `getIsKhachHangAttribute`=0, `scopeSearch`=1, `scopeOrderByMaKh`=1.
   - `Catalog\ArDmKh`: `scopeLaKhachHang`=1, `getIsKhachHangAttribute`=1, `scopeSearch`=1 (inherited), parent=`Simba\ArDmKh`.
+- CI: 14/14 pass, MERGEABLE, CLEAN.
 
 Các bước còn lại:
 
@@ -268,8 +270,9 @@ Các bước còn lại:
 - [x] Gắn trait vào `Catalog\ArDmKh`.
 - [x] Gỡ method tương ứng khỏi `Simba\ArDmKh`.
 - [x] Verify reflection.
-- [ ] Lint + autoload Catalog composer dump.
-- [ ] Tạo PR Phase 2 - cụm ArDmKh.
+- [x] Lint + autoload Catalog composer dump.
+- [x] Tạo PR Phase 2 - cụm ArDmKh.
+- [x] Merge.
 
 ### Plan cho các cụm còn lại (Phase 1 audit đã chỉ ra)
 
