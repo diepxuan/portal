@@ -11,9 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-06-20 00:00:00
  */
 
-namespace Diepxuan\Catalog\Models;
-
-use Diepxuan\Catalog\Models\Simba\SysMenu;
+namespace Diepxuan\Catalog\Models\Simba;
 
 /**
  * Model Zsysmenu - SimbaERP z menu metadata (catalog layer).
