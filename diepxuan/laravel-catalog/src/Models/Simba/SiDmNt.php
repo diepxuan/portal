@@ -10,13 +10,13 @@ declare(strict_types=1);
  * @lastupdate 2026-03-11 22:25:00
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SiDmBp as Model;
+use Diepxuan\Simba\Models\SiDmNt as SimbaModel;
 
 /**
- * Model SiDmBp - Danh mục bộ phận.
+ * Model SiDmNt - Danh mục ngoại tệ.
  */
-class SiDmBp extends Model
+class SiDmNt extends SimbaModel
 {
 }

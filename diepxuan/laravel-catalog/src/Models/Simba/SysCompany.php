@@ -11,14 +11,14 @@ declare(strict_types=1);
  * @lastupdate 2025-06-04 10:22:13
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Catalog\Models\Concerns\HasSysCompanyLocalizedResx;
-use Diepxuan\Simba\Models\SysCompany as Model;
+use Diepxuan\Simba\Models\SysCompany as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class SysCompany extends Model
+class SysCompany extends SimbaModel
 {
     use HasSysCompanyLocalizedResx;
 

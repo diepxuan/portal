@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @lastupdate 2026-06-22
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Catalog\Models\Concerns\HasSoCt1SalesMetrics;
 use Diepxuan\Simba\Models\SoCt1 as SimbaModel;

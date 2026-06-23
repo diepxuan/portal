@@ -11,8 +11,8 @@ declare(strict_types=1);
  * @lastupdate 2025-05-24 21:38:53
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SysCompanyResx as Model;
+use Diepxuan\Simba\Models\SysCompanyResx as SimbaModel;
 
-class SysCompanyResx extends Model {}
+class SysCompanyResx extends SimbaModel {}

@@ -11,14 +11,14 @@ declare(strict_types=1);
  * @lastupdate 2025-06-04 10:42:11
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SiSetup as Model;
+use Diepxuan\Simba\Models\SiSetup as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
-class SiSetup extends Model
+class SiSetup extends SimbaModel
 {
     protected function system(): BelongsTo
     {

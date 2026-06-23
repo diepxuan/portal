@@ -11,12 +11,12 @@ declare(strict_types=1);
  * @lastupdate 2025-07-12 15:33:30
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SysLanguage as Model;
+use Diepxuan\Simba\Models\SysLanguage as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class SysLanguage extends Model
+class SysLanguage extends SimbaModel
 {
     protected function name(): Attribute
     {

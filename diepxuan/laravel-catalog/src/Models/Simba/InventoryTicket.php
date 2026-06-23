@@ -11,13 +11,13 @@ declare(strict_types=1);
  * @lastupdate 2024-05-30 09:34:20
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\PhieuChuyenKho;
+use Diepxuan\Simba\Models\PhieuChuyenKho as SimbaModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class InventoryTicket extends PhieuChuyenKho
+class InventoryTicket extends SimbaModel
 {
     public function scopeWhereNgayCt($query, $fromDate, $toDate)
     {

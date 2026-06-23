@@ -11,10 +11,10 @@ declare(strict_types=1);
  * @lastupdate 2024-05-22 10:20:30
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\CaCt3 as Model;
+use Diepxuan\Simba\Models\CaCt3 as SimbaModel;
 
-class CaCt3 extends Model
+class CaCt3 extends SimbaModel
 {
 }

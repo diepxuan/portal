@@ -11,11 +11,11 @@ declare(strict_types=1);
  * @lastupdate 2025-05-31 09:09:15
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\Product as Model;
+use Diepxuan\Simba\Models\Product as SimbaModel;
 
-class Product extends Model
+class Product extends SimbaModel
 {
     /**
      * Scope a query to include the quantity of products.

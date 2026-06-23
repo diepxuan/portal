@@ -8,18 +8,18 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-05 20:11:17
+ * @lastupdate 2026-05-05 20:11:18
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\ArDmNhKh as Model;
+use Diepxuan\Simba\Models\ArDmPlKh as SimbaModel;
 use Diepxuan\Simba\SModel\SModel;
 
 /**
- * Model ArDmNhKh - Danh mục nhóm khách hàng (catalog layer).
+ * Model ArDmPlKh - Danh mục phân loại khách hàng (catalog layer).
  */
-class ArDmNhKh extends Model
+class ArDmPlKh extends SimbaModel
 {
     /**
      * Company constant.

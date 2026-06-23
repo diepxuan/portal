@@ -11,12 +11,12 @@ declare(strict_types=1);
  * @lastupdate 2024-05-30 08:59:11
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\PhieuChuyenKhoCT;
+use Diepxuan\Simba\Models\PhieuChuyenKhoCT as SimbaModel;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class InventoryTicketItem extends PhieuChuyenKhoCT
+class InventoryTicketItem extends SimbaModel
 {
     public function product(): HasOne
     {

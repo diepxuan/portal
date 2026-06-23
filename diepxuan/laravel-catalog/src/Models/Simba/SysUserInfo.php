@@ -11,11 +11,11 @@ declare(strict_types=1);
  * @lastupdate 2025-05-31 09:32:17
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SysUserInfo as Model;
+use Diepxuan\Simba\Models\SysUserInfo as SimbaModel;
 
-class SysUserInfo extends Model
+class SysUserInfo extends SimbaModel
 {
     public function companies()
     {

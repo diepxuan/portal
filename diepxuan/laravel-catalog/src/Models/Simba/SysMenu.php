@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-06-20 12:54:00
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Simba\Models\SysMenu as SimbaModel;
 

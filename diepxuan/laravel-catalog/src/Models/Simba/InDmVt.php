@@ -8,20 +8,19 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-08-01 15:36:37
+ * @lastupdate 2026-06-22 21:07:55
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Currency\Formatter;
-use Diepxuan\Simba\Models\InDmVt as Model;
+use Diepxuan\Simba\Models\InDmVt as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class InDmVt extends Model
+class InDmVt extends SimbaModel
 {
     /**
      * Scope a query to include the quantity of products.
@@ -65,26 +64,6 @@ class InDmVt extends Model
             ->select($selectColumns)
             ->groupBy($groupByColumns)
         ;
-    }
-
-    /**
-     * Gọi stored procedure asINGetDMVT để lấy dữ Danh sách vật tư - hàng hóa.
-     *
-     * @return array
-     */
-    public static function getAsINGetDMVT(array $params): Collection
-    {
-        return self::hydrate(parent::getAsINGetDMVT($params)->toArray());
-    }
-
-    /**
-     * Gọi stored procedure asINRptCD02 để lấy dữ Báo cáo tồn kho.
-     *
-     * @return array
-     */
-    public static function getAsINRptCD02(array $params): Collection
-    {
-        return self::hydrate(parent::getAsINRptCD02($params)->toArray());
     }
 
     protected function tenVt(): Attribute

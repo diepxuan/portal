@@ -11,14 +11,14 @@ declare(strict_types=1);
  * @lastupdate 2026-03-11 23:30:00
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\SoPh3 as Model;
+use Diepxuan\Simba\Models\SoPh3 as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class SoPh3 extends Model
+class SoPh3 extends SimbaModel
 {
     /**
      * Gọi stored procedure asSoFilt3 để lấy dữ liệu danh sách bán hàng.
