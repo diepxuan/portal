@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-05 20:11:16
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Catalog\Models\Concerns\HasArDmKhCategories;
 use Diepxuan\Simba\Models\ArDmKh as SimbaModel;

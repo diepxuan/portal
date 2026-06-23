@@ -11,15 +11,15 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 00:28:09
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\GlCt as Model;
+use Diepxuan\Simba\Models\GlCt as SimbaModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-class GlCt extends Model
+class GlCt extends SimbaModel
 {
     /**
      * Gọi function afDuDauTk để lấy dữ liệu đầu kỳ.

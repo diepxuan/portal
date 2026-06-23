@@ -48,6 +48,7 @@ foreach (scandir($modelDir) as $name) {
     if ($name === 'for.php') continue;
     if ($filter && stripos($name, $filter) === false) continue;
     $path = $modelDir . '/' . $name;
+    if (!is_file($path)) continue;   // bỏ qua thư mục Simba/, Concerns/, Casts/ (chỉ scan .php ở top-level)
     $src  = (string) file_get_contents($path);
     if (!preg_match('/\bclass\s+\w+\s+extends\b/', $src)) {
         continue;

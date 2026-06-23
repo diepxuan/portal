@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-06-21 07:31:00
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
 use Diepxuan\Simba\Models\SysDictionaryInfo as SimbaModel;
 

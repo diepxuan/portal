@@ -11,13 +11,13 @@ declare(strict_types=1);
  * @lastupdate 2025-05-30 11:51:26
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\GlDmTk as Model;
+use Diepxuan\Simba\Models\GlDmTk as SimbaModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
 
-class GlDmTk extends Model
+class GlDmTk extends SimbaModel
 {
     protected function cdate(): Attribute
     {

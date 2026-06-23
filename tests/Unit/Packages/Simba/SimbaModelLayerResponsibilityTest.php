@@ -96,10 +96,10 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
     private const CATALOG_EXTENDS_WHITELIST = [
         'Params'      => 'Illuminate\\Database\\Eloquent\\Model',
         'User'        => 'App\\Models\\User',
-        'System'      => 'Diepxuan\\Catalog\\Models\\SysCompany',
-        'SystemConfig'=> 'Diepxuan\\Catalog\\Models\\SiSetup',
+        'System'      => 'Diepxuan\\Catalog\\Models\\Simba\\SysCompany',
+        'SystemConfig'=> 'Diepxuan\\Catalog\\Models\\Simba\\SiSetup',
         'UserLink'    => 'Diepxuan\\Catalog\\Models\\AbstractModel',
-        'Zsysmenu'    => 'Diepxuan\\Catalog\\Models\\SysMenu',
+        'Zsysmenu'    => 'Diepxuan\\Catalog\\Models\\Simba\\SysMenu',
     ];
 
     /**

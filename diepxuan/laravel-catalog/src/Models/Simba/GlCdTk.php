@@ -11,12 +11,12 @@ declare(strict_types=1);
  * @lastupdate 2025-06-07 13:26:48
  */
 
-namespace Diepxuan\Catalog\Models;
+namespace Diepxuan\Catalog\Models\Simba;
 
-use Diepxuan\Simba\Models\GlCdTk as Model;
+use Diepxuan\Simba\Models\GlCdTk as SimbaModel;
 use Illuminate\Database\Eloquent\Builder;
 
-class GlCdTk extends Model
+class GlCdTk extends SimbaModel
 {
     /**
      * Gọi function afDuDauTk để lấy dữ liệu đầu kỳ.
