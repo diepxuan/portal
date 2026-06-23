@@ -69,26 +69,23 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
 
     /**
      * Catalog Models được phép khai báo DB metadata khi cần cho lý do đặc biệt:
-     * - Zsysmenu, System, SystemConfig, UserLink: alias/subclass pattern.
+     * - System, SystemConfig, UserLink: alias/subclass pattern.
      * - Params: utility bảng không có SModel.
      * - User: extend App\Models\User (Laravel auth).
-     * - InDmNhvt: $casts với custom Cast class CategoryMagento (nghiệp vụ).
      */
     private const CATALOG_DB_METADATA_WHITELIST = [
-        'Zsysmenu'   => ['table'],          // cùng schema SysMenu, bảng khác
         'System'     => [],                 // không khai báo metadata; extends SysCompany
         'SystemConfig' => [],               // extends SiSetup
         'UserLink'   => ['fillable'],       // simple utility table
         'User'       => [],                 // extends App\Models\User
         'Params'     => ['incrementing', 'timestamps', 'guarded'], // utility
-        'InDmNhvt'   => ['casts'],          // custom cast CategoryMagento
     ];
 
     /**
      * Catalog Models được phép extend không theo Simba\Models:
      * - App\Models\User (Laravel auth) - User.
      * - Illuminate\Database\Eloquent\Model - Params, AbstractModel.
-     * - Catalog\Models (subclass catalog alias) - System, SystemConfig, Zsysmenu, UserLink.
+     * - Catalog\Models (subclass catalog alias) - System, SystemConfig, UserLink.
      *
      * Lưu ý: CaCt2/CaPh2/CaPh3 trước đây whitelist SModel vì chưa có Simba Model
      * tương ứng; từ PR này cả 3 đã chuyển sang extends Diepxuan\Simba\Models\*.
@@ -99,7 +96,6 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
         'System'      => 'Diepxuan\\Catalog\\Models\\Simba\\SysCompany',
         'SystemConfig'=> 'Diepxuan\\Catalog\\Models\\Simba\\SiSetup',
         'UserLink'    => 'Diepxuan\\Catalog\\Models\\AbstractModel',
-        'Zsysmenu'    => 'Diepxuan\\Catalog\\Models\\Simba\\SysMenu',
     ];
 
     /**
