@@ -37,6 +37,7 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
     private const SMODEL_DIR    = __DIR__ . '/../../../../diepxuan/laravel-simba/src/SModel';
     private const SIMBA_DIR     = __DIR__ . '/../../../../diepxuan/laravel-simba/src/Models';
     private const CATALOG_DIR   = __DIR__ . '/../../../../diepxuan/laravel-catalog/src/Models';
+    private const CATALOG_SIMBA_DIR = __DIR__ . '/../../../../diepxuan/laravel-catalog/src/Models/Simba';
 
     /**
      * Whitelist method từ concern nghiệp vụ không được phép xuất hiện ở Simba Models.
@@ -96,6 +97,23 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
         'System'      => 'Diepxuan\\Catalog\\Models\\Simba\\SysCompany',
         'SystemConfig'=> 'Diepxuan\\Catalog\\Models\\Simba\\SiSetup',
         'UserLink'    => 'Diepxuan\\Catalog\\Models\\AbstractModel',
+    ];
+
+    /**
+     * Catalog wrapper có tên khác Simba model cha.
+     */
+    private const CATALOG_SIMBA_ALIAS_WRAPPERS = [
+        'InventoryTicket'     => 'PhieuChuyenKho',
+        'InventoryTicketItem' => 'PhieuChuyenKhoCT',
+    ];
+
+    /**
+     * Simba model được cover bằng merge-wrapper Catalog tên khác.
+     */
+    private const CATALOG_SIMBA_COVERAGE_ALIASES = [
+        'PhieuChuyenKho'   => 'InventoryTicket',
+        'PhieuChuyenKhoCT' => 'InventoryTicketItem',
+        'zsysmenu'         => 'Zsysmenu',
     ];
 
     /**
@@ -354,10 +372,103 @@ final class SimbaModelLayerResponsibilityTest extends TestCase
         self::assertSame([], $violations, "Catalog\\Models extends SModel trực tiếp:\n" . implode("\n", $violations));
     }
 
+    /**
+     * Mỗi Simba Model lớp 2 phải có wrapper lớp 3 tương ứng trong Catalog.
+     */
+    public function testCatalogSimbaWrappersCoverAllSimbaModels(): void
+    {
+        $simbaModels = $this->modelShortNames(self::SIMBA_DIR);
+        $catalogWrappers = $this->modelShortNames(self::CATALOG_SIMBA_DIR);
+
+        $covered = [];
+        foreach ($catalogWrappers as $wrapper) {
+            $covered[strtolower($wrapper)] = $wrapper;
+        }
+        foreach (self::CATALOG_SIMBA_COVERAGE_ALIASES as $simbaModel => $wrapper) {
+            $covered[strtolower($simbaModel)] = $wrapper;
+        }
+
+        $missing = [];
+        foreach ($simbaModels as $simbaModel) {
+            if (!isset($covered[strtolower($simbaModel)])) {
+                $missing[] = $simbaModel;
+            }
+        }
+
+        sort($missing, SORT_NATURAL | SORT_FLAG_CASE);
+        self::assertSame([], $missing, "Catalog\\Models\\Simba thiếu wrapper cho Simba\\Models:\n" . implode("\n", $missing));
+    }
+
+    /**
+     * Wrapper trong Catalog\Models\Simba phải đi qua Diepxuan\Simba\Models\*
+     * thay vì extend trực tiếp raw SModel.
+     */
+    public function testCatalogSimbaWrappersExtendSimbaModels(): void
+    {
+        $files = glob(self::CATALOG_SIMBA_DIR . '/*.php') ?: [];
+        $violations = [];
+        foreach ($files as $file) {
+            $shortName = basename($file, '.php');
+            if ($shortName === 'README') {
+                continue;
+            }
+            $class = $this->resolveClass('Diepxuan\\Catalog\\Models\\Simba', $shortName);
+            if ($class === null) {
+                $violations[] = "Catalog\\Models\\Simba\\{$shortName}: class không autoload được";
+                continue;
+            }
+            $reflection = new \ReflectionClass($class);
+            if ($reflection->isAbstract() || $reflection->isInterface() || $reflection->isTrait()) {
+                continue;
+            }
+            $parent = $reflection->getParentClass();
+            if ($parent === false) {
+                $violations[] = "Catalog\\Models\\Simba\\{$shortName}: không có parent class";
+                continue;
+            }
+            $parentName = $parent->getName();
+            $expectedParent = $this->expectedCatalogSimbaParent($shortName);
+            if ($parentName !== $expectedParent) {
+                $violations[] = "Catalog\\Models\\Simba\\{$shortName}: parent {$parentName} phải là {$expectedParent}";
+            }
+        }
+
+        self::assertSame([], $violations, "Catalog\\Models\\Simba extend sai:\n" . implode("\n", $violations));
+    }
+
     private function resolveClass(string $namespace, string $shortName): ?string
     {
         $class = $namespace . '\\' . $shortName;
         return class_exists($class) ? $class : null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function modelShortNames(string $dir): array
+    {
+        $files = glob($dir . '/*.php') ?: [];
+        $names = [];
+        foreach ($files as $file) {
+            $shortName = basename($file, '.php');
+            if ($shortName === 'README') {
+                continue;
+            }
+            $names[] = $shortName;
+        }
+        sort($names, SORT_NATURAL | SORT_FLAG_CASE);
+
+        return $names;
+    }
+
+    private function expectedCatalogSimbaParent(string $shortName): string
+    {
+        if ($shortName === 'Zsysmenu') {
+            return 'Diepxuan\\Catalog\\Models\\Simba\\SysMenu';
+        }
+        $simbaParent = self::CATALOG_SIMBA_ALIAS_WRAPPERS[$shortName] ?? $shortName;
+
+        return 'Diepxuan\\Simba\\Models\\' . $simbaParent;
     }
 
     private function isRelationMethod(\ReflectionMethod $method): bool
