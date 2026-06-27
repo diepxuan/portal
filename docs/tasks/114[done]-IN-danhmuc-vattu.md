@@ -158,6 +158,61 @@ Route::prefix('catalog/in/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
-- **Route:** `in.dmvt`
-- **Note:** Route đã có hoặc shell metadata; write/transfer execute chỉ mở khi payload/side effect được audit.
+- **Status:** IMPLEMENTED locally (CRUD UI + doi ma + BOM sync), pending commit/PR because current sandbox cannot write `.git`.
+- **Route:** `in.dict.indmvt`
+- **URL:** `/_simba-source/in/dict/indmvt` -> `/simba/in/dict/indmvt`
+- **Component:** `Diepxuan\Catalog\Http\Livewire\In\Dict\Indmvt`
+- **View:** `catalog::in.dict.indmvt`
+- **Note:** Route/component folder structure follows `module/kind/slug`, same convention as `Po\Dict\Ardmkh`.
+
+## Implementation Update 2026-06-26
+
+### Simba audit corrections
+
+Task content above was generated from an older abstraction and contains non-authoritative names such as `DMVT`, `SP_IN_DMVT_*`, `INDVVT`, and `MA_BOM`. Current implementation uses only names verified from `simba-docs`:
+
+| Source | Verified value |
+|--------|----------------|
+| `simba-docs/data/sysMenu.md` | menu `14.90.02`, module `IN`, DLL `INDMVT`, form `AsiaErp.UserInterface.frmINDMVT`, code `MA_VT` |
+| `simba-docs/data/sysDictionaryInfo.md` | dictionary `MA_VT`, PK `MA_CTY,MA_VT`, edit form `frmINDMVTEdit` |
+| `simba-docs/data/sysDAOInfo.md` | `INDMVT` -> `asINGetDMVT`, `asINInsDMVT`, `asINUpdDMVT`, `asINDelDMVT` |
+| `simba-docs/tables/InDmVt.md` | main table `InDmVt`, PK `ma_cty, ma_vt` |
+| `simba-docs/tables/InDmBom.md` | BOM table `InDmBom`, PK `ma_cty, ma_vt, ma_lk` |
+| `simba-docs/procedures/IN/procedures.md` | BOM SPs `asINGetDMBOM`, `asINInsDMBOM`, `asINUpdDMBOM`, `asINDelDMBOM` |
+
+### Completed locally
+
+- Replaced markdown-only `INDMVT` screen with Livewire component `In\Dict\Indmvt` following route folder structure.
+- Added searchable/selectable material list loaded through `InDmVt::getAsINGetDMVT`.
+- Added create/edit form for audited `InDmVt` fields: item identity, units, stock flags, group/kho/vitri, accounting accounts, tax/classification, price/quantity thresholds, manufacturer/distributor notes.
+- Added group lookup auto-fill for accounting fields from `InDmNhvt` when empty.
+- Added write/delete through audited SPs using `ProcedureCaller`: `asINInsDMVT`, `asINUpdDMVT`, `asINDelDMVT`. Insert/update check output `pRet`; delete follows the audited signature without `pRet`.
+- Added BOM load and sync in the same transaction using `asINGetDMBOM`, `asINInsDMBOM`, `asINUpdDMBOM`, `asINDelDMBOM`. BOM insert/update check output `pRet`; BOM delete follows the audited signature without `pRet`.
+- Added validation for required fields, audited max lengths, numeric fields, duplicate BOM components, BOM quantity > 0, and component not equal to parent item.
+- Moved the large create/edit form above the list and added auto-scroll to the form when opening create/edit, so users do not need to scroll through long material lists before editing.
+- Updated `SourceRouteCoverageTest` expected component class to `In\Dict\Indmvt`.
+- Updated `docs/project/simba-router-menu-matrix.md` route/class mapping.
+
+### Interaction Update 2026-06-27
+
+- Added `Đổi mã` action for selected rows and toolbar selection.
+- Audited `Đổi mã` against `simba-docs/data/sysDAOInfo.md` and `simba-docs/data/sysDictionaryInfo.md`: `INDMVT` uses `asDoiMa`, dictionary code field `MA_VT`, max length `20`.
+- Implemented rename form at the top of the screen, mutually exclusive with the create/edit form, and auto-scrolls to `#indmvt-rename-form` when opened.
+- `renameItem()` validates old code exists, new code is required/max 20/different, and new code does not already exist in the loaded material list before calling `AsDoiMa` with `pTable_name=INDMVT` and `pCode_name=MA_VT`.
+- Added fixed `Lên đầu` button for long page scroll.
+
+### Deliberate limits
+
+- `asINInsDMVT` has params `pDvdg`, `pQcdg` and `asINUpdDMVT` has `pMa_lo`, but matching `InDmVt` columns were not confirmed in `simba-docs/tables/InDmVt.md`. Implementation passes defaults only to satisfy the audited procedure signatures and does not expose unverified UI fields.
+- No SQL DDL/DML was added. No table/SP/field names were invented.
+- Commit and PR body updates were not performed because `.git` is read-only in the current sandbox and `gh auth status` reported invalid auth earlier in this session.
+
+### Verification
+
+- `php -l diepxuan/laravel-catalog/src/Http/Livewire/In/Dict/Indmvt.php` passed after `Đổi mã` update.
+- `php -l diepxuan/laravel-catalog/routes/web.php` passed.
+- `php -l diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php` passed.
+- `php artisan route:list --path=_simba-source/in/dict/indmvt` shows `in.dict.indmvt` registered to the new component.
+- `php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php` passed: 6 tests, 154 assertions.
+- `git diff --check` passed.
+- `php artisan view:cache` could not run because the sandbox cannot append `storage/logs/laravel.log` or write compiled views under `storage/framework/views`; this is an environment permission blocker, not a code assertion failure.
