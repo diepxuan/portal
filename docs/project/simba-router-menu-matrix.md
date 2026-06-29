@@ -87,7 +87,7 @@ System balance/process menus da co route Portal hien huu:
 | MA_HD Hợp đồng | 90.10.17 | Blocked |  | `sysMenu` inactive |
 | MA_BP Bộ phận | 90.10.23 | `gl.dict.sidmbp` | `System\SimbaPage` | Alias theo `sysMenu.code_name`; source menuid `06.90.35` |
 | MA_TGNT Tỷ giá ngoại tệ | 90.10.29 | `ca.process.sidmtgnt` | `System\SimbaPage` | Read-only process shell; active menu co DLL nhung thieu `sysDictionaryInfo` |
-| MA_VT Hàng hoá, vật tư | 14.90.02 | `in.dict.indmvt` | `In\Dict\Indmvt` | Registry verified as `dictionary`; folder structure follows route |
+| MA_VT Hàng hoá, vật tư | 14.90.02 | `in.dict.indmvt` | `In\Dict\IndmvtPage` | Registry verified as `dictionary`; page mounts list/form/rename components |
 | MA_NHVT Nhóm vật tư | 14.90.05 | `in.dmnhvt` | `In\Dmnhvt` | Registry verified as `dictionary` |
 | MA_KHO Kho hàng | 14.90.14 | `in.khohang` | `In\Dmkho` | Registry verified as `dictionary` |
 | Sổ quỹ tiền mặt | 04.20.02 | `ca.tienmat.quy` | `Cash\Baocao\Tienmat` | `asCARptTMNH01` |

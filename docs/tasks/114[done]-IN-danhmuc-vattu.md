@@ -161,7 +161,7 @@ Route::prefix('catalog/in/danhmuc')
 - **Status:** IMPLEMENTED locally (CRUD UI + doi ma + BOM sync), pending commit/PR because current sandbox cannot write `.git`.
 - **Route:** `in.dict.indmvt`
 - **URL:** `/_simba-source/in/dict/indmvt` -> `/simba/in/dict/indmvt`
-- **Component:** `Diepxuan\Catalog\Http\Livewire\In\Dict\Indmvt`
+- **Component:** `Diepxuan\Catalog\Http\Livewire\In\Dict\IndmvtPage`
 - **View:** `catalog::in.dict.indmvt`
 - **Note:** Route/component folder structure follows `module/kind/slug`, same convention as `Po\Dict\Ardmkh`.
 
@@ -216,3 +216,99 @@ Task content above was generated from an older abstraction and contains non-auth
 - `php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php` passed: 6 tests, 154 assertions.
 - `git diff --check` passed.
 - `php artisan view:cache` could not run because the sandbox cannot append `storage/logs/laravel.log` or write compiled views under `storage/framework/views`; this is an environment permission blocker, not a code assertion failure.
+
+---
+
+## Progress Review 2026-06-29 (đang làm)
+
+### Bối cảnh
+
+Người dùng báo cáo: khi sửa một vật tư trong form Sửa/Thêm, đổi `dvt` từ "cái" sang "đôi" rồi chuyển sang field input tiếp theo, UI báo "đang xử lý", phải đợi ~30 giây mới tiếp tục sửa được. Khi có nhiều lần blur liên tiếp, thời gian đợi cộng dồn tới 14 giây mỗi lần chuyển field.
+
+### Nguyên nhân đã xác nhận
+
+1. `wire:model.blur` trên từng field gửi một Livewire request khi blur. Mỗi request phải:
+   - Lấy session lock từ DB (driver `SESSION_DRIVER=database`).
+   - Render lại toàn bộ component, gồm bảng ~1000 dòng vật tư.
+   - Serialize HTML payload gửi về browser.
+2. Vì component hiện tại gộp cả form + list + rename trong một component duy nhất (`Indmvt.php`, 773 dòng), mỗi lần blur form đều kéo theo serialize lại toàn bộ bảng, dẫn tới request nặng và serialize chậm.
+3. Sau khi `save()` thành công, code gọi thêm `refreshData()` (5 SP) + `loadBomRows()` (1 SP) = 6 SP tuần tự qua SQL Server, làm thời gian phản hồi Lưu cũng kéo dài thêm ~2 giây.
+
+### Phương án đã chọn
+
+Tách component hiện tại thành 4 Livewire component nhỏ, giao tiếp qua events. Mục tiêu: khi người dùng gõ vào form Sửa/Thêm, chỉ component form re-render, không serialize lại bảng danh sách.
+
+Cấu trúc mới:
+
+| Component        | Trách nhiệm                                                  | View                       |
+|------------------|--------------------------------------------------------------|----------------------------|
+| `IndmvtPage`     | Component cha, mount các component con, không chứa logic nặng | `in/dict/indmvt.blade.php` |
+| `IndmvtList`     | Search + bảng danh sách + chọn dòng                         | `in/dict/indmvt-list.blade.php` |
+| `IndmvtForm`     | Form Sửa/Thêm vật tư + validate + BOM                        | `in/dict/indmvt-form.blade.php`  |
+| `IndmvtRename`   | Form Đổi mã vật tư                                          | `in/dict/indmvt-rename.blade.php` |
+
+Giao tiếp giữa các component (Livewire events):
+
+- `IndmvtList` → `IndmvtForm`: phát `indmvt-list.item-selected` (mã VT), `IndmvtForm` nghe và mở form sửa.
+- `IndmvtList` → `IndmvtForm`: phát `indmvt-list.create-clicked`, `IndmvtForm` mở form thêm.
+- `IndmvtForm` → `IndmvtList`: phát `indmvt-form.saved` (mã VT), `IndmvtList` chỉ refresh đúng 1 dòng đó (không gọi lại toàn bộ danh sách).
+- `IndmvtRename` → `IndmvtList`: phát `indmvt-rename.saved` (mã cũ + mã mới), `IndmvtList` cập nhật key `ma_vt` trong rows.
+
+### Tiến độ
+
+| # | Công việc                                                            | Trạng thái        |
+|---|----------------------------------------------------------------------|-------------------|
+| 1 | Audit: xác định state cần chia sẻ                                   | DONE              |
+| 2 | Tạo `IndmvtList` (PHP)                                              | DONE (160 dòng)   |
+| 3 | Tạo `indmvt-list.blade.php`                                         | DONE (95 dòng)    |
+| 4 | Tạo `IndmvtForm` (PHP) + view form                                  | DONE              |
+| 5 | Tạo `IndmvtRename` (PHP) + view đổi mã                              | DONE              |
+| 6 | Tạo `IndmvtPage` (cha) mount các component con                       | DONE              |
+| 7 | Cập nhật `routes/web.php` để trỏ `in.dict.indmvt` về `IndmvtPage`    | DONE              |
+| 8 | Cập nhật `SourceRouteCoverageTest` (component class đổi từ Indmvt sang IndmvtPage) | DONE |
+| 9 | Xoá hoặc giữ file `Indmvt.php` cũ                                   | DONE — giữ file cũ làm fallback, route không còn trỏ vào class này |
+| 10 | `php -l` + `git diff --check` + `phpunit` test                       | DONE              |
+| 11 | Commit + push + mở PR `task/indmvt-split-components`                | BLOCKED — đã tạo branch local, chờ Sếp nói "Em tạo PR đi" trước khi commit/push/PR |
+
+### Files đã tạo (chưa commit)
+
+- `diepxuan/laravel-catalog/src/Http/Livewire/In/Dict/IndmvtList.php` (160 dòng, PHP syntax OK)
+- `diepxuan/laravel-catalog/resources/views/in/dict/indmvt-list.blade.php` (95 dòng, PHP syntax OK)
+- `diepxuan/laravel-catalog/src/Http/Livewire/In/Dict/IndmvtForm.php`
+- `diepxuan/laravel-catalog/resources/views/in/dict/indmvt-form.blade.php`
+- `diepxuan/laravel-catalog/src/Http/Livewire/In/Dict/IndmvtRename.php`
+- `diepxuan/laravel-catalog/resources/views/in/dict/indmvt-rename.blade.php`
+- `diepxuan/laravel-catalog/src/Http/Livewire/In/Dict/IndmvtPage.php`
+
+### Verification Update 2026-06-29
+
+- `php -l` passed for `Indmvt.php`, `IndmvtList.php`, `IndmvtForm.php`, `IndmvtRename.php`, `IndmvtPage.php`, `routes/web.php`, `SourceRouteCoverageTest.php`.
+- `composer dump-autoload` passed and package discovery completed.
+- `php artisan route:list --path=_simba-source/in/dict/indmvt` shows route `in.dict.indmvt` registered.
+- `php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php` passed: 6 tests, 154 assertions.
+- `git diff --check` passed.
+- `php -r` autoload check confirmed `IndmvtPage` and `IndmvtRename` classes exist.
+- `Livewire::mount()` check passed for `catalog::in.dict.indmvt-rename`, `catalog::in.dict.indmvt-form`, `catalog::in.dict.indmvt-list`, `catalog::in.dict.indmvt-page` after fixing root elements.
+- `php artisan view:clear` passed to remove compiled Blade from the pre-fix render.
+- `php artisan cache:clear` could not run in this CLI because cache uses MySQL and `mysql.diepxuan.corp` DNS is not resolvable here.
+- `php artisan view:cache` blocked before compiling the edited view because missing existing directory `diepxuan/laravel-core/resources/views`.
+
+### Runtime Fix 2026-06-29
+
+- Log khi truy cập `/simba/in/dict/indmvt` báo `RootTagMissingFromViewException` từ Livewire.
+- Nguyên nhân: view con `indmvt-rename.blade.php` có thể render rỗng khi form đổi mã đang ẩn, và `indmvt-form.blade.php` có nhiều root element (`@if` message + form + datalist).
+- Fix: bọc `indmvt-form.blade.php` và `indmvt-rename.blade.php` trong một root `<div class="space-y-3">` cố định.
+
+### Quyết định triển khai 2026-06-29
+
+1. Giữ `Indmvt.php` cũ làm fallback tạm thời, nhưng route `in.dict.indmvt` không còn trỏ vào class này.
+2. Giữ view path `catalog::in.dict.indmvt`, đổi nội dung thành page wrapper mount `IndmvtRename`, `IndmvtForm`, `IndmvtList`.
+3. Giữ nguyên route name `in.dict.indmvt`; chỉ đổi component class gắn vào route từ `Indmvt::class` sang `IndmvtPage::class`.
+4. Không commit/push/PR trong bước này vì Sếp chưa nói "Em tạo PR đi".
+
+### Lợi ích kỳ vọng
+
+- Khi người dùng gõ vào form Sửa/Thêm, chỉ `IndmvtForm` re-render (payload nhỏ, ~10 field + BOM). Bảng không bị serialize lại → thời gian blur giảm từ ~30s xuống còn ~0.5s (chỉ sync 1 property).
+- Sau khi `save()` thành công, `IndmvtList.refreshRow()` chỉ load 1 dòng qua `asINGetDMVT` với `pMa_vt = $maVt` thay vì toàn bộ danh sách → tiết kiệm ~1.5s.
+- Sau khi `renameItem()` thành công, chỉ cập nhật 1 key trong `rows[]` thay vì gọi `refreshData()`.
+- Tổng thời gian Lưu giảm từ ~10s (5 SP refresh) xuống ~1s (chỉ refresh 1 dòng).
