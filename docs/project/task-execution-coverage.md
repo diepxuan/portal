@@ -59,6 +59,14 @@ F5/drilldown report routes lay tu `sysReportDrillDownInfo.md` duoc phan loai la 
 
 Man hinh `hethong/menu` hien cay menu Simba tu `simba-docs`, gan link Portal cho cac menu da map va hien badge theo source type (`Report`, `Danh muc`, `Chung tu`, `Portal`). Search trong cay menu co the tim theo menuid, ten, DLL hoac route name.
 
+Ngay 2026-06-30, trang `/simba` da duoc toi uu phase 1:
+
+- Metadata enrich dung request-level index thay cho scan collection lap lai theo tung menu.
+- `sysMenu/zsysmenu` chi nap menu active va select cot dang dung; dictionary/report/drilldown chuyen sang base query + selected columns de giam Eloquent model hydration.
+- Route map trong `System\SimbaErpMenus` duoc cache trong component instance.
+- View `catalog::system.simba-erp-menus` khong con include `catalog::system.simba-node` theo tung node, tranh view render lap lai hang tram lan trong Debugbar.
+- SP review va plan tiep theo nam tai `docs/project/simba-menu-performance-plan.md`.
+
 Master-data menu co `sysReportInfo` nhung khong co dictionary metadata sach cung duoc mo bang report/list shell read-only; neu co dictionary exact/alias thi dictionary duoc uu tien. Menu F5 co `sysMenu.report = 1` cung duoc mo nhu report/list shell khi co `sysReportInfo`.
 
 Mot so menu danh muc co `sysMenu.code_name` khop dictionary that nhung `sysDictionaryInfo.menuid` bi trong/lẹch. Cac menu nay duoc mo qua `simba.dictionary` voi `source_menuid` de khong che dau lech source:
@@ -149,11 +157,16 @@ Voucher metadata mismatches dang duoc chan:
 Regression tests khoa coverage:
 
 - `SimbaMenuRouteMetadataTest`
+- `SimbaMetadataServiceTest`
+- `SimbaErpMenusViewTest`
 
 Da chay:
 
 ```bash
-./vendor/bin/phpunit diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
+php artisan test diepxuan/laravel-catalog/tests/Unit/Services/SimbaMenuRouteMetadataTest.php
+php artisan test diepxuan/laravel-catalog/tests/Unit/Services/SimbaMetadataServiceTest.php
+php artisan test diepxuan/laravel-catalog/tests/Unit/Http/Livewire/SimbaErpMenusViewTest.php
+php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php
 ```
 
-Ket qua sau khi xoa registry wrapper: 5 tests, 10 assertions.
+Ket qua moi nhat cho nhom menu performance/route metadata: 21 tests pass, 200 assertions.
