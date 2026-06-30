@@ -302,6 +302,13 @@ Ngay 2026-06-19, Simba menu route metadata duoc lay truc tiep tu Simba menu-back
 - Master-data menu co `sysReportInfo` nhung khong co dictionary metadata sach duoc mo qua `simba.report` nhu list/report shell read-only; dictionary exact/alias luon duoc uu tien truoc report/list. Menu F5 co `sysMenu.report = 1` cung duoc mo nhu report/list shell khi co `sysReportInfo`.
 - Process metadata trong `SimbaMenuRouteMetadata` bo sung read-only shell cho active menu co DLL/command/code_name nhung khong co metadata report/dictionary/voucher du chuan. Process shell mo qua `proc`, chi hien anchor ky thuat va chan execute.
 
+Performance update ngay 2026-06-30:
+
+- `SimbaMetadataService` tao request-level index cho metadata enrich, tranh scan `sysDictionaryInfo`/`sysReportInfo`/`sysReportDrillDownInfo` lap lai theo tung menu.
+- `sysMenu/zsysmenu` chi select cac cot menu route/tree dang dung; dictionary/report/drilldown enrich chuyen sang base query + selected columns de tranh hydrate Eloquent model khong can thiet. Filter `active = 1` dang duoc giu comment theo quyet dinh hien tai.
+- `System\SimbaErpMenus` cache route map trong component instance va view route chinh `/simba` khong con include `catalog::system.simba-node` theo tung node, giam view render lap lai trong Debugbar.
+- SP review cho menu nam trong `docs/project/simba-menu-performance-plan.md`; `asGetMenuInfoAll` la ung vien batch can test schema runtime truoc khi thay source menu bang SP.
+
 Kiem chung:
 
 - `php -l` pass cho cac file registry/component moi sua.
