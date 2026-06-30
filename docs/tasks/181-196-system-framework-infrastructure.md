@@ -457,7 +457,7 @@ Day la **framework libraries** - cac DLLs nay cung cap:
 - [ ] Ghi nhan cau truc ReportDynamic
 - [ ] Ghi nhan cau truc RptCommon
 - [ ] Ghi nhan cau truc SMFFY
-- [ ] Ghi nhan cau truc SMKS
+- [x] Ghi nhan cau truc SMKS
 - [ ] Ghi nhan cau truc SMUserInfo
 - [ ] Ghi nhan cau truc ToolCommon
 ---
@@ -473,8 +473,28 @@ Day la **framework libraries** - cac DLLs nay cung cap:
 - Menu `90.40.17` da co route `system.company`; chi cap nhat session `selected_company` theo danh sach cong ty user duoc phan quyen, khong ghi SQL Server.
 - Cac DLL framework van duoc giu o muc infrastructure/documentation; khong port UI framework .NET thanh code PHP rieng neu Portal/Laravel da co primitive tuong duong.
 
+## Implementation Update 2026-06-30
+
+- Page khoa so lieu thuoc SMKS.dll / menu `90.30.05`.
+- Route chuan moi: `/simba/si/vch/smks`, route name `si.vch.smks`, component `Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks`.
+- Da go link rieng `He thong > Khoa so lieu` khoi navigation Portal; chuc nang nay di qua Simba shell/menu.
+- Legacy `/hethong/system` chi redirect ve `/simba/si/vch/smks` de khong gay link cu.
+- Refactor page theo source SMKS: hien thi cong ty, nam tai chinh, ngay khoa so; khi cap nhat goi wrapper `Diepxuan\Simba\StoredProcedures\AssiUpd_ks` cho SP `assiUpd_ks` voi `pMa_cty`, `pNgay_ks`, output `pRet`.
+- `ma_cty` cua `SiSetup` la `NVARCHAR(3)` theo simba-docs; page chuan hoa ma cong ty dang so ve `001`/`002` va doc `SystemConfig` truc tiep de tranh eager relation bi ep key so lam mat so 0 dau.
+- View cu `catalog::system.system` va component `System\Dashboard` da bi loai bo de tranh hai duong ghi ngay khoa so.
+
+### Verification plan
+
+- `php -l diepxuan/laravel-catalog/src/Http/Livewire/Si/Vch/Smks.php`
+- `php -l diepxuan/laravel-catalog/routes/web.php`
+- `php artisan route:list --name=si.vch.smks`
+- `php artisan route:list --path=hethong/system`
+- `php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php`
+- Truy cap website that `http://portal.diepxuan.corp/simba/si/vch/smks` va xac nhan HTTP 200, noi dung co `SMKS`, `Khóa số liệu`, route `si.vch.smks`, khong con `Whoops`/`Internal Server Error`/canh bao mat `siSetup.ngay_ks`.
+- Truy cap website that `http://portal.diepxuan.corp/hethong/system` va xac nhan redirect 302 ve `/simba/si/vch/smks`.
+
 ## Portal implementation status
 
 - **Status:** DONE (task shell route)
-- **Route:** `task.shell.181`
-- **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.
+- **Route:** `task.shell.181`; SMKS concrete route `si.vch.smks` (`/simba/si/vch/smks`)
+- **Note:** Framework DLLs con lai giu muc documentation/shell; rieng SMKS da co page thuc thi theo wrapper `AssiUpd_ks` / SP `assiUpd_ks` sau khi doi chieu simba-docs.

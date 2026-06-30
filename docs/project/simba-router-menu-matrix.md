@@ -51,6 +51,7 @@ System balance/process menus da co route Portal hien huu:
 | Quan ly nguoi su dung | 90.20.02 | `system.user.index` |
 | Doi mat khau | 90.20.08 | `profile.show` |
 | Chon nam lam viec | 90.30.02 | `system.year` |
+| Khoa so lieu | 90.30.05 | `si.vch.smks` |
 | Chon don vi | 90.40.17 | `system.company` |
 
 ---
@@ -82,6 +83,7 @@ System balance/process menus da co route Portal hien huu:
 | SIDMCT Khai báo chứng từ | 90.10.02 | `si.dmct` | `System\SiDictionaryIndex` | `SIDMCT` |
 | MA_PHI Khoản mục phí | 90.10.20 | `si.dmphi` | `System\SiDictionaryIndex` | `SIDMPHI` |
 | MA_NT Ngoại tệ | 90.10.26 | `si.dmnt` | `System\SiDictionaryIndex` | `SIDMNT` |
+| SMKS Khóa số liệu | 90.30.05 | `si.vch.smks` | `Si\Vch\Smks` | `assiUpd_ks`; canonical `/simba/si/vch/smks` |
 | Nhập/Chuyển số dư | 90.40.14 | `system.balance.index` | `System\Balance\Index` | Existing Portal balance route |
 | MA_NHHD Nhóm hợp đồng | 90.10.14 | Blocked |  | `sysMenu` inactive |
 | MA_HD Hợp đồng | 90.10.17 | Blocked |  | `sysMenu` inactive |
@@ -221,6 +223,7 @@ Immediate mismatch:
 - Task 063 wording says "chương trình mua hàng", but source of truth maps `PODMCP/MA_CP/10.90.14` to "Chi phí mua hàng"; implementation follows `sysDictionaryInfo` and `sysMenu`.
 - `gl.rpt.bctc05` / `02.50.14` has `sysReportInfo` but inactive `sysMenu`, so no route is opened.
 - FA report rows marked with `*` in `sysMenu` are inactive and are not opened.
+- SMKS phai duoc verify bang website that sau lint/test: `portal.diepxuan.corp/simba/si/vch/smks` tra HTTP 200 va legacy `/hethong/system` redirect ve canonical route.
 
 ---
 

@@ -653,7 +653,7 @@ Kiem tra 151 task files theo khuon mau 002 (9 sections: Thong tin co ban, Muc ti
 | 166 | 166-co-dmbom-dinh-muc-nguyen-vat-lieu.md | CODMBOM_.dll | Dinh muc nguyen vat lieu |
 | 167 | 167-co-dmspct-danh-muc-san-pham-cong-trinh.md | CODMSPCT.dll | Danh muc san pham cong trinh |
 | 168-180 | 168-180-co-ky-thuat-san-xuat.md | COGDBGT, COLK, COPB, CORptGt01-03, CoCalcCost, CoDMCPTT, CoDelPostCP2GL, CoNgungKHCPTT, CoPostCPTT2GL, CoRptCTPBCPTT, CoRptKHCPTT | Ky thuat san xuat |
-| 181-196 | 181-196-system-framework-infrastructure.md | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | Framework - chi ghi nhan cau truc |
+| 181-196 | 181-196-system-framework-infrastructure.md | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | Framework; SMKS da co route `/simba/si/vch/smks` |
 
 **Tong:** 39 task files, 35 DLLs
 
