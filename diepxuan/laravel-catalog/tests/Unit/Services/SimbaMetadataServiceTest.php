@@ -78,4 +78,22 @@ final class SimbaMetadataServiceTest extends TestCase
 
         self::assertSame(2, $service->loads);
     }
+
+    public function testReportMetadataIndexPrefersSysReportInfoOverZSysReportInfoForSameMenuId(): void
+    {
+        $service = new class extends SimbaMetadataService {
+            protected function mergedReportInfo(): Collection
+            {
+                return collect([
+                    (object) ['menuid' => '02.10.02', 'ma_mau' => '01', 'spname' => 'asSysReport', 'rptname' => 'SYS.RPT'],
+                    (object) ['menuid' => '02.10.02', 'ma_mau' => '99', 'spname' => 'asZReport', 'rptname' => 'Z.RPT'],
+                ]);
+            }
+        };
+
+        $index = $service->indexBy(SimbaMetadataService::DATASET_SYS_REPORT_INFO, 'menuid');
+
+        self::assertSame('asSysReport', $index['02.10.02']->spname);
+        self::assertSame('SYS.RPT', $index['02.10.02']->rptname);
+    }
 }

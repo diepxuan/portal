@@ -62,7 +62,7 @@ Man hinh `hethong/menu` hien cay menu Simba tu `simba-docs`, gan link Portal cho
 Ngay 2026-06-30, trang `/simba` da duoc toi uu phase 1:
 
 - Metadata enrich dung request-level index thay cho scan collection lap lai theo tung menu.
-- `sysMenu/zsysmenu` chi nap menu active va select cot dang dung; dictionary/report/drilldown chuyen sang base query + selected columns de giam Eloquent model hydration.
+- `sysMenu/zsysmenu` chi select cot dang dung; filter `active = 1` dang duoc giu comment theo quyet dinh hien tai. Dictionary/report/drilldown chuyen sang base query + selected columns de giam Eloquent model hydration.
 - Route map trong `System\SimbaErpMenus` duoc cache trong component instance.
 - View `catalog::system.simba-erp-menus` khong con include `catalog::system.simba-node` theo tung node, tranh view render lap lai hang tram lan trong Debugbar.
 - SP review va plan tiep theo nam tai `docs/project/simba-menu-performance-plan.md`.
@@ -169,4 +169,4 @@ php artisan test diepxuan/laravel-catalog/tests/Unit/Http/Livewire/SimbaErpMenus
 php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php
 ```
 
-Ket qua moi nhat cho nhom menu performance/route metadata: 21 tests pass, 200 assertions.
+Ket qua moi nhat cho nhom menu performance/route metadata: 22 tests pass, 202 assertions.

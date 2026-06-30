@@ -29,8 +29,9 @@ Ket luan: SP co kha nang gan nhat de thu nghiem batch la `asGetMenuInfoAll`; `as
 
 - `SimbaMetadataService::indexBy($dataset, $field)` tao index theo field trong request, tranh `Collection::first()` lap lai tren dictionary/report/drilldown cho tung menu.
 - `SimbaMenuRouteMetadata` dung index theo `menuid`, `code_name`, `table_name` thay vi scan collection lap lai.
-- `SimbaMetadataService` chi nap menu `active = 1` va chi select cac cot menu dang dung tu `sysMenu/zsysmenu`: `menuid`, `stt`, `type`, `moduleid`, `bar`, `short_name`, `dllName`, `command`, `code_name`, `report`, `active`.
+- `SimbaMetadataService` chi select cac cot menu dang dung tu `sysMenu/zsysmenu`: `menuid`, `stt`, `type`, `moduleid`, `bar`, `short_name`, `dllName`, `command`, `code_name`, `report`, `active`. Filter `active = 1` dang de lai comment theo quyet dinh hien tai, nen menu inactive van co the duoc nap vao metadata cache.
 - `sysDictionaryInfo`, `sysReportInfo`, `zSysReportInfo`, `sysReportDrillDownInfo` chuyen sang `toBase()` + select cot can dung, giam hydrate Eloquent model cho metadata enrich.
+- Khi `sysReportInfo` va `zSysReportInfo` cung `menuid`, metadata uu tien dong `sysReportInfo`; regression test da khoa behavior nay.
 - `SimbaErpMenus` cache `routeMapByMenuId()` trong component instance, tranh build lai route map cho tree/stats trong cung request.
 - `simba-erp-menus.blade.php` inline node markup trong loop route chinh, khong con include `catalog::system.simba-node` tren tung node; muc tieu la xoa view render lap lai x 361 tren trang `/simba`.
 
@@ -56,7 +57,7 @@ php artisan test diepxuan/laravel-catalog/tests/Unit/Http/Livewire/SimbaErpMenus
 php artisan test diepxuan/laravel-catalog/tests/Feature/SourceRouteCoverageTest.php
 ```
 
-Ket qua hien tai: 21 tests pass, 200 assertions cho nhom test muc tieu va coverage route.
+Ket qua hien tai: 22 tests pass, 202 assertions cho nhom test muc tieu va coverage route.
 
 Website verification tren `portal.diepxuan.corp`:
 
@@ -69,6 +70,6 @@ Ket qua ngay 2026-06-30:
 - `GET /simba`: `200`, HTML render duoc.
 - Debugbar request status: `200 OK`, route `simba.index`.
 - Debugbar views: `24`; `catalog::system.simba-node` x `0` trong HTML/debug output.
-- Debugbar peak memory: khoang `20.5MB` tren request GET da test lai sau active filter; gia tri co dao dong theo Debugbar/request nhung da thap hon muc ~40MB ban dau.
-- Debugbar model counter: `390` model, gom `SysMenu` 348 va `Zsysmenu` 37; khong con hydrate model `SysDictionaryInfo`, `ZSysReportInfo`, `SysReportDrillDownInfo` trong collector sau phase 1.
+- Debugbar peak memory: khoang `16.5-18.5MB` tren cac request GET da test; gia tri co dao dong theo Debugbar/request nhung da thap hon muc ~40MB ban dau.
+- Debugbar model counter van con `SysMenu`/`Zsysmenu` do PR nay giu comment `active = 1` va menu tree van can model helper; khong con hydrate model `SysDictionaryInfo`, `ZSysReportInfo`, `SysReportDrillDownInfo` trong collector sau phase 1.
 - `HEAD /simba` tra `500` do moi truong local thieu Vite manifest (`public/build/manifest.json`) khi render layout; `GET /simba` van pass va khong co exception trong Debugbar.
