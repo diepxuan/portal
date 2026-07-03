@@ -176,7 +176,7 @@ System balance/process menus da co route Portal hien huu:
 | Báo cáo mua hàng theo hai chỉ tiêu | 10.20.26 | `po.rpt.bcpt03` | `Muahang\PoReportIndex` | `asPORptBCPT03` |
 | Sổ nhật ký mua hàng | 10.20.32 | `po.rpt.nkc05` | `Muahang\PoReportIndex` | `asGLRptNKC05` |
 | Bảng kê hóa đơn phải thu | 06.30.02 | `ar.rpt.bk01` | `Banhang\ArReportIndex` | `asARRptBK01` |
-| AR Sổ chi tiết công nợ một khách hàng | 06.30.14 | `ar.rpt.bccn01` | `Banhang\ArReportIndex` | `asARRptBCCN01` |
+| SO Sổ chi tiết công nợ một khách hàng | 06.30.14 | `so.rpt.arrptbccn01` | `So\Rpt\Arrptbccn01` | `asARRptBCCN01` |
 | AR Sổ chi tiết công nợ nhiều khách hàng | 06.30.17 | `ar.rpt.bccn01a` | `Banhang\ArReportIndex` | `asARRptBCCN01a` |
 | AR Bảng cân đối phát sinh công nợ | 06.30.20 | `ar.rpt.bccn02` | `Banhang\ArReportIndex` | `asARRptBCCN02` |
 | AR Tổng hợp số dư công nợ một tài khoản | 06.30.23 | `ar.rpt.bccn03` | `Banhang\ArReportIndex` | `asARRptBCCN03` |

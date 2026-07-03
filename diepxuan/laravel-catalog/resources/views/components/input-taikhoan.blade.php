@@ -7,7 +7,7 @@
     <div class="relative">
         <input {{ $disabled ? 'disabled' : '' }} type="text" placeholder="{{ $placeholder }}" x-model="search"
             @focus="showDropdown = true" @click="showDropdown = true"
-            @keydown="handleKeydown($event)" wire:model.live.debounce.300ms="pTk"
+            @keydown="handleKeydown($event)" wire:model.live.debounce.500ms="pTk"
             class="{{ $class }} block w-full rounded-md border-gray-300 py-1 pr-8 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-autocomplete="list" />
 
@@ -91,12 +91,16 @@
                     showDropdown: false,
                     filtered: [],
                     highlightedIndex: -1,
+                    filterTimer: null,
 
                     initComponent() {
-                        // Watch search and filter instantly (no delay, client-side)
+                        // Wait briefly after typing before filtering the client-side list.
                         this.$watch('search', (value) => {
-                            this.filtered = this.filterAccounts(value);
-                            this.highlightedIndex = -1; // Reset highlight khi filter thay đổi
+                            clearTimeout(this.filterTimer);
+                            this.filterTimer = setTimeout(() => {
+                                this.filtered = this.filterAccounts(value);
+                                this.highlightedIndex = -1; // Reset highlight khi filter thay đổi
+                            }, 500);
                         });
                     },
 
