@@ -99,6 +99,16 @@ php artisan db:seed
 
 ## 5. Chạy ứng dụng
 
+### 5.0. Domain kiểm thử website
+
+Khi cần truy cập website để kiểm thử luồng Portal/SimbaERP, dùng domain dự án:
+
+```text
+http://portal.diepxuan.corp
+```
+
+Không tự thay bằng `localhost`, `127.0.0.1` hoặc port dev server riêng cho bước website verification, trừ khi Sếp yêu cầu rõ là test local server.
+
 ### 5.1. Generate application key
 ```bash
 php artisan key:generate

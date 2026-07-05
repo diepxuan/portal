@@ -70,26 +70,23 @@ Chuyen doi chuc nang bao cao so chi tiet cong no theo tai khoan va khach hang tu
 
 ## Stored Procedures
 
-| SP Name | Mo ta |
-|---------|-------|
-| SP_AR_BC01_GET | Lay du lieu bao cao |
-| SP_AR_BC01_GETBYID | Lay chi tiet 1 KH |
-| SP_AR_BC01_DRILLDOWN | Lay chi tiet chung tu |
-| SP_AR_BC01_EXPORT | Lay du lieu xuat Excel |
+Nguon chuan: `simba-docs/data/sysReportInfo.md` va `diepxuan/laravel-simba/docs/procedures/AR/procedures.md`.
 
-### SP_GET (reference)
+| SP Name | Menu | Ma mau | Report | Mo ta |
+|---------|------|--------|--------|-------|
+| asARRptBCCN01 | 06.30.14 | 01 | ARBCCN011.rpt | So chi tiet cong no mot khach hang |
+| asARRptBCCN01SL | 06.30.38 | 02 | ARBCCN012.rpt | Bien the co so luong |
 
-```sql
--- Lay du lieu so chi tiet cong no
-EXEC SP_AR_BC01_GET
-    @pMa_cty VARCHAR(50) = '001',
-    @pMa_tk VARCHAR(50) = NULL,
-    @pMa_kh VARCHAR(50) = NULL,
-    @pNgay1 DATETIME,
-    @pNgay2 DATETIME,
-    @pMa_nt VARCHAR(10) = 'VND',
-    @pMau_bc VARCHAR(50) = 'DEFAULT'
-```
+### asARRptBCCN01 parameters
+
+| Name | Type | Required | Source |
+|------|------|----------|--------|
+| ma_cty | nvarchar(3) | No | Company context |
+| Ngay1 | smalldatetime | No | txtNgay1 |
+| Ngay2 | smalldatetime | No | txtNgay2 |
+| Tk | nvarchar(20) | No | txtTk |
+| ma_kh | nvarchar(20) | No | txtMa_Kh |
+| ma_nt | nvarchar(3) | No | txtMa_Nt |
 
 ---
 
@@ -188,59 +185,30 @@ class RptBCCN01 extends Model
 ### 2. Stored Procedure Classes
 
 ```php
-// diepxuan/laravel-simba/src/StoredProcedures/AsARGetBCCN01.php
+// diepxuan/laravel-simba/src/StoredProcedures/AsARRptBCCN01.php
 namespace Diepxuan\Simba\StoredProcedures;
 
-class AsARGetBCCN01 extends StoredProcedure
+class AsARRptBCCN01
 {
-    protected $procedure = 'SP_AR_BC01_GET';
-    protected $params = [
-        'pMa_cty',
-        'pMa_tk',
-        'pMa_kh',
-        'pNgay1',
-        'pNgay2',
-        'pMa_nt',
-        'pMau_bc',
-    ];
-}
-
-// diepxuan/laravel-simba/src/StoredProcedures/AsARGetBCCN01Drilldown.php
-class AsARGetBCCN01Drilldown extends StoredProcedure
-{
-    protected $procedure = 'SP_AR_BC01_DRILLDOWN';
-    protected $params = [
-        'pMa_cty',
-        'pMa_kh',
-        'pNgay1',
-        'pNgay2',
-        'pMa_nt',
-    ];
+    protected $procedure = 'asARRptBCCN01';
+    protected $params = ['ma_cty', 'Ngay1', 'Ngay2', 'Tk', 'ma_kh', 'ma_nt'];
 }
 ```
 
 ### 3. Livewire Component
 
 ```php
-// diepxuan/laravel-catalog/src/Http/Livewire/AR/Baocao/SoChiTietCongNo.php
-namespace Diepxuan\Catalog\Http\Livewire\AR\Baocao;
+// diepxuan/laravel-catalog/src/Http/Livewire/So/Rpt/Arrptbccn01.php
+namespace Diepxuan\Catalog\Http\Livewire\So\Rpt;
 
-class SoChiTietCongNo extends Component
+class Arrptbccn01 extends Component
 {
-    const MA_CT = 'AR';
-    const REPORT_TYPE = 'BCCN01';
-
-    public ?string $pMaTk = null;
-    public ?string $pMaKh = null;
-    public ?Carbon $pNgay1 = null;
-    public ?Carbon $pNgay2 = null;
-    public string $pMaNt = 'VND';
-    public string $pMauBc = 'DEFAULT';
-    public string $pCurrencyType = 'VND'; // 'VND' | 'NT'
-    public Collection $pData;
-    public array $pSummary = [];
-    public ?string $pDrilldownMaKh = null;
-    public Collection $pDrilldownData;
+    public ?string $pNgay1 = null;
+    public ?string $pNgay2 = null;
+    public ?string $pTk = null;
+    public ?string $pMa_kh = null;
+    public ?string $pMa_nt = '';
+    public array $rows = [];
 
     public function mount(): void
     {
@@ -250,29 +218,13 @@ class SoChiTietCongNo extends Component
 
     public function loadReport(): void
     {
-        $sp = new AsARGetBCCN01();
-        $this->pData = $sp->execute([
-            'pMa_cty' => '001',
-            'pMa_tk' => $this->pMaTk,
-            'pMa_kh' => $this->pMaKh,
-            'pNgay1' => $this->pNgay1,
-            'pNgay2' => $this->pNgay2,
-            'pMa_nt' => $this->pMaNt,
-            'pMau_bc' => $this->pMauBc,
-        ]);
-        $this->calculateSummary();
-    }
-
-    public function drilldown(string $maKh): void
-    {
-        $sp = new AsARGetBCCN01Drilldown();
-        $this->pDrilldownMaKh = $maKh;
-        $this->pDrilldownData = $sp->execute([
-            'pMa_cty' => '001',
-            'pMa_kh' => $maKh,
-            'pNgay1' => $this->pNgay1,
-            'pNgay2' => $this->pNgay2,
-            'pMa_nt' => $this->pMaNt,
+        $this->pData = AsARRptBCCN01::call([
+            'ma_cty' => '001',
+            'Ngay1' => $this->pNgay1,
+            'Ngay2' => $this->pNgay2,
+            'Tk' => $this->pTk,
+            'ma_kh' => $this->pMa_kh,
+            'ma_nt' => $this->pMa_nt,
         ]);
     }
 
@@ -283,7 +235,7 @@ class SoChiTietCongNo extends Component
 
     public function render(): View
     {
-        return view('catalog::ar.baocao.so-chi-tiet-cong-no');
+        return view('catalog::so.rpt.arrptbccn01');
     }
 }
 ```
@@ -291,27 +243,18 @@ class SoChiTietCongNo extends Component
 ### 4. Views
 
 ```
-resources/views/catalog/ar/baocao/
-├── so-chi-tiet-cong-no.blade.php        (Form bao cao)
-├── so-chi-tiet-cong-no-results.blade.php (Bang ket qua)
-├── _so-chi-tiet-cong-no-row.blade.php   (Dong bao cao)
-└── _so-chi-tiet-cong-no-drilldown.blade.php (Chi tiet drilldown)
+diepxuan/laravel-catalog/resources/views/so/rpt/
+└── arrptbccn01.blade.php
 ```
 
 ### 5. Routes
 
 ```php
-// routes/catalog.php
-Route::prefix('catalog/ar/baocao')
-    ->name('catalog.ar.baocao.')
-    ->group(function () {
-        Route::get('/so-chi-tiet-cong-no', [SoChiTietCongNo::class, 'render'])
-            ->name('so-chi-tiet-cong-no');
-        Route::get('/so-chi-tiet-cong-no/{maKh}/drilldown', [SoChiTietCongNo::class, 'drilldown'])
-            ->name('so-chi-tiet-cong-no.drilldown');
-        Route::get('/so-chi-tiet-cong-no/export', [SoChiTietCongNo::class, 'exportExcel'])
-            ->name('so-chi-tiet-cong-no.export');
-    });
+// diepxuan/laravel-catalog/routes/web.php
+['_simba-source/so/rpt/arrptbccn01', name: 'so.rpt.arrptbccn01']
+
+// Public canonical URL:
+/simba/so/rpt/arrptbccn01
 ```
 
 ---
@@ -320,28 +263,39 @@ Route::prefix('catalog/ar/baocao')
 
 | Loai | Package | File | Ghi chu |
 |------|---------|------|---------|
-| Model | laravel-simba | RptBCCN01.php | View bao cao |
 | Model | laravel-simba | DMKH.php | Lookup KH |
 | Model | laravel-simba | DMTK.php | Lookup TK |
-| SP | laravel-simba | AsARGetBCCN01.php | Lay du lieu |
-| SP | laravel-simba | AsARGetBCCN01Drilldown.php | Chi tiet drilldown |
-| Component | laravel-catalog | SoChiTietCongNo.php | Form bao cao |
+| SP | laravel-simba | AsARRptBCCN01.php | Lay du lieu |
+| Component | laravel-catalog | So/Rpt/Arrptbccn01.php | Form bao cao |
+| View | laravel-catalog | so/rpt/arrptbccn01.blade.php | Filter + grid |
 
 ---
 
 ## Progress Checklist
 
-- [ ] Phan tich yeu cau & review task nay
-- [ ] Tim kiem mapping SP tu DLL
-- [ ] Tao Stored Procedure classes
-- [ ] Tao Model RptBCCN01 (View)
-- [ ] Tao Livewire SoChiTietCongNo (report)
-- [ ] Tao Views (report + drilldown)
-- [ ] Them Routes
-- [ ] Implement drill-down chi tiet
-- [ ] Test bao cao voi du lieu thuc
+- [x] Phan tich yeu cau & review task nay
+- [x] Tim kiem mapping SP tu DLL
+- [x] Sua Stored Procedure class AsARRptBCCN01 theo tham so Simba docs
+- [x] Tao Livewire So/Rpt/Arrptbccn01 (report)
+- [x] Tao view filter + grid
+- [x] Them route source so.rpt.arrptbccn01 vao canonical /simba/so/rpt/arrptbccn01
+- [x] Them thao tac xem chi tiet dong trong grid
+- [x] Them export CSV mo bang Excel
+- [ ] Test bao cao voi du lieu thuc tren `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
 ---
 ## Audit Status
 - **Ngày audit:** 2026-05-10
-- **Kết quả:** PENDING — spec đầy đủ, chưa implement
-\n## Portal implementation status\n\n- **Status:** DONE (route shell/read-only report)\n- **Source:** SimbaReportRegistry / SimbaRouteRegistry, sysReportInfo-backed route anchor\n- **Note:** Report shell hiển thị metadata và chưa execute SP khi chưa đối chiếu đủ tham số/payload/side effect.\n
+- **Kết quả:** IMPLEMENTED — route canonical co Livewire report page, SP wrapper dung tham so docs, co grid, xem chi tiet dong va export CSV/Excel-compatible.
+
+## Portal implementation status
+
+- **Status:** IMPLEMENTED (filter + SP-backed grid + row detail + CSV export)
+- **Route:** `/simba/so/rpt/arrptbccn01`
+- **Website verification URL:** `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
+- **Menu:** `06.30.14`
+- **SP:** `asARRptBCCN01`
+- **Report:** `ARBCCN011.rpt`
+- **Grid rendering:** Giu HTML `<table>` thay vi `Diepxuan\Support\Collection::toMarkdownTable()` de co scroll ngang, hover row, header style va canh cot so trong UI. Style table tham chieu quy tac cua `Collection`: co cot thu tu, null thanh rong, boolean 1/0, normalize UTF-8, cot tien/phat sinh/so du canh phai.
+- **Row detail:** Nut `Xem` tren tung dong hien payload chi tiet cua dong dang chon trong cung trang, phu hop khi source `06.30.14` khong co row rieng trong `sysReportDrillDownInfo`.
+- **Export:** Nut `Xuat Excel` tra CSV UTF-8 BOM, mo truc tiep bang Excel/LibreOffice.
+- **Note:** Page chi read qua SP, khong tao SQL/schema moi. F5 drill-down cua report nhieu khach hang `BCCN01a` thuoc task 158 va source `sysReportDrillDownInfo` menu `06.30.17 -> 06.80.26`, khong phai route `06.30.14` cua task nay.
