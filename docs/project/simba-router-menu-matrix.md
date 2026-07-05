@@ -158,7 +158,7 @@ System balance/process menus da co route Portal hien huu:
 | Thẻ kho/Sổ chi tiết vật tư | 14.20.02 | `in.rpt.ctvt01` | `In\Baocao\InReportIndex` | `asINRptCTVT01` |
 | Thẻ kho/Sổ chi tiết vật tư in tất cả | 14.20.05 | `in.rpt.ctvt02` | `In\Baocao\InReportIndex` | `asINRptCTVT02` |
 | Tổng hợp nhập xuất tồn | 14.20.08 | `in.rpt.cd01` | `In\Baocao\InReportIndex` | `asINRptCD01` |
-| Báo cáo tồn kho | 14.20.11 | `in.tonkho` | `In\Baocao\Tonkho` | `asINRptCD02` |
+| Báo cáo tồn kho | 14.20.11 | `in.rpt.inrptcd02` | `In\Rpt\Inrptcd02` | `asINRptCD02` |
 | Bảng kê phiếu nhập | 14.20.14 | `in.rpt.bkn04` | `In\Baocao\InReportIndex` | `asINRptBKN04` |
 | Tổng hợp hàng nhập | 14.20.17 | `in.rpt.thn01` | `In\Baocao\InReportIndex` | `asINRptTHN01` |
 | Tổng hợp hàng nhập hai chỉ tiêu | 14.20.18 | `in.rpt.thn02` | `In\Baocao\InReportIndex` | `asINRptTHN02` |
