@@ -36,7 +36,7 @@
                 <div class="grid grid-cols-3 items-center gap-4">
                     <label class="text-right text-sm text-gray-700">Tài khoản</label>
                     <div class="col-span-2">
-                        <livewire:catalog::component.input-taikhoan wire:model="pTk" />
+                        <livewire:catalog::component.input-taikhoan wire:model="pTk" filter="tk_cn=1" />
                         <x-input-error for="pTk" class="mt-1" />
                     </div>
                 </div>
@@ -59,11 +59,17 @@
 
                 <div class="grid grid-cols-3 items-center gap-4 pt-1">
                     <span></span>
-                    <div class="col-span-2">
+                    <div class="col-span-2 flex flex-wrap items-center gap-2">
                         <x-button-loading class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
-                            wire:click="submit" x-on:click="activeTab = 'content'">
+                            wire:click="submit">
                             Thực hiện
                         </x-button-loading>
+                        @if ([] !== $rows)
+                            <x-button-loading class="rounded-md bg-gray-700 px-3 py-1.5 text-sm text-white hover:bg-gray-800"
+                                wire:click="exportCsv">
+                                Xuất Excel
+                            </x-button-loading>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -80,10 +86,39 @@
                         Chưa có dữ liệu. Nhập điều kiện lọc rồi bấm Thực hiện.
                     </div>
                 @else
+                    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
+                        <span>{{ number_format(count($rows)) }} dòng dữ liệu</span>
+                        <x-button-loading class="rounded-md bg-gray-700 px-3 py-1.5 text-sm text-white hover:bg-gray-800"
+                            wire:click="exportCsv">
+                            Xuất Excel
+                        </x-button-loading>
+                    </div>
+
+                    @if ([] !== $selectedRow)
+                        <div class="mb-3 rounded border border-sky-200 bg-sky-50 p-3 text-sm text-sky-900">
+                            <div class="mb-2 flex items-center justify-between gap-2">
+                                <div class="font-medium">Chi tiết dòng {{ ($selectedRowIndex ?? 0) + 1 }}</div>
+                                <button type="button" class="text-xs font-medium text-sky-700 hover:text-sky-900"
+                                    wire:click="clearSelectedRow">
+                                    Đóng
+                                </button>
+                            </div>
+                            <dl class="grid grid-cols-1 gap-x-4 gap-y-1 md:grid-cols-2 xl:grid-cols-3">
+                                @foreach ($selectedRow as $column => $value)
+                                    <div class="grid grid-cols-[120px_minmax(0,1fr)] gap-2">
+                                        <dt class="truncate font-mono text-xs text-sky-700">{{ $column }}</dt>
+                                        <dd class="break-words font-mono text-xs text-sky-950">{{ $this->displayValue($value) }}</dd>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </div>
+                    @endif
+
                     <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
                         <table class="min-w-max text-left text-xs">
                             <thead class="sticky top-0 z-10 bg-gray-50 text-gray-500">
                                 <tr>
+                                    <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Chi tiết</th>
                                     <th class="border-b border-gray-200 px-2 py-2 text-right font-medium">#</th>
                                     @foreach ($columns as $column)
                                         <th class="whitespace-nowrap border-b border-gray-200 px-2 py-2 font-medium {{ $this->isNumericColumn($column) ? 'text-right' : 'text-left' }}">
@@ -94,7 +129,13 @@
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 @foreach ($rows as $row)
-                                    <tr class="hover:bg-sky-50">
+                                    <tr class="{{ $selectedRowIndex === $loop->index ? 'bg-sky-50' : 'hover:bg-sky-50' }}">
+                                        <td class="whitespace-nowrap px-2 py-2">
+                                            <button type="button" class="rounded border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:border-sky-300 hover:text-sky-700"
+                                                wire:click="selectRow({{ $loop->index }})">
+                                                Xem
+                                            </button>
+                                        </td>
                                         <td class="whitespace-nowrap px-2 py-2 text-right font-mono text-gray-400 tabular-nums">
                                             {{ $loop->iteration }}
                                         </td>

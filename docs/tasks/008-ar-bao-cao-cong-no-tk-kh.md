@@ -279,20 +279,23 @@ diepxuan/laravel-catalog/resources/views/so/rpt/
 - [x] Tao Livewire So/Rpt/Arrptbccn01 (report)
 - [x] Tao view filter + grid
 - [x] Them route source so.rpt.arrptbccn01 vao canonical /simba/so/rpt/arrptbccn01
-- [ ] Implement drill-down chi tiet
+- [x] Them thao tac xem chi tiet dong trong grid
+- [x] Them export CSV mo bang Excel
 - [ ] Test bao cao voi du lieu thuc tren `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
 ---
 ## Audit Status
 - **Ngày audit:** 2026-05-10
-- **Kết quả:** IMPLEMENTED PARTIAL — route canonical co Livewire report page, SP wrapper dung tham so docs; drilldown/export chua implement.
+- **Kết quả:** IMPLEMENTED — route canonical co Livewire report page, SP wrapper dung tham so docs, co grid, xem chi tiet dong va export CSV/Excel-compatible.
 
 ## Portal implementation status
 
-- **Status:** IMPLEMENTED PARTIAL (filter + SP-backed grid)
+- **Status:** IMPLEMENTED (filter + SP-backed grid + row detail + CSV export)
 - **Route:** `/simba/so/rpt/arrptbccn01`
 - **Website verification URL:** `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
 - **Menu:** `06.30.14`
 - **SP:** `asARRptBCCN01`
 - **Report:** `ARBCCN011.rpt`
 - **Grid rendering:** Giu HTML `<table>` thay vi `Diepxuan\Support\Collection::toMarkdownTable()` de co scroll ngang, hover row, header style va canh cot so trong UI. Style table tham chieu quy tac cua `Collection`: co cot thu tu, null thanh rong, boolean 1/0, normalize UTF-8, cot tien/phat sinh/so du canh phai.
-- **Note:** Page chi read qua SP, khong tao SQL/schema moi. Drilldown/export de phase sau.
+- **Row detail:** Nut `Xem` tren tung dong hien payload chi tiet cua dong dang chon trong cung trang, phu hop khi source `06.30.14` khong co row rieng trong `sysReportDrillDownInfo`.
+- **Export:** Nut `Xuat Excel` tra CSV UTF-8 BOM, mo truc tiep bang Excel/LibreOffice.
+- **Note:** Page chi read qua SP, khong tao SQL/schema moi. F5 drill-down cua report nhieu khach hang `BCCN01a` thuoc task 158 va source `sysReportDrillDownInfo` menu `06.30.17 -> 06.80.26`, khong phai route `06.30.14` cua task nay.

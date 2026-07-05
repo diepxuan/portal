@@ -16,6 +16,7 @@ namespace Diepxuan\Catalog\Http\Livewire\So\Rpt;
 use Diepxuan\Simba\StoredProcedures\AsARRptBCCN01;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Arrptbccn01 extends Component
 {
@@ -36,6 +37,11 @@ class Arrptbccn01 extends Component
 
     /** @var list<string> */
     public array $columns = [];
+
+    public ?int $selectedRowIndex = null;
+
+    /** @var array<string,mixed> */
+    public array $selectedRow = [];
 
     public function mount(?string $module = null, ?string $kind = null, ?string $slug = null): void
     {
@@ -81,6 +87,62 @@ class Arrptbccn01 extends Component
 
         $this->rows = $rows->map(fn (mixed $row): array => $this->rowToArray($row))->values()->all();
         $this->columns = [] !== $this->rows ? array_keys($this->rows[0]) : [];
+        $this->clearSelectedRow();
+
+        // Chuyển sang tab "Kết quả" sau khi submit() thành công.
+        // Khi validation fail, Livewire throw ValidationException và tab giữ nguyên ở "filter"
+        // để user nhìn thấy <x-input-error .../> cho từng trường.
+        $this->dispatch('switch-tab', 'content');
+    }
+
+    public function selectRow(int $index): void
+    {
+        if (!isset($this->rows[$index])) {
+            $this->clearSelectedRow();
+
+            return;
+        }
+
+        $this->selectedRowIndex = $index;
+        $this->selectedRow = $this->rows[$index];
+    }
+
+    public function clearSelectedRow(): void
+    {
+        $this->selectedRowIndex = null;
+        $this->selectedRow = [];
+    }
+
+    public function exportCsv(): ?StreamedResponse
+    {
+        if ([] === $this->rows || [] === $this->columns) {
+            $this->errorMessage = 'Chưa có dữ liệu để xuất.';
+
+            return null;
+        }
+
+        $rows = $this->rows;
+        $columns = $this->columns;
+        $filename = 'arrptbccn01-' . now()->format('Ymd-His') . '.csv';
+
+        return response()->streamDownload(static function () use ($rows, $columns): void {
+            $handle = fopen('php://output', 'wb');
+            if (false === $handle) {
+                return;
+            }
+
+            fwrite($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, $columns);
+
+            foreach ($rows as $row) {
+                fputcsv($handle, array_map(
+                    static fn (string $column): string => Arrptbccn01::csvValue($row[$column] ?? null),
+                    $columns
+                ));
+            }
+
+            fclose($handle);
+        }, $filename, ['Content-Type' => 'text/csv; charset=UTF-8']);
     }
 
     public function render(): View
@@ -92,6 +154,11 @@ class Arrptbccn01 extends Component
     }
 
     public function displayValue(mixed $value): string
+    {
+        return self::csvValue($value);
+    }
+
+    public static function csvValue(mixed $value): string
     {
         $stringValue = match (\gettype($value)) {
             'boolean' => $value ? '1' : '0',
