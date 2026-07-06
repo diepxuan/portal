@@ -45,6 +45,7 @@ Laravel application — port SimbaERP .NET sang PHP.
 - Mount readonly tại `simba-docs/` — nguồn sự thật duy nhất
 - **Cấm tuyệt đối:** tự đặt tên bảng/SP/field, tạo bảng mới, ALTER/CREATE/INSERT SQL
 - Trước khi code: đọc simba-docs → lấy đúng tên bảng, cột, SP, fields
+- Dữ liệu SimbaERP ưu tiên Stored Procedure theo `simba-docs` cho các thao tác hiển thị danh sách, lookup/filter, thêm, sửa, xóa. Eloquent/model là phương án thay thế khi đã tra nguồn Simba nhưng chưa có SP phù hợp, kèm ghi chú nguồn và lý do.
 
 ---
 

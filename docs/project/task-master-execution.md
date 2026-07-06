@@ -77,7 +77,7 @@ Output bat buoc:
 - Router/menu generator hoac mapping doc theo `sysMenu`.
 - Base module registry.
 - Base voucher/report/menu patterns.
-- SQL Server access policy chi dung wrappers/model da co, khong doc DB truc tiep.
+- SQL Server access policy uu tien Stored Procedure wrapper theo `simba-docs`: hien thi danh sach, lookup/filter, them, sua, xoa su dung `get_sp`, `ins_sp`, `upd_sp`, `del_sp` tu `sysDAOInfo` hoac DLL/DAO/procedures; Eloquent/model la phuong an thay the khi da tra nguon Simba nhung chua co SP phu hop va da ghi ro ly do.
 
 ### Phase 2 - Master data
 
@@ -106,8 +106,8 @@ Chi lam report/calculation khi:
 
 - Menu route da co.
 - Source SP/report info da xac minh.
-- Input filters va lookup da co pattern dung.
-- Data model/SP wrapper da co.
+- Input filters va lookup da co pattern dung: uu tien GET Stored Procedure tu `sysDAOInfo.get_sp`.
+- Data access map da xac dinh wrapper cho hien thi/them/sua/xoa; Eloquent/model fallback co ghi nguon tra cuu va ly do khi chua co SP phu hop.
 
 ### Phase 5 - Audit, CI, PR
 

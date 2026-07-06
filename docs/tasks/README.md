@@ -10,6 +10,16 @@ Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
 
 > Cập nhật triển khai 2026-05-15: xem `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md` và `../project/simba-router-menu-matrix.md` để đối chiếu route anchors theo `simba-docs`. Coverage mới tách rõ static screen, generic report/dictionary shell, read-only process shell và blocker chưa được phép execute. Các số PENDING/TODO bên dưới là snapshot audit cũ, không còn là trạng thái route/menu hiện tại.
 
+## Data Access Map bắt buộc cho task SimbaERP
+
+Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang nguồn `simba-docs`. Hiển thị danh sách, lookup/filter, thêm, sửa, xóa ưu tiên Stored Procedure wrapper theo `sysDAOInfo` và DLL/DAO/procedures. Eloquent/model là phương án thay thế khi đã tra nguồn Simba nhưng chưa có SP phù hợp, kèm ghi chú nguồn tra cứu và lý do.
+
+| UI/data action | Code name | Simba table | Source | GET SP | INS SP | UPD SP | DEL SP | Portal wrapper | Eloquent/model fallback |
+|---|---|---|---|---|---|---|---|---|---|
+| Danh sách/lookup kho | `MA_KHO` | `INDMKHO` | `sysDictionaryInfo` + `sysDAOInfo` | `asINGetDMKHO` | `asINInsDMKHO` | `asINUpdDMKHO` | `asINDelDMKHO` | `StoredProcedures\AsINGetDMKHO` | Ghi nguồn tra cứu và lý do khi dùng fallback |
+
+---
+
 **Cập nhật nhóm ARDMKH đối tượng giao dịch (2026-06-05):**
 - Bổ sung Task 356: hoàn thiện nhóm `ARDMKH` / `frmARDMKH` cho khách hàng, nhà cung cấp, nhân viên.
 - `06.90.02` / `MA_KH` / `ar.khachhang`: đã có danh sách, thêm, sửa, xóa khách hàng.
