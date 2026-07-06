@@ -69,6 +69,8 @@ Ngay 2026-06-30, trang `/simba` da duoc toi uu phase 1:
 
 Master-data menu co `sysReportInfo` nhung khong co dictionary metadata sach cung duoc mo bang report/list shell read-only; neu co dictionary exact/alias thi dictionary duoc uu tien. Menu F5 co `sysMenu.report = 1` cung duoc mo nhu report/list shell khi co `sysReportInfo`.
 
+Quy tac data access cho SimbaERP: moi thao tac hien thi danh sach, lookup/filter, them, sua, xoa uu tien Stored Procedure tu `simba-docs`. Checklist coverage cua task can co map `UI/data action -> code_name/table -> sysDAOInfo SP -> Portal wrapper`; Eloquent/model la phuong an thay the khi da tra `sysDAOInfo`, DLL/DAO va procedures nhung chua co SP phu hop, kem ghi chu nguon tra cuu va ly do.
+
 Mot so menu danh muc co `sysMenu.code_name` khop dictionary that nhung `sysDictionaryInfo.menuid` bi trong/lẹch. Cac menu nay duoc mo qua `simba.dictionary` voi `source_menuid` de khong che dau lech source:
 
 | Menuid | Route | Code | Source menuid |

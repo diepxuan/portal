@@ -211,10 +211,12 @@ Khi nhận task Portal, Bột làm theo thứ tự:
 1. **Xác định module** — task thuộc module nào (AR, SO, IN, ...)
 2. **Đọc summary** — `asia/{MODULE}_SUMMARY.md` để hiểu tổng quan
 3. **Tra DLL** — `decompiled/asia/{DLL}.dll/README.md` để biết logic gốc
-4. **Tra SP** — `procedures/{MODULE}/` để biết database calls
-5. **Tra cross-module** — `asia/CROSS_MODULE_INTERACTIONS.md` nếu liên quan nhiều module
-6. **Tra tables** — `asia/TABLES_INDEX.md` để biết bảng CSDL
-7. **Implement** — dựa trên domain knowledge đã thu thập
+4. **Tra metadata danh mục** — `data/sysDictionaryInfo.md` để xác định `code_name`, table, form, fields, lookup/filter liên quan
+5. **Tra DAO/SP contract** — `data/sysDAOInfo.md`, DLL/DAO và `procedures/{MODULE}/` để lấy `get_sp`, `ins_sp`, `upd_sp`, `del_sp`
+6. **Chọn data access** — hiển thị danh sách, lookup/filter, thêm, sửa, xóa ưu tiên Stored Procedure wrapper theo nguồn `simba-docs`; Eloquent/model là phương án thay thế khi đã tra mà chưa có SP phù hợp, kèm ghi chú nguồn tra cứu/lý do
+7. **Tra cross-module** — `asia/CROSS_MODULE_INTERACTIONS.md` nếu liên quan nhiều module
+8. **Tra tables** — `asia/TABLES_INDEX.md` để biết bảng CSDL và đối chiếu field
+9. **Implement** — dựa trên domain knowledge đã thu thập
 
 ---
 
@@ -223,6 +225,8 @@ Khi nhận task Portal, Bột làm theo thứ tự:
 - `simba-docs/` là **readonly** — không ghi, sửa, xóa file trong mount
 - Đây là **nguồn sự thật** về logic nghiệp vụ Simba ERP
 - Luôn đối chiếu với simba-docs trước khi implement logic mới
+- Stored Procedure từ `simba-docs` là lựa chọn ưu tiên cho thao tác dữ liệu SimbaERP: hiển thị danh sách, lookup/filter, thêm, sửa, xóa
+- Khi `sysDAOInfo` có `get_sp`, `ins_sp`, `upd_sp`, `del_sp`, Portal ưu tiên tạo/dùng wrapper trong `StoredProcedures\...`; Eloquent/model là phương án thay thế sau khi đã ghi rõ nguồn Simba đã tra và lý do chưa có SP phù hợp
 - Nếu thông tin trong simba-docs không đủ → báo Sếp
 
 ---

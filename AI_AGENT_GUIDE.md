@@ -92,6 +92,13 @@ php artisan cache:clear
   php artisan test
   ```
 
+### 4.4. SimbaERP data access policy
+- `simba-docs/` là nguồn thông tin chính cho bảng, field, DLL, DAO và Stored Procedure.
+- Với dữ liệu SimbaERP, các thao tác hiển thị danh sách, lookup/filter, thêm, sửa, xóa ưu tiên Stored Procedure wrapper theo nguồn `simba-docs`.
+- Thứ tự tra cứu: `data/sysDictionaryInfo.md` để xác định `code_name`/table/form/fields, `data/sysDAOInfo.md` để lấy `get_sp`/`ins_sp`/`upd_sp`/`del_sp`, sau đó đối chiếu DLL/DAO và `procedures/{MODULE}/` khi cần xác nhận tham số.
+- Khi có SP phù hợp, implement qua wrapper `StoredProcedures\...` và kiểm tra tham số khớp DLL/DAO/SP gốc.
+- Eloquent/model là phương án thay thế khi đã tra các nguồn Simba nhưng chưa có SP phù hợp; task docs/PR body cần ghi rõ nguồn đã tra và lý do chọn phương án này.
+
 ## 5. Tiêu chuẩn mã
 
 - **PHP:** Tuân thủ PHP ^8.2, strict types, type hints đầy đủ.
