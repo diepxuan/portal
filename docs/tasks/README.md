@@ -27,6 +27,9 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 - `04.90.05` / `MA_KH` / `ca.nhanvien`: bổ sung route danh sách, form thêm/sửa và action xóa nhân viên; `MA_NV` trong sysDictionaryInfo là nguồn vốn `FADMNV`, không phải nhân viên ARDMKH.
 - Ngân hàng khách hàng Task 034 vẫn giữ shell/task docs; chưa mở CRUD ghi dữ liệu khi chưa xác nhận đầy đủ metadata `ARDMKHNGH`/`ARDMKH_NH`.
 
+**Cập nhật Livewire input component dùng chung (2026-07-06):**
+- Bổ sung Task 357: chuẩn hóa `input-khachhang`, `input-taikhoan`, `input-indmvt`, `input-indmkho`, `input-indmnhvt`, `input-donvi` theo nguyên tắc Stored Procedure wrapper ưu tiên trước; Eloquent/model chỉ là fallback khi đã tra `simba-docs` nhưng chưa có SP phù hợp.
+
 **Kết quả route/menu hiện tại (2026-05-15):**
 - `SimbaRouteRegistry::routes()` có 302 route anchors trước cập nhật Task 356; sau Task 356 bổ sung thêm route anchor `ca.nhanvien`.
 - Active menu có metadata report/dictionary/voucher hoặc DLL/command/code_name đều có route anchor.
