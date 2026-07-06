@@ -14,9 +14,9 @@ Toàn bộ 325 task files đã được audit (xem `AUDIT-2026-05-10.md`).
 
 Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang nguồn `simba-docs`. Hiển thị danh sách, lookup/filter, thêm, sửa, xóa ưu tiên Stored Procedure wrapper theo `sysDAOInfo` và DLL/DAO/procedures. Eloquent/model là phương án thay thế khi đã tra nguồn Simba nhưng chưa có SP phù hợp, kèm ghi chú nguồn tra cứu và lý do.
 
-| UI/data action | Code name | Simba table | Source | GET SP | INS SP | UPD SP | DEL SP | Portal wrapper | Eloquent/model fallback |
-|---|---|---|---|---|---|---|---|---|---|
-| Danh sách/lookup kho | `MA_KHO` | `INDMKHO` | `sysDictionaryInfo` + `sysDAOInfo` | `asINGetDMKHO` | `asINInsDMKHO` | `asINUpdDMKHO` | `asINDelDMKHO` | `StoredProcedures\AsINGetDMKHO` | Ghi nguồn tra cứu và lý do khi dùng fallback |
+| UI/data action | Code name | Simba table | Source | GET SP/wrapper | INS SP/wrapper | UPD SP/wrapper | DEL SP/wrapper | Eloquent/model fallback |
+|---|---|---|---|---|---|---|---|---|
+| Danh sách/lookup/thêm/sửa/xóa kho | `MA_KHO` | `INDMKHO` | `sysDictionaryInfo` + `sysDAOInfo` | `asINGetDMKHO` / `StoredProcedures\AsINGetDMKHO` | `asINInsDMKHO` / `StoredProcedures\AsINInsDMKHO` | `asINUpdDMKHO` / `StoredProcedures\AsINUpdDMKHO` | `asINDelDMKHO` / `StoredProcedures\AsINDelDMKHO` | Ghi nguồn tra cứu và lý do khi dùng fallback |
 
 ---
 
