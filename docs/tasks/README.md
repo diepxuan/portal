@@ -2,72 +2,59 @@
 
 **Tổng quan:** 338 DLL được decompile, **329 files** (324 task ở root + 2 task ở `phase 1/` + 1 README + 2 `_index.md`).
 
-> **Đối với AI agent:** Đọc §1 → §2 → §5 để có context. §3 là index tra cứu nhanh. §4 là template bắt buộc cho task SimbaERP.
+> **Đối với AI agent:** Đọc §1 → §2 → §4 trước khi làm task. §3 là index tra cứu nhanh, không tự đổi trạng thái task.
 
 ---
 
 ## 1. Tổng quan trạng thái
 
-| Nhóm | Files | DLL gốc | Status |
-|---|---:|---:|---|
-| AR — Công nợ phải thu | 16 | ~16 | 3 DONE (001, 002, 003) |
-| AP — Công nợ phải trả | 4 | ~4 | 0 DONE |
-| CA — Tiền mặt & Ngân hàng | 12 | ~12 | 4 DONE (027–030) |
-| CO — Sản xuất | 19 | ~18 | 0 DONE |
-| SO — Đơn hàng bán | 47 | ~40 | 1 DONE (038) |
-| PO — Đơn hàng mua | 19 | ~20 | 1 DONE (063) |
-| SI — System Integration | 26 | ~25 | 1 DONE (084) |
-| IN — Tồn kho | 30 | ~40 | 4 DONE (100, 109, 114, 117) |
-| FA — Tài sản cố định | 39 | ~50 | 0 DONE |
-| GL — Sổ cái tổng hợp | 103 | ~95 | 1 DONE (146) |
-| System — Framework & cross-link | 9 | ~18 | 1 DONE (admin-dashboard) |
-| **Tổng (root)** | **324** | **~338** | **14 DONE** |
-| **Phase 1 (IMPLEMENTED)** | **2** | — | 2 DONE (008, 117) |
-| **Tổng (root + phase 1)** | **326** | **~338** | **16 DONE** |
+### Quy ước phase
 
-> DONE = đã implement và merge PR. PENDING = chỉ có task spec, chưa code.
+- **Phase hiện tại** là các task còn ở root `docs/tasks/`. Mục tiêu của phase này là làm đúng bộ khung cho dự án: task spec, nguồn `simba-docs`, route/menu, Data Access Map, SP/wrapper, phạm vi và tiêu chí kiểm chứng. Tất cả task ở root giữ trạng thái `PENDING` cho đến khi xong phase hiện tại.
+- **Phase 1** là thư mục `docs/tasks/phase 1/`. Task được chuyển vào đây sau khi đã xong phase hiện tại. Phase 1 tương lai sẽ tiếp tục hoàn thiện chức năng nghiệp vụ và UI theo task cụ thể.
+- Hiện tại chỉ `008` và `117` đã xong phase hiện tại và được chuyển sang `phase 1/`. Các task còn lại giữ nguyên trạng thái chờ hoàn thành.
+
+| Khu vực | Files | Trạng thái |
+|---|---:|---|
+| Root `docs/tasks/` | 324 | PENDING - đang chờ hoàn thành phase hiện tại |
+| `docs/tasks/phase 1/` | 2 | DONE phase hiện tại: 008, 117 |
+| **Tổng task** | **326** | 324 PENDING + 2 phase 1 |
+
+### Tổng quan root theo module
+
+| Module | Files | Trạng thái |
+|---|---:|---|
+| AR — Công nợ phải thu | 16 | PENDING |
+| AP — Công nợ phải trả | 4 | PENDING |
+| CA — Tiền mặt & Ngân hàng | 12 | PENDING |
+| CO — Sản xuất | 19 | PENDING |
+| SO — Đơn hàng bán | 47 | PENDING |
+| PO — Đơn hàng mua | 19 | PENDING |
+| SI — System Integration | 26 | PENDING |
+| IN — Tồn kho | 30 | PENDING |
+| FA — Tài sản cố định | 39 | PENDING |
+| GL — Sổ cái tổng hợp | 103 | PENDING |
+| System — Framework & cross-link | 9 | PENDING |
+| **Tổng root** | **324** | PENDING |
 
 **Snapshot audit mới nhất (route/menu):** `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md`, `../project/simba-router-menu-matrix.md`.
 
-## 2. Tasks đã hoàn thành (15)
+## 2. Tasks đã chuyển sang phase 1 (2)
 
 | # | Task | Module | PR |
 |---|---|---|---|
-| 001 | ar-danh-muc-khach-hang | AR | — |
-| 002 | ar-danh-muc-nhom-khach-hang | AR | — |
-| 003 | ar-danh-muc-phan-loai-khach-hang | AR | — |
-| 027 | ca-voucher-thu-tien | CA | — |
-| 028 | ca-voucher-chi-tien | CA | — |
-| 029 | ca-voucher-bao-no-ngan-hang | CA | — |
-| 030 | ca-voucher-bao-co-uy-nhiem-chi | CA | — |
-| 038 | ban-hang-khach-hang-them-sua-xoa | SO | [#170](https://github.com/diepxuan/portal/pull/170) |
-| 063 | po-danhmuc-chuongtrinh-muahang | PO | — |
-| 084 | si-danhmuc-bophan | SI | — |
-| 100 | in-danhmuc-kho | IN | — |
-| 109 | in-danhmuc-nhomhang-vat | IN | — |
-| 114 | in-danhmuc-vattu | IN | — |
 | 008 | ar-bao-cao-cong-no-tk-kh | AR | phase 1 |
 | 117 | in-baocao-tonkho-02 | IN | [#241](https://github.com/diepxuan/portal/pull/241) |
-| 146 | gl-danhmuc-taikhoan | GL | — |
-| 11 | admin-dashboard | System | — |
 
 ## 3. Index theo module (326 tasks)
 
-> Xem [`_index.md`](_index.md) — file sinh tự động từ `scripts/gen-tasks-index.php`. Mỗi dòng: ID, slug, module, DLL, status.
+> Xem [`_index.md`](_index.md) cho root phase hiện tại và [`phase 1/_index.md`](phase%201/_index.md) cho task đã chuyển phase. Cả hai file sinh tự động từ `scripts/gen-tasks-index.php`.
 
 **Tóm tắt nhanh:**
 
-- AR: `001-016`, `158` (17 tasks, bao gồm `038-ban-hang-...` cross-link về ARDMKH)
-- AP: `017-020`
-- CA: `021-032` + `159-165` (12 tasks, có 1 file range ID `032-038`)
-- CO: `039-042` + `166-180` + `342-353` (18 tasks)
-- SO: `043-062` + `197-216` + `339-340` (40 tasks)
-- PO: `063-080` + `217` (19 tasks)
-- SI: `081-099` + `218-224` (26 tasks)
-- IN: `100-117` + `225-235` (29 tasks, 117 DONE)
-- FA: `118-137` + `236-253` (39 tasks)
-- GL: `138-157` + `254-337` (103 tasks)
-- System: `1`, `5`, `11`, `26`, `32`, `34-37`, `55`, `59`, `CA4-PHIEU-BAONO-SPEC`, `357`
+- Root phase hiện tại: 324 task, toàn bộ `PENDING`.
+- Phase 1: 2 task `DONE` phase hiện tại (`008`, `117`).
+- Khi thêm hoặc chuyển task, chạy `php scripts/gen-tasks-index.php` để cập nhật `_index.md`.
 
 ## 4. Data Access Map bắt buộc cho task SimbaERP
 
@@ -102,6 +89,11 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 
 ## 5. Cập nhật gần đây
 
+**2026-07-07:**
+- Chốt quy ước phase: root `docs/tasks/` là phase hiện tại để dựng đúng bộ khung dự án; xong phase hiện tại thì chuyển task vào `phase 1/`.
+- Hiện chỉ `008` và `117` ở `phase 1/`; các task còn lại giữ `PENDING`.
+- Đánh lại status cũ ở root về `PENDING` theo quy ước phase mới: `069` (DONE → PENDING), `118/120/123` (FIXED → PENDING — chỉ là fix tên class, chưa xong phase). Lý do: status cũ phản ánh tiến độ kiểu cũ (route/shell exists, class name fix), không tương thích quy ước phase hiện tại.
+
 **2026-07-06:**
 - Thêm Task 357 — chuẩn hóa 6 Livewire input components (`input-khachhang`, `input-taikhoan`, `input-indmvt`, `input-indmkho`, `input-indmnhvt`, `input-donvi`) theo chính sách SP wrapper ưu tiên.
 
@@ -123,7 +115,9 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 ### Khi viết/sửa task file
 1. Mỗi task file phải có section "Data Access Map" theo template §4
 2. Mỗi task file phải có section "Audit Status" cuối file (status + ngày + người audit)
-3. Không tự đổi trạng thái DONE — phải có PR merged vào main
+3. Không tự đổi trạng thái DONE trong root `docs/tasks/`
+4. Khi task xong phase hiện tại, chuyển file sang `docs/tasks/phase 1/` rồi chạy lại `php scripts/gen-tasks-index.php`
+5. Phase 1 là nơi tiếp tục hoàn thiện chức năng nghiệp vụ và UI theo task cụ thể
 
 ### Khi implement
 - Bắt buộc tra `simba-docs/data/sysDictionaryInfo.md` và `sysDAOInfo.md` trước
@@ -141,5 +135,5 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 
 ---
 
-*Cập nhật: 2026-07-06 17:15 GMT+7*
+*Cập nhật: 2026-07-07 00:00 GMT+7*
 *Sinh tự động từ `scripts/gen-tasks-index.php` — xem [`scripts/gen-tasks-index.php`](../../scripts/gen-tasks-index.php)*

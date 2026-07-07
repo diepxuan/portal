@@ -2,7 +2,7 @@
 
 > Tự động sinh bởi `scripts/gen-tasks-index.php`. **Không sửa tay** — sửa script rồi chạy lại.
 
-**Lưu ý:** Task phase 1 (đã hoàn thành triển khai giai đoạn đầu) được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md).
+**Lưu ý:** Task đã xong phase hiện tại được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md). Phase 1 sẽ tiếp tục hoàn thiện chức năng và UI theo task cụ thể.
 
 ## Tổng quan
 
@@ -12,10 +12,10 @@
 | AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
 | CA — Tiền mặt & Ngân hàng | 12 | 0 | 12 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
-| FA — Tài sản cố định | 39 | 3 | 36 | 0 |
+| FA — Tài sản cố định | 39 | 0 | 39 | 0 |
 | GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
-| PO — Đơn hàng mua | 19 | 1 | 18 | 0 |
+| PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 26 | 0 | 26 | 0 |
 | SO — Đơn hàng bán | 47 | 0 | 47 | 0 |
 | System — Framework & cross-link | 9 | 0 | 9 | 0 |
@@ -97,12 +97,12 @@
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 051 | `341-FA-baocao-phantich-tscd-01.md` |  | PENDING |
-| 118 | `118-FA-baocao-BCTS09.md` | FARptBCTS09.dll | FIXED |
+| 118 | `118-FA-baocao-BCTS09.md` | FARptBCTS09.dll | PENDING |
 | 119 | `119-FA-tinh-khauhao-tscd.md` |  | PENDING |
-| 120 | `120-FA-baocao-BCTS07.md` | FARptBCTS07.dll | FIXED |
+| 120 | `120-FA-baocao-BCTS07.md` | FARptBCTS07.dll | PENDING |
 | 121 | `121-FA-baocao-phantich-02.md` | FARptBCPT02.dll | PENDING |
 | 122 | `122-FA-baocao-phantich-05.md` | FARptBCPT05.dll | PENDING |
-| 123 | `123-FA-so-tscd.md` | FARptSoTSCD.dll | FIXED |
+| 123 | `123-FA-so-tscd.md` | FARptSoTSCD.dll | PENDING |
 | 124 | `124-FA-dinhgia-tscd.md` | FADGTS.dll | PENDING |
 | 125 | `125-FA-bangphanbo-khauhao-nhomts.md` | FABHCC.dll | PENDING |
 | 126 | `126-FA-baocao-phantich-03.md` | FARptBCPT03.dll | PENDING |
@@ -289,7 +289,7 @@
 | 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | PENDING |
 | 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | PENDING |
 | 068 | `068-PO-danhmuc-hinhthuc-thanhtoan.md` | PODMHTTT.dll | PENDING |
-| 069 | `069-PO-hoadon-muahang.md` | POVchPO3.dll | DONE |
+| 069 | `069-PO-hoadon-muahang.md` | POVchPO3.dll | PENDING |
 | 070 | `070-PO-chungtu-nhan-hang-mua.md` | POVchPO4.dll | PENDING |
 | 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | PENDING |
 | 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | PENDING |

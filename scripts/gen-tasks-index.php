@@ -6,14 +6,14 @@ declare(strict_types=1);
  * Generate task index files từ docs/tasks/.
  *
  * Tạo 2 file:
- *   docs/tasks/_index.md         — tổng index các task ở root + sub-folder
+ *   docs/tasks/_index.md         — index phase hiện tại ở root docs/tasks/
  *   docs/tasks/phase 1/_index.md — index riêng cho phase 1 (nếu có)
  *
  * Parse metadata từ mỗi file:
  *   - ID: từ "# Task {ID}:" ở dòng đầu
  *   - DLL: từ "**DLL:**" trong section "## Chi tiet"
  *   - Module: từ "## Nhom:" → prefix (AR/AP/CA/CO/SO/PO/SI/IN/FA/GL)
- *   - Status: từ "**Kết quả:**", "**Status:**", hoặc "**Trạng thái:**"
+ *   - Status: mặc định từ phase hiện tại; root luôn PENDING, phase 1 luôn DONE
  *
  * Cách dùng:
  *   php scripts/gen-tasks-index.php            # generate cả 2 index
@@ -36,7 +36,7 @@ $phaseOnly    = in_array('--phase-only', $argv, true);
 /**
  * @return array<int, array{id:string, file:string, dll:string, module:string, status:string, title:string}>
  */
-function parseTaskFiles(string $dir): array
+function parseTaskFiles(string $dir, string $status): array
 {
     $tasks = [];
     if (! is_dir($dir)) {
@@ -93,16 +93,6 @@ function parseTaskFiles(string $dir): array
             if ($module === '' && (str_contains($stripped, 'SIMBA-LOGIN') || str_contains($stripped, 'ADMIN-DASHBOARD') || str_contains($stripped, 'DEVELOPER-SUPPORT') || str_contains($stripped, 'TONG-HOP') || str_contains($stripped, 'HANG-TON-KHO'))) {
                 $module = 'SYS';
             }
-        }
-        $status = 'PENDING';
-        if (preg_match('/\*\*Kết quả:\*\*\s*([A-Z_]+)/u', $content, $m)) {
-            $status = strtoupper($m[1]);
-        } elseif (preg_match('/\*\*Ket qua:\*\*\s*([A-Z_]+)/u', $content, $m)) {
-            $status = strtoupper($m[1]);
-        } elseif (preg_match('/\*\*Status:\*\*\s*([A-Z_]+)/u', $content, $m)) {
-            $status = strtoupper($m[1]);
-        } elseif (preg_match('/\*\*Trạng thái:\*\*\s*([A-Z_]+)/u', $content, $m)) {
-            $status = strtoupper($m[1]);
         }
         $tasks[] = [
             'id'     => $id,
@@ -179,22 +169,24 @@ function renderIndex(string $title, array $tasks, string $note = ''): string
     return $out;
 }
 
-$rootTasks = parseTaskFiles($tasksDir);
-$phase1Tasks = is_dir($phase1Dir) ? parseTaskFiles($phase1Dir) : [];
+$rootTasks = parseTaskFiles($tasksDir, 'PENDING');
+$phase1Tasks = is_dir($phase1Dir) ? parseTaskFiles($phase1Dir, 'DONE') : [];
 
 $rootNote = '';
 if (count($phase1Tasks) > 0) {
-    $rootNote = '**Lưu ý:** Task phase 1 (đã hoàn thành triển khai giai đoạn đầu) được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md).';
+    $rootNote = '**Lưu ý:** Task đã xong phase hiện tại được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md). Phase 1 sẽ tiếp tục hoàn thiện chức năng và UI theo task cụ thể.';
 }
 $rootMd = renderIndex('Tasks Index', $rootTasks, $rootNote);
 $phaseMd = $phase1Tasks
-    ? renderIndex('Phase 1 Tasks', $phase1Tasks, 'Các task đã hoàn thành phase 1 và được tách riêng để dễ theo dõi.')
+    ? renderIndex('Phase 1 Tasks', $phase1Tasks, 'Các task đã xong phase hiện tại và được chuyển sang phase 1 để tiếp tục hoàn thiện chức năng nghiệp vụ và UI.')
     : '';
 
 if ($dryRun) {
-    echo "=== docs/tasks/_index.md ===\n";
-    echo $rootMd;
-    if ($phaseMd !== '') {
+    if (! $phaseOnly) {
+        echo "=== docs/tasks/_index.md ===\n";
+        echo $rootMd;
+    }
+    if (! $rootOnly && $phaseMd !== '') {
         echo "\n=== docs/tasks/phase 1/_index.md ===\n";
         echo $phaseMd;
     }
