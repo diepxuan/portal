@@ -10,9 +10,9 @@ declare(strict_types=1);
  *   docs/tasks/phase 1/_index.md — index riêng cho phase 1 (nếu có)
  *
  * Parse metadata từ mỗi file:
- *   - ID: từ "# Task {ID}:" ở dòng đầu
- *   - DLL: từ "**DLL:**" trong section "## Chi tiet"
- *   - Module: từ "## Nhom:" → prefix (AR/AP/CA/CO/SO/PO/SI/IN/FA/GL)
+ *   - ID: từ "# Task {ID}:" ở dòng đầu, giữ nguyên range dạng 032-038
+ *   - DLL: từ bảng thông tin, "**DLL:**", "**Nhom DLL:**" hoặc "**DLL chinh:**"
+ *   - Module: từ "## Nhom:", bảng "**Module**" hoặc prefix filename
  *   - Status: mặc định từ phase hiện tại; root luôn PENDING, phase 1 luôn DONE
  *
  * Cách dùng:
@@ -32,6 +32,21 @@ $phase1Index  = $phase1Dir . '/_index.md';
 $dryRun       = in_array('--dry-run', $argv, true);
 $rootOnly     = in_array('--root-only', $argv, true);
 $phaseOnly    = in_array('--phase-only', $argv, true);
+
+/**
+ * @return array{0:int, 1:int, 2:string}
+ */
+function taskIdSortKey(string $id): array
+{
+    if (preg_match('/^(\d+)(?:-(\d+))?$/', $id, $m)) {
+        $start = (int) $m[1];
+        $end = isset($m[2]) ? (int) $m[2] : $start;
+
+        return [$start, $end, $id];
+    }
+
+    return [0, 0, $id];
+}
 
 /**
  * @return array<int, array{id:string, file:string, dll:string, module:string, status:string, title:string}>
@@ -56,18 +71,20 @@ function parseTaskFiles(string $dir, string $status): array
         $content = (string) file_get_contents($path);
         $id      = '';
         $title   = '';
-        if (preg_match('/^#\s+Task\s+(\d+):\s*(.+)$/m', $content, $m)) {
+        if (preg_match('/^#\s+Task\s+(\d+(?:-\d+)?):\s*(.+)$/m', $content, $m)) {
             $id    = $m[1];
             $title = trim($m[2]);
         } else {
-            // Fallback: lấy ID từ tên file (vd: 008-ar-...)
-            if (preg_match('/^(\d+)-/', $entry, $m)) {
+            // Fallback: lấy ID từ tên file (vd: 008-ar-..., 032-038-ca-...)
+            if (preg_match('/^(\d+(?:-\d+)?)-/', $entry, $m)) {
                 $id = $m[1];
             }
             $title = pathinfo($entry, PATHINFO_FILENAME);
         }
         $dll = '';
-        if (preg_match('/\*\*DLL:\*\*\s*(.+)$/m', $content, $m)) {
+        if (preg_match('/^\|\s*\*\*DLL\*\*\s*\|\s*([^|]+?)\s*\|/miu', $content, $m)) {
+            $dll = trim($m[1]);
+        } elseif (preg_match('/\*\*[^*\n]*DLL[^*\n]*:\*\*\s*(.+)$/miu', $content, $m)) {
             $dll = trim($m[1]);
         }
         $module = '';
@@ -76,11 +93,16 @@ function parseTaskFiles(string $dir, string $status): array
             if ($module === 'SYSTEM') {
                 $module = 'SYS';
             }
+        } elseif (preg_match('/^\|\s*\*\*Module\*\*\s*\|\s*([A-Z]{2,6})\b/miu', $content, $m)) {
+            $module = strtoupper($m[1]);
+            if ($module === 'SYSTEM') {
+                $module = 'SYS';
+            }
         } else {
             // Heuristic từ prefix file (AR-, AP-, ...) - check cả vi tri sau số
             $upper = strtoupper($entry);
-            // Bỏ phần số ID đầu (vd "021-ca-..." → "CA-...")
-            $stripped = preg_replace('/^\d+-/', '', $upper);
+            // Bỏ phần số ID đầu (vd "021-ca-..." → "CA-...", "032-038-ca-..." → "CA-...")
+            $stripped = preg_replace('/^\d+(?:-\d+)?-/', '', $upper);
             foreach (['AR', 'AP', 'CA', 'CO', 'SO', 'PO', 'SI', 'IN', 'FA', 'GL'] as $prefix) {
                 if (str_starts_with($stripped, $prefix . '-') || str_starts_with($stripped, $prefix . '_')) {
                     $module = $prefix;
@@ -103,7 +125,11 @@ function parseTaskFiles(string $dir, string $status): array
             'title'  => $title,
         ];
     }
-    usort($tasks, fn ($a, $b) => str_pad((string) $a['id'], 10, '0', STR_PAD_LEFT) <=> str_pad((string) $b['id'], 10, '0', STR_PAD_LEFT));
+    usort($tasks, function ($a, $b): int {
+        $byId = taskIdSortKey((string) $a['id']) <=> taskIdSortKey((string) $b['id']);
+
+        return $byId !== 0 ? $byId : strcmp((string) $a['file'], (string) $b['file']);
+    });
     return $tasks;
 }
 
@@ -182,12 +208,15 @@ $phaseMd = $phase1Tasks
     : '';
 
 if ($dryRun) {
+    $printedRoot = false;
     if (! $phaseOnly) {
         echo "=== docs/tasks/_index.md ===\n";
         echo $rootMd;
+        $printedRoot = true;
     }
     if (! $rootOnly && $phaseMd !== '') {
-        echo "\n=== docs/tasks/phase 1/_index.md ===\n";
+        echo $printedRoot ? "\n" : '';
+        echo "=== docs/tasks/phase 1/_index.md ===\n";
         echo $phaseMd;
     }
     return;

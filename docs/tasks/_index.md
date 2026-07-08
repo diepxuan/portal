@@ -10,7 +10,7 @@
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 4 | 0 | 4 | 0 |
 | AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
-| CA — Tiền mặt & Ngân hàng | 12 | 0 | 12 | 0 |
+| CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
 | GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
@@ -18,7 +18,7 @@
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 26 | 0 | 26 | 0 |
 | SO — Đơn hàng bán | 47 | 0 | 47 | 0 |
-| System — Framework & cross-link | 9 | 0 | 9 | 0 |
+| System — Framework & cross-link | 8 | 0 | 8 | 0 |
 | **Tổng** | **324** | | | |
 
 ## AP — Công nợ phải trả
@@ -48,57 +48,58 @@
 | 013 | `013-ar-bang-ke-chung-tu-ban-hang.md` | ARRptBK01.dll | PENDING |
 | 014 | `014-ar-bang-ke-cong-no-han.md` | ARRptBK02.dll | PENDING |
 | 015 | `015-ar-bang-ke-chung-tu-thanh-toan.md` | ARRptBK03.dll | PENDING |
-| 016 | `016-ar-chung-tu-hach-toan-cong-no.md` |  | PENDING |
+| 016 | `016-ar-chung-tu-hach-toan-cong-no.md` | ARVchAR4.dll | PENDING |
 | 158 | `158-ar-rpt-f5-bccn01a-drilldown.md` | ArRptF5BCCN01a.dll | PENDING |
 
 ## CA — Tiền mặt & Ngân hàng
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 021 | `021-ca-danh-muc-khe-uoc.md` |  | PENDING |
-| 022 | `022-ca-cong-no-khe-uoc.md` |  | PENDING |
-| 023 | `023-ca-cong-no-phan-cap.md` |  | PENDING |
-| 024 | `024-ca-tinh-lai-khe-uoc.md` |  | PENDING |
-| 025 | `025-ca-xoa-lai-khe-uoc.md` |  | PENDING |
-| 026 | `026-ca-lai-khe-uoc.md` |  | PENDING |
-| 027 | `027-ca-voucher-thu-tien.md` |  | PENDING |
-| 028 | `028-ca-voucher-chi-tien.md` |  | PENDING |
-| 029 | `029-ca-voucher-bao-no-ngan-hang.md` |  | PENDING |
-| 030 | `030-ca-voucher-bao-co-uy-nhiem-chi.md` |  | PENDING |
-| 031 | `031-ca-voucher-khe-uoc-vay.md` |  | PENDING |
-| 159 | `159-165-ca-rpt-tmnh-bao-cao-tien-mat-ngan-hang.md` |  | PENDING |
+| 021 | `021-ca-danh-muc-khe-uoc.md` | CADMKU.dll | PENDING |
+| 022 | `022-ca-cong-no-khe-uoc.md` | CACDKU.dll | PENDING |
+| 023 | `023-ca-cong-no-phan-cap.md` | CACDPC.dll | PENDING |
+| 024 | `024-ca-tinh-lai-khe-uoc.md` | CACalLaiKu.dll | PENDING |
+| 025 | `025-ca-xoa-lai-khe-uoc.md` | CADelLaiKu.dll | PENDING |
+| 026 | `026-ca-lai-khe-uoc.md` | CALAIKU.dll | PENDING |
+| 027 | `027-ca-voucher-thu-tien.md` | CAVchCA1.dll | PENDING |
+| 028 | `028-ca-voucher-chi-tien.md` | CAVchCA2.dll | PENDING |
+| 029 | `029-ca-voucher-bao-no-ngan-hang.md` | CAVchCA3.dll | PENDING |
+| 030 | `030-ca-voucher-bao-co-uy-nhiem-chi.md` | CAVchCA4.dll | PENDING |
+| 031 | `031-ca-voucher-khe-uoc-vay.md` | CAVchCA5.dll | PENDING |
+| 032-038 | `032-038-ca-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | PENDING |
+| 159-165 | `159-165-ca-rpt-tmnh-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | PENDING |
 
 ## CO — Sản xuất
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 039 | `039-co-dinh-muc-bom.md` |  | PENDING |
-| 040 | `040-co-dinh-muc-chi-tiet.md` |  | PENDING |
-| 041 | `041-co-danh-muc-nhom-san-pham.md` |  | PENDING |
-| 042 | `042-co-danh-muc-but-toan-phan-bo.md` |  | PENDING |
+| 039 | `039-co-dinh-muc-bom.md` | CODMBOM.dll | PENDING |
+| 040 | `040-co-dinh-muc-chi-tiet.md` | CODD1.dll | PENDING |
+| 041 | `041-co-danh-muc-nhom-san-pham.md` | CODMNHSPCT.dll | PENDING |
+| 042 | `042-co-danh-muc-but-toan-phan-bo.md` | CODMPB.dll | PENDING |
 | 166 | `166-co-dmbom-dinh-muc-nguyen-vat-lieu.md` | CODMBOM_.dll | PENDING |
 | 167 | `167-co-dmspct-danh-muc-san-pham-cong-trinh.md` | CODMSPCT.dll | PENDING |
-| 168 | `168-180-co-ky-thuat-san-xuat.md` |  | PENDING |
-| 342 | `342-co-lien-ket-ket-chuyen.md` |  | PENDING |
-| 343 | `343-co-phieu-bao.md` |  | PENDING |
-| 344 | `344-co-rpt-gt01.md` |  | PENDING |
-| 345 | `345-co-rpt-gt02.md` |  | PENDING |
-| 346 | `346-co-rpt-gt03.md` |  | PENDING |
-| 347 | `347-co-tinh-gia-thanh.md` |  | PENDING |
-| 348 | `348-co-danh-muc-chi-phi-tap-trung.md` |  | PENDING |
-| 349 | `349-co-xoa-post-cp-sang-gl.md` |  | PENDING |
-| 350 | `350-co-ngung-khai-bao-cp.md` |  | PENDING |
-| 351 | `351-co-post-chi-phi-tap-trung-sang-gl.md` |  | PENDING |
-| 352 | `352-co-bao-cao-chi-tiet-pb.md` |  | PENDING |
-| 353 | `353-co-bao-cao-khai-bao-cp.md` |  | PENDING |
+| 168-180 | `168-180-co-ky-thuat-san-xuat.md` | COGDBGT, COLK, COPB, CORptGt01-03, CoCalcCost, CoDMCPTT, CoDelPostCP2GL, CoNgungKHCPTT, CoPostCPTT2GL, CoRptCTPBCPTT, CoRptKHCPTT | PENDING |
+| 342 | `342-co-lien-ket-ket-chuyen.md` | COLK.dll | PENDING |
+| 343 | `343-co-phieu-bao.md` | COPB.dll | PENDING |
+| 344 | `344-co-rpt-gt01.md` | CORptGt01.dll | PENDING |
+| 345 | `345-co-rpt-gt02.md` | CORptGt02.dll | PENDING |
+| 346 | `346-co-rpt-gt03.md` | CORptGt03.dll | PENDING |
+| 347 | `347-co-tinh-gia-thanh.md` | CoCalcCost.dll | PENDING |
+| 348 | `348-co-danh-muc-chi-phi-tap-trung.md` | CoDMCPTT.dll | PENDING |
+| 349 | `349-co-xoa-post-cp-sang-gl.md` | CoDelPostCP2GL.dll | PENDING |
+| 350 | `350-co-ngung-khai-bao-cp.md` | CoNgungKHCPTT.dll | PENDING |
+| 351 | `351-co-post-chi-phi-tap-trung-sang-gl.md` | CoPostCPTT2GL.dll | PENDING |
+| 352 | `352-co-bao-cao-chi-tiet-pb.md` | CoRptCTPBCPTT.dll | PENDING |
+| 353 | `353-co-bao-cao-khai-bao-cp.md` | CoRptKHCPTT.dll | PENDING |
 
 ## FA — Tài sản cố định
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 051 | `341-FA-baocao-phantich-tscd-01.md` |  | PENDING |
+| 051 | `341-FA-baocao-phantich-tscd-01.md` | FARptBCPT01.dll | PENDING |
 | 118 | `118-FA-baocao-BCTS09.md` | FARptBCTS09.dll | PENDING |
-| 119 | `119-FA-tinh-khauhao-tscd.md` |  | PENDING |
+| 119 | `119-FA-tinh-khauhao-tscd.md` | FACalKHTS.dll | PENDING |
 | 120 | `120-FA-baocao-BCTS07.md` | FARptBCTS07.dll | PENDING |
 | 121 | `121-FA-baocao-phantich-02.md` | FARptBCPT02.dll | PENDING |
 | 122 | `122-FA-baocao-phantich-05.md` | FARptBCPT05.dll | PENDING |
@@ -140,8 +141,8 @@
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 049 | `049-GL-bangcan-doi-phat-sinh.md` |  | PENDING |
-| 138 | `138-GL-chuyen-so-lieu-so-cai.md` |  | PENDING |
+| 049 | `049-GL-bangcan-doi-phat-sinh.md` | GLRptBCPT01.dll | PENDING |
+| 138 | `138-GL-chuyen-so-lieu-so-cai.md` | GLPost2GL.dll | PENDING |
 | 139 | `139-GL-baocao-BCTCCDTB02.md` | GLRptBCTCCDTB02.dll | PENDING |
 | 140 | `140-GL-bieumau-BCTC-CTMV02.md` | GLMAUBCTCTMV02.dll | PENDING |
 | 141 | `141-GL-baocao-F5-CTGS03.md` | GLRptF5CTGS03.dll | PENDING |
@@ -249,7 +250,7 @@
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 059 | `59-hang-ton-kho.md` |  | PENDING |
-| 100 | `100-IN-danhmuc-kho.md` |  | PENDING |
+| 100 | `100-IN-danhmuc-kho.md` | INDMKHO.dll | PENDING |
 | 101 | `101-IN-congno-dinhmuc-fifo.md` | INCDFIFO.dll | PENDING |
 | 102 | `102-IN-baocao-tonghop-nhap-01.md` | INRptTHN01.dll | PENDING |
 | 103 | `103-IN-phieu-nhapkho.md` | INVchIN1.dll | PENDING |
@@ -338,15 +339,15 @@
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 032 | `32-ban-hang.md` |  | PENDING |
+| 032 | `32-ban-hang.md` | SOVchSO1.dll, SOVchSO3.dll, SOUtilities.dll | PENDING |
 | 034 | `34-ban-hang-khach-hang-lien-ket-ngan-hang.md` |  | PENDING |
 | 035 | `35-ban-hang-khach-hang-lien-ket-nhom-phan-loai.md` |  | PENDING |
 | 036 | `36-ban-hang-khach-hang-lien-ket-danh-muc-tai-khoan.md` |  | PENDING |
 | 037 | `37-ban-hang-khach-hang-lien-ket-ma-thanh-toan.md` |  | PENDING |
 | 038 | `038-ban-hang-khach-hang-them-sua-xoa.md` | ARDMKH.dll | PENDING |
 | 043 | `043-SO-dondathang-ma-khach-dac-biet.md` | SOND51dmqdadhd.dll | PENDING |
-| 044 | `044-SO-baocao-banhang-chitieu.md` |  | PENDING |
-| 045 | `045-SO-baocao-loi-nhuan.md` |  | PENDING |
+| 044 | `044-SO-baocao-banhang-chitieu.md` | SORptBCPT06.dll | PENDING |
+| 045 | `045-SO-baocao-loi-nhuan.md` | SORptLaiLo.dll | PENDING |
 | 046 | `046-SO-tien-ich-ban-hang.md` | SOUtilities.dll | PENDING |
 | 047 | `047-SO-dondathang-diembanhang.md` | SOND51adhd.dll | PENDING |
 | 048 | `048-SO-baocao-tonghop-banhang.md` | SORptTH01.dll | PENDING |
@@ -395,8 +396,7 @@
 | 5 | `5-developer-support.md` |  | PENDING |
 | 11 | `11-admin-dashboard.md` |  | PENDING |
 | 26 | `26-tong-hop.md` |  | PENDING |
-| 032 | `032-038-ca-bao-cao-tien-mat-ngan-hang.md` |  | PENDING |
-| 181 | `181-196-system-framework-infrastructure.md` |  | PENDING |
+| 181-196 | `181-196-system-framework-infrastructure.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 

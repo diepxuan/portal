@@ -26,7 +26,7 @@
 |---|---:|---|
 | AR — Công nợ phải thu | 16 | PENDING |
 | AP — Công nợ phải trả | 4 | PENDING |
-| CA — Tiền mặt & Ngân hàng | 12 | PENDING |
+| CA — Tiền mặt & Ngân hàng | 13 | PENDING |
 | CO — Sản xuất | 19 | PENDING |
 | SO — Đơn hàng bán | 47 | PENDING |
 | PO — Đơn hàng mua | 19 | PENDING |
@@ -34,7 +34,7 @@
 | IN — Tồn kho | 30 | PENDING |
 | FA — Tài sản cố định | 39 | PENDING |
 | GL — Sổ cái tổng hợp | 103 | PENDING |
-| System — Framework & cross-link | 9 | PENDING |
+| System — Framework & cross-link | 8 | PENDING |
 | **Tổng root** | **324** | PENDING |
 
 **Snapshot audit mới nhất (route/menu):** `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md`, `../project/simba-router-menu-matrix.md`.
@@ -84,8 +84,8 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 
 | Task | Module | Bảng | SP |
 |---|---|---|---|
-| 001 | AR | DMKH | AsARGetDMKH / AsARInsDMKH / AsARUpdDMKH / AsARDelDMKH |
-| 100 | IN | DMKHO | AsINGetDMKHO / AsINInsDMKHO / AsINUpdDMKHO / AsINDelDMKHO |
+| 001 | AR | ARDMKH | AsARGetDMKH / AsARInsDMKH / AsARUpdDMKH / AsARDelDMKH |
+| 100 | IN | INDMKHO | AsINGetDMKHO / AsINInsDMKHO / AsINUpdDMKHO / AsINDelDMKHO |
 
 ## 5. Cập nhật gần đây
 
