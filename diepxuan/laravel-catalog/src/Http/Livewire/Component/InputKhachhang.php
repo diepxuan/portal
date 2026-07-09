@@ -58,8 +58,13 @@ class InputKhachhang extends Component
     /** Placeholder text. */
     public string $placeholder = '';
 
-    /** Cache lookup theo module để tránh gọi SP lặp lại. */
-    protected array $dmCache = [];
+    /**
+     * Cache danh mục theo module để tránh gọi SP lặp lại giữa các
+     * request Livewire (phải khai báo `public` để Livewire persist).
+     *
+     * @var array<string, array<int, array<string, mixed>>>
+     */
+    public array $dmCache = [];
 
     /**
      * Mount component.
@@ -203,7 +208,10 @@ class InputKhachhang extends Component
     }
 
     /**
-     * Gọi SP asARGetDMKH cho 1 module, có cache trong vòng đời component.
+     * Gọi SP asARGetDMKH cho 1 module, có cache persist qua Livewire request.
+     *
+     * Mặc định lọc bản ghi đang sử dụng (ksd = 1) để giữ hành vi tương
+     * đương global scope `ksd` trên model ArDmKh trước đây.
      */
     protected function fetchDmKhByModule(string $moduleId): array
     {
@@ -218,26 +226,42 @@ class InputKhachhang extends Component
             'pModuleId' => $moduleId,
         ])->all();
 
-        // Chuẩn hóa key thường gặp: ma_kh, ten_kh, dia_chi, tel
-        return $this->dmCache[$moduleId] = array_map(
-            static function ($row) {
-                if (\is_array($row)) {
-                    return $row;
-                }
-                $obj = (array) $row;
-                $lower = [];
-                foreach ($obj as $k => $v) {
-                    $lower[strtolower((string) $k)] = $v;
-                }
+        // Chuẩn hóa key về lowercase và lọc ksd = 1 (truthy) ngay tại đây
+        // để bù global scope cũ của ArDmKh. SP asARGetDMKH không filter ksd.
+        return $this->dmCache[$moduleId] = array_values(array_filter(
+            array_map(
+                static function ($row) {
+                    if (\is_array($row)) {
+                        return self::normalizeRow($row);
+                    }
+                    if (\is_object($row)) {
+                        return self::normalizeRow((array) $row);
+                    }
 
-                return $lower;
-            },
-            $rows
-        );
+                    return [];
+                },
+                $rows
+            ),
+            static fn (array $row): bool => (bool) ($row['ksd'] ?? false)
+        ));
+    }
+
+    /**
+     * Chuẩn hóa key của một row về lowercase (giữ nguyên thứ tự key).
+     */
+    protected static function normalizeRow(array $row): array
+    {
+        $lower = [];
+        foreach ($row as $k => $v) {
+            $lower[strtolower((string) $k)] = $v;
+        }
+
+        return $lower;
     }
 
     /**
      * Tìm 1 record theo mã đối tượng, dùng cùng SP để tránh nguồn khác.
+     * Cũng áp dụng lọc ksd = 1 để bù global scope cũ.
      */
     protected function findOneByMaKh(string $maKh): ?array
     {
@@ -250,11 +274,8 @@ class InputKhachhang extends Component
             ])->all();
             foreach ($rows as $row) {
                 $obj = \is_array($row) ? $row : (array) $row;
-                $lower = [];
-                foreach ($obj as $k => $v) {
-                    $lower[strtolower((string) $k)] = $v;
-                }
-                if (($lower['ma_kh'] ?? null) === $maKh) {
+                $lower = self::normalizeRow($obj);
+                if (($lower['ma_kh'] ?? null) === $maKh && (bool) ($lower['ksd'] ?? false)) {
                     return $lower;
                 }
             }

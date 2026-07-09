@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Diepxuan\Catalog\Http\Livewire\Component;
 
-use Diepxuan\Simba\StoredProcedures\AsGLGetDMTK;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Modelable;
 use Livewire\Component;
@@ -40,11 +39,10 @@ class InputTaikhoan extends Component
 
     public function boot(): void
     {
-        $this->glDmTks = AsGLGetDMTK::call([
-            'pMa_cty' => \CatalogService::company()->id,
-            'pTk'     => null,
-            'pStruct' => null,
-        ])->all();
+        // CatalogService::glDmTks() có cache theo (ma_cty, pTk, pStruct)
+        // — quan trọng khi form có nhiều instance input-taikhoan
+        // (ví dụ phiếu nhiều dòng chi tiết).
+        $this->glDmTks = \CatalogService::glDmTks();
     }
 
     public function mount(): void {}
