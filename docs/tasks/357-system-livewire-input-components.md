@@ -71,7 +71,7 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 - `InputIndmvt` dùng trực tiếp `StoredProcedures\AsINGetDMVT` cho danh sách/lookup vật tư.
 - `InputIndmnhvt` dùng trực tiếp `StoredProcedures\AsINGetDMNHVT` cho danh sách/lookup nhóm vật tư.
 - `InputKhachhang` dùng `StoredProcedures\AsARGetDMKH` và map mode khách hàng/nhà cung cấp/nhân viên theo nguồn `ARDMKH`.
-- `InputTaikhoan` dùng `StoredProcedures\AsGLGetDMTK` theo code `TK` / `MA_TK` và điều kiện lookup từ form đang gọi.
+- `InputTaikhoan` dùng `\CatalogService::glDmTks()`; `CatalogService::glDmTks()` là điểm tích hợp `StoredProcedures\AsGLGetDMTK` theo code `TK` / `MA_TK` để các nơi dùng chung không gọi SP lặp lại.
 - `InputDonVi` chưa được đổi khi chưa xác minh đúng dictionary/table/SP theo context sử dụng.
 
 ## Không thuộc phạm vi
@@ -106,6 +106,13 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 
 ## Audit Status
 
-- **Status:** PENDING
-- **Ngay audit/cap nhat:** 2026-07-09
+- **Status:** IN_PROGRESS — audit/refactor input components, cap nhat 2026-07-09
 - **Nguoi audit:** Bột (Portal Agent)
+
+### Cap nhat 2026-07-09 — InputTaikhoan/GLDMTK
+
+- `CatalogService::glDmTks()` da duoc chuyen sang SP-first qua `StoredProcedures\AsGLGetDMTK`, cache theo `ma_cty|pTk|pStruct` trong lifecycle service.
+- `InputTaikhoan` khong goi `AsGLGetDMTK` truc tiep nua; component dung `\CatalogService::glDmTks()` (tra Collection) de tai su dung cache/service chung.
+- `Phieubaono.php` da bo import `GlDmTk`, bo property `$glDmTks`, bo load datalist cu vi `phieubaono.blade.php` da dung `input-taikhoan` cho TK Co va TK No.
+- `Gl\Taikhoan.php` giu nguyen dung `GlDmTk::all()` theo chi dao cua Sep.
+- `php -l` pass cho `CatalogService.php`, `InputTaikhoan.php`, `Phieubaono.php`, `Gl\Taikhoan.php`.
