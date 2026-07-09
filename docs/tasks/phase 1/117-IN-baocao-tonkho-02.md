@@ -13,6 +13,7 @@ Chuyen doi chuc nang **Bao cao ton kho** tu Simba .NET `INRptCD02.dll` sang Live
 - **Branch:** `task/117-inrptcd02-report`
 - **Canonical URL:** `/simba/in/rpt/inrptcd02`
 - **Source route:** `/_simba-source/in/rpt/inrptcd02`
+- **DLL:** INRptCD02.dll
 - **Route name:** `in.rpt.inrptcd02`
 
 ## Source of truth tu Simba

@@ -37,7 +37,7 @@
 | System — Framework & cross-link | 8 | PENDING |
 | **Tổng root** | **324** | PENDING |
 
-**Snapshot audit mới nhất (route/menu):** `../project/task-execution-coverage.md`, `../project/remaining-process-shells.md`, `../project/simba-router-menu-matrix.md`.
+**Snapshot audit mới nhất (route/menu):** `../project/task-execution-coverage.md`, `../project/task-master-execution.md`, `../project/simba-router-menu-matrix.md`.
 
 ## 2. Tasks đã chuyển sang phase 1 (2)
 
@@ -89,6 +89,11 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 
 ## 5. Cập nhật gần đây
 
+**2026-07-09:**
+- Fix link snapshot audit: `../project/remaining-process-shells.md` đã bị xóa từ PR#242, thay bằng `../project/task-master-execution.md`.
+- Task 117 (phase 1): bổ sung `- **DLL:** INRptCD02.dll` để `phase 1/_index.md` parse được DLL khi render bằng `scripts/gen-tasks-index.php`.
+- Task 357: thêm section `Audit Status` cuối file theo quy ước §6 điều 2.
+
 **2026-07-07:**
 - Chốt quy ước phase: root `docs/tasks/` là phase hiện tại để dựng đúng bộ khung dự án; xong phase hiện tại thì chuyển task vào `phase 1/`.
 - Hiện chỉ `008` và `117` ở `phase 1/`; các task còn lại giữ `PENDING`.
@@ -135,5 +140,5 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 
 ---
 
-*Cập nhật: 2026-07-07 00:00 GMT+7*
+*Cập nhật: 2026-07-09 00:00 GMT+7*
 *Sinh tự động từ `scripts/gen-tasks-index.php` — xem [`scripts/gen-tasks-index.php`](../../scripts/gen-tasks-index.php)*

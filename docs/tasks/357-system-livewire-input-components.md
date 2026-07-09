@@ -103,3 +103,9 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 - Các form đang dùng `input-khachhang`, `input-taikhoan`, `input-indmvt`, `input-indmkho`, `input-indmnhvt`, `input-donvi` không bị đổi contract ngoài ý muốn.
 - Không có tên bảng/SP/field tự đặt ngoài `simba-docs`.
 - Báo cáo cuối phải liệt kê file sửa, SP wrapper dùng, kiểm chứng đã chạy và phần còn chưa xác minh nếu có.
+
+## Audit Status
+
+- **Status:** PENDING
+- **Ngay audit/cap nhat:** 2026-07-09
+- **Nguoi audit:** Bột (Portal Agent)

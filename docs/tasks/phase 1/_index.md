@@ -22,5 +22,5 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 117 | `117-IN-baocao-tonkho-02.md` |  | DONE |
+| 117 | `117-IN-baocao-tonkho-02.md` | INRptCD02.dll | DONE |
 
