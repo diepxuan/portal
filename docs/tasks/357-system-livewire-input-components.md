@@ -86,15 +86,15 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 
 | # | Công việc | Trạng thái |
 |---|---|---|
-| 1 | Audit toàn bộ `Input*` component hiện có | TODO |
-| 2 | Lập Data Access Map thực tế từ `simba-docs` cho từng component | TODO |
-| 3 | Thay Eloquent/query trực tiếp bằng SP wrapper khi có SP phù hợp | TODO |
-| 4 | Giữ tương thích `wire:model`, props, event, view đang dùng | TODO |
-| 5 | Bổ sung validate selected value theo cùng SP/wrapper | TODO |
-| 6 | Kiểm tra các màn hình đang dùng component, tối thiểu CA4 và các form IN liên quan | TODO |
-| 7 | Chạy `php -l` cho file PHP sửa đổi | TODO |
-| 8 | Chạy test/lint liên quan hoặc ghi rõ lý do chưa chạy được | TODO |
-| 9 | Cập nhật task docs/PR body với bằng chứng SP wrapper đã dùng | TODO |
+| 1 | Audit toàn bộ `Input*` component hiện có | IN_PROGRESS |
+| 2 | Lập Data Access Map thực tế từ `simba-docs` cho từng component | DONE cho `input-khachhang`, `input-taikhoan`, `input-indmvt`, `input-indmkho`; TODO phần còn lại |
+| 3 | Thay Eloquent/query trực tiếp bằng SP wrapper khi có SP phù hợp | DONE cho `InputKhachhang`, `InputTaikhoan`, `InputIndmvt`, `InputIndmkho` |
+| 4 | Giữ tương thích `wire:model`, props, event, view đang dùng | IN_PROGRESS — contract modelable giữ nguyên; cần browser verify |
+| 5 | Bổ sung validate selected value theo cùng SP/wrapper | IN_PROGRESS — `input-khachhang` mount/find dùng `AsARGetDMKH`; `input-taikhoan`/`input-indmvt` commit exact/top local từ SP list |
+| 6 | Kiểm tra các màn hình đang dùng component, tối thiểu CA4 và các form IN liên quan | TODO browser verify |
+| 7 | Chạy `php -l` cho file PHP sửa đổi | DONE |
+| 8 | Chạy test/lint liên quan hoặc ghi rõ lý do chưa chạy được | DONE lint + unit metadata; TODO browser E2E |
+| 9 | Cập nhật task docs/PR body với bằng chứng SP wrapper đã dùng | IN_PROGRESS |
 
 ## Tiêu chí hoàn thành
 
@@ -116,3 +116,41 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 - `Phieubaono.php` da bo import `GlDmTk`, bo property `$glDmTks`, bo load datalist cu vi `phieubaono.blade.php` da dung `input-taikhoan` cho TK Co va TK No.
 - `Gl\Taikhoan.php` giu nguyen dung `GlDmTk::all()` theo chi dao cua Sep.
 - `php -l` pass cho `CatalogService.php`, `InputTaikhoan.php`, `Phieubaono.php`, `Gl\Taikhoan.php`.
+
+### Cap nhat 2026-07-11 — Local search cho input lookup dùng chung
+
+- `InputKhachhang` dùng `StoredProcedures\AsARGetDMKH` theo mode:
+  - `khachhang` -> `pModuleId = AR`
+  - `nhacungcap` -> `pModuleId = AP`
+  - `nhanvien` -> `pModuleId = CA`
+  - multi-mode/all merge danh sách, dedupe theo `ma_kh`.
+- `InputKhachhang` bỏ server-side search qua `updatedSearch()`/`wire:model.live`; view `input-khachhang.blade.php` preload danh sách rút gọn `ma_kh`, `ten_kh`, `dia_chi`, `tel` và filter bằng Alpine local JS.
+- `InputKhachhang` không còn public-cache full row qua Livewire state; cache SP theo module là protected trong lifecycle component, output xuống client chỉ là field cần cho lookup.
+- `InputKhachhang` sửa nghĩa `ksd` theo Simba lookup: `ksd = 0` là đang sử dụng, `ksd = 1` là khóa; `findOneByMaKh()` và danh sách lookup cùng áp dụng logic này.
+- `InputIndmvt` dùng `StoredProcedures\AsINGetDMVT`, pass danh sách rút gọn `ma_vt`, `ten_vt` xuống view; bỏ datalist + `wire:model` trực tiếp, chuyển sang Alpine dropdown local search.
+- `InputIndmkho` dùng `StoredProcedures\AsINGetDMKHO`, pass danh sách rút gọn `ma_kho`, `ten_kho` xuống view; bỏ datalist + `wire:model` trực tiếp, chuyển sang Alpine dropdown local search.
+- `InputTaikhoan` tiếp tục dùng `\CatalogService::glDmTks()`; `CatalogService::glDmTks()` được chỉnh cache full list theo `ma_cty|pStruct`, gọi `AsGLGetDMTK` với `pTk = null`, sau đó filter local theo `pTk` khi cần.
+- `input-taikhoan`, `input-khachhang`, `input-indmvt`, `input-indmkho` hiện ưu tiên local JS search: khi gõ không bắn Livewire request; chỉ sync Livewire khi chọn item, nhấn Enter commit, hoặc input change/Tab khỏi field.
+- Cả 4 input build `_search` một lần trong Alpine init, dùng normalize bỏ dấu tiếng Việt:
+  - Unicode normalize `NFD`
+  - bỏ combining marks
+  - đổi `đ/Đ` thành `d`
+  - lowercase, trim, gom khoảng trắng
+- Search không dấu đã hỗ trợ case như `mai ho xa` match `Mai Hồ Xá`, `dang` match `Đặng`, `dai ly` match `Đại lý`.
+- Khi người dùng gõ rồi Tab/chuyển field:
+  - ưu tiên chọn exact code (`ma_kh`, `ma_vt`, `tk`)
+  - nếu không có exact code, tự chọn dòng đầu tiên trong danh sách local filter hiện tại
+  - ví dụ `mai ho xa` rồi Tab sẽ chọn `Mai Hồ Xá` nếu dòng này là kết quả đầu/top result.
+- Dropdown item dùng `mousedown.prevent` để chọn item trước khi input phát sinh `change/blur`, tránh race condition khi click chọn.
+
+### Kiem chung 2026-07-11
+
+- `git diff --check`: pass.
+- `php -l` pass cho:
+  - `diepxuan/laravel-catalog/src/Services/CatalogService.php`
+  - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputTaikhoan.php`
+  - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputKhachhang.php`
+  - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputIndmvt.php`
+  - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputIndmkho.php`
+- `php artisan test diepxuan/laravel-catalog/tests/Unit/Services/SimbaMetadataServiceTest.php`: pass, 5 tests / 10 assertions.
+- Chua chay browser E2E/dev server cho CA4, ARRptBCCN01, INRptCD02; can verify UI thuc te truoc khi merge.

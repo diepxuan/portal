@@ -39,9 +39,9 @@ class InputTaikhoan extends Component
 
     public function boot(): void
     {
-        // CatalogService::glDmTks() có cache theo (ma_cty, pTk, pStruct)
-        // — quan trọng khi form có nhiều instance input-taikhoan
-        // (ví dụ phiếu nhiều dòng chi tiết).
+        // CatalogService::glDmTks() cache full list theo (ma_cty, pStruct),
+        // rồi input-taikhoan ưu tiên search/filter bằng Alpine local JS.
+        // Cách này tránh gọi SP lặp lại khi form có nhiều dòng chi tiết.
         $this->glDmTks = \CatalogService::glDmTks();
     }
 

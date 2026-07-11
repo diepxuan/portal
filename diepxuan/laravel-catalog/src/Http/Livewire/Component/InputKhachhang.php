@@ -46,25 +46,15 @@ class InputKhachhang extends Component
     /** Text hiển thị (tên đối tượng). */
     public string $search = '';
 
-    /** Danh sách kết quả tìm kiếm. */
-    public array $results = [];
-
-    /** Có đang tìm kiếm không. */
-    public bool $searching = false;
-
-    /** Có đang hiển thị dropdown không. */
-    public bool $showDropdown = false;
-
     /** Placeholder text. */
     public string $placeholder = '';
 
     /**
-     * Cache danh mục theo module để tránh gọi SP lặp lại giữa các
-     * request Livewire (phải khai báo `public` để Livewire persist).
+     * Cache danh mục theo module trong lifecycle render hiện tại.
      *
      * @var array<string, array<int, array<string, mixed>>>
      */
-    public array $dmCache = [];
+    protected array $dmCache = [];
 
     /**
      * Mount component.
@@ -76,7 +66,6 @@ class InputKhachhang extends Component
         $this->placeholder = $this->getPlaceholderByMode();
 
         if ($value) {
-            // Load tên đối tượng qua cùng nguồn SP/wrapper
             $row = $this->findOneByMaKh($value);
             if ($row) {
                 $this->search = $row['ten_kh'] ?? '';
@@ -85,67 +74,12 @@ class InputKhachhang extends Component
     }
 
     /**
-     * Xử lý khi search input thay đổi.
-     */
-    public function updatedSearch(): void
-    {
-        $this->searching = true;
-
-        $search = trim($this->search);
-
-        if ($this->value) {
-            $this->value = null;
-            $this->dispatch('value-updated', null);
-        }
-
-        if ('' === $search) {
-            $this->results   = [];
-            $this->searching = false;
-
-            return;
-        }
-
-        $modules = $this->resolveModules();
-        $seen    = [];
-        $merged  = [];
-
-        foreach ($modules as $moduleId) {
-            $rows = $this->fetchDmKhByModule($moduleId);
-            foreach ($rows as $row) {
-                $maKh = $row['ma_kh'] ?? null;
-                if (null === $maKh || isset($seen[$maKh])) {
-                    continue;
-                }
-                if (!$this->matchesSearch($row, $search)) {
-                    continue;
-                }
-                $seen[$maKh] = true;
-                $merged[]    = [
-                    'ma_kh'   => $maKh,
-                    'ten_kh'  => $row['ten_kh']  ?? '',
-                    'dia_chi' => $row['dia_chi'] ?? '',
-                    'tel'     => $row['tel']     ?? '',
-                ];
-                if (\count($merged) >= 20) {
-                    break 2;
-                }
-            }
-        }
-
-        $this->results      = $merged;
-        $this->searching    = false;
-        $this->showDropdown = true;
-    }
-
-    /**
      * Chọn đối tượng từ dropdown.
      */
     public function selectCustomer(string $ma_kh, string $ten_kh): void
     {
-        $this->value        = $ma_kh;
-        $this->search       = $ten_kh;
-        $this->showDropdown = false;
-        $this->results      = [];
+        $this->value  = $ma_kh;
+        $this->search = $ten_kh;
 
         $this->dispatch('value-updated', $ma_kh);
     }
@@ -163,10 +97,8 @@ class InputKhachhang extends Component
      */
     public function clear(): void
     {
-        $this->value        = null;
-        $this->search       = '';
-        $this->results      = [];
-        $this->showDropdown = false;
+        $this->value  = null;
+        $this->search = '';
         $this->dispatch('value-updated', null);
     }
 
@@ -175,7 +107,39 @@ class InputKhachhang extends Component
      */
     public function render(): View
     {
-        return view('catalog::components.input-khachhang');
+        return view('catalog::components.input-khachhang', [
+            'customers' => $this->customerOptions(),
+        ]);
+    }
+
+    /**
+     * Danh sách rút gọn cho Alpine local search.
+     *
+     * @return array<int, array{ma_kh: string, ten_kh: string, dia_chi: string, tel: string}>
+     */
+    protected function customerOptions(): array
+    {
+        $seen   = [];
+        $merged = [];
+
+        foreach ($this->resolveModules() as $moduleId) {
+            foreach ($this->fetchDmKhByModule($moduleId) as $row) {
+                $maKh = $row['ma_kh'] ?? null;
+                if (null === $maKh || isset($seen[$maKh])) {
+                    continue;
+                }
+
+                $seen[$maKh] = true;
+                $merged[]    = [
+                    'ma_kh'   => (string) $maKh,
+                    'ten_kh'  => (string) ($row['ten_kh']  ?? ''),
+                    'dia_chi' => (string) ($row['dia_chi'] ?? ''),
+                    'tel'     => (string) ($row['tel']     ?? ''),
+                ];
+            }
+        }
+
+        return $merged;
     }
 
     /**
@@ -208,10 +172,9 @@ class InputKhachhang extends Component
     }
 
     /**
-     * Gọi SP asARGetDMKH cho 1 module, có cache persist qua Livewire request.
+     * Gọi SP asARGetDMKH cho 1 module.
      *
-     * Mặc định lọc bản ghi đang sử dụng (ksd = 1) để giữ hành vi tương
-     * đương global scope `ksd` trên model ArDmKh trước đây.
+     * Simba dùng `ksd = 0` cho bản ghi đang sử dụng, `ksd = 1` là khóa.
      */
     protected function fetchDmKhByModule(string $moduleId): array
     {
@@ -226,8 +189,6 @@ class InputKhachhang extends Component
             'pModuleId' => $moduleId,
         ])->all();
 
-        // Chuẩn hóa key về lowercase và lọc ksd = 1 (truthy) ngay tại đây
-        // để bù global scope cũ của ArDmKh. SP asARGetDMKH không filter ksd.
         return $this->dmCache[$moduleId] = array_values(array_filter(
             array_map(
                 static function ($row) {
@@ -242,7 +203,7 @@ class InputKhachhang extends Component
                 },
                 $rows
             ),
-            static fn (array $row): bool => (bool) ($row['ksd'] ?? false)
+            static fn (array $row): bool => self::isActiveRow($row)
         ));
     }
 
@@ -261,7 +222,7 @@ class InputKhachhang extends Component
 
     /**
      * Tìm 1 record theo mã đối tượng, dùng cùng SP để tránh nguồn khác.
-     * Cũng áp dụng lọc ksd = 1 để bù global scope cũ.
+     * Cũng áp dụng lọc `ksd = 0` theo lookup Simba.
      */
     protected function findOneByMaKh(string $maKh): ?array
     {
@@ -275,7 +236,7 @@ class InputKhachhang extends Component
             foreach ($rows as $row) {
                 $obj = \is_array($row) ? $row : (array) $row;
                 $lower = self::normalizeRow($obj);
-                if (($lower['ma_kh'] ?? null) === $maKh && (bool) ($lower['ksd'] ?? false)) {
+                if (($lower['ma_kh'] ?? null) === $maKh && self::isActiveRow($lower)) {
                     return $lower;
                 }
             }
@@ -284,19 +245,14 @@ class InputKhachhang extends Component
         return null;
     }
 
-    /**
-     * Match từ khóa với mã/tên/địa chỉ/tel.
-     */
-    protected function matchesSearch(array $row, string $search): bool
+    protected static function isActiveRow(array $row): bool
     {
-        $hay = strtolower(implode(' ', [
-            (string) ($row['ma_kh']   ?? ''),
-            (string) ($row['ten_kh']  ?? ''),
-            (string) ($row['dia_chi'] ?? ''),
-            (string) ($row['tel']     ?? ''),
-        ]));
+        $ksd = $row['ksd'] ?? false;
+        if (\is_string($ksd)) {
+            $ksd = trim($ksd);
+        }
 
-        return str_contains($hay, strtolower($search));
+        return !\in_array($ksd, [true, 1, '1'], true);
     }
 
     /**

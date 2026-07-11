@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-03-26 19:38:48
+ * @lastupdate 2026-07-11 14:35:01
  */
 
 namespace Diepxuan\Catalog\Services;
@@ -133,12 +133,16 @@ class CatalogService
     public function glDmTks(?string $pTk = null, ?string $pStruct = null): Collection
     {
         $maCty = $this->company()->id;
-        $key   = implode('|', [$maCty, $pTk ?? '', $pStruct ?? '']);
+        $key   = implode('|', [$maCty, $pStruct ?? '']);
 
-        return $this->glDmTks[$key] ??= AsGLGetDMTK::call([
+        $this->glDmTks[$key] ??= AsGLGetDMTK::call([
             'pMa_cty' => $maCty,
-            'pTk'     => $pTk,
+            'pTk'     => null,
             'pStruct' => $pStruct,
         ]);
+
+        return $this->glDmTks[$key]
+            ->filter(static fn ($item) => null === $pTk || (string) $item->tk === $pTk)
+            ->values();
     }
 }
