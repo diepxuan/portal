@@ -2,7 +2,7 @@
 
 ## Trạng thái
 
-Open - 2026-07-06.
+DONE - 2026-07-11 (merged PR #244).
 
 Task này được tạo sau audit `./docs/`: hiện chỉ có tài liệu **sử dụng lại** `input-khachhang`, `input-taikhoan`, `input-date`, chưa có task riêng định nghĩa cách tạo, viết, code và chuẩn hóa các Livewire input component dùng chung.
 
@@ -106,7 +106,7 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 
 ## Audit Status
 
-- **Status:** IN_PROGRESS — audit/refactor input components, cap nhat 2026-07-09
+- **Status:** DONE — merged PR #244 (squash commit `aa6c8c8fc`) vào main lúc 2026-07-11 20:31 GMT+7.
 - **Nguoi audit:** Bột (Portal Agent)
 
 ### Cap nhat 2026-07-09 — InputTaikhoan/GLDMTK
@@ -153,4 +153,5 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
   - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputIndmvt.php`
   - `diepxuan/laravel-catalog/src/Http/Livewire/Component/InputIndmkho.php`
 - `php artisan test diepxuan/laravel-catalog/tests/Unit/Services/SimbaMetadataServiceTest.php`: pass, 5 tests / 10 assertions.
-- Chua chay browser E2E/dev server cho CA4, ARRptBCCN01, INRptCD02; can verify UI thuc te truoc khi merge.
+- Chua chay browser E2E/dev server cho CA4, ARRptBCCN01, INRptCD02; can verify UI thuc te sau merge.
+- PR #244 da merge bang squash len main (2026-07-11 20:31 GMT+7) theo lenh Sep; browser E2E se chay trong task tiep theo neu can.
