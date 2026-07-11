@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-07-11: PR #244 merged
+
+- Task 357 (Livewire input components) DONE — merged PR #244 bang squash len main (commit `aa6c8c8fc`).
+- Squash stats: +930 / -263, 12 files.
+- Pattern da chuan hoa tren 4 component (InputKhachhang, InputTaikhoan, InputIndmvt, InputIndmkho):
+  - Preload kho tu SP (boot/render), pass reduced payload xuong view
+  - Blade search bang Alpine local JS (`khInputComponent`, `tkInputComponent`, `vtInputComponent`, `khoInputComponent`)
+  - Bo `wire:model` khi go, sync Livewire qua `$wire.set()` chi khi chon item / Enter / Tab
+  - Normalize bo dau (NFD + combining marks + `d/đ` + lowercase + collapse space)
+  - Commit: exact code truoc, fallback dong dau filtered
+- CatalogService::glDmTks() cache key doi tu `maCty|pTk|pStruct` -> `maCty|pStruct`, filter local theo `pTk`.
+- Deferred: browser E2E cho CA4 / ARRptBCCN01 / INRptCD02; InputDonVi van dung Eloquent.
+
 ## 2026-05-05: Cac task co yeu cau CRUD khach hang
 
 ### Task 001: AR - Danh muc khach hang
