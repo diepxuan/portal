@@ -22,6 +22,13 @@
 - CatalogService::glDmTks() cache key doi tu `maCty|pTk|pStruct` -> `maCty|pStruct`, filter local theo `pTk`.
 - Deferred: browser E2E cho CA4 / ARRptBCCN01 / INRptCD02; InputDonVi van dung Eloquent.
 
+## 2026-07-13: Task 358 - slug suffix compact
+
+- `SimbaMenuRouteMetadata::routeNameFor()` doi hau to slug trung ten thanh `menuIdSuffix()` (noi cac ky tu cua menuid, khong them `-`).
+- Vi du: SysMenu `menuid=10.30.23, code_name=ARRptBCCN01` -> routeName `po.rpt.arrptbccn01103023` (thay vi `po.rpt.arrptbccn01-10-30-23`).
+- URL moi: `http://portal.diepxuan.corp/simba/po/rpt/arrptbccn01103023`.
+- Unit test `testRouteNameSuffixAppendsCompactMenuId` pin behavior; phpunit `SimbaMenuRouteMetadataTest` 9 tests / 20 assertions pass.
+
 ## 2026-05-05: Cac task co yeu cau CRUD khach hang
 
 ### Task 001: AR - Danh muc khach hang
