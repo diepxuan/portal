@@ -400,5 +400,5 @@
 | 181-196 | `181-196-system-framework-infrastructure.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
-| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | PENDING |
+| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
 
