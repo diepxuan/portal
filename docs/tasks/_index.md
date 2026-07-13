@@ -8,7 +8,7 @@
 
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
-| AP — Công nợ phải trả | 4 | 0 | 4 | 0 |
+| AP — Công nợ phải trả | 5 | 0 | 5 | 0 |
 | AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
 | CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
@@ -18,8 +18,8 @@
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 26 | 0 | 26 | 0 |
 | SO — Đơn hàng bán | 47 | 0 | 47 | 0 |
-| System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **324** | | | |
+| System — Framework & cross-link | 9 | 0 | 9 | 0 |
+| **Tổng** | **326** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -29,6 +29,7 @@
 | 018 | `018-ap-dieu-khoan-thanh-toan.md` | APTT.dll | PENDING |
 | 019 | `019-ap-bang-ke-hoa-don-phai-tra.md` | APRptBK01.dll, APRptBK02.dll, APRptBK03.dll | PENDING |
 | 020 | `020-ap-bu-tru-cong-no-phai-tra.md` | ApVchAP4.dll | PENDING |
+| 359 | `359-ap-so-chi-tiet-cong-no-mot-nha-cung-cap-10-30-23.md` | ARRptBCCN01.dll (form dung chung cho AR va AP, menuid phan biet) | PENDING |
 
 ## AR — Công nợ phải thu
 
@@ -399,4 +400,5 @@
 | 181-196 | `181-196-system-framework-infrastructure.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
+| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | PENDING |
 
