@@ -18,8 +18,8 @@
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 26 | 0 | 26 | 0 |
 | SO — Đơn hàng bán | 47 | 0 | 47 | 0 |
-| System — Framework & cross-link | 9 | 0 | 9 | 0 |
-| **Tổng** | **326** | | | |
+| System — Framework & cross-link | 8 | 0 | 8 | 0 |
+| **Tổng** | **325** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -400,5 +400,4 @@
 | 181-196 | `181-196-system-framework-infrastructure.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
-| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
 
