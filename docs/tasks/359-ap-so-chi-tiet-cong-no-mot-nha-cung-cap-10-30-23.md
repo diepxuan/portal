@@ -142,7 +142,7 @@ Khong giu alias `pSysMsg*`; wrapper chi normalize ve dung 6 tham so SP tren.
 - Cac token ngon ngu Simba trong cot dien giai duoc dich khi hien thi/export: `#ARRptBCCN_DDK` -> `Dư đầu kỳ`, `#ARRptBCCN_TPS` -> `Tổng phát sinh trong kỳ`, `#ARRptBCCN_DCK` -> `Dư cuối kỳ`.
 - `pTieu_de` giu la property noi bo cua component de hien thi tieu de report; view render thanh text readonly, khong bind `wire:model`.
 - Bang ket qua khong render raw toan bo column SP. View chi render cac nhom cot: Chung tu, Dien giai, So luong, Gia, Tien, PS No, PS Co. Thong tin vat tu (`ma_vt`, `ten_vt`, `dvt`) duoc gop vao cot Dien giai bang dong phu nho/mo. `stt_rec` duoc gop vao cot Chung tu voi style nho/mo. Khi `pMa_nt` trong/VND thi dung cot VND (`gia`, `tien`, `ps_no`, `ps_co`); khi chon ngoai te thi uu tien cot `*_nt`.
-- Format so trong CSV: `so_luong` giu 4 chu so thap phan; `gia`, `tien`, `ps_no`, `ps_co` luon lam tron 0 chu so thap phan (bo phan le, ke ca khi chon ngoai te).
+- Format so trong CSV/UI: `so_luong` luon 4 chu so thap phan; `gia`/`tien`/`ps_no`/`ps_co` lam tron theo `pMa_nt` - VND (hoac trong) thi 0 chu so le, ngoai te (USD/EUR/...) thi 4 chu so le de khong mat do chinh xac khi loc theo ngoai te.
 - Phan biet dong chung tu/dong san pham: dong chi tiet vat tu (co `ma_vt` trong row) duoc lui 1 tab bang class `ps-4 text-gray-500` (Tailwind logical property, dong bo voi navigation-menu); dong tong hop (token `#ARRptBCCN_DDK`/`#ARRptBCCN_TPS`/`#ARRptBCCN_DCK`) giu style mac dinh (khong in dam); dong chung tu thuong giu style `text-gray-800`. CSV export prefix ky tu `\t` cho dong san pham de Excel giu indent khi mo.
 
 ## Audit Status

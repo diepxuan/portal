@@ -337,10 +337,10 @@ class Arrptbccn01Sl extends Component
             ], static fn (string $value): bool => '' !== $value))),
             'dien_giai' => self::csvDienGiaiWithIndent($row),
             'so_luong'  => self::numberValue(self::rowValue($row, ['so_luong', 't_so_luong', 'sl_ton', 'sl']), 4),
-            'gia'      => self::numberValue(self::rowValue($row, self::staticMoneyKeys('gia', $foreignCurrency)), 0),
-            'tien'     => self::numberValue(self::rowValue($row, self::staticMoneyKeys('tien', $foreignCurrency)), 0),
-            'ps_no'    => self::numberValue(self::rowValue($row, self::staticMoneyKeys('ps_no', $foreignCurrency)), 0),
-            'ps_co'    => self::numberValue(self::rowValue($row, self::staticMoneyKeys('ps_co', $foreignCurrency)), 0),
+            'gia'      => self::numberValue(self::rowValue($row, self::staticMoneyKeys('gia', $foreignCurrency)), $foreignCurrency ? 4 : 0),
+            'tien'     => self::numberValue(self::rowValue($row, self::staticMoneyKeys('tien', $foreignCurrency)), $foreignCurrency ? 4 : 0),
+            'ps_no'    => self::numberValue(self::rowValue($row, self::staticMoneyKeys('ps_no', $foreignCurrency)), $foreignCurrency ? 4 : 0),
+            'ps_co'    => self::numberValue(self::rowValue($row, self::staticMoneyKeys('ps_co', $foreignCurrency)), $foreignCurrency ? 4 : 0),
             default     => self::csvValue(self::rowValue($row, [$column])),
         };
     }

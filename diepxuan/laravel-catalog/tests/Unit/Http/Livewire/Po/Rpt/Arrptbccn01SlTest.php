@@ -76,9 +76,9 @@ final class Arrptbccn01SlTest extends TestCase
             'ps_co_nt' => '1.2500',
         ];
 
-        self::assertSame('1', Arrptbccn01Sl::csvValueForColumn($row, 'gia', true));
-        self::assertSame('1', Arrptbccn01Sl::csvValueForColumn($row, 'tien', true));
-        self::assertSame('1', Arrptbccn01Sl::csvValueForColumn($row, 'ps_co', true));
+        self::assertSame('0.5', Arrptbccn01Sl::csvValueForColumn($row, 'gia', true));
+        self::assertSame('1.25', Arrptbccn01Sl::csvValueForColumn($row, 'tien', true));
+        self::assertSame('1.25', Arrptbccn01Sl::csvValueForColumn($row, 'ps_co', true));
     }
 
     public function testPresentationColumnsHideRawColumnsAndKeepReadableGroups(): void
@@ -166,5 +166,30 @@ final class Arrptbccn01SlTest extends TestCase
 
         self::assertSame("\t", mb_substr(Arrptbccn01Sl::csvValueForColumn($productRow, 'dien_giai'), 0, 1));
         self::assertStringNotContainsString("\t", Arrptbccn01Sl::csvValueForColumn($voucherRow, 'dien_giai'));
+    }
+    public function testMoneyColumnsRoundVndAndKeepFourDecimalsForForeignCurrency(): void
+    {
+        $row = [
+            'gia'      => '12000.0000',
+            'tien'     => '30000.0000',
+            'ps_no'    => '30000.0000',
+            'ps_co'    => '30000.0000',
+            'gia_nt'   => '0.5000',
+            'tien_nt'  => '1.2500',
+            'ps_no_nt' => '1.2500',
+            'ps_co_nt' => '1.2500',
+        ];
+
+        // VND: 0 chu so le.
+        self::assertSame('12,000', Arrptbccn01Sl::csvValueForColumn($row, 'gia', false));
+        self::assertSame('30,000', Arrptbccn01Sl::csvValueForColumn($row, 'tien', false));
+        self::assertSame('30,000', Arrptbccn01Sl::csvValueForColumn($row, 'ps_no', false));
+        self::assertSame('30,000', Arrptbccn01Sl::csvValueForColumn($row, 'ps_co', false));
+
+        // Ngoai te: 4 chu so le.
+        self::assertSame('0.5', Arrptbccn01Sl::csvValueForColumn($row, 'gia', true));
+        self::assertSame('1.25', Arrptbccn01Sl::csvValueForColumn($row, 'tien', true));
+        self::assertSame('1.25', Arrptbccn01Sl::csvValueForColumn($row, 'ps_no', true));
+        self::assertSame('1.25', Arrptbccn01Sl::csvValueForColumn($row, 'ps_co', true));
     }
 }
