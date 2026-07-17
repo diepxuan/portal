@@ -115,6 +115,39 @@
   (verified qua `gh pr view --json state`).
 - Bài hoc them: khi Sếp nói "merge PR" / "em làm X đi" ngay sau commit, PHAI tao
   branch + PR, KHONG commit thang len main.
+## 2026-07-17: TOOLS.md phan nhom lenh theo quyen (DONE - merged PR #253)
+
+- Bai hoc: em hoi approved qua nhieu cho lenh don gian (grep/cat/ls/find/...)
+  gay phien. Sep yeu cau phan biet ro 3 nhom lenh.
+- AGENTS.md boot sequence them buoc 3 doc `TOOLS.md` (sau USER.md, truoc memory/).
+  Do so step DESIGN.md doi tu 6 thanh 7.
+- TOOLS.md "Sandbox & Escalation" phan nhom:
+  + Read-only (KHONG can hoi): cat/head/tail/wc/file/ls/find/tree/grep/rg/sed -n/
+    git status/log/diff/show/branch -a/remote -v/ls-files/ls-tree/
+    php -l, phpunit, route:list, config:show/
+    curl GET, gh pr view, gh issue view/
+    node --version, composer --version/date, whoami, pwd, echo.
+  + Ghi local (KHONG can hoi, trong scope): mkdir/cp/mv trong workspace hoac
+    /tmp/, sed -i, write file moi trong workspace/
+    git checkout -b, git add/commit/mv, git push origin <feature-branch>/
+    gh pr create/edit, gh api PATCH/POST/
+    composer dump-autoload, php artisan config:clear, cache:clear/
+    vendor/bin/phpunit, npm run build/dev (khi task yeu cau).
+  + Ghi can hoi Sep: git push origin main, gh pr merge/close,
+    git reset --hard/checkout --/clean -fd, force push/
+    rm file lon, rm -rf ngoai /tmp/hoac workspace/
+    ghi ngoai workspace, network ngoai GitHub (composer install/update, npm install),
+    GUI/browser/app, migration DB ngoai task, start/stop dev server,
+    lenh fail do sandbox.
+- Quy tac moi khi lenh fail/kq khong mong muon:
+  + DUNG, khong tu retry bang flag hay ne sandbox.
+  + Bao cao Sep: exit code, stderr/output, nghi van nguyen nhan.
+  + Xin approval chay lai voi `sandbox_permissions: require_escalated` + justification.
+  + Vi du: git push bi reject non-fast-forward -> KHONG tu
+    git pull --rebase + push lai; bao Sep truoc.
+- Squash commit: `683fc3626 docs(workflow): boot doc TOOLS.md + phan nhom lenh (#253)`.
+  PR state = MERGED, branch da xoa.
+
 
 ## 2026-07-13: Task 358 - slug suffix compact (DONE - merged PR #246)
 
