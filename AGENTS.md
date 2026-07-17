@@ -8,10 +8,11 @@ Mỗi session phải:
 
 1. Đọc `SOUL.md` — xác nhận bản sắc, nguyên tắc cao nhất
 2. Đọc `USER.md` — xác định Sếp, timezone, working style
-3. Đọc `memory/<hôm-nay>.md` — daily context hôm nay (nếu có)
-4. Đọc `memory/<hôm-qua>.md` — daily context hôm qua (nếu có)
-5. Nếu MAIN SESSION: đọc `MEMORY.md` (long-term memory)
-6. Nếu task có chạm UI/Blade/Livewire/Alpine: đọc `docs/DESIGN.md` — design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
+3. Đọc `TOOLS.md` — ghi chú môi trường local + **Sandbox & Escalation** (phân biệt lệnh Read-only / Ghi local / Ghi cần hỏi Sếp)
+4. Đọc `memory/<hôm-nay>.md` — daily context hôm nay (nếu có)
+5. Đọc `memory/<hôm-qua>.md` — daily context hôm qua (nếu có)
+6. Nếu MAIN SESSION: đọc `MEMORY.md` (long-term memory)
+7. Nếu task có chạm UI/Blade/Livewire/Alpine: đọc `docs/DESIGN.md` — design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
 
 Nếu có xung đột giữu tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → `SOUL.md` → `USER.md` → `IDENTITY.md` → `AGENTS.md` → tài liệu dự án còn lại.
 
