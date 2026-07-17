@@ -10,11 +10,14 @@ Tài liệu chung cho toàn bộ dự án.
 
 | File | Mô tả |
 |------|-------|
-| **[Workspace Guide](workspace-guide.md)** | Cấu trúc thư mục, quy tắc tạo file, Git workflow |
-| **[Core Package Loading](core-package-loading.md)** | Hệ thống auto-discovery và auto-registration packages |
-| **[Package Namespace Conventions](package-namespace-conventions.md)** | Quy ước namespace cho 14 packages |
-| **[Serve:Dev Commands](serve-dev-commands.md)** | Hướng dẫn development server commands |
-| **[Model Architecture](model-architecture.md)** | Kiến trúc Model 3 lớp (SModel → Simba\Models → Catalog\Models) |
+| **[Design System (DESIGN.md)](DESIGN.md)** | Design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec — nguồn sự thật cho AI agents và humans khi build Blade/Livewire UI |
+| **[Development Setup](DEVELOPMENT.md)** | Hướng dẫn setup môi trường dev (PHP, Composer, Vite, Mailpit, Redis) |
+| **[Simba Docs Mount](SIMBA-DOCS.md)** | Hướng dẫn đọc `simba-docs/` (readonly) để tra cứu logic SimbaERP / SP / field |
+| **[Workspace Guide](project/workspace-guide.md)** | Cấu trúc thư mục, quy tắc tạo file, Git workflow |
+| **[Core Package Loading](project/core-package-loading.md)** | Hệ thống auto-discovery và auto-registration packages |
+| **[Package Namespace Conventions](project/package-namespace-conventions.md)** | Quy ước namespace cho 14 packages |
+| **[Serve:Dev Commands](project/serve-dev-commands.md)** | Hướng dẫn development server commands |
+| **[Model Architecture](project/model-architecture.md)** | Kiến trúc Model 3 lớp (SModel → Simba\Models → Catalog\Models) |
 
 ---
 
@@ -40,14 +43,15 @@ Tài liệu riêng cho từng package trong `diepxuan/`.
 
 ---
 
-## External Documentation
+## External Documentation (root-level)
 
 | Tài liệu | Link |
 |----------|------|
 | **AI Agent Guide** | [AI_AGENT_GUIDE.md](../AI_AGENT_GUIDE.md) |
 | **Architecture** | [ARCHITECTURE.md](../ARCHITECTURE.md) |
-| **Development Setup** | [DEVELOPMENT.md](../DEVELOPMENT.md) |
 | **Packages Overview** | [PACKAGES.md](../PACKAGES.md) |
+| **SOUL** | [SOUL.md](../SOUL.md) |
+| **IDENTITY** | [IDENTITY.md](../IDENTITY.md) |
 
 ---
 
@@ -56,6 +60,9 @@ Tài liệu riêng cho từng package trong `diepxuan/`.
 ```
 docs/
 ├── README.md                    # File này - Documentation index
+├── DESIGN.md                    # Design system (DESIGN.md spec alpha)
+├── DEVELOPMENT.md               # Setup môi trường dev
+├── SIMBA-DOCS.md                # Hướng dẫn đọc simba-docs/ mount
 ├── project/                     # Project-wide documentation
 │   ├── workspace-guide.md
 │   ├── core-package-loading.md
@@ -93,5 +100,5 @@ docs/
 
 ---
 
-**Last Updated:** 2026-03-28  
+**Last Updated:** 2026-07-17  
 **Maintained by:** Bột
