@@ -22,6 +22,16 @@
 - CatalogService::glDmTks() cache key doi tu `maCty|pTk|pStruct` -> `maCty|pStruct`, filter local theo `pTk`.
 - Deferred: browser E2E cho CA4 / ARRptBCCN01 / INRptCD02; InputDonVi van dung Eloquent.
 
+## 2026-07-17: Task 359 - AP ARRptBCCN01 SL (DONE - merged PR #247)
+
+- AP report "Sổ chi tiết công nợ một nhà cung cấp - có số lượng" (menuid 10.30.23, SP asARRptBCCN01SL, report ARBCCN012.rpt).
+- DLL gốc ARRptBCCN01.dll chia sẻ form frmARRptBCCN01 giữa AR (06.30.14/10.30.11) và AP (10.30.23); wrapper SP chi normalize 6 tham so (ma_cty/Ngay1/Ngay2/Tk/ma_kh/ma_nt) và nhận alias pMa_*/pCompanyID.
+- Livewire Po\Rpt\Arrptbccn01Sl 555 dòng, view po/rpt/arrptbccn01sl.blade.php, route po.rpt.arrptbccn01103023 (slug compact theo task 358).
+- Foreign currency precision: 4 decimals cho gia/tien/ps_no/ps_co khi pMa_nt != VND; 0 decimals cho VND/empty. Token Simba #ARRptBCCN_DDK/TPS/DCK dịch sang tiếng Việt trong dien_giai.
+- Tests: AsARRptBCCN01SLTest 4/10, Arrptbccn01SlTest 11/34, SourceRouteCoverageTest 8/201 pass.
+- Squash commit: 12c1ae27d; doc commit: a002ba750. PR #247 đã đóng + xóa branch sau merge.
+- File task 359 move sang docs/tasks/phase 1/ theo quy tắc root PENDING; phase 1 _index 4 tasks (008, 117, 358, 359).
+
 ## 2026-07-13: Task 358 - slug suffix compact (DONE - merged PR #246)
 
 - `SimbaMenuRouteMetadata::routeNameFor()` doi hau to slug trung ten thanh `menuIdSuffix()` (noi cac ky tu cua menuid, khong them `-`).
