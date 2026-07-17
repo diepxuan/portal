@@ -51,19 +51,18 @@ Mặc định agent chỉ được đọc/ghi trong workspace Portal và các th
 
 - `mkdir`, `cp`, `mv` trong workspace Portal hoặc thư mục tạm được phép (`/tmp/`, `/slash_tmp/`)
 - `sed -i` in-place, `write` tool tạo/sửa file mới trong workspace Portal
-- `git checkout -b <new-branch>` — tạo branch mới
+- `git checkout -b <new-branch>` — tạo branch mới (local)
 - `git add`, `git commit`, `git mv` — staging local
-- `git push origin <feature-branch>` — push branch feature (KHÔNG push trực tiếp lên main)
-- `gh pr create`, `gh pr edit` (PR body/title), `gh api PATCH/POST` cho PR/issue — workflow
 - `composer dump-autoload`, `php artisan config:clear`, `php artisan cache:clear` — local dev
 - `vendor/bin/phpunit --testsuite=...` chạy test local
 - `npm run build`, `npm run dev` (chỉ khi task yêu cầu build asset local)
 
 **Ghi cần xin phép Sếp (chỉ chạy khi được approval):**
 
+- `git push origin <feature-branch>` — push branch feature lên remote; **chỉ khi Sếp cho lệnh "push đi" / "em tạo PR đi"** (AGENTS.md §5).
+- `gh pr create`, `gh pr edit` (PR body/title), `gh api PATCH/POST` cho PR/issue — workflow GitHub; **chỉ khi Sếp cho lệnh "em tạo PR đi"**.
+- `gh pr merge <N>`, `gh pr close <N>` — merge/close PR (chỉ khi Sếp ra lệnh "merge" / "close").
 - `git push origin main` — push trực tiếp lên main
-- `gh pr merge <N>` — merge PR (sau khi Sếp ra lệnh "merge")
-- `gh pr close <N>` — close PR (chỉ khi Sếp yêu cầu rõ)
 - `git reset --hard`, `git checkout -- <file>`, `git clean -fd` — phá dữ liệu local
 - `git push --force`, `git push --force-with-lease` — force push
 - `rm` file lớn, `rm -rf` ngoài `/tmp/` hoặc ngoài workspace
