@@ -153,6 +153,16 @@ portal/
 
 ## Development Tools
 
+### Local domain
+
+Khi kiểm tra UI, browser E2E hoặc website verification, dùng domain local đã cấu hình sẵn:
+
+```text
+http://portal.diepxuan.corp
+```
+
+Không tự start dev server hoặc đổi sang `http://127.0.0.1:<PORT>`/`localhost:<PORT>` trừ khi Sếp yêu cầu rõ. `php artisan serve:dev:status` có thể báo stopped vì nó chỉ kiểm tra process do `serve:dev` quản lý, không phản ánh local domain/proxy đang phục vụ `portal.diepxuan.corp`.
+
 ### Commands hữu ích
 
 ```bash

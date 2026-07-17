@@ -15,6 +15,19 @@ File này ghi chú các chi tiết riêng của môi trường Portal. Skill và
 - **Trạng thái:** Readonly.
 - **Chi tiết:** `docs/SIMBA-DOCS.md`
 
+## Website Verification & Dev Server
+
+- `http://portal.diepxuan.corp` là local domain đã được cấu hình sẵn và luôn là URL mặc định khi kiểm tra UI/browser E2E cho Portal.
+- Agent không được tự start Laravel/Vite dev server (`php artisan serve`, `php artisan serve:dev`, `npm run dev`, `./portal-dev.sh start`) chỉ vì `serve:dev:status` báo stopped hoặc không thấy PID file.
+- `serve:dev:status` chỉ phản ánh server do command `serve:dev` quản lý; nó không phải nguồn sự thật về việc `portal.diepxuan.corp` đang phục vụ website qua local domain/proxy.
+- Khi cần verify website, dùng domain thật trước, ví dụ:
+
+```bash
+curl -I http://portal.diepxuan.corp/simba
+```
+
+- Chỉ start/stop/restart dev server khi Sếp yêu cầu rõ ràng hoặc task trực tiếp là xử lý dev-server process. Nếu thật sự cần, phải xin phép Sếp trước và báo rõ lý do.
+
 ## Sandbox & Escalation
 
 Mặc định agent chỉ được đọc/ghi trong workspace Portal và các thư mục được môi trường cho phép. Mọi hành động cần quyền ngoài sandbox phải xin phép Sếp trước khi chạy.

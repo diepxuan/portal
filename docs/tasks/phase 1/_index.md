@@ -10,7 +10,8 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 |---|---:|---:|---:|---:|
 | AR — Công nợ phải thu | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
-| **Tổng** | **2** | | | |
+| System — Framework & cross-link | 1 | 1 | 0 | 0 |
+| **Tổng** | **3** | | | |
 
 ## AR — Công nợ phải thu
 
@@ -23,4 +24,10 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 117 | `117-IN-baocao-tonkho-02.md` | INRptCD02.dll | DONE |
+
+## System — Framework & cross-link
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
 

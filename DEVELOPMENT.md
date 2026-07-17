@@ -109,6 +109,8 @@ http://portal.diepxuan.corp
 
 Không tự thay bằng `localhost`, `127.0.0.1` hoặc port dev server riêng cho bước website verification, trừ khi Sếp yêu cầu rõ là test local server.
 
+**Lưu ý cho AI agent:** `portal.diepxuan.corp` là local domain đã được cấu hình sẵn. Không tự chạy `php artisan serve`, `php artisan serve:dev`, `npm run dev` hoặc `./portal-dev.sh start` chỉ vì `serve:dev:status` báo stopped/no PID file. Lệnh status đó chỉ kiểm tra process do `serve:dev` quản lý, không phải nguồn sự thật về local domain/proxy đang chạy. Muốn kiểm tra website thì truy cập trực tiếp `portal.diepxuan.corp`; chỉ start/restart server khi Sếp yêu cầu rõ.
+
 ### 5.1. Generate application key
 ```bash
 php artisan key:generate
