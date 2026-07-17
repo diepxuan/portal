@@ -42,7 +42,6 @@
 - KHONG ghi file tam / backup trong Portal root (khong tao `.openclaw/`, `.bak/`, ... trong workspace Portal). Backup file tam phai o ngoai workspace, vi du `/tmp/portal-backup-<YYYY-MM-DD>/`. Runtime artifact `.openclaw/` la cua OpenClaw framework — khong phai source Portal, khong commit, khong ghi o Portal root.
 - Khi phat hien local ↔ remote diverge (git push bi reject non-fast-forward): DUNG, phan tich xem commit nao dang o remote ma local khong co, hoi Sep truoc khi force-push hoac rebase.
 - Khi bi Sep dung giua task (vd: Sep tu merge khi em dang sua), chap nhan, bao cao lai nhung gi da xong + nhung gi con sot, doi lenh tiep.
-- **"merge PR" = `gh pr merge`, KHONG phai `git merge` local** (bai hoc tu PR #247, #248). Khi Sep noi "merge PR" / "merge #N" / "merge cho anh", dung `gh pr merge <N> --repo <owner/repo> --squash --delete-branch` (hoac `--merge`/`--rebase` tuy convention). KHONG dung `git merge --squash` local roi `gh pr close --delete-branch` — cach nay mat PR state MERGED, mat attribution contributor, mat audit trail. Verify sau merge: `state == MERGED`, `mergeCommit.oid` khong rong. Xem AGENTS.md §5.1.
 
 ## Simba-docs Mount (2026-05-05)
 
