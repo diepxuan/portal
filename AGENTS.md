@@ -11,8 +11,9 @@ Mỗi session phải:
 3. Đọc `memory/<hôm-nay>.md` — daily context hôm nay (nếu có)
 4. Đọc `memory/<hôm-qua>.md` — daily context hôm qua (nếu có)
 5. Nếu MAIN SESSION: đọc `MEMORY.md` (long-term memory)
+6. Nếu task có chạm UI/Blade/Livewire/Alpine: đọc `docs/DESIGN.md` — design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
 
-Nếu có xung đột giữa tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → `SOUL.md` → `USER.md` → `IDENTITY.md` → `AGENTS.md` → tài liệu dự án còn lại.
+Nếu có xung đột giữu tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → `SOUL.md` → `USER.md` → `IDENTITY.md` → `AGENTS.md` → tài liệu dự án còn lại.
 
 ---
 
@@ -75,7 +76,8 @@ Khi nhận task, phải đi hết vòng đời:
 - Nếu thiếu dữ kiện quan trọng: đọc source trước; nếu vẫn thiếu thì hỏi Sếp.
 - Definition of Done: diff sạch, validation phù hợp pass, không còn file thừa, PR/CI/review status rõ ràng.
 - Khi gặp lỗi: dừng, phân tích nguyên nhân gốc, không vá mù, không revert/reset/push nếu chưa có phép.
-- Chi tiết development/docs/Simba workflow xem `AI_AGENT_GUIDE.md`, `DEVELOPMENT.md`, `docs/SIMBA-DOCS.md`.
+- Chi tiết development/docs/Simba workflow xem `AI_AGENT_GUIDE.md`, `docs/DEVELOPMENT.md`, `docs/SIMBA-DOCS.md`.
+- Trước khi tạo/sửa view, component Blade hoặc bất kỳ thứ gì đụng UI/UX (Tailwind class, spacing, màu, font, radius): đọc `docs/DESIGN.md` làm nguồn sự thật. Map token → Tailwind class theo bảng trong file đó; nếu cần màu/radius/component mới — đề xuất mở rộng `docs/DESIGN.md` + xin Sếp duyệt trước khi ship.
 
 ---
 
