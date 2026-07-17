@@ -8,7 +8,7 @@ Chuyen doi chuc nang **Sổ chi tiết công nợ một nhà cung cấp - có s�
 
 ## Trang thai hien tai
 
-- **Status:** IMPLEMENTED - cho Sếp test/review, chua commit
+- **Status:** DONE - merged PR #247 (squash commit 12c1ae27d)
 - **Ngay tao:** 2026-07-13
 - **Nguoi tao:** Bot (Portal Agent)
 - **Branch:** chua tao
@@ -146,7 +146,7 @@ Khong giu alias `pSysMsg*`; wrapper chi normalize ve dung 6 tham so SP tren.
 - Phan biet dong chung tu/dong san pham: dong chi tiet vat tu (co `ma_vt` trong row) duoc lui 1 tab bang class `ps-4 text-gray-500` (Tailwind logical property, dong bo voi navigation-menu); dong tong hop (token `#ARRptBCCN_DDK`/`#ARRptBCCN_TPS`/`#ARRptBCCN_DCK`) giu style mac dinh (khong in dam); dong chung tu thuong giu style `text-gray-800`. CSV export prefix ky tu `\t` cho dong san pham de Excel giu indent khi mo.
 
 ## Audit Status
-- **Status:** IMPLEMENTED - cho Sếp test/review, chua commit
+- **Status:** DONE - merged PR #247 (squash commit 12c1ae27d)
 - **Ngay tao:** 2026-07-13
 - **Nguoi tao:** Bot (Portal Agent)
 - **Ly do:** Sếp yeu cau viet task tham khao task 008/117 cho chuc nang So chi tiet cong no mot nha cung cap (SL), su dung lai phase framework tu task 358.
