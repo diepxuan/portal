@@ -32,13 +32,57 @@ curl -I http://portal.diepxuan.corp/simba
 
 Mặc định agent chỉ được đọc/ghi trong workspace Portal và các thư mục được môi trường cho phép. Mọi hành động cần quyền ngoài sandbox phải xin phép Sếp trước khi chạy.
 
+### Phân nhóm lệnh theo quyền
+
+**Read-only (KHÔNG cần hỏi Sếp — chạy luôn):**
+
+- `cat`, `head`, `tail`, `less`, `wc`, `file`, `nl` — đọc file
+- `ls`, `find`, `tree`, `du`, `stat` — duyệt filesystem
+- `grep`, `rg`, `ag`, `awk`, `sed -n` — search/filter
+- `diff`, `cmp` — so sánh file
+- `git status`, `git log`, `git show`, `git diff`, `git branch -a`, `git remote -v` — git read-only
+- `git ls-files`, `git ls-tree` — git read-only
+- `php -l`, `vendor/bin/phpunit`, `php artisan route:list`, `php artisan config:show` — PHP read-only
+- `curl` GET (không mutate), `gh pr view`, `gh issue view` — API read-only
+- `node --version`, `composer --version` — version check
+- `date`, `whoami`, `pwd`, `echo` — system info
+
+**Ghi local (KHÔNG cần hỏi Sếp — chạy luôn, nằm trong scope):**
+
+- `mkdir`, `cp`, `mv` trong workspace Portal hoặc thư mục tạm được phép (`/tmp/`, `/slash_tmp/`)
+- `sed -i` in-place, `write` tool tạo/sửa file mới trong workspace Portal
+- `git checkout -b <new-branch>` — tạo branch mới (local)
+- `git add`, `git commit`, `git mv` — staging local
+- `composer dump-autoload`, `php artisan config:clear`, `php artisan cache:clear` — local dev
+- `vendor/bin/phpunit --testsuite=...` chạy test local
+- `npm run build`, `npm run dev` (chỉ khi task yêu cầu build asset local)
+
+**Ghi cần xin phép Sếp (chỉ chạy khi được approval):**
+
+- `git push origin <feature-branch>` — push branch feature lên remote; **chỉ khi Sếp cho lệnh "push đi" / "em tạo PR đi"** (AGENTS.md §5).
+- `gh pr create`, `gh pr edit` (PR body/title), `gh api PATCH/POST` cho PR/issue — workflow GitHub; **chỉ khi Sếp cho lệnh "em tạo PR đi"**.
+- `gh pr merge <N>`, `gh pr close <N>` — merge/close PR (chỉ khi Sếp ra lệnh "merge" / "close").
+- `git push origin main` — push trực tiếp lên main
+- `git reset --hard`, `git checkout -- <file>`, `git clean -fd` — phá dữ liệu local
+- `git push --force`, `git push --force-with-lease` — force push
+- `rm` file lớn, `rm -rf` ngoài `/tmp/` hoặc ngoài workspace
+- Lệnh ghi ra ngoài workspace Portal (ngoài `/tmp/`, `/slash_tmp/`, `~`)
+- Lệnh cần network ra ngoài GitHub: `composer install/update`, `npm install`, download package, gọi API mutation bên ngoài
+- Lệnh mở GUI/browser/app ngoài terminal
+- Migration/write DB ngoài phạm vi task
+- Lệnh start/stop/restart dev server (`php artisan serve`, `php artisan serve:dev`, `npm run dev`, `./portal-dev.sh start`) — chỉ khi Sếp yêu cầu rõ
+- Bất kỳ lệnh nào fail do sandbox/network/permission nhưng vẫn cần chạy để hoàn thành task
+
 ### Khi nào phải xin phép Sếp
 
-- Lệnh cần truy cập network: `git fetch`, `git pull`, `git push`, `gh pr ...`, `composer install/update`, `npm install`, download package, gọi API bên ngoài.
-- Lệnh ghi ra ngoài workspace hoặc thư mục tạm được phép.
-- Lệnh mở GUI/browser/app ngoài terminal.
-- Lệnh có khả năng phá dữ liệu hoặc thay đổi lịch sử: `rm`, `git reset`, `git checkout --`, `git clean`, force push, migration/write DB ngoài phạm vi task.
-- Bất kỳ lệnh nào fail do sandbox/network/permission nhưng vẫn cần chạy để hoàn thành task.
+Tổng quát: mọi lệnh thuộc nhóm **"Ghi cần xin phép"** ở trên, hoặc lệnh fail do sandbox/network/permission nhưng vẫn cần chạy để hoàn thành task.
+
+**Quy tắc khi lệnh gặp lỗi / trả về kết quả không mong muốn:**
+
+- DỪNG, không tự ý retry bằng cách thêm flag hay né sandbox.
+- Báo cáo Sếp: lệnh đã chạy, exit code, stderr/output quan trọng, nghi vấn nguyên nhân.
+- Xin approval để chạy lại với quyền escalated (`sandbox_permissions: require_escalated` + `justification`).
+- Ví dụ: `git push` bị reject non-fast-forward → KHÔNG tự `git pull --rebase` + push lại; báo Sếp trước.
 
 ### Cách xin phép
 
