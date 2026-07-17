@@ -98,6 +98,24 @@
 - DEVELOPMENT.md chuyen tu root sang docs/ (cung cap DESIGN, SIMBA-DOCS).
 - Squash commit: 5e922d73f. PR #248 da dong + xoa branch sau merge.
 
+## 2026-07-17: Merge PR guardrail (DONE - merged PR #250)
+
+- Bai hoc tu PR #247, #248: agent dung `git merge --squash` local + `gh pr close`
+  thay vi `gh pr merge` => PR state = CLOSED, mat attribution contributor.
+- Sua 4 file:
+  + AGENTS.md §5.1: guardrail chi tiet (dung/sai, truoc/sau merge verify).
+  + AGENTS.md §5.2: khi nao duoc dung `git merge` local.
+  + AGENTS.md §6 step 7a: them step merge PR trong task completion cycle.
+  + AI_AGENT_GUIDE.md §2 + §9: bullet ngan gon cho AI agent moi.
+  + MEMORY.md bai hoc workflow: phan biet gh pr merge vs git merge local.
+- Commit cu: `d9a068fae` da bi revert (`1d1054f43`) vi commit thang len main,
+  khong mo PR de Sep review. Re-do tren branch `task/249-docs-merge-pr-guardrail`
+  + mo PR #250 + dung `gh pr merge --squash --delete-branch` de merge.
+- Squash commit: `1f1777c80 docs(workflow): them guardrail (#250)`. PR state = MERGED
+  (verified qua `gh pr view --json state`).
+- Bài hoc them: khi Sếp nói "merge PR" / "em làm X đi" ngay sau commit, PHAI tao
+  branch + PR, KHONG commit thang len main.
+
 ## 2026-07-13: Task 358 - slug suffix compact (DONE - merged PR #246)
 
 - `SimbaMenuRouteMetadata::routeNameFor()` doi hau to slug trung ten thanh `menuIdSuffix()` (noi cac ky tu cua menuid, khong them `-`).
