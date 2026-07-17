@@ -32,6 +32,28 @@
 - Squash commit: 12c1ae27d; doc commit: a002ba750. PR #247 đã đóng + xóa branch sau merge.
 - File task 359 move sang docs/tasks/phase 1/ theo quy tắc root PENDING; phase 1 _index 4 tasks (008, 117, 358, 359).
 
+## 2026-07-17: DESIGN.md bootstrap + audit rewrite (DONE - merged PR #248)
+
+- docs/DESIGN.md: design system chuan Google Labs design.md spec alpha
+  (12 colors / 8 typography / 5 rounded / 6 spacing / 5 component groups,
+  7 sections: Overview / Colors / Typography / Layout / Elevation / Shapes / Components / Do's & Don'ts).
+- Phan 1 (commit 8ea76e5b3): bootstrap DESIGN.md, chuyen DEVELOPMENT.md tu root
+  sang docs/, xoa docs/GITHUB_PROJECTS.md, cap nhat README + AGENTS + AI_AGENT_GUIDE.
+- Phan 2 (commit 3cb995af6): audit & rewrite DESIGN.md theo phase 1.
+  Phat hien nhieu thong tin ban dau khong khop codebase that, sua:
+  + Layout that te (max-w-7xl + bg-gray-100, khong 1200px / bg-gray-50).
+  + Palette bo sung: info (indigo) cho banner success Jetstream,
+    yellow-200 cho warning hover, text-*-800 cho badge (khong *-700).
+  + 5 component pattern: button-loading wrapper, table wrapper, input readonly,
+    presentationColumns, wire:confirm.
+  + 6 spacing / 8 typography / 4 shadow token khop Tailwind class that te.
+  + Do/Don't 14 muc cu the cho Livewire/Alpine.
+  + Bo class khong dung (letter-spacing -0.01em, font-scale viewport,
+    shadow inner, spacing.xxl 48px co dinh).
+- File giam tu 317 dong xuong 241 dong (-24%), noi dung chat hon.
+- DEVELOPMENT.md chuyen tu root sang docs/ (cung cap DESIGN, SIMBA-DOCS).
+- Squash commit: 5e922d73f. PR #248 da dong + xoa branch sau merge.
+
 ## 2026-07-13: Task 358 - slug suffix compact (DONE - merged PR #246)
 
 - `SimbaMenuRouteMetadata::routeNameFor()` doi hau to slug trung ten thanh `menuIdSuffix()` (noi cac ky tu cua menuid, khong them `-`).
