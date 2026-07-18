@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-14 16:55:01
+ * @lastupdate 2026-07-18
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Muahang;
+namespace Diepxuan\Catalog\Http\Livewire\Po\Vch;
 
 use Diepxuan\Simba\Models\ArDmKh;
 use Diepxuan\Simba\SModel\SModel;
@@ -25,8 +25,18 @@ use Livewire\Component;
 
 /**
  * Form nhập/sửa hóa đơn mua hàng (PO3).
+ *
+ * Mapping:
+ * - menuID   : `10.10.14` (sysMenu, sysVoucherInfo ma_ct = `PO3`).
+ * - DLL      : `POVchPO3.dll` (form `frmPOVchPO3`, 4 tab: Detail / Chi phi / Hach toan / Tain).
+ * - SP       : `asPOGetPO3` (load 4 dataset) + `asPOSavePO3` (save full).
+ * - Route    : `_simba-source/po/vch/povchpo3/{stt_rec?}/edit` → `Povchpo3Edit::class`.
+ *
+ * Refactor tu `Muahang\HoadonmuaEdit` (dead code) sang pattern chuan `Po\Vch\Povchpo3Edit`
+ * (giong `Po\Rpt\Arrptbccn01Sl`). Bind SP wrappers, port logic tinh toan
+ * (auto-calc tien_nt0, ck_nt, thue_gtgt_nt, totals).
  */
-class HoadonmuaEdit extends Component
+class Povchpo3Edit extends Component
 {
     const MA_CT = 'PO3';
 
@@ -34,6 +44,7 @@ class HoadonmuaEdit extends Component
     public ?string $pStt_rec   = null;
     public string $pMode       = 'create';
     public ?string $pNgay_ct   = null;
+    public ?string $pNgay_lct  = null;
     public string $pSo_ct      = '';
     public string $pSo_hd      = '';
     public ?string $pNgay_hd   = null;
@@ -65,20 +76,22 @@ class HoadonmuaEdit extends Component
     // Details & Costs
     public array $pChiTiet = [];
     public array $pChiPhi  = [];
+    public array $pHachToan = [];
 
     // UI state
-    public int $pActiveTab = 0; // 0=Chi tiết, 1=Chi phí, 2=Hạch toán
+    public int $pActiveTab = 0; // 0=Header+Chi tiet, 1=Chi phi, 2=Hach toan
 
     public function mount(?string $stt_rec = null): void
     {
-        $this->pNgay_ct = now()->format('Y-m-d');
-        $this->pNgay_hd = now()->format('Y-m-d');
+        $this->pNgay_ct  = now()->format('Y-m-d');
+        $this->pNgay_lct = now()->format('Y-m-d');
+        $this->pNgay_hd  = now()->format('Y-m-d');
 
         if ($stt_rec) {
             $this->pMode = 'edit';
             $this->loadInvoice($stt_rec);
         } else {
-            // Sinh số chứng từ mới
+            // Sinh so chung tu moi qua SP AsGetSoCt
             $this->pSo_ct = AsGetSoCt::call([
                 'pMa_ct'   => self::MA_CT,
                 'pNgay_Ct' => $this->pNgay_ct,
@@ -89,12 +102,12 @@ class HoadonmuaEdit extends Component
     public function loadInvoice(string $stt_rec): void
     {
         $result = AsPOGetPO3::call([
+            'pMa_cty'  => SModel::CTY,
             'pStt_rec' => $stt_rec,
         ]);
 
         if ($result->isEmpty()) {
-            session()->flash('error', 'Không tìm thấy hóa đơn.');
-            $this->redirectRoute('muahang.hoadonmua');
+            session()->flash('error', 'Khong tim thay hoa don.');
 
             return;
         }
@@ -103,6 +116,7 @@ class HoadonmuaEdit extends Component
         $header            = $result[0];
         $this->pStt_rec    = $header->stt_rec ?? null;
         $this->pNgay_ct    = optional($header->ngay_ct)->format('Y-m-d');
+        $this->pNgay_lct   = optional($header->ngay_lct)->format('Y-m-d');
         $this->pSo_ct      = $header->so_ct ?? '';
         $this->pSo_hd      = $header->so_hd ?? '';
         $this->pNgay_hd    = optional($header->ngay_hd)->format('Y-m-d');
@@ -130,7 +144,7 @@ class HoadonmuaEdit extends Component
         $this->pT_tt       = (float) ($header->t_tt ?? 0);
         $this->pT_so_luong = (float) ($header->t_so_luong ?? 0);
 
-        // Dataset 1: Chi tiết vật tư
+        // Dataset 1: Chi tiet vat tu
         if (isset($result[1])) {
             $this->pChiTiet = collect($result[1])->map(static fn ($ct) => [
                 'stt_rec0'     => $ct->stt_rec0 ?? '',
@@ -159,7 +173,7 @@ class HoadonmuaEdit extends Component
             ])->toArray();
         }
 
-        // Dataset 2: Chi phí
+        // Dataset 2: Chi phi
         if (isset($result[2])) {
             $this->pChiPhi = collect($result[2])->map(static fn ($cp) => [
                 'stt_rec0'     => $cp->stt_rec0 ?? '',
@@ -321,10 +335,10 @@ class HoadonmuaEdit extends Component
             'pNgay_hd' => 'required|date',
             'pNgay_ct' => 'required|date',
         ], [
-            'pMa_kh.required'   => 'Nhà cung cấp không được trống',
-            'pSo_hd.required'   => 'Số hóa đơn không được trống',
-            'pNgay_hd.required' => 'Ngày hóa đơn không được trống',
-            'pNgay_ct.required' => 'Ngày chứng từ không được trống',
+            'pMa_kh.required'   => 'Nha cung cap khong duoc trong',
+            'pSo_hd.required'   => 'So hoa don khong duoc trong',
+            'pNgay_hd.required' => 'Ngay hoa don khong duoc trong',
+            'pNgay_ct.required' => 'Ngay chung tu khong duoc trong',
         ]);
 
         try {
@@ -332,7 +346,7 @@ class HoadonmuaEdit extends Component
 
             $this->ensureSttRecBeforeSave();
 
-            $result = AsPOSavePO3::call([
+            AsPOSavePO3::call([
                 // Header
                 'pStt_rec'   => $this->pStt_rec,
                 'pMa_ct'     => self::MA_CT,
@@ -343,6 +357,7 @@ class HoadonmuaEdit extends Component
                 'pSo_hd'     => $this->pSo_hd,
                 'pNgay_hd'   => $this->pNgay_hd,
                 'pNgay_ct'   => $this->pNgay_ct,
+                'pNgay_lct'  => $this->pNgay_lct,
                 'pMa_httt'   => $this->pMa_httt,
                 'pMa_nt'     => $this->pMa_nt,
                 'pTy_gia'    => $this->pTy_gia,
@@ -360,25 +375,25 @@ class HoadonmuaEdit extends Component
                 'pT_tt_nt'    => $this->pT_tt_nt,
                 'pT_tt'       => $this->pT_tt,
                 'pT_so_luong' => $this->pT_so_luong,
-                // Details
+                // Details + Costs
                 'pChiTiet' => json_encode($this->pChiTiet),
-                // Costs
-                'pChiPhi' => json_encode($this->pChiPhi),
+                'pChiPhi'  => json_encode($this->pChiPhi),
             ]);
 
             DB::commit();
 
-            session()->flash('success', 'Đã lưu hóa đơn mua hàng.');
-            $this->redirectRoute('muahang.hoadonmua');
+            session()->flash('success', 'Da luu hoa don mua hang.');
+
+            redirect()->route('po.vch.povchpo3');
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Lỗi khi lưu hóa đơn: ' . $e->getMessage());
+            session()->flash('error', 'Loi khi luu hoa don: ' . $e->getMessage());
         }
     }
 
     public function render(): View
     {
-        return view('catalog::muahang.hoadonmua-edit', [
+        return view('catalog::po.vch.povchpo3-edit', [
             'mode' => $this->pMode,
         ])->layout('catalog::layouts.app');
     }
@@ -397,7 +412,7 @@ class HoadonmuaEdit extends Component
         $this->pStt_rec = $sttRecResult->first()->pStt_rec ?? null;
 
         if (empty($this->pStt_rec)) {
-            throw new \Exception('Không thể sinh stt_rec cho hóa đơn mua hàng PO3. Vui lòng kiểm tra AsGetSttRec.');
+            throw new \Exception('Khong the sinh stt_rec cho hoa don mua hang PO3. Vui long kiem tra AsGetSttRec.');
         }
     }
 }

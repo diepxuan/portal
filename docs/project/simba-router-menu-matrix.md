@@ -67,7 +67,7 @@ System balance/process menus da co route Portal hien huu:
 | CA4 Báo nợ | 04.10.11 | `ca.nganhang.baono` | `Cash\Nganhang\Baono` | Registry verified as `voucher` |
 | SO3 Hoá đơn bán hàng | 06.10.08 | `ar.ph.hdbh` | `Banhang\Hoadonbanhang` | Registry verified as `voucher` |
 | MA_KH Khách hàng | 06.90.02 | `ar.khachhang` | `Banhang\Khachhang` | Registry verified as `dictionary` |
-| PO3 Hoá đơn mua hàng trong nước | 10.10.14 | `muahang.hoadonmua` | `Muahang\Hoadonmua` | Registry verified as `voucher` |
+| PO3 Hoá đơn mua hàng trong nước | 10.10.14 | `po.vch.povchpo3` | `Po\Vch\Povchpo3` | Registry verified as `voucher` |
 | MA_NCC Nhà cung cấp | 10.90.22 | `po.cungcap` | `Muahang\Cungcap` | Added; legacy `ar.cungcap` kept |
 | MA_CP Chi phí mua hàng | 10.90.14 | `po.dmcp` | `Muahang\PoDmCpIndex` | `asPOGetDMCP` |
 | MA_TT_PO Điều khoản thanh toán mua | 10.90.05 | Blocked |  | `sysMenu` inactive, no route opened |
@@ -259,7 +259,7 @@ Unique voucher codes: 51.
 | PO0 | PO | Phiếu đề nghị mua hàng | poPh0 | poCt0 | 10.10.01 | Blocked: `sysMenu` row inactive/mismatch |
 | PO1 | PO | Đơn hàng mua | poPh1 | poCt1 | 10.10.02 | `po.vch.po1`; active menu `10.10.05` |
 | PO2 | PO | Phiếu nhập mua | poPh2 | poCt2 | 10.10.04 | Blocked: `sysMenu` row inactive/mismatch |
-| PO3 | PO | Hoá đơn mua hàng trong nước | poPh3 | poCt3 | 10.10.14 | `muahang.hoadonmua` |
+| PO3 | PO | Hoá đơn mua hàng trong nước | poPh3 | poCt3 | 10.10.14 | `po.vch.povchpo3` |
 | PO4 | PO | Phiếu chi phí mua hàng | poPh4 | poCt4 | 10.10.20 | `po.vch.po4` |
 | PO5 | PO | Phiếu xuất trả lại nhà cung cấp | poPh5 | poCt5 | 10.10.23 | `po.vch.po5` |
 | PO6 | PO | Hoá đơn mua dịch vụ | poPh6 | poCt6 | 10.10.26 | `po.vch.po6` |
