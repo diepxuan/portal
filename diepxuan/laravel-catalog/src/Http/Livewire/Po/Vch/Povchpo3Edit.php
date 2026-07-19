@@ -15,6 +15,7 @@ namespace Diepxuan\Catalog\Http\Livewire\Po\Vch;
 
 use Diepxuan\Simba\Models\ArDmKh;
 use Diepxuan\Simba\SModel\SModel;
+use Diepxuan\Simba\StoredProcedures\AsGetDMHTTT;
 use Diepxuan\Simba\StoredProcedures\AsGetSoCt;
 use Diepxuan\Simba\StoredProcedures\AsGetSttRec;
 use Diepxuan\Simba\StoredProcedures\AsPOGetPO3;
@@ -214,7 +215,48 @@ class Povchpo3Edit extends Component
             $this->pNguoi_gd   = $ncc->nguoi_gd ?? '';
             if ($ncc->ma_httt_po) {
                 $this->pMa_httt = $ncc->ma_httt_po;
+                $this->fillTaiKhoanFromHttt($ncc->ma_httt_po);
             }
+        }
+    }
+
+    /**
+     * Auto-fill `pTk_pt` + `pTk_thue` khi user chọn HTTT.
+     *
+     * Map tu bang SIDMHTTT (qua SP asSIGetDMHTTT):
+     * - tk_pt    <- HTTT.tk           (tai khoan phai tra goc cua HTTT)
+     * - tk_thue  <- HTTT.tk_thue_gtgt_mua (tai khoan thue GTGT dau vao)
+     */
+    public function updatedPMaHttt($value): void
+    {
+        $this->fillTaiKhoanFromHttt((string) $value);
+    }
+
+    protected function fillTaiKhoanFromHttt(string $ma_httt): void
+    {
+        if ('' === trim($ma_httt)) {
+            return;
+        }
+
+        $rows = AsGetDMHTTT::call([
+            'pMa_cty'   => SModel::CTY,
+            'pMa_httt'  => $ma_httt,
+            'pModuleid' => 'PO',
+            'pStruct'   => '0',
+        ]);
+
+        if ($rows->isEmpty()) {
+            return;
+        }
+
+        $httt = $rows->first();
+
+        if (!empty($httt->tk)) {
+            $this->pTk_pt = $httt->tk;
+        }
+
+        if (!empty($httt->tk_thue_gtgt_mua)) {
+            $this->pTk_thue = $httt->tk_thue_gtgt_mua;
         }
     }
 
