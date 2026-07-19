@@ -107,7 +107,7 @@ class Povchpo3Edit extends Component
         ]);
 
         if ($result->isEmpty()) {
-            session()->flash('error', 'Khong tim thay hoa don.');
+            session()->flash('error', 'Không tìm thấy hóa đơn.');
 
             return;
         }
@@ -335,10 +335,10 @@ class Povchpo3Edit extends Component
             'pNgay_hd' => 'required|date',
             'pNgay_ct' => 'required|date',
         ], [
-            'pMa_kh.required'   => 'Nha cung cap khong duoc trong',
-            'pSo_hd.required'   => 'So hoa don khong duoc trong',
-            'pNgay_hd.required' => 'Ngay hoa don khong duoc trong',
-            'pNgay_ct.required' => 'Ngay chung tu khong duoc trong',
+            'pMa_kh.required'   => 'Nhà cung cấp không được trống',
+            'pSo_hd.required'   => 'Số hóa đơn không được trống',
+            'pNgay_hd.required' => 'Ngày hóa đơn không được trống',
+            'pNgay_ct.required' => 'Ngày chứng từ không được trống',
         ]);
 
         try {
@@ -382,12 +382,12 @@ class Povchpo3Edit extends Component
 
             DB::commit();
 
-            session()->flash('success', 'Da luu hoa don mua hang.');
+            session()->flash('success', 'Đã lưu hóa đơn mua hàng.');
 
             redirect()->route('po.vch.povchpo3');
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Loi khi luu hoa don: ' . $e->getMessage());
+            session()->flash('error', 'Lỗi khi lưu hóa đơn: ' . $e->getMessage());
         }
     }
 
@@ -412,7 +412,7 @@ class Povchpo3Edit extends Component
         $this->pStt_rec = $sttRecResult->first()->pStt_rec ?? null;
 
         if (empty($this->pStt_rec)) {
-            throw new \Exception('Khong the sinh stt_rec cho hoa don mua hang PO3. Vui long kiem tra AsGetSttRec.');
+            throw new \Exception('Không thể sinh stt_rec cho hóa đơn mua hàng PO3. Vui lòng kiểm tra AsGetSttRec.');
         }
     }
 }

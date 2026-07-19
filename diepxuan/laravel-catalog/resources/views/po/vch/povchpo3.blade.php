@@ -5,14 +5,14 @@
                 <a href="#" x-on:click.prevent="activeTab = 'filter'"
                     :class="{ 'border-blue-500 text-blue-600': activeTab === 'filter', 'border-transparent hover:text-gray-600 hover:border-gray-300': activeTab !== 'filter' }"
                     class="inline-block rounded-t-lg border-b-2 p-4">
-                    Dieu kien loc
+                    Điều kiện lọc
                 </a>
             </li>
             <li class="mr-2">
                 <a href="#" x-on:click.prevent="activeTab = 'content'"
                     :class="{ 'border-blue-500 text-blue-600': activeTab === 'content', 'border-transparent hover:text-gray-600 hover:border-gray-300': activeTab !== 'content' }"
                     class="inline-block rounded-t-lg border-b-2 p-4">
-                    Ket qua
+                    Kết quả
                 </a>
             </li>
         </x-slot:nav>
@@ -20,24 +20,24 @@
         <x-slot:content>
             <div x-show="activeTab === 'filter'" class="space-y-3 pt-2">
                 <div class="grid grid-cols-3 items-center gap-4">
-                    <label class="text-right text-sm text-gray-700">Tim kiem</label>
+                    <label class="text-right text-sm text-gray-700">Tìm kiếm</label>
                     <div class="col-span-2">
                         <input wire:model.defer="pSearch"
-                            placeholder="So HD, so CT, ma NCC..."
+                            placeholder="Số HĐ, số CT, mã NCC..."
                             class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
                         <x-input-error for="pSearch" class="mt-1" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 items-center gap-4">
-                    <label class="text-right text-sm text-gray-700">Ky bao cao</label>
+                    <label class="text-right text-sm text-gray-700">Kỳ báo cáo</label>
                     <div class="col-span-2">
                         @livewire('catalog::component.timer', key('povchpo3-timer-' . $timerKey))
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 items-center gap-4">
-                    <label class="text-right text-sm text-gray-700">Ma nha cung cap</label>
+                    <label class="text-right text-sm text-gray-700">Mã nhà cung cấp</label>
                     <div class="col-span-2">
                         <livewire:catalog::component.input-khachhang mode="nhacungcap" wire:model="pMa_kh" />
                         <x-input-error for="pMa_kh" class="mt-1" />
@@ -50,16 +50,16 @@
                         <x-button-loading
                             class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
                             wire:click="loadData">
-                            Thuc hien
+                            Thực hiện
                         </x-button-loading>
                         <button type="button"
                             class="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
                             wire:click="resetFilters">
-                            Xoa loc
+                            Xóa lọc
                         </button>
                         <a href="{{ route('po.vch.povchpo3.create') }}"
                             class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
-                            Them moi
+                            Thêm mới
                         </a>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
             <div x-show="activeTab === 'content'" class="w-full overflow-x-auto py-2">
                 @if ([] === $invoices)
                     <div class="rounded border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-                        Chua co du lieu. Nhap dieu kien loc roi bam Thuc hien.
+                        Chưa có dữ liệu. Nhập điều kiện lọc rồi bấm Thực hiện.
                     </div>
                 @else
                     <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -76,15 +76,15 @@
                             <table class="min-w-max text-left text-xs">
                                 <thead class="sticky top-0 z-10 bg-gray-50 text-gray-500">
                                     <tr>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Chi tiet</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Chi tiết</th>
                                         <th class="border-b border-gray-200 px-2 py-2 text-right font-medium">#</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">So CT</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Ngay CT</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">So HD</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Ngay HD</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Ma NCC</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Dien giai</th>
-                                        <th class="border-b border-gray-200 px-2 py-2 text-right font-medium">Tong tien</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Số CT</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Ngày CT</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Số HĐ</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Ngày HĐ</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Mã NCC</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-left font-medium">Diễn giải</th>
+                                        <th class="border-b border-gray-200 px-2 py-2 text-right font-medium">Tổng tiền</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
@@ -93,7 +93,7 @@
                                             <td class="whitespace-nowrap px-2 py-2">
                                                 <a href="{{ route('po.vch.povchpo3.edit', $invoice->stt_rec) }}"
                                                     class="rounded border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:border-sky-300 hover:text-sky-700">
-                                                    Sua
+                                                    Sửa
                                                 </a>
                                             </td>
                                             <td class="whitespace-nowrap px-2 py-2 text-right tabular-nums text-gray-400">
@@ -116,7 +116,7 @@
                             </table>
                         </div>
                         <div class="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-500">
-                            <span>{{ count($invoices) }} dong du lieu</span>
+                            <span>{{ count($invoices) }} dòng dữ liệu</span>
                         </div>
                     </div>
                 @endif
