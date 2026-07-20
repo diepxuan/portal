@@ -152,9 +152,7 @@
                     <div class="grid grid-cols-3 items-center gap-4">
                         <label class="text-right text-sm text-gray-700">Hình thức TT</label>
                         <div class="col-span-2">
-                            <input wire:model="pMa_httt"
-                                class="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                placeholder="Mã HTTT (lookup deferred)" />
+                            <livewire:catalog::component.input-httt :value="$pMa_httt" module-id="PO" placeholder="Chọn hình thức thanh toán" />
                             <x-input-error for="pMa_httt" class="mt-1" />
                         </div>
                     </div>
