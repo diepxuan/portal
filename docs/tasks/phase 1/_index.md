@@ -11,8 +11,9 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
 | AR — Công nợ phải thu | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
+| PO — Mua hàng | 1 | 1 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **4** | | | |
+| **Tổng** | **5** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -31,6 +32,12 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 117 | `117-IN-baocao-tonkho-02.md` | INRptCD02.dll | DONE |
+
+## PO — Mua hàng
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 069 | `069-po-hoadon-mua-hang.md` | POVchPO3.dll | DONE |
 
 ## System — Framework & cross-link
 
