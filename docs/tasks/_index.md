@@ -290,7 +290,7 @@
 | 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | PENDING |
 | 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | PENDING |
 | 068 | `068-PO-danhmuc-hinhthuc-thanhtoan.md` | PODMHTTT.dll | PENDING |
-| 069 | `069-PO-hoadon-muahang.md` | POVchPO3.dll | PENDING |
+| 069 | `069-po-hoadon-mua-hang.md` | POVchPO3.dll | PENDING |
 | 070 | `070-PO-chungtu-nhan-hang-mua.md` | POVchPO4.dll | PENDING |
 | 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | PENDING |
 | 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | PENDING |

@@ -13,6 +13,7 @@ Mỗi session phải:
 5. Đọc `memory/<hôm-qua>.md` — daily context hôm qua (nếu có)
 6. Nếu MAIN SESSION: đọc `MEMORY.md` (long-term memory)
 7. Nếu task có chạm UI/Blade/Livewire/Alpine: đọc `docs/DESIGN.md` — design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
+8. Nếu task cần test/verify trên browser hoặc dựng URL: đọc mục **"Website Verification & Dev Server"** trong `TOOLS.md` — base URL local mặc định là `http://portal.diepxuan.corp`, các route package đều nằm dưới prefix **`/simba`** (vd: `http://portal.diepxuan.corp/simba/po/vch/povchpo3/create`). KHÔNG suy ra URL chỉ từ `routes/web.php` (thiếu host + prefix).
 
 Nếu có xung đột giữu tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → `SOUL.md` → `USER.md` → `IDENTITY.md` → `AGENTS.md` → tài liệu dự án còn lại.
 
