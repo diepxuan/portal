@@ -201,12 +201,13 @@ Sếp cho phép em chạy `rm -rf /tmp/* && git clone ... && git push` không?
 
 ### 4. Triệu chứng sandbox chặn egress (đã quan sát 2026-07-21)
 
-Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi để session sau debug nhanh:
+Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi để session sau debug nhanh. **Phân biệt rõ 2 nhóm lệnh** dưới đây: lệnh đọc local (luôn chạy khi có token file) và lệnh hit network (`api.github.com`, fail nếu DNS block).
 
 - `env | grep CODEX_SANDBOX_NETWORK_DISABLED` → có giá trị (network mặc định tắt).
 - `curl -sS -o /dev/null -w "%{http_code}\n" https://api.github.com` → `000` + `Could not resolve host: api.github.com` (DNS fail).
 - `gh pr view <N> --repo <owner>/<repo>` → `error connecting to api.github.com`.
-- `gh auth status` → nếu PASS, token vẫn live (xem token scopes + last refresh). Nếu `authentication failed`, dừng và báo Sếp theo §5.
+- **`gh auth status`** (đọc local `/root/.config/gh/hosts.yml`, KHÔNG hit network) — nếu `Logged in to github.com as <user>` → token file tồn tại + scopes parse được. Nếu `Not logged in` / `authentication failed` → dừng và báo Sếp theo §5.
+  ⚠️ `gh auth status` PASS không đảm bảo lệnh `gh` khác chạy được — lệnh network (`gh pr view`, `gh pr create`, `gh api`) vẫn fail vì sandbox chặn DNS ra `api.github.com`. Sau khi `gh auth status` PASS, test thử `gh api /octocat` để xác nhận cả network route mới cho các lệnh mutation.
 - `git clone https://github.com/<owner>/<repo>.git` → lúc chạy được, lúc fail DNS — không ổn định. Ưu tiên `gh repo clone` (có token xác thực, bỏ qua DNS resolution qua giao thức HTTPS).
 
 **Quy tắc khi gặp các triệu chứng trên:**
