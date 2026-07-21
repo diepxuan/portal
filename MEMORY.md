@@ -281,3 +281,19 @@ Da hoan thanh viec tao **298 task files** trong `docs/tasks/` cho Portal Project
   + (f) §3 Phuong an A them `git push origin <branch>` example.
 - Diff: +7/-14 tren 1 file (TOOLS.md only).
 - Status: PR #258 OPEN, cho Sep review/merge.
+
+## 2026-07-21: Sửa §4 TOOLS.md phân biệt gh auth status (local) vs gh api (network)
+
+- Commit `a64eef296` trên branch `task/258-tools-md-polish` (chưa merge, đã push).
+- Sua dong "gh auth status -> neu PASS, token van live (xem token scopes + last refresh).
+  Neu authentication failed, dung va bao Sep theo §5." thanh:
+  + **`gh auth status`** (đọc local /root/.config/gh/hosts.yml, KHONG hit network) — PASS
+    khong dam bao lenh gh khac chay duoc (sandbox van chan DNS api.github.com).
+  + Them goi y test `gh api /octocat` truoc khi chay lenh mutation.
+  + Them cau intro noi ro 2 nhom lenh (local vs network).
+- Ly do: o session 2026-07-21, `gh auth status` PASS nhung `gh pr view` fail.
+  Dong cu gay hieu nham rang token fail khi that ra sandbox chan network.
+- Bai hoc: doc/GH CLI phan biet "credentials offline" (chi can token file) vs
+  "API call online" (can route toi api.github.com). FAIL cua network command
+  KHONG nghia la token fail — phan biet truoc khi bao Sep.
+- PR #258 status (luc ghi): OPEN, +51/-15, 2 files (TOOLS.md + MEMORY.md), 3 commits.
