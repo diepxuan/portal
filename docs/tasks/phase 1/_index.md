@@ -44,4 +44,5 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
+| 360 | `360-si-smks-khoa-so-lieu-ky.md` | SMKS.dll | DONE |
 
