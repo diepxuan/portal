@@ -93,15 +93,7 @@ Tổng quát: mọi lệnh thuộc nhóm **"Ghi cần xin phép"** ở trên, ho
 - Với Codex: đặt `sandbox_permissions` = `require_escalated` và viết `justification` thành câu hỏi ngắn cho Sếp.
 - Với agent/tool khác: dùng cơ chế tương đương nếu có; nếu không có, dừng và hỏi Sếp trực tiếp, không tự chạy ngoài sandbox.
 
-Ví dụ justification tốt:
-
-```text
-Sếp cho phép em chạy `git fetch origin` ngoài sandbox để lấy trạng thái PR mới nhất không?
-```
-
-```text
-Sếp cho phép em chạy `composer install` ngoài sandbox để tải dependency còn thiếu cho test không?
-```
+Ví dụ justification tốt — xem §2 ở mục Codex CLI bên dưới (3 ví dụ tốt + 3 ví dụ xấu với lý do từ chối).
 
 ### Nguyên tắc sau khi được phép
 
@@ -138,7 +130,7 @@ cat /proc/1/cmdline 2>/dev/null | tr '\0' ' '; echo
 
 | Runtime    | Env đặc trưng                                                                                  | Process                                                                                            | Filesystem marker                                    |
 | ---------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Codex CLI  | `CODEX_THREAD_ID`, `CODEX_CI`, `CODEX_MANAGED_BY_NPM`, `CODEX_SANDBOX_NETWORK_DISABLED`        | `node .../@openai/codex/bin/codex.js --profile <name>` hoặc vendor binary `codex`                  | `/root/.codex/` (auth.json, config.toml, history.jsonl, sessions/) |
+| Codex CLI  | `CODEX_THREAD_ID`, `CODEX_CI`, `CODEX_MANAGED_BY_NPM`, `CODEX_SANDBOX_NETWORK_DISABLED`        | `bwrap ... --argv0 codex-linux-sandbox` (runtime hiện tại) HOẶC `node .../@openai/codex/bin/codex.js --profile <name>` HOẶC vendor binary `codex`                  | `/root/.codex/` (auth.json, config.toml, history.jsonl, sessions/) |
 | OpenClaw   | (gateway env nếu có), port 18789, Chromium headless                                            | `node .../openclaw/dist/index.js gateway --port 18789`                                              | `/root/.openclaw/` (browser/, socket, workspace index) |
 | Hermes     | `HERMES_TUI_THEME` (chỉ theme, KHÔNG đủ để khẳng định), `HERMES_*` khác                       | `python -m hermes_cli.main gateway run`                                                            | `/root/.hermes/` (.env, .hermes_history, auth.json, SOUL.md) |
 | Khác       | Không khớp 3 dòng trên                                                                          | Không khớp                                                                                          | Không khớp                                            |
@@ -159,6 +151,7 @@ justification: <câu hỏi ngắn cho Sếp>
 - Câu ngắn, 1 dòng, bằng tiếng Việt, xưng "em", gọi "Sếp".
 - Nêu rõ: lệnh cần chạy, lý do, phạm vi tác động.
 - Format: `Sếp cho phép em chạy '<lệnh đầy đủ>' ngoài sandbox để <mục đích cụ thể> không?`
+- Văn bản thuần (plain text): KHÔNG kèm markdown, code fence, ký tự escape hay định dạng phức tạp — runtime đọc thẳng làm UI prompt cho Sếp duyệt.
 - KHÔNG viết justification dài dòng, KHÔNG kèm flag phụ không cần thiết.
 
 **Ví dụ justification tốt:**
@@ -194,7 +187,7 @@ Sếp cho phép em chạy `rm -rf /tmp/* && git clone ... && git push` không?
 
 | Phương án | Cơ chế                                                                                              | Ưu                                            | Nhược                                                       | Khi nào dùng                                                              |
 | --------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------- |
-| **A — Escalation per-command** | Đặt `sandbox_permissions: require_escalated` + `justification` (xem §2). Runtime hiển thị UI approval cho Sếp bấm duyệt. | An toàn nhất, audit rõ, không cần đổi hạ tầng | Chậm khi nhiều lệnh; đòi hỏi runtime có cơ chế escalate    | **Mặc định.** Thỉnh thoảng cần `gh pr view`, `git fetch`, `composer require`. |
+| **A — Escalation per-command** | Đặt `sandbox_permissions: require_escalated` + `justification` (xem §2). Runtime hiển thị UI approval cho Sếp bấm duyệt. | An toàn nhất, audit rõ, không cần đổi hạ tầng | Chậm khi nhiều lệnh; đòi hỏi runtime có cơ chế escalate    | **Mặc định.** Thỉnh thoảng cần `gh pr view`, `git push origin <branch>`, `composer require`. |
 | **B — Out-of-band proxy**      | Sếp cấp HTTP/SOCKS proxy, export `HTTPS_PROXY`/`HTTP_PROXY`/`ALL_PROXY`. `gh`/`curl`/`composer`/`npm` đi qua proxy có log/audit. | Giải quyết triệt để egress                    | Cần Sếp cấu hình proxy + token mới; proxy down thì agent tê cứng | Agent hay cần `gh`, `composer install`, `npm install`, gọi CI. **Chưa có trong hạ tầng hiện tại.** |
 | **C — Out-of-sandbox runner**  | Sếp chạy agent trên máy có đầy đủ network (gateway DiepXuan, máy Sếp, container `network_mode: host`). | Tool nào cũng chạy được                       | Rời khỏi guard rail workspace                              | Cần mở PR từ máy Sếp, chạy CI local, tool chỉ chạy ngoài sandbox.        |
 | **D — Human-in-the-loop**      | Agent soạn script/lệnh + giải thích ngắn, ghi `memory/cmd-requests/<ts>.sh`. Sếp copy/paste chạy trên máy Sếp rồi paste output về cho agent. | Zero infra, an toàn nhất                      | Agent phải dừng chờ; tốc độ rất thấp                       | Chỉ 1-2 lệnh/ngày; Sếp không muốn cấp proxy. **Hiện đang dùng cho mọi lệnh `gh` vì token hết hạn.** |
@@ -213,8 +206,8 @@ Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi đ
 - `env | grep CODEX_SANDBOX_NETWORK_DISABLED` → có giá trị (network mặc định tắt).
 - `curl -sS -o /dev/null -w "%{http_code}\n" https://api.github.com` → `000` + `Could not resolve host: api.github.com` (DNS fail).
 - `gh pr view <N> --repo <owner>/<repo>` → `error connecting to api.github.com`.
-- `gh auth status` → `authentication failed` (token `/root/.config/gh/hosts.yml` hết hạn từ `2024-03-14`).
-- `git clone https://github.com/<owner>/<repo>.git` → lúc chạy được, lúc fail DNS — không ổn định. Ưu tiên `gh repo clone` (có token xác thực).
+- `gh auth status` → nếu PASS, token vẫn live (xem token scopes + last refresh). Nếu `authentication failed`, dừng và báo Sếp theo §5.
+- `git clone https://github.com/<owner>/<repo>.git` → lúc chạy được, lúc fail DNS — không ổn định. Ưu tiên `gh repo clone` (có token xác thực, bỏ qua DNS resolution qua giao thức HTTPS).
 
 **Quy tắc khi gặp các triệu chứng trên:**
 
@@ -234,5 +227,5 @@ Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi đ
 ### 6. Tham chiếu chéo giữa Portal và 9router
 
 - Portal: file này (mục Codex CLI) + `AGENTS.md` §6 (Task Completion Cycle, Guard rails).
-- 9router: tham khảo file tương đương ở repo `diepxuan/9router` (TOOLS.md, AGENTS.md) — Sếp đang port protocol từ Portal sang 9router để hai agent dùng chung quy tắc.
+- 9router: tham khảo file tương đương ở repo [`diepxuan/9router`](https://github.com/diepxuan/9router) (TOOLS.md, AGENTS.md) — Sếp đang port protocol từ Portal sang 9router để hai agent dùng chung quy tắc.
 - Khi protocol ở 1 repo đổi, Sếp quyết định có port sang repo kia hay không; agent KHÔNG tự port.
