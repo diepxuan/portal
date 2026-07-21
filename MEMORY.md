@@ -297,3 +297,24 @@ Da hoan thanh viec tao **298 task files** trong `docs/tasks/` cho Portal Project
   "API call online" (can route toi api.github.com). FAIL cua network command
   KHONG nghia la token fail — phan biet truoc khi bao Sep.
 - PR #258 status (luc ghi): OPEN, +51/-15, 2 files (TOOLS.md + MEMORY.md), 3 commits.
+
+## 2026-07-21: PR #258 polish TOOLS.md §4 (DONE - merged)
+
+- PR #258 squash merged len main: `cae6ae5e0 docs(tools): polish 6 điểm TOOLS.md sau PR #257 review (#258)`.
+- Branch: `task/258-tools-md-polish` (da xoa remote qua `--delete-branch`).
+- Noi dung 4 commit (squash thanh 1):
+  + `d26746610` polish 6 điểm (a-f) cu §TOOLS.md.
+  + `61f0958fa` MEMORY.md record PR #257 merged.
+  + `a64eef296` §4 phan biet gh auth status (local check) vs gh api (network call).
+  + `05cd36a6f` MEMORY.md record §4 fix.
+- Bai hoc:
+  + Repo `diepxuan/portal` khong trigger CI workflow cho PR docs-only
+    (workflow `module.yml` chi trigger `push to main`). `pull-requests.yml`
+    chi co 1 job danh dau "uneditable", khong phai CI check that.
+    → Pre-merge chi can verify mergeable + mergeStateStatus CLEAN,
+      KHONG can statusCheckRollup cho docs PR.
+  + `gh auth status` doc local config, PASS khong dam bao lenh network (`gh pr view`,
+    `gh api`) chay duoc khi sandbox chan DNS. Phan biet ro 2 nhom (local vs network)
+    de tranh bao nham cho Sep.
+  + Local branch con sot do `.git` read-only session nay; se tu don o session sau
+    co filesystem RW. Khong nguy hai, chi la clutter.
