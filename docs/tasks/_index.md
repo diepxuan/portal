@@ -396,7 +396,15 @@
 | 5 | `5-developer-support.md` |  | PENDING |
 | 11 | `11-admin-dashboard.md` |  | PENDING |
 | 26 | `26-tong-hop.md` |  | PENDING |
-| 181-196 | `181-196-system-framework-infrastructure.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, OptFieldInfo, OptFieldSetup, ReportDynamic, RptCommon, SMFFY, SMKS, SMUserInfo, ToolCommon | PENDING |
+| 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | SMFFY.dll | PENDING |
+| 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | SMUserInfo.dll | PENDING |
+| 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
+| 364 | `364-si-year-chon-nam-lam-viec.md` |  | PENDING |
+| 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
+| 366 | `366-gl-balance-so-du-ban-dau.md` |  | PENDING |
+| 367 | `367-system-framework-libraries.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, ReportDynamic, RptCommon, ToolCommon | PENDING |
+| 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | OptFieldInfo.dll | PENDING |
+| 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | OptFieldSetup.dll | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 
