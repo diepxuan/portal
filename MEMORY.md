@@ -239,3 +239,45 @@ Da hoan thanh viec tao **298 task files** trong `docs/tasks/` cho Portal Project
 - Task files theo khuon mau 002 (9 sections)
 - Task ID unique, khong trung lap
 - Nguon thong tin: SimbaSql/docs/decompiled/asia/{DLL}.dll/README.md
+
+## 2026-07-21: PR #257 Codex CLI escalation syntax + InputHttt refactor (DONE - merged)
+
+- PR #257 squash merged len main: `368f87600 docs(tools): add Codex CLI escalation syntax + 4 phuong an + 9router cross-ref (#257)`.
+- Branch: `task/257-tools-md-codex-escalation` (da xoa remote qua `--delete-branch`;
+  local branch con sot do `.git` read-only, se tu don o session sau).
+- Noi dung gom 2 commit (squash thanh 1):
+  + `c6407a461` refactor(catalog): sync InputHttt convention + HasKsdFilter trait + reset HTTT (PO3)
+    - Trait `Concerns/HasKsdFilter` loc ksd chung (dung cho Httt/Chiphi/Ngoaite).
+    - InputHttt doi tu event-only sang `#[Modelable]` pattern, dong bo voi Chiphi/Ngoaite.
+    - Povchpo3Edit: reset pMa_httt/pTk_pt/pTk_thue khi clear NCC; flash warning khi
+      `asSIGetDMHTTT` tra empty; bo dispatch thu cong, dung `updatedPMaHttt`.
+    - docs/tasks/069: tick [x] Phase E auto-fill HTTT + Phase F tests (PR #255).
+  + `4dfbd0879` docs(tools): Codex CLI escalation syntax + 4 phuong an A/B/C/D
+    + token hygiene + 9router cross-ref.
+- Follow-up PR #258 (cung task nay): branch `task/258-tools-md-polish`, polish 6 diem
+  TOOLS.md (overlap justification, bwrap runtime token, gh auth khong noi 'expired
+  2024-03-14', link repo 9router, rule plain text justification, git push example).
+- Bai hoc ky thuat:
+  + Phai tao branch moi truoc commit (AGENTS.md §5: 1 task = 1 branch = 1 PR).
+    Em da commit nham len `main` o session truoc (c6407a461), khac phuc bang
+    `git reset --hard origin/main` sau khi PR squash merge.
+  + Sentry `.git` read-only trong sandbox mac dinh: phai dung
+    `sandbox_permissions: require_escalated` cho moi lenh `git add/commit/push`
+    va `gh pr create/merge`. Justification tieng Viet, 1 dong, theo format
+    "Sếp cho phép em chạy '<lệnh>' ngoài sandbox để <mục đích> không?"
+  + Token GH: TOOLS.md cu ghi 'expired 2024-03-14' nhung session nay `gh pr create`
+    van chay duoc. Sua o PR #258 (a-f polish).
+- PR state = MERGED, mergeCommit.oid = `368f8760006c7e2b9aa75029cb357ec6a4307745`.
+
+## 2026-07-21: PR #258 polish 6 điểm TOOLS.md (in progress)
+
+- Branch: `task/258-tools-md-polish`, commit `d26746610 docs(tools): polish 6 diem TOOLS.md sau PR #257 review`.
+- Noi dung:
+  + (a) Bo overlap example justification o §Cach xin phep cu, tham chieu §2.
+  + (b) Them `bwrap ... --argv0 codex-linux-sandbox` runtime hien tai o §1.
+  + (c) Sua §4: `gh auth status` neu PASS thi token con live, neu fail dung theo §5.
+  + (d) §6 them link https://github.com/diepxuan/9router.
+  + (e) §2 them rule plain text cho justification.
+  + (f) §3 Phuong an A them `git push origin <branch>` example.
+- Diff: +7/-14 tren 1 file (TOOLS.md only).
+- Status: PR #258 OPEN, cho Sep review/merge.
