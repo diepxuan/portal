@@ -2,6 +2,7 @@
 
 Memory dai han cho Portal agent (Bột). Moi entry khi co PR merged hoac insight dang nho
 deu ghi vao day. Doc MEMORY.md nay truoc moi task lon de khong lap lai loi cu.
+Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol port).
 
 ---
 
@@ -156,14 +157,15 @@ deu ghi vao day. Doc MEMORY.md nay truoc moi task lon de khong lap lai loi cu.
     Povchpo3Edit reset pMa_httt/pTk_pt/pTk_thue khi clear NCC + flash warning
     khi `asSIGetDMHTTT` empty; docs/tasks/069 tick [x] Phase E/F.
   + `4dfbd0879` docs(tools): Codex CLI escalation syntax + 4 phuong an A/B/C/D +
-    token hygiene + 9router cross-ref.
+    token hygiene. Tham chieu 9router se xoa o PR #260 (cleanup MEMORY.md
+    cung TOOLS.md xoa §6 tuong ung).
 - mergeCommit.oid = 368f8760006c7e2b9aa75029cb357ec6a4307745.
 
 ### 1.8 PR #258 — Polish 6 diem TOOLS.md + fix §4 (2026-07-21)
 
 - Squash: cae6ae5e0. Gop 4 commit:
   + `d26746610` polish 6 diem cu §TOOLS.md (a-f: overlap justification, bwrap runtime,
-    gh auth message, link 9router, plain text rule, git push example).
+    gh auth message, plain text rule, git push example).
   + `61f0958fa` MEMORY.md record PR #257.
   + `a64eef296` §4 phan biet `gh auth status` (local) vs `gh api` (network).
   + `05cd36a6f` MEMORY.md record §4 fix.
@@ -309,29 +311,22 @@ deu ghi vao day. Doc MEMORY.md nay truoc moi task lon de khong lap lai loi cu.
 
 ## 5. Backlog / Open questions
 
-### 5.1 Cleanup local branch stuck do `.git` read-only
+### 5.1 Cleanup local branch stuck do `.git` read-only — DONE 2026-07-22
 
-- Trang thai (2026-07-21): branch local `task/257-tools-md-codex-escalation` +
-  `task/258-tools-md-polish` + `task/259-record-pr-258` (neu PR chua merge)
-  con sot trong working tree sau khi PR squash merge xoa remote.
-- Se tu don khi `.git` umount read-write o session sau.
-- Neu gap lai: `git branch -D <stuck>` + `git remote prune origin` (can Sep duyet
-  vi `git branch -D` thuoc "phá dữ liệu local").
+- Workspace session 2026-07-22: `permission_profile: disabled`, `.git` writable.
+- Cleanup: `git branch -D task/257- task/258- task/259-` + `git remote prune origin`
+  (7 remote refs pruned). Working tree clean, local main = origin/main.
+- Lesson: neu gap `Read-only file system` o session khac, KHONG tu escalate; bao
+  Sep hoac doi khi filesystem writable.
 
-### 5.2 9router protocol port
-
-- TOOLS.md §6 noi Sếp dang port protocol tu Portal sang 9router de 2 agent
-  dung chung quy tac.
-- Agent KHONG tu port — Sep quyet khi nao can.
-
-### 5.3 Tasks CRUD khach hang (2026-05-05, chua merge)
+### 5.2 Tasks CRUD khach hang (2026-05-05, chua merge)
 
 - Task 001 (AR - Danh muc khach hang): HOAN THANH da xac nhan.
 - Task 38 (Ban hang CRUD khach hang): OPEN, danh sach tien do chua lam.
 - Task 002 (Nhom khach hang), Task 003 (Phan loai khach hang): rang buoc
   "khong sua/xoa khi da su dung", chua co PR.
 
-### 5.4 Hoan thanh `docs/tasks/` audit (2026-05-04)
+### 5.3 Hoan thanh `docs/tasks/` audit (2026-05-04)
 
 - Da tao 298 task files trong `docs/tasks/`, ti le 99.4% (336/338 DLLs).
 - Co the da co task moi them sau audit nay (task 360-369 split tu 181-196
