@@ -81,25 +81,37 @@ class Link extends Component
             return;
         }
 
-        $user = $this->users->where('id', $this->userId)->first();
-        if (! $user) {
-            session()->flash('error', "User ID {$this->userId} khong ton tai.");
-
-            return;
-        }
+        $sysUsername = $this->sysUser->username;
 
         try {
+            // Nhanh 1: dropdown chon "None" (placeholder, value="") -> xoa UserLink row.
+            if ($this->userId === null || $this->userId === '' || $this->userId === '0') {
+                $deleted = \Diepxuan\Catalog\Models\UserLink::where('simba_user_id', $sysUsername)->delete();
+
+                session()->flash('success', "Đã xóa {$deleted} UserLink cho '{$sysUsername}'.");
+
+                return;
+            }
+
+            // Nhanh 2: dropdown chon user cu the -> upsert UserLink.
+            $user = $this->users->where('id', $this->userId)->first();
+            if (! $user) {
+                session()->flash('error', "User ID {$this->userId} khong ton tai.");
+
+                return;
+            }
+
             $user->simbaLink()->updateOrCreate(
                 ['laravel_user_id' => $user->id],
-                ['simba_user_id'   => $this->sysUser->username]
+                ['simba_user_id'   => $sysUsername]
             );
 
-            session()->flash('success', 'Da cap nhat UserLink.');
+            session()->flash('success', "Đã cap nhat UserLink cho '{$sysUsername}' -> user #{$user->id}.");
         } catch (\Throwable $e) {
             \Log::error('UserLink::updateUserLink failed', [
-                'user_id' => $user->id,
-                'sys_user' => $this->sysUser->username,
-                'error'   => $e->getMessage(),
+                'sys_user' => $sysUsername,
+                'user_id'  => $this->userId,
+                'error'    => $e->getMessage(),
             ]);
 
             session()->flash('error', 'Khong the cap nhat UserLink: ' . $e->getMessage());
