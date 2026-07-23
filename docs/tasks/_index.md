@@ -8,7 +8,7 @@
 
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
-| AP — Công nợ phải trả | 4 | 0 | 4 | 0 |
+| AP — Công nợ phải trả | 5 | 0 | 5 | 0 |
 | AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
 | CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
@@ -19,7 +19,7 @@
 | SI — System Integration | 34 | 0 | 34 | 0 |
 | SO — Đơn hàng bán | 48 | 0 | 48 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **334** | | | |
+| **Tổng** | **335** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -29,6 +29,7 @@
 | 018 | `018-ap-dieu-khoan-thanh-toan.md` | APTT.dll | PENDING |
 | 019 | `019-ap-bang-ke-hoa-don-phai-tra.md` | APRptBK01.dll, APRptBK02.dll, APRptBK03.dll | PENDING |
 | 020 | `020-ap-bu-tru-cong-no-phai-tra.md` | ApVchAP4.dll | PENDING |
+| 371 | `371-ap-so-chi-tiet-cong-no-mot-nha-cung-cap-10-30-11.md` | ARRptBCCN01.dll (form dùng chung cho AR và AP, menuid phân biệt) | PENDING |
 
 ## AR — Công nợ phải thu
 
