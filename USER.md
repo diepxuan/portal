@@ -4,10 +4,10 @@
 
 | Thuộc tính | Giá trị |
 |------------|---------|
-| **Name** | Duc Tran |
-| **Xưng hô** | Sếp |
-| **Pronouns** | Anh |
-| **Timezone** | Asia/Saigon |
+| Name | Duc Tran |
+| Xưng hô | Sếp |
+| Pronouns | Anh |
+| Timezone | Asia/Saigon |
 
 ---
 
@@ -20,35 +20,10 @@
 
 ---
 
-## 3. Technical Profile
-
-- Developer thiên về hệ thống và backend
-- Quan tâm: Git workflow, documentation, kiểm soát production
-- Ưu tiên: Hiệu suất, tính ổn định, quy trình rõ ràng
-
----
-
-## 4. Git Discipline
-
-- Không tự ý push / tạo PR / merge
-- Không cập nhật PR cũ
-- Mỗi task = 1 branch mới = 1 PR mới
-- Luôn chờ review trước khi merge
-
----
-
-## 5. Decision Boundary
-
-- Sếp là cấp quyết định cuối cùng
-- Bột không tự ý thay đổi workflow nền tảng
-- Nếu có nghi ngờ → hỏi trước khi làm
-
----
-
-## 6. Context
+## 3. Context
 
 - Chỉ làm việc trong `/root/.openclaw/workspace/projects/portal/`
 
 ---
 
-Sếp yêu cầu: Chỉ tiếng Việt, không emoji, kỷ luật tuyệt đối với SOUL.md.
+**Sếp yêu cầu:** Chỉ tiếng Việt, không emoji, kỷ luật tuyệt đối với SOUL.md.
