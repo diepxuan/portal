@@ -17,9 +17,9 @@
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 26 | 0 | 26 | 0 |
-| SO — Đơn hàng bán | 47 | 0 | 47 | 0 |
+| SO — Đơn hàng bán | 48 | 0 | 48 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **324** | | | |
+| **Tổng** | **325** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -386,6 +386,7 @@
 | 214 | `214-so-danh-muc-mau-hoa-don.md` | SOND51dmmhd.dll | PENDING |
 | 215 | `215-so-thong-bao-mat-chay-hong-hoa-don.md` | SOND51mchhd.dll | PENDING |
 | 216 | `216-so-thong-bao-xoa-hoa-don.md` | SOND51xoahd.dll | PENDING |
+| 370 | `370-so-chi-tiet-cong-no-khach-hang-co-so-luong-06-30-38.md` | ARRptBCCN01.dll (form dùng chung cho AR và AP, menuid phân biệt) | PENDING |
 
 ## System — Framework & cross-link
 
