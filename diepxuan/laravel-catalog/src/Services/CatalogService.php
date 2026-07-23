@@ -25,8 +25,8 @@ use Illuminate\Support\Facades\Auth;
 class CatalogService
 {
     protected SysLanguage $sysLanguage;
-    protected User $user;
-    protected SysUserInfo $simbaUser;
+    protected ?User $user = null;
+    protected ?SysUserInfo $simbaUser = null;
     protected ?SysCompany $company = null;
     protected string $maNt;
     protected string $id;
@@ -39,17 +39,36 @@ class CatalogService
         // \Debugbar::info('ReportService instance đã được khởi tạo với ID: ' . $this->id);
     }
 
-    public function user()
+    public function user(): ?User
     {
         return $this->user ?? $this->user = Auth::user();
     }
 
     /**
-     * Get Simba user.
+     * Get Simba user. Returns null when user is not linked to a Simba account
+     * (missing UserLink) or the Simba SQL Server is unreachable.
      */
-    public function simbaUser(): SysUserInfo
+    public function simbaUser(): ?SysUserInfo
     {
-        return $this->simbaUser ?? $this->simbaUser = $this->user()->getSimbaUser();
+        if ($this->simbaUser !== null) {
+            return $this->simbaUser;
+        }
+
+        $laravelUser = $this->user();
+        if (! $laravelUser || ! $laravelUser->simbaLink) {
+            return $this->simbaUser = null;
+        }
+
+        try {
+            return $this->simbaUser = $laravelUser->getSimbaUser();
+        } catch (\Throwable $e) {
+            \Log::warning('CatalogService::simbaUser load failed', [
+                'user_id' => $laravelUser->getKey(),
+                'error'   => $e->getMessage(),
+            ]);
+
+            return $this->simbaUser = null;
+        }
     }
 
     public function language()
@@ -57,27 +76,40 @@ class CatalogService
         return $this->sysLanguage ?? $this->sysLanguage = SysLanguage::current()->first();
     }
 
-    public function company()
+    /**
+     * Returns null when user has no Simba company binding.
+     */
+    public function company(): ?SysCompany
     {
         if ($this->company) {
             return $this->company;
         }
 
-        $ma_cty = session('selected_company', '001');
-        if ($ma_cty) {
-            $this->company = $this->companies()->firstWhere('ma_cty', $ma_cty);
-        } else {
-            $this->company = $this->companies()->first();
+        $companies = $this->companies();
+        if ($companies->isEmpty()) {
+            return $this->company = null;
         }
 
-        session(['selected_company' => $this->company->ma_cty]);
+        $ma_cty = session('selected_company', '001');
+        $this->company = $ma_cty
+            ? $companies->firstWhere('ma_cty', $ma_cty)
+            : $companies->first();
+
+        if ($this->company) {
+            session(['selected_company' => $this->company->ma_cty]);
+        }
 
         return $this->company;
     }
 
-    public function companies()
+    /**
+     * Returns empty collection when user has no Simba link (dev / SSO-only flows).
+     */
+    public function companies(): Collection
     {
-        return $this->simbaUser()->companies;
+        $simbaUser = $this->simbaUser();
+
+        return $simbaUser ? $simbaUser->companies : collect();
     }
 
     public function year(?int $year = null): int
@@ -132,7 +164,12 @@ class CatalogService
 
     public function glDmTks(?string $pTk = null, ?string $pStruct = null): Collection
     {
-        $maCty = $this->company()->id;
+        $company = $this->company();
+        if (! $company) {
+            return collect();
+        }
+
+        $maCty = $company->id;
         $key   = implode('|', [$maCty, $pStruct ?? '']);
 
         $this->glDmTks[$key] ??= AsGLGetDMTK::call([
