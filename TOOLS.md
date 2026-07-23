@@ -104,9 +104,9 @@ Ví dụ justification tốt — xem §2 ở mục Codex CLI bên dưới (3 ví
 
 ## Codex CLI — cú pháp CMD cụ thể để escalate lệnh
 
-> Áp dụng cho runtime hiện tại của agent Portal: **Codex CLI** (`@openai/codex@0.142.0`, profile `ninerouter`) chạy dưới **OpenClaw gateway** (`openclaw@2026.6.8`, port `18789`). Cập nhật 2026-07-21 dựa trên tình trạng runtime quan sát được.
+> Áp dụng cho runtime hiện tại của agent Portal: **Codex CLI** (`@openai/codex@0.142.0`, profile `ninerouter`) chạy dưới **OpenClaw gateway** (`openclaw@2026.6.8`, port `18789`). Cập nhật 2026-07-22 dựa trên tình trạng runtime quan sát được.
 >
-> Mục đích: 9router agent đọc TOOLS.md này để hiểu cách Portal agent escalate lệnh ngoài sandbox — từ đó thống nhất cơ chế giữa hai project.
+> Ghi chú phạm vi: tài liệu này phục vụ dự án Portal (`diepxuan/portal`). Không áp dụng cho project khác — Portal agent KHÔNG tự động port protocol/sandbox rule sang repo khác.
 
 ### 1. Nhận diệt runtime đang chạy
 
@@ -157,7 +157,7 @@ justification: <câu hỏi ngắn cho Sếp>
 **Ví dụ justification tốt:**
 
 ```text
-Sếp cho phép em chạy `gh pr view 43 --repo diepxuan/9router --json title,body,files` ngoài sandbox để lấy metadata PR trước khi viết patch update TOOLS.md không?
+Sếp cho phép em chạy `gh pr view 257 --repo diepxuan/portal --json state,mergeCommit,files` ngoài sandbox để verify state PR vừa mở trước khi viết báo cáo không?
 ```
 
 ```text
@@ -225,8 +225,4 @@ Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi đ
 - Token scope khuyến nghị cho agent Portal: `repo`, `read:org`, `workflow`. Expiration ≤ 30 ngày.
 - Không commit token, không in ra log, không paste vào file trong workspace (kể cả `/tmp/`).
 
-### 6. Tham chiếu chéo giữa Portal và 9router
 
-- Portal: file này (mục Codex CLI) + `AGENTS.md` §6 (Task Completion Cycle, Guard rails).
-- 9router: tham khảo file tương đương ở repo [`diepxuan/9router`](https://github.com/diepxuan/9router) (TOOLS.md, AGENTS.md) — Sếp đang port protocol từ Portal sang 9router để hai agent dùng chung quy tắc.
-- Khi protocol ở 1 repo đổi, Sếp quyết định có port sang repo kia hay không; agent KHÔNG tự port.
