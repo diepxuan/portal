@@ -343,3 +343,32 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
 - Git remote: `git@github.com:diepxuan/portal.git`
 - Token gh luu tai `/root/.config/gh/hosts.yml`, scope hien tai (2026-07-21):
   `gist, project, read:org, repo, workflow`.
+
+## 2026-07-23: PR #260 + #261 + #262 merged - cleanup stash 5/5 (DONE)
+
+- **PR #260** squash `77f4b5e57` docs: refactor AI_AGENT_GUIDE (204 dong, 10 sections
+  co to chuc) + cleanup MEMORY/TOOLS (xoa 9router protocol port, vi du lieu Portal).
+- **PR #261** squash `068e81b4f` docs(tasks): doi task ID 362 -> 370 cho
+  SO/ARBCCN01SL (trung SMUserInfo). File 362 -> 370, index summary SO 47 -> 48,
+  Tong 324 -> 325.
+- **PR #262** squash `cf68f4329` docs(tasks): refactor phase 1 task docs.
+  Apply stash@{0} (skip file untracked 362-so da xu ly o #261, chi lay 3 file
+  modify). Rewrite `phase 1/008-...` 301 -> 151 dong (phase 1 style co dau).
+  Update `_index.md` summary theo PR #256 + #261 (Tong 334).
+- **Workspace session 2026-07-22/23**: filesystem writable (`permission_profile:
+  disabled`), `.git` KHONG con read-only. Cleanup local branches stuck va prune
+  remote refs OK.
+- **5 stash dropped** (audit xong, an toan, vi cac thay doi da duoc ap dung qua
+  cac PR khac):
+  + stash@{0} wip-260-session-cu-task-folder-refactor: da len PR #262.
+  + stash@{1} WIP-input-indmnhvt-and-docs-other-session-2026-07-11: file
+    InputIndmnhvt/blade, task 357 da co trong HEAD (qua PR #256/#167 task 357
+    livewire input components merge).
+  + stash@{2} WIP: docs/DEVELOPMENT.md rename: da duoc ap dung (docs/DEVELOPMENT.md
+    hien co, procedures/CA da xoa).
+  + stash@{3} temp-simba-route-refactor: routes/web.php + SimbaMenuTargetResolver
+    da duoc refactor qua cac PR #198/#205/#206/#214.
+  + stash@{4} keep-local-core-composer: discard (autoload-dev bi xoa khoi HEAD).
+- Lesson moi: LUON check noi dung stash truoc khi drop (audit +1 commit
+  cho moi stash). Drop la IRREVERSIBLE (git stash pop/apply moi co the phuc
+  hoi, stash drop thi KHONG).

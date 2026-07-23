@@ -1,301 +1,151 @@
-# Task 008: ARRptBCCN01
+# Task 008: AR/ARBCCN01 — Sổ chi tiết công nợ một khách hàng (menu 06.30.14)
 
-## Nhom: AR (Accounts Receivable - Cong no phai thu)
+## Nhóm: AR (Accounts Receivable — Công nợ phải thu) / Module SO
 
-## Muc tieu
-Chuyen doi chuc nang bao cao so chi tiet cong no theo tai khoan va khach hang tu .NET sang PHP Laravel, dat ket qua tuong duong ARRptBCCN01.
+## Mục tiêu
 
-## Chi tiet
+Chuyển đổi chức năng **Sổ chi tiết công nợ một khách hàng** từ Simba .NET `ARRptBCCN01.dll` sang Livewire report mới, dùng route source Simba va stored procedure `asARRptBCCN01`.
+
+## Trạng thái hiện tại
+
+- **Status:** DONE — merged PR phase 1
+- **Ngày tạo:** 2026-05-10
+- **Ghi chú:** Đây là task gốc đầu tiên của dòng `ARRptBCCN01`, được implement trước khi có task 358 (slug convention) và task 359 (AP version).
+- **Nguồn:** simba-docs/decompiled
+- **Canonical URL (hiện tại):** `/simba/so/rpt/arrptbccn01`
+- **Source route:** `/_simba-source/so/rpt/arrptbccn01`
 - **DLL:** ARRptBCCN01.dll, ARRptBCCN01a.dll
-- **Chuc nang:** Bao cao so chi tiet cong no - hien thi so du cong no chi tiet theo tung tai khoan va khach hang voi drill-down
-- **Loai:** Bao cao (Report)
-- **Assembly Title:** Asia Enterprise
-- **Version:** 9.1.0.0
-- **Namespace:** `AsiaErp.UserInterface`
-- **Company:** Asia Software Development JSC
-- **Ma_ct:** AR (module AR)
+- **Route name:** `so.rpt.arrptbccn01`
 
-## Tai lieu tham khao
-`/root/.openclaw/workspace/projects/SimbaSql/docs/decompiled/asia/ARRptBCCN01.dll/README.md`
+## Source of truth từ Simba
 
----
+### sysMenu
 
-## Cau truc du lieu
+| MenuID | Module | Tiêu đề | Command | Form | Active |
+|--------|--------|---------|---------|------|--------|
+| `06.30.14` | SO | Sổ chi tiết công nợ một khách hàng | `ARRptBCCN01` | `AsiaErp.UserInterface.frmARRptBCCN01` | `1` |
+| `06.30.38` | SO | Sổ chi tiết công nợ một khách hàng — có số lượng | `ARRptBCCN01` | `AsiaErp.UserInterface.frmARRptBCCN01` | `1` |
 
-### Bang lien quan
+Form gốc `frmARRptBCCN01` dùng chung cho cả AR và AP; phân biệt bằng menuid.
 
-| Bang | Mo ta | Relationship |
-|------|-------|---------------|
-| DMKH | Danh muc khach hang | FK ma_kh |
-| DMTK | Danh muc tai khoan | FK ma_tk (tk_cn=1) |
-| AR4PH | Chung tu AR4 header | Phat sinh no/co |
-| AR4CT | Chung tu AR4 chi tiet | Chi tiet phat sinh |
-| ARBalance | So du dau/cuoi ky | Du_dk, du_ck |
+### sysReportInfo
 
-### Table Navigation
+| MenuID | Mẫu | SP | Report |
+|--------|-----|----|--------|
+| `06.30.14` | `01` | `asARRptBCCN01` | `ARBCCN011.rpt` |
+| `06.30.38` | `02` | `asARRptBCCN01SL` | `ARBCCN012.rpt` |
 
-| Bang | Mo ta | Relationship |
-|------|-------|---------------|
-| DMKH | Khach hang | Lookup ten_kh |
-| DMTK | Tai khoan | Lookup ten_tk (tk_cn=1) |
+### Menu liên quan không mở trong task này
 
----
+| MenuID | Tiêu đề | Active | Lý do |
+|--------|---------|--------|-------|
+| `06.30.38` | Sổ chi tiết công nợ một khách hàng — có số lượng | `1` | Task 370 (file `370-so-chi-tiet-cong-no-khach-hang-co-so-luong-06-30-38.md`, đổi ID từ 361 ở PR #261 vì trùng SMUserInfo) |
+| `10.30.11` | Sổ chi tiết công nợ một nhà cung cấp | `1` | Task riêng (AP version) |
+| `10.30.23` | Sổ chi tiết công nợ một nhà cung cấp — có số lượng | `1` | Task 359 (AP version SL, `359-ap-so-chi-tiet-cong-no-mot-nha-cung-cap-10-30-23.md`) |
 
-## Form classes
+## DLL audit
 
-### 1. frmARRptBCCN01 (So chi tiet cong no)
-- **Ke thua:** frmReport
-- **Chuc nang:** Hien thi so chi tiet cong no, loc, drill-down, xuat bao cao
-- **Controls:**
+File: `simba-docs/decompiled/asia/ARRptBCCN01.dll/AsiaErp.UserInterface/frmARRptBCCN01.cs`
 
-| Control | Type | Mo ta |
-|---------|------|-------|
-| txtMa_Tk | AsTextBox | Ma tai khoan (AutoLookup, tk_cn=1) |
-| txtMa_Kh | AsTextBox | Ma khach hang (AutoLookup) |
-| txtNgay1 | AsMaskedTextBox | Tu ngay |
-| txtNgay2 | AsMaskedTextBox | Den ngay |
-| cboKyBc | ComboBox | Ky bao cao |
-| cboMau_bc | ComboBox | Mau bao cao |
-| optVND | RadioButton | Hien thi VND |
-| optNt | RadioButton | Hien thi ngoai te |
-| dgvBC | DataGridView | Du lieu bao cao |
-| btnIn | Button | Nut in bao cao |
-| btnXuat | Button | Nut xuat Excel |
+Form dùng chung cho task 008 (AR view), task 359 (AP SL), và task 370 (SO SL, đổi ID từ 361 ở PR #261). Tham số `LoadData()` giống nhau, nhưng nguồn dữ liệu AR/AP/SO tuỳ theo menuid và connection.
 
-### 2. frmARRptBCCN01a (So chi tiet Excel nang cao)
-- **Ke thua:** frmDrilldownReport
-- **Chuc nang:** Xuat Excel voi drill-down chi tiet
+### Controls chính (theo DLL gốc)
 
----
+| Control | Portal field | Mô tả |
+|---------|--------------|-------|
+| `txtTk` | `pTk` | Mã tài khoản (tk_cn=1) |
+| `txtMa_Kh` | `pMa_kh` | Mã khách hàng (AR) hoặc nhà cung cấp (AP); DLL dùng chung tên control/param `ma_kh` |
+| `txtNgay1` | `pNgay1` | Từ ngày |
+| `txtNgay2` | `pNgay2` | Đến ngày |
+| `cboKyBc` | `pKyBc` | Kỳ báo cáo |
+| `cboMau_bc` | `pMa_mau` | Mẫu báo cáo (`01` cho BCCN01, `02` cho SL) |
+| `optVND` | `pVND` | Hiển thị VND |
+| `optNt` | `pNgoai_te` | Hiển thị ngoại tệ |
+| `dgvBC` | grid | Dữ liệu báo cáo |
+| `btnIn` | `submit` | Nút in báo cáo |
+| `btnXuat` | `exportExcel` | Nút xuất Excel |
 
-## Stored Procedures
+### Thứ tự tham số `LoadData()` / `asARRptBCCN01`
 
-Nguon chuan: `simba-docs/data/sysReportInfo.md` va `diepxuan/laravel-simba/docs/procedures/AR/procedures.md`.
+Theo DLL decompile `frmARRptBCCN01.LoadData()`, form gọi SP bằng 6 tham số theo thứ tự:
 
-| SP Name | Menu | Ma mau | Report | Mo ta |
-|---------|------|--------|--------|-------|
-| asARRptBCCN01 | 06.30.14 | 01 | ARBCCN011.rpt | So chi tiet cong no mot khach hang |
-| asARRptBCCN01SL | 06.30.38 | 02 | ARBCCN012.rpt | Bien the co so luong |
+| Thứ tự | Giá trị DLL | Portal/SP param |
+|--------|-------------|-----------------|
+| 1 | `CompanyInformations.CompanyID` | `ma_cty` |
+| 2 | `txtNgay1.Value` | `Ngay1` |
+| 3 | `txtNgay2.Value` | `Ngay2` |
+| 4 | `txtTk.Text` | `Tk` |
+| 5 | `txtMa_Kh.Text` | `ma_kh` |
+| 6 | `txtMa_Nt.Text` | `ma_nt` |
 
-### asARRptBCCN01 parameters
+Không giữ alias `pSysMsg*`; wrapper chỉ normalize về đúng 6 tham số SP trên.
 
-| Name | Type | Required | Source |
-|------|------|----------|--------|
-| ma_cty | nvarchar(3) | No | Company context |
-| Ngay1 | smalldatetime | No | txtNgay1 |
-| Ngay2 | smalldatetime | No | txtNgay2 |
-| Tk | nvarchar(20) | No | txtTk |
-| ma_kh | nvarchar(20) | No | txtMa_Kh |
-| ma_nt | nvarchar(3) | No | txtMa_Nt |
+## Portal mapping dự kiến
 
----
+| Loại | File | Nội dung |
+|------|------|----------|
+| Component | `diepxuan/laravel-catalog/src/Http/Livewire/So/Rpt/Arrptbccn01.php` | Form filter, submit SP, grid kết quả, select row, export CSV |
+| View | `diepxuan/laravel-catalog/resources/views/so/rpt/arrptbccn01.blade.php` | UI report theo `x-nav-tabs`, reuse `input-taikhoan` và `input-khachhang mode="khachhang"` |
+| Route | `diepxuan/laravel-catalog/routes/web.php` | `so.rpt.arrptbccn01` → `So\\Rpt\\Arrptbccn01` |
+| SP wrapper | `diepxuan/laravel-simba/src/StoredProcedures/AsARRptBCCN01.php` | Wrapper gọi `asARRptBCCN01` với 6 tham số chính xác từ DLL |
 
-## Business Logic
+## Data Access Map
 
-### Tinh toan so du
+| UI/data action | Code name | Simba table | Source | GET SP/wrapper |
+|---|---|---|---|---|
+| Lookup khách hàng | `ma_kh` trong DLL/SP, hiển thị là KH ở AR | `ARDMKH` (mode KH) | `sysDictionaryInfo` + `sysDAOInfo` | `asARGetDMKH` (mode AR) — đã có trong `InputKhachhang` |
+| Lookup tài khoản | `MA_TK` | `GLDMTK` | `sysDictionaryInfo` + `sysDAOInfo` | `asGLGetDMTK` qua `CatalogService::glDmTks()` |
+| Lọc báo cáo công nợ KH | `ARRptBCCN01` | `AR4CT`, `DMKH`, `DMTK` | `sysReportInfo` row `06.30.14` | `asARRptBCCN01` / `StoredProcedures\\AsARRptBCCN01` |
 
-1. **So du dau ky**:
-   ```sql
-   du_dk = (SELECT SUM(ps_no - ps_co) FROM AR4CT
-            WHERE ngay_ct < @pNgay1 AND ma_kh = @pMa_kh)
-   ```
+## Checklist triển khai
 
-2. **Phat sinh no**:
-   ```sql
-   ps_no = (SELECT SUM(ps_no_nt) FROM AR4CT
-            WHERE ngay_ct BETWEEN @pNgay1 AND @pNgay2 AND ma_kh = @pMa_kh)
-   ```
+### Phase framework (theo task 358)
 
-3. **Phat sinh co**:
-   ```sql
-   ps_co = (SELECT SUM(ps_co_nt) FROM AR4CT
-            WHERE ngay_ct BETWEEN @pNgay1 AND @pNgay2 AND ma_kh = @pMa_kh)
-   ```
+- [x] `SimbaMenuRouteMetadata::routeNameFor()` đổi hậu tố slug trùng tên thành `menuIdSuffix()` (nối ký tự alphanumeric của menuid, không thêm `-`)
+- [x] Thêm helper `menuIdSuffix()` trong `SimbaMenuRouteMetadata`
+- [x] Thêm unit test `testRouteNameSuffixAppendsCompactMenuId` pin behavior
+- [x] `php -l` pass cho `SimbaMenuRouteMetadata.php` và `SimbaMenuRouteMetadataTest.php`
+- [x] phpunit `SimbaMenuRouteMetadataTest` 9 tests / 20 assertions pass
 
-4. **So du cuoi ky**:
-   ```
-   du_ck = du_dk + ps_no - ps_co
-   ```
+### Phase AR report (task này)
 
-### Drill-down (F4)
+- [x] Đọc source: `sysMenu`, `sysReportInfo`, `ARRptBCCN01.dll`, đối chiếu SP class `AsARRptBCCN01`
+- [x] Xác nhận wrapper `AsARRptBCCN01` dùng 6 tham số theo DLL: `ma_cty`, `Ngay1`, `Ngay2`, `Tk`, `ma_kh`, `ma_nt`
+- [x] Tạo Livewire `So\\Rpt\\Arrptbccn01` với filter + grid + export
+- [x] Tạo view `so/rpt/arrptbccn01.blade.php` theo `x-nav-tabs`
+- [x] Mở source route `_simba-source/so/rpt/arrptbccn01` trong `diepxuan/laravel-catalog/routes/web.php`
+- [x] Thêm route vào `SourceRouteCoverageTest`
+- [x] Thêm unit test cho `AsARRptBCCN01::procedureParams()`
+- [x] Dịch token tổng hợp Simba trong kết quả report: `#ARRptBCCN_DDK`, `#ARRptBCCN_TPS`, `#ARRptBCCN_DCK`
+- [x] Chuyển field `pTieu_de` sang display-only, không cho sửa bằng textbox
+- [x] Chuẩn hóa cột kết quả: gộp `ngay_ct`/`so_ct`/`stt_rec`, format ngày `dd/mm/YYYY`, ẩn cột raw thừa, ưu tiên cột tiền VND hoặc ngoại tệ theo `pMa_nt`
+- [x] `php -l` + phpunit liên quan
+- [x] Kiểm tra local URL trên `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
 
-- Click vao dong KH -> Hien thi chi tiet chung tu
-- Hien thi tat ca chung tu trong ky cua KH do
-- Cho phep xem chi tiet nhieu cap
+## Không thuộc phạm vi
 
-### Xuat bao cao
+- Không tạo bảng/SP/field mới.
+- Không sửa `SimbaMenuRouteMetadata` (đã sửa trong task 358).
+- Không mở task con cho `06.30.38` (`so.rpt.arrptbccn01sl`) hoặc `10.30.x` (AP) trong task này.
 
-- Crystal Report: In an chuan
-- Excel Export: Xu ly du lieu
+## Tiêu chí hoàn thành
 
----
+- URL `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01` trả về report shell theo `SimbaPage` (metadata ít nhất: menuid `06.30.14`, report `ARBCCN011.rpt`, command `AsiaErp.UserInterface.frmARRptBCCN01`).
+- Component `So\\Rpt\\Arrptbccn01` render đúng SP `asARRptBCCN01` với filter TK/KH/kỳ báo cáo.
+- Tests pass, lint pass, route coverage test pass.
 
-## Mapping PHP
+## Ghi chú kỹ thuật
 
-### 1. Model
+- Slug sử dụng theo task 358: `arrptbccn01` (hiện tại không có menuIdSuffix, giữ tên cũ).
+- Wrapper `AsARRptBCCN01.php` không dùng `pSysMsg*`; wrapper normalize về 6 tham số chính xác theo DLL. `pMa_cty`, `pNgay1`, `pNgay2`, `pTk`, `pMa_kh`, `pMa_nt` chỉ là alias UI nội bộ để tương thích Livewire property hiện có.
+- Các token ngôn ngữ Simba trong cột diễn giải được dịch khi hiển thị/export: `#ARRptBCCN_DDK` → `Dư đầu kỳ`, `#ARRptBCCN_TPS` → `Tổng phát sinh trong kỳ`, `#ARRptBCCN_DCK` → `Dư cuối kỳ`.
+- `pTieu_de` giữ là property nội bộ của component để hiển thị tiêu đề report; view render thành text readonly, không bind `wire:model`.
+- Bảng kết quả không render raw toàn bộ column SP. View chỉ render các nhóm cột: Chứng từ, Diễn giải, PS Nợ, PS Có. Thông tin vật tư (`ma_vt`, `ten_vt`, `dvt`) được gộp vào cột Diễn giải bằng dòng phụ nhỏ/mờ. `stt_rec` được gộp vào cột Chứng từ với style nhỏ/mờ. Khi `pMa_nt` trống/VND thì dùng cột VND (`ps_no`, `ps_co`); khi chọn ngoại tệ thì ưu tiên cột `*_nt`.
+- Format số trong CSV/UI: `ps_no`/`ps_co` làm tròn theo `pMa_nt` — VND (hoặc trống) thì 0 chữ số lẻ, ngoại tệ (USD/EUR/...) thì 4 chữ số lẻ để không mất độ chính xác khi lọc theo ngoại tệ.
+- Phân biệt dòng chứng từ/dòng tổng hợp: dòng tổng hợp (token `#ARRptBCCN_DDK`/`#ARRptBCCN_TPS`/`#ARRptBCCN_DCK`) giữ style mặc định (không in đậm); dòng chứng từ thường giữ style `text-gray-800`.
 
-```php
-// app/Models/AR/RptBCCN01.php
-namespace Diepxuan\Simba\Models\AR;
-
-class RptBCCN01 extends Model
-{
-    protected $table = 'VW_AR_BC01'; // View bao cao
-    protected $primaryKey = 'stt_rec';
-    protected $keyType = 'string';
-    public $incrementing = false;
-    protected $connection = 'simba';
-
-    protected $casts = [
-        'du_dk' => 'decimal:2',
-        'ps_no' => 'decimal:2',
-        'ps_co' => 'decimal:2',
-        'du_ck' => 'decimal:2',
-    ];
-
-    // Relationships
-    public function khachHang()
-    {
-        return $this->belongsTo(DMKH::class, 'ma_kh', 'ma_kh');
-    }
-
-    public function taiKhoan()
-    {
-        return $this->belongsTo(DMTK::class, 'ma_tk', 'ma_tk');
-    }
-
-    // Scopes
-    public function scopeByAccount($query, $maTk)
-    {
-        return $query->where('ma_tk', $maTk);
-    }
-
-    public function scopeByCustomer($query, $maKh)
-    {
-        return $query->where('ma_kh', $maKh);
-    }
-
-    public function scopeByPeriod($query, $ngay1, $ngay2)
-    {
-        return $query->whereBetween('ngay_ct', [$ngay1, $ngay2]);
-    }
-}
-```
-
-### 2. Stored Procedure Classes
-
-```php
-// diepxuan/laravel-simba/src/StoredProcedures/AsARRptBCCN01.php
-namespace Diepxuan\Simba\StoredProcedures;
-
-class AsARRptBCCN01
-{
-    protected $procedure = 'asARRptBCCN01';
-    protected $params = ['ma_cty', 'Ngay1', 'Ngay2', 'Tk', 'ma_kh', 'ma_nt'];
-}
-```
-
-### 3. Livewire Component
-
-```php
-// diepxuan/laravel-catalog/src/Http/Livewire/So/Rpt/Arrptbccn01.php
-namespace Diepxuan\Catalog\Http\Livewire\So\Rpt;
-
-class Arrptbccn01 extends Component
-{
-    public ?string $pNgay1 = null;
-    public ?string $pNgay2 = null;
-    public ?string $pTk = null;
-    public ?string $pMa_kh = null;
-    public ?string $pMa_nt = '';
-    public array $rows = [];
-
-    public function mount(): void
-    {
-        $this->pNgay1 = now()->startOfMonth();
-        $this->pNgay2 = now();
-    }
-
-    public function loadReport(): void
-    {
-        $this->pData = AsARRptBCCN01::call([
-            'ma_cty' => '001',
-            'Ngay1' => $this->pNgay1,
-            'Ngay2' => $this->pNgay2,
-            'Tk' => $this->pTk,
-            'ma_kh' => $this->pMa_kh,
-            'ma_nt' => $this->pMa_nt,
-        ]);
-    }
-
-    public function exportExcel(): void
-    {
-        // Export Excel
-    }
-
-    public function render(): View
-    {
-        return view('catalog::so.rpt.arrptbccn01');
-    }
-}
-```
-
-### 4. Views
-
-```
-diepxuan/laravel-catalog/resources/views/so/rpt/
-└── arrptbccn01.blade.php
-```
-
-### 5. Routes
-
-```php
-// diepxuan/laravel-catalog/routes/web.php
-['_simba-source/so/rpt/arrptbccn01', name: 'so.rpt.arrptbccn01']
-
-// Public canonical URL:
-/simba/so/rpt/arrptbccn01
-```
-
----
-
-## Dependencies
-
-| Loai | Package | File | Ghi chu |
-|------|---------|------|---------|
-| Model | laravel-simba | DMKH.php | Lookup KH |
-| Model | laravel-simba | DMTK.php | Lookup TK |
-| SP | laravel-simba | AsARRptBCCN01.php | Lay du lieu |
-| Component | laravel-catalog | So/Rpt/Arrptbccn01.php | Form bao cao |
-| View | laravel-catalog | so/rpt/arrptbccn01.blade.php | Filter + grid |
-
----
-
-## Progress Checklist
-
-- [x] Phan tich yeu cau & review task nay
-- [x] Tim kiem mapping SP tu DLL
-- [x] Sua Stored Procedure class AsARRptBCCN01 theo tham so Simba docs
-- [x] Tao Livewire So/Rpt/Arrptbccn01 (report)
-- [x] Tao view filter + grid
-- [x] Them route source so.rpt.arrptbccn01 vao canonical /simba/so/rpt/arrptbccn01
-- [x] Them thao tac xem chi tiet dong trong grid
-- [x] Them export CSV mo bang Excel
-- [ ] Test bao cao voi du lieu thuc tren `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
----
 ## Audit Status
-- **Ngày audit:** 2026-05-10
-- **Kết quả:** IMPLEMENTED — route canonical co Livewire report page, SP wrapper dung tham so docs, co grid, xem chi tiet dong va export CSV/Excel-compatible.
-
-## Portal implementation status
-
-- **Status:** IMPLEMENTED (filter + SP-backed grid + row detail + CSV export)
-- **Route:** `/simba/so/rpt/arrptbccn01`
-- **Website verification URL:** `http://portal.diepxuan.corp/simba/so/rpt/arrptbccn01`
-- **Menu:** `06.30.14`
-- **SP:** `asARRptBCCN01`
-- **Report:** `ARBCCN011.rpt`
-- **Grid rendering:** Giu HTML `<table>` thay vi `Diepxuan\Support\Collection::toMarkdownTable()` de co scroll ngang, hover row, header style va canh cot so trong UI. Style table tham chieu quy tac cua `Collection`: co cot thu tu, null thanh rong, boolean 1/0, normalize UTF-8, cot tien/phat sinh/so du canh phai.
-- **Row detail:** Nut `Xem` tren tung dong hien payload chi tiet cua dong dang chon trong cung trang, phu hop khi source `06.30.14` khong co row rieng trong `sysReportDrillDownInfo`.
-- **Export:** Nut `Xuat Excel` tra CSV UTF-8 BOM, mo truc tiep bang Excel/LibreOffice.
-- **Note:** Page chi read qua SP, khong tao SQL/schema moi. F5 drill-down cua report nhieu khach hang `BCCN01a` thuoc task 158 va source `sysReportDrillDownInfo` menu `06.30.17 -> 06.80.26`, khong phai route `06.30.14` cua task nay.
+- **Status:** DONE — merged PR phase 1
+- **Ngày audit:** 2026-07-23
+- **Người tạo:** Bot (Portal Agent)
+- **Kiểm chứng:** wrapper unit test pass; route coverage pass; URL local `portal.diepxuan.corp` trả về 200 với metadata menuid `06.30.14`, `spname=asARRptBCCN01`, `rptname=ARBCCN011.rpt`, component `So\\Rpt\\Arrptbccn01`.
