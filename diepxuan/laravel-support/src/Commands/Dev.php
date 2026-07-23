@@ -25,10 +25,11 @@ class Dev extends Command
      * @var string
      */
     protected $signature = 'dev
-        {action : Action to perform (start|stop|status|vite|build|fix|setup|cleanup)}
+        {action : Action to perform (start|stop|status|vite|watch|build|fix|setup|cleanup)}
         {--port=8000 : Port to run the development server}
         {--host=0.0.0.0 : Host to bind the server}
         {--no-vite : Do not start Vite server}
+        {--watch : Use `npm run watch` (rebuild on change) instead of `npm run dev` (HMR)}
         {--force : Force action without confirmation}';
 
     /**
@@ -217,10 +218,17 @@ class Dev extends Command
 
     /**
      * Start Vite development server.
+     *
+     * Default mode: `npm run dev` (HMR, http://localhost:5173).
+     * Use --watch to switch to `npm run watch` (rebuild on file change, no HMR).
      */
     protected function handleVite()
     {
-        $this->info('⚡ Starting Vite development server...');
+        $useWatch = $this->option('watch');
+        $cmd      = $useWatch ? 'npm run watch' : 'npm run dev';
+        $mode     = $useWatch ? 'watch (rebuild on change)' : 'dev server (HMR)';
+
+        $this->info("⚡ Starting Vite {$mode}...");
 
         // Check package.json
         if (!file_exists(base_path('package.json'))) {
@@ -232,18 +240,53 @@ class Dev extends Command
         // Install dependencies if needed
         if (!file_exists(base_path('node_modules'))) {
             $this->warn('node_modules not found, installing dependencies...');
-            Process::run('npm install', base_path());
+            Process::path(base_path())->run('npm install');
         }
 
         // Start Vite
-        $process = Process::start('npm run dev', base_path());
+        $process = Process::start($cmd, base_path());
         $pid     = $process->id();
 
         file_put_contents($this->getPidFile('vite'), $pid);
 
         $this->info("OK: Vite server started (PID: {$pid})");
-        $this->info('🌐 URL: http://localhost:5173');
+        if (! $useWatch) {
+            $this->info('🌐 URL: http://localhost:5173');
+        } else {
+            $this->line('Manifest regenerates on each JS/CSS change. Watch tail -f storage/logs/vite.log');
+        }
         $this->line('Logs: tail -f storage/logs/vite.log');
+
+        return 0;
+    }
+
+    /**
+     * Start Vite in watch mode (build on file change, no HMR server).
+     * Alias of `dev vite --watch` for readability.
+     */
+    protected function handleWatch()
+    {
+        $this->info('⚡ Starting Vite watch mode (rebuild on file change)...');
+
+        if (!file_exists(base_path('package.json'))) {
+            $this->error('package.json not found');
+
+            return 1;
+        }
+
+        if (!file_exists(base_path('node_modules'))) {
+            $this->warn('node_modules not found, running npm install...');
+            Process::path(base_path())->run('npm install');
+        }
+
+        $process = Process::start('npm run watch', base_path());
+        $pid     = $process->id();
+
+        file_put_contents($this->getPidFile('vite'), $pid);
+
+        $this->info("OK: Vite watch started (PID: {$pid})");
+        $this->line('Manifest regenerates on each JS/CSS change.');
+        $this->line('Watch tail -f storage/logs/vite.log for rebuild progress.');
 
         return 0;
     }
@@ -264,10 +307,10 @@ class Dev extends Command
         // Install dependencies if needed
         if (!file_exists(base_path('node_modules'))) {
             $this->warn('Installing dependencies...');
-            Process::run('npm install', base_path());
+            Process::path(base_path())->run('npm install');
         }
 
-        $result = Process::run('npm run build', base_path());
+        $result = Process::path(base_path())->run('npm run build');
 
         if ($result->successful()) {
             $this->info('OK: Assets built successfully');
@@ -305,6 +348,14 @@ class Dev extends Command
     {
         $this->info('Sua loi: Fixing Vite manifest error...');
 
+        // Preferred: regenerate the real manifest via `npm run build` first.
+        // Avoids the stub fallback for users who have npm/node available.
+        if ($this->tryRebuildManifest()) {
+            return 0;
+        }
+
+        $this->warn('Falling back to stub manifest (npm run build not available or failed).');
+
         $buildPath  = public_path('build');
         $assetsPath = public_path('build/assets');
 
@@ -339,7 +390,7 @@ class Dev extends Command
         file_put_contents(public_path('build/assets/app-dev.css'), '/* Development CSS */');
         file_put_contents(public_path('build/assets/app-dev.js'), '// Development JS');
 
-        $this->info('OK: Vite manifest fixed');
+        $this->info('OK: Vite manifest fixed (stub fallback)');
         $this->line('Created: public/build/manifest.json');
         $this->line('Created: public/build/assets/app-dev.css');
         $this->line('Created: public/build/assets/app-dev.js');
@@ -347,6 +398,42 @@ class Dev extends Command
         return 0;
     }
 
+    /**
+     * Attempt to regenerate public/build/manifest.json by running
+     * `npm run build`. Returns true on success, false when npm/node is
+     * not available or the build failed.
+     *
+     * Preferred path for `dev fix` so we keep production-style assets
+     * instead of a placeholder.
+     */
+    private function tryRebuildManifest(): bool
+    {
+        $manifestPath = public_path('build/manifest.json');
+
+        if (! file_exists(base_path('package.json'))) {
+            return false;
+        }
+
+        if (! file_exists(base_path('node_modules'))) {
+            $this->line('   node_modules missing, running `npm install`...');
+            Process::path(base_path())->run('npm install');
+        }
+
+        $this->line('   Trying `npm run build` to regenerate real manifest...');
+        $result = Process::path(base_path())->run('npm run build');
+
+        if ($result->successful() && file_exists($manifestPath)) {
+            $this->info('OK: Real manifest rebuilt via npm run build');
+
+            return true;
+        }
+
+        if (! $result->successful()) {
+            $this->warn('npm run build failed: ' . trim($result->errorOutput()));
+        }
+
+        return false;
+    }
     /**
      * Setup development environment.
      */
