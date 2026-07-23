@@ -13,13 +13,13 @@
 | CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
-| GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
+| GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
-| SI — System Integration | 26 | 0 | 26 | 0 |
+| SI — System Integration | 34 | 0 | 34 | 0 |
 | SO — Đơn hàng bán | 48 | 0 | 48 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **325** | | | |
+| **Tổng** | **334** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -244,6 +244,7 @@
 | 335 | `335-gl-rpt-nkc05.md` | GlRptNkc05.dll | PENDING |
 | 336 | `336-gl-rpt-nkc06.md` | GlRptNkc06.dll | PENDING |
 | 337 | `337-gl-rpt-nkc07.md` | GlRptNkc07.dll | PENDING |
+| 366 | `366-gl-balance-so-du-ban-dau.md` |  | PENDING |
 
 ## IN — Tồn kho
 
@@ -290,7 +291,7 @@
 | 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | PENDING |
 | 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | PENDING |
 | 068 | `068-PO-danhmuc-hinhthuc-thanhtoan.md` | PODMHTTT.dll | PENDING |
-| 069 | `069-po-hoadon-mua-hang.md` | POVchPO3.dll | PENDING |
+| 069 | `069-po-hoadon-mua-hang.md` | `POVchPO3.dll` (form `frmPOVchPO3`, namespace `AsiaErp.UserInterface`) | PENDING |
 | 070 | `070-PO-chungtu-nhan-hang-mua.md` | POVchPO4.dll | PENDING |
 | 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | PENDING |
 | 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | PENDING |
@@ -334,6 +335,14 @@
 | 222 | `222-si-cong-cu-he-thong.md` | SiTools.dll | PENDING |
 | 223 | `223-si-cong-cu-he-thong-2.md` | SiTools_2.dll | PENDING |
 | 224 | `224-si-cap-nhat-log.md` | SiUpdateLog.dll | PENDING |
+| 360 | `360-si-smks-khoa-so-lieu-ky.md` |  | PENDING |
+| 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | `SMFFY.dll` | PENDING |
+| 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | `SMUserInfo.dll` | PENDING |
+| 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
+| 364 | `364-si-year-chon-nam-lam-viec.md` |  | PENDING |
+| 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
+| 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | PENDING |
+| 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | PENDING |
 
 ## SO — Đơn hàng bán
 
@@ -397,15 +406,7 @@
 | 5 | `5-developer-support.md` |  | PENDING |
 | 11 | `11-admin-dashboard.md` |  | PENDING |
 | 26 | `26-tong-hop.md` |  | PENDING |
-| 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | SMFFY.dll | PENDING |
-| 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | SMUserInfo.dll | PENDING |
-| 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
-| 364 | `364-si-year-chon-nam-lam-viec.md` |  | PENDING |
-| 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
-| 366 | `366-gl-balance-so-du-ban-dau.md` |  | PENDING |
-| 367 | `367-system-framework-libraries.md` | AsiaLicenseCommon, DashBoard, Docking, DynReport, DynamicReport, Framework, GenerationReport, Helper, ReportDynamic, RptCommon, ToolCommon | PENDING |
-| 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | OptFieldInfo.dll | PENDING |
-| 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | OptFieldSetup.dll | PENDING |
 | 356 | `356-ardmkh-doi-tuong-giao-dich-khach-hang-ncc-nhan-vien.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
+| 367 | `367-system-framework-libraries.md` |  | PENDING |
 

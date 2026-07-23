@@ -11,9 +11,10 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
 | AR — Công nợ phải thu | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
-| PO — Mua hàng | 1 | 1 | 0 | 0 |
+| PO — Đơn hàng mua | 1 | 1 | 0 | 0 |
+| SI — System Integration | 1 | 1 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **5** | | | |
+| **Tổng** | **6** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -33,16 +34,21 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 |---|---|---|---|
 | 117 | `117-IN-baocao-tonkho-02.md` | INRptCD02.dll | DONE |
 
-## PO — Mua hàng
+## PO — Đơn hàng mua
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 069 | `069-po-hoadon-mua-hang.md` | POVchPO3.dll | DONE |
+| 069 | `069-po-hoadon-mua-hang.md` | `POVchPO3.dll` (form `frmPOVchPO3`, namespace `AsiaErp.UserInterface`) | DONE |
+
+## SI — System Integration
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 360 | `360-si-smks-khoa-so-lieu-ky.md` |  | DONE |
 
 ## System — Framework & cross-link
 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
-| 360 | `360-si-smks-khoa-so-lieu-ky.md` | SMKS.dll | DONE |
 
