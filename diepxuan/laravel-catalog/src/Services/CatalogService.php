@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CatalogService
 {
-    protected SysLanguage $sysLanguage;
+    protected ?SysLanguage $sysLanguage = null;
     protected ?User $user = null;
     protected ?SysUserInfo $simbaUser = null;
     protected bool $simbaUserResolved = false; // true = đã resolve (hit hoặc skip), tránh work lại
@@ -49,6 +49,7 @@ class CatalogService
             $this->simbaUser         = null;
             $this->simbaUserResolved = false;
             $this->company           = null;
+            $this->sysLanguage       = null;
             $this->glDmTks           = [];
         }
 
@@ -123,9 +124,12 @@ class CatalogService
             $this->simbaUser = $laravelUser->getSimbaUser();
             $this->simbaUserResolved = true;
         } catch (\Throwable $e) {
-            // SQL/ODBC lỗi - skip silent. Caller đã guard với hasSimba(),
-            // không cần log để tránh spam. Dev có thể debug qua Debugbar
-            // hoặc health-check command nếu cần.
+            // SQL/ODBC lỗi - skip silent để tránh crash UI. Dev có thể
+            // bật debug log nếu cần tra: LOG_LEVEL=debug.
+            \Log::debug('CatalogService::resolveSimbaUser failed', [
+                'user_id' => $laravelUser->getKey(),
+                'error'   => $e->getMessage(),
+            ]);
             $this->simbaUserResolved = true;
         }
     }
