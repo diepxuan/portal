@@ -27,6 +27,7 @@ class CatalogService
     protected SysLanguage $sysLanguage;
     protected ?User $user = null;
     protected ?SysUserInfo $simbaUser = null;
+    protected bool $simbaUserResolved = false; // true = đã resolve (hit hoặc skip), tránh work lại
     protected ?SysCompany $company = null;
     protected string $maNt;
     protected string $id;
@@ -41,33 +42,91 @@ class CatalogService
 
     public function user(): ?User
     {
+        // Re-resolve nếu user thay đổi (login mới, logout) - reset cache
+        // để tránh stale data khi switch user trong cùng request lifecycle.
+        if ($this->user !== null && Auth::user()?->getKey() !== $this->user->getKey()) {
+            $this->user              = null;
+            $this->simbaUser         = null;
+            $this->simbaUserResolved = false;
+            $this->company           = null;
+            $this->glDmTks           = [];
+        }
+
         return $this->user ?? $this->user = Auth::user();
     }
 
     /**
-     * Get Simba user. Returns null when user is not linked to a Simba account
-     * (missing UserLink) or the Simba SQL Server is unreachable.
+     * Get Simba user.
+     *
+     * Returns null khi:
+     * - Guest (chưa login).
+     * - Đã login nhưng chưa có UserLink row (expected flow).
+     * - Simba SQL Server / ODBC lỗi (skip silent - caller tự handle).
+     *
+     * QUAN TRỌNG: không phải user nào cũng có Simba link. Dev/SSO-only
+     * flow hoàn toàn hợp lệ khi không có UserLink.
+     *
+     * Đã resolve 1 lần sẽ cache (hit hoặc skip), không check lại mỗi call.
+     * Không log để tránh spam (mỗi request có thể gọi simbaUser() nhiều lần).
+     * Caller có thể check hasSimba() trước khi render UI Simba-bound.
      */
     public function simbaUser(): ?SysUserInfo
     {
-        if ($this->simbaUser !== null) {
-            return $this->simbaUser;
+        $this->resolveSimbaUser();
+
+        return $this->simbaUser;
+    }
+
+    /**
+     * True nếu user hiện tại có thể load Simba profile (SysUserInfo != null).
+     * Hữu ích cho UI: ẩn menu Simba-bound khi chưa có link.
+     */
+    public function hasSimba(): bool
+    {
+        $this->resolveSimbaUser();
+
+        return $this->simbaUser !== null;
+    }
+
+    /**
+     * Lazy resolver. Đảm bảo logic load chỉ chạy 1 lần trong vòng đời
+     * service instance. Kết quả cache dưới dạng 2-cờ:
+     * - simbaUserResolved: đã chạy xong
+     * - simbaUser: null (skip) hoặc SysUserInfo (hit)
+     *
+     * @return void
+     */
+    private function resolveSimbaUser(): void
+    {
+        if ($this->simbaUserResolved) {
+            return;
         }
 
         $laravelUser = $this->user();
-        if (! $laravelUser || ! $laravelUser->simbaLink) {
-            return $this->simbaUser = null;
+        if (! $laravelUser) {
+            // Guest: không log, đây là flow hợp lệ.
+            $this->simbaUserResolved = true;
+
+            return;
+        }
+
+        if (! $laravelUser->simbaLink) {
+            // Đã login nhưng chưa bind Simba - skip silent. Đây là expected
+            // flow cho user dev/SSO-only, không phải lỗi. Không log để tránh
+            // spam (mỗi request có thể kéo theo nhiều lần gọi simbaUser()).
+            $this->simbaUserResolved = true;
+
+            return;
         }
 
         try {
-            return $this->simbaUser = $laravelUser->getSimbaUser();
+            $this->simbaUser = $laravelUser->getSimbaUser();
+            $this->simbaUserResolved = true;
         } catch (\Throwable $e) {
-            \Log::warning('CatalogService::simbaUser load failed', [
-                'user_id' => $laravelUser->getKey(),
-                'error'   => $e->getMessage(),
-            ]);
-
-            return $this->simbaUser = null;
+            // SQL/ODBC lỗi - skip silent. Caller đã guard với hasSimba(),
+            // không cần log để tránh spam. Dev có thể debug qua Debugbar
+            // hoặc health-check command nếu cần.
+            $this->simbaUserResolved = true;
         }
     }
 
