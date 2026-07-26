@@ -71,3 +71,4 @@ docs/reports/
 
 # Syncthing ignore file
 .stignore
+/.claude/settings.local.json
