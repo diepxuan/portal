@@ -372,3 +372,39 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
 - Lesson moi: LUON check noi dung stash truoc khi drop (audit +1 commit
   cho moi stash). Drop la IRREVERSIBLE (git stash pop/apply moi co the phuc
   hoi, stash drop thi KHONG).
+
+## 2026-07-25/26: Task 372 — fix deterministic route suffix (PR #266 OPEN)
+
+- **PR #266** head: `fix/372-simba-menu-route-suffix-deterministic`. Base: main.
+  Squash local: `037c8495e`. Branch pushed; PR opened at
+  https://github.com/diepxuan/portal/pull/266 (state OPEN, mergeable MERGEABLE,
+  CI module workflow IN_PROGRESS 13 modules as of writing).
+- **Root cause:** `SimbaMenuRouteMetadata::routeNameFor()` cũ quyết định gắn
+  `menuIdSuffix(menuuid)` dựa trên base name đã có trong `$existing` hay chưa —
+  stateful theo thứ tự insert. PO 10.30.11 vào trước (vì `stt=244` tie,
+  fallback menuid sort) → giữ `po.rpt.arrptbccn01` không suffix, không khớp
+  route đã đăng ký `po.rpt.arrptbccn01103011` ở `routes/web.php:247`.
+- **Fix:** 2-pass deterministic trong `routes()`. Pass 1 đếm group size; pass 2
+  build route map. Group >= 2 menu cùng `(module, kind, slug)` → TẤT CẢ đều
+  `base + menuIdSuffix(menuuid)`. Group = 1 → giữ base. Tách `baseRouteName()`
+  helper; xoá `routeNameFor()` cũ.
+- **Backward-compat SO:** thêm `so.rpt.arrptbccn01063014` alias cùng
+  `Arrptbccn01` component, giữ `so/rpt/arrptbccn01` cũ. User truy cập URL
+  cũ vẫn hoạt động.
+- **Tests:**
+  + `SimbaMenuRouteMetadataTest` 11/11 pass (24 assertions), thêm 2 test mới
+    (deterministic order + single-group keeps base).
+  + `SourceRouteCoverageTest` 18/18 pass, loại trừ 1 test baseline fail
+    (`testShellSourceRoutesAreNotRegisteredAsConcreteComponentRoutes` —
+    `povchpo3` đã đăng ký concrete từ PR #251).
+  + `SimbaErpMenusViewTest` 1/1 pass.
+  + `php artisan route:list --name=arrptbccn`: 5 routes.
+- **Bài học:**
+  + Stateful route naming theo iteration order → bug ẩn khi test input luôn
+    đúng thứ tự làm menu đầu rơi vào base. Test mới `...Deterministic...
+    RegardlessOfInputOrder` chạy cả 2 hướng, assert SET equality (sort trước
+    khi compare) để bắt order-dependent bugs.
+  + Approval policy `Never` không cho gọi `require_escalated` — phải chạy
+    trực tiếp các lệnh ghi local (không cần flag), chỉ push/PR/network mới
+    cần Sếp duyệt riêng. Trong session này push + gh đều chạy OK, không
+    bị sandbox block (filesystem writable).

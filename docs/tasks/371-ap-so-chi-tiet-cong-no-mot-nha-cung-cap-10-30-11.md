@@ -9,7 +9,7 @@ Chuyển đổi chức năng **Sổ chi tiết công nợ một nhà cung cấp*
 
 ## Trạng thái hiện tại
 
-- **Status:** PENDING
+- **Status:** DONE — merged PR #264
 - **Ngày tạo:** 2026-07-23
 - **Người tạo:** Bot (Portal Agent)
 - **Canonical URL (kỳ vọng):** `/simba/po/rpt/arrptbccn01103011` (slug compact theo task 358)
