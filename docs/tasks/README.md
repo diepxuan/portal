@@ -13,6 +13,7 @@
 - **Phase hiện tại** là các task còn ở root `docs/tasks/`. Mục tiêu của phase này là làm đúng bộ khung cho dự án: task spec, nguồn `simba-docs`, route/menu, Data Access Map, SP/wrapper, phạm vi và tiêu chí kiểm chứng. Tất cả task ở root giữ trạng thái `PENDING` cho đến khi xong phase hiện tại.
 - **Phase 1** là thư mục `docs/tasks/phase 1/`. Task được chuyển vào đây sau khi đã xong phase hiện tại. Phase 1 tương lai sẽ tiếp tục hoàn thiện chức năng nghiệp vụ và UI theo task cụ thể.
 - Hiện tại chỉ `008` và `117` đã xong phase hiện tại và được chuyển sang `phase 1/`. Các task còn lại giữ nguyên trạng thái chờ hoàn thành.
+- **Mục tiêu sau phase hiện tại:** khi toàn bộ task ở root đã chuyển sang `phase 1/`, quay lại xử lý các DLL nghiệp vụ chưa có task doc trong `simba-docs/decompiled/asia/` (xem mục §5 "Inventory DLL chưa có task doc"). Đây là khoản nợ docs duy trì sau khi khung dự án hoàn tất.
 
 | Khu vực | Files | Trạng thái |
 |---|---:|---|
@@ -87,7 +88,45 @@ Mỗi task có thao tác dữ liệu SimbaERP cần ghi rõ mapping từ UI sang
 | 001 | AR | ARDMKH | AsARGetDMKH / AsARInsDMKH / AsARUpdDMKH / AsARDelDMKH |
 | 100 | IN | INDMKHO | AsINGetDMKHO / AsINInsDMKHO / AsINUpdDMKHO / AsINDelDMKHO |
 
-## 5. Cập nhật gần đây
+## 5. Inventory DLL chưa có task doc
+
+> Bù đắp khoản nợ docs sau khi phase hiện tại xong. Inventory này đối chiếu `simba-docs/decompiled/asia/` (338 thư mục DLL) với DLL được nhắc trong `docs/tasks/`.
+
+### Cách đếm
+
+- Tổng số thư mục DLL trong `simba-docs/decompiled/asia/`: **338**.
+- Đếm theo exact match `\b<name>.dll\b` (case-insensitive) trong `docs/tasks/`: 331 DLL được nhắc.
+- `comm` giữa 338 DLL thực ↔ 331 DLL có task → **7 DLL không được nhắc exact** trong task doc nào.
+- Sau khi phân loại, **6 DLL nghiệp vụ thật sự chưa có task doc** (loại `Simba.exe.dll` = main entry/app shell, không phải nghiệp vụ).
+
+### 6 DLL nghiệp vụ chưa có task doc
+
+| # | DLL | Module | Assembly Title | Phân biệt vs task khác |
+|---|-----|--------|----------------|------------------------|
+| 1 | `FARptBCPT04.dll` | FA | Bảng phân bổ khấu hao theo nhóm tài sản | Khác `GLRptBCPT04.dll` (task 290) — đây là FA, không phải GL |
+| 2 | `GLMAUBCTCTMV14.dll` | GL | GLBCTC07V14 | Mẫu BCTC CTMV phiên bản 14, chưa có task doc (task 140/143/145/148/150/151/152 là phiên bản khác) |
+| 3 | `GLRptBCTCCR01F5.dll` | GL | (rỗng trong README) | Khác `GLRptBCTCCR01.dll` (task 154) — đây là phiên bản có drill-down F5 |
+| 4 | `SIDMHTTT.dll` | SI | Danh mục nhập xuất | Khác `AsSIGetDMHTTT` SP đã dùng ở PO3 — đây là DLL UI danh mục riêng |
+| 5 | `SORptF5BCPT03.dll` | SO | (rỗng trong README) | Khác `SORptF5TH0.dll` (task 203) — đây là bảng CPT phân tích F5 |
+| 6 | `SORptF5BCPT04.dll` | SO | (rỗng trong README) | Như mục 5, phiên bản 04 |
+
+### DLL không tạo task doc (cố ý)
+
+- **`Simba.exe.dll`** (68 file, Assembly Title "Simba Accounting"): main app shell / entry point, không phải nghiệp vụ. Không cần task doc riêng.
+- **`SiTools.dll`, `SiTools_2.dll`**: đã nhắc trong task docs (matched), không thiếu.
+- **11 DLL framework/infrastructure** (`AsiaLicenseCommon`, `DashBoard`, `Docking`, `DynReport`, `DynamicReport`, `Framework`, `GenerationReport`, `Helper`, `ReportDynamic`, `RptCommon`, `ToolCommon`): được gộp cover bởi task 367 "System Framework Libraries".
+- **`INDMVT_.dll`** (Assembly Title "Danh mục bộ phận"): đã cover bởi task 355 "INDMVT_ - Danh mục vật tư (BOM)". **Lưu ý:**task 355 hiện đặt title theo góc nhìn "vật tư BOM" nhưng README of DLL báo "Danh mục bộ phận" — cần xác minh lại độ trùng lặp nghiệp vụ khi quay lại xử lý.
+
+### Ghi chú phiên bản note cũ (commit `77b3ef7fb`, 2026-05-04)
+
+Commit cũ note "INDMVT_ là file lỗi, không tồn tại trong thu muc decompiled" và đếm còn 1 DLL thiếu. Note này **đã outdated**: `INDMVT_.dll` thực sự tồn tại trong `simba-docs/decompiled/asia/INDMVT_.dll/` (6 file, decompile thành công) và là biến thể hợp lệ của `INDMVT.dll` "Danh mục vật tư", có Assembly Title khác = "Danh mục bộ phận". Khi quay lại xử lý sau phase hiện tại, dùng inventory này thay cho con số cũ.
+
+### Khoản nợ docs đã biết
+
+- 6 DLL nghiệp vụ ở bảng trên = công việc docs cho phase 1+ sau khi phase hiện tại xong.
+- Trước khi tạo task cho mỗi DLL, tra `simba-docs/` (sysDictionaryInfo / sysDAOInfo / procedures) để xác nhận code_name và SP; nhiều DLL báo cáo F5 (revision `*F5`) chia sẻ logic với phiên bản không F5.
+
+## 6. Cập nhật gần đây
 
 **2026-07-09:**
 - Fix link snapshot audit: `../project/remaining-process-shells.md` đã bị xóa từ PR#242, thay bằng `../project/task-master-execution.md`.
