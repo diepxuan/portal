@@ -200,273 +200,62 @@ Xay dung chuoi tieu de loc tu cac dieu kien da chon.
 
 ---
 
-## Mapping PHP
+## Mapping PHP (path theo route /simba/so/rpt/sorptbk01)
 
-### 1. Model (Data Transfer)
+### 1. Stored Procedure
 
-```php
-// app/Models/SO/SORptBK01.php
-namespace Diepxuan\Simba\Models\SO;
+- File: `diepxuan/laravel-simba/src/StoredProcedures/AsSORptBK01.php`
+- SP: `asSORptBK01` (sysReportInfo spname, report `SOBK013.rpt` / `SOBK014.rpt` / `SOBK011.rpt`)
+- `callWithDataSets()` doc tra ve 2 result sets: `ct` (Tables[0]) va `ph` (Tables[1]).
+- 28 tham so lay tu `frmSORptBK01.LoadData()` trong simba-docs/decompiled.
 
-class SORptBK01 extends Model
-{
-    protected $connection = 'simba';
+### 2. Livewire Component
 
-    // No table - su dung SP
+- File: `diepxuan/laravel-catalog/src/Http/Livewire/So/Rpt/Sorptbk01.php`
+- Namespace: `Diepxuan\Catalog\Http\Livewire\So\Rpt`
+- Component hien thi master-detail: `phieuRows`, `chiTietRows`, `chiTietFiltered`.
+- Filter controls: ngay, loai phieu (`asSIGetDmSo_ct`), trang thai, so CT, KH, nhom/phan loai KH, HD, nhom HD, VT, nhom/phan loai VT, kho, vi tri, lo, HTTT, DKTT, bo phan, NVKD, SPCT, ngoai te.
 
-    public static function getBangKe(array $params): array
-    {
-        // Goi SP_SO_BK01_GET
-        return [
-            'ph' => [], // Phieu master
-            'ct' => [], // Chi tiet detail
-        ];
-    }
-}
-```
+### 3. View
 
-### 2. Stored Procedure Classes
+- File: `diepxuan/laravel-catalog/resources/views/so/rpt/sorptbk01.blade.php`
+- Blade path: `catalog::so.rpt.sorptbk01`
+- Layout theo DESIGN.md va pattern task 008/359/370: `x-nav-tabs`, table wrapper `rounded-lg border border-gray-200 bg-white shadow-sm`.
+
+### 4. Routes
 
 ```php
-// diepxuan/laravel-simba/src/StoredProcedures/AsSOGetRptBK01.php
-class AsSOGetRptBK01 extends StoredProcedure
-{
-    protected $procedure = 'SP_SO_BK01_GET';
-    protected $params = [
-        'pMa_cty', 'pMa_ct_list', 'pNgay1', 'pNgay2',
-        'pSo_ct1', 'pSo_ct2',
-        'pMa_kh', 'pMa_nhkh', 'pMa_plkh1', 'pMa_plkh2', 'pMa_plkh3',
-        'pMa_hd', 'pMa_nhhd',
-        'pMa_vt', 'pMa_nhvt', 'pMa_plvt1', 'pMa_plvt2', 'pMa_plvt3',
-        'pMa_kho', 'pMa_bp', 'pMa_nvkd',
-        'pMa_httt', 'pMa_dktt',
-        'pMa_vitri', 'pMa_lo', 'pMa_spct',
-        'pMa_nt', 'pIsNt',
-    ];
-}
+// diepxuan/laravel-catalog/routes/web.php
+['uri' => 'so/rpt/sorptbk01', 'name' => 'so.rpt.sorptbk01', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01', 'component' => Sorptbk01::class],
+['uri' => 'so/rpt/sorptbk01062002', 'name' => 'so.rpt.sorptbk01062002', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01062002', 'component' => Sorptbk01::class],
 ```
 
-### 3. Livewire Component (Report)
-
-```php
-// diepxuan/laravel-catalog/src/Http/Livewire/SO/Bangkebanhang01.php
-namespace Diepxuan\Catalog\Http\Livewire\SO\Bangkebanhang01;
-
-class Bangkebanhang01 extends Component
-{
-    public string $pTieuDe = 'Bang ke chung tu ban hang';
-    public ?string $pNgay1 = null;
-    public ?string $pNgay2 = null;
-    public string $pMaCtList = ''; // Comma-separated: SO1,SO2,SO3,SO4,SO5
-    public string $pSoCt1 = '';
-    public string $pSoCt2 = '';
-    public ?string $pMaKh = null;
-    public ?string $pMaNhkh = null;
-    public ?string $pMaPlkh1 = null;
-    public ?string $pMaPlkh2 = null;
-    public ?string $pMaPlkh3 = null;
-    public ?string $pMaHd = null;
-    public ?string $pMaNhhd = null;
-    public ?string $pMaVt = null;
-    public ?string $pMaNhvt = null;
-    public ?string $pMaPlvt1 = null;
-    public ?string $pMaPlvt2 = null;
-    public ?string $pMaPlvt3 = null;
-    public ?string $pMaKho = null;
-    public ?string $pMaBp = null;
-    public ?string $pMaNvkd = null;
-    public ?string $pMaHttt = null;
-    public ?string $pMaDktt = null;
-    public ?string $pMaVitri = null;
-    public ?string $pMaLo = null;
-    public ?string $pMaSpct = null;
-    public string $pMaNt = 'VND';
-    public bool $pIsNt = false;
-
-    public Collection $pPhieuList;
-    public Collection $pChiTietList;
-
-    public function mount(): void
-    {
-        $this->loadData();
-    }
-
-    public function loadData(): void
-    {
-        // Goi SP lay du lieu 2 bang
-        $data = AsSOGetRptBK01::execute($this->buildParams());
-        $this->pPhieuList = collect($data['ph']);
-        $this->pChiTietList = collect($data['ct']);
-    }
-
-    public function rowEnter(int $rowIndex): void
-    {
-        $sttRec = $this->pPhieuList[$rowIndex]['stt_rec'] ?? '';
-        $this->pChiTietFiltered = $this->pChiTietList->where('stt_rec', $sttRec);
-    }
-
-    protected function buildParams(): array
-    {
-        return [
-            'pMa_cty' => auth()->user()->ma_cty,
-            'pMa_ct_list' => $this->pMaCtList,
-            'pNgay1' => $this->pNgay1,
-            'pNgay2' => $this->pNgay2,
-            'pSo_ct1' => $this->pSoCt1,
-            'pSo_ct2' => $this->pSoCt2,
-            // ... cac param khac
-        ];
-    }
-
-    public function render(): View
-    {
-        return view('catalog::so.bangkebanhang01');
-    }
-}
-```
-
-### 4. Views
-
-```html
-<!-- resources/views/catalog/so/bangkebanhang01.blade.php -->
-<div>
-    <!-- Filter controls -->
-    <div class="row mb-3">
-        <div class="col-md-3">
-            <label>Tu ngay</label>
-            <input type="date" wire:model="pNgay1" class="form-control">
-        </div>
-        <div class="col-md-3">
-            <label>Den ngay</label>
-            <input type="date" wire:model="pNgay2" class="form-control">
-        </div>
-        <div class="col-md-3">
-            <label>Loai phieu</label>
-            <select wire:model="pMaCtList" class="form-select">
-                <option value="">Tat ca</option>
-                <option value="SO1">Phieu xuat ban le</option>
-                <option value="SO3">Hoa don ban hang</option>
-                <option value="SO5">Hoa don dich vu</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label>Tien</label>
-            <div class="btn-group">
-                <button class="btn btn-sm {{ !$pIsNt ? 'btn-primary' : 'btn-outline-secondary' }}"
-                    wire:click="$set('pIsNt', false)">VND</button>
-                <button class="btn btn-sm {{ $pIsNt ? 'btn-primary' : 'btn-outline-secondary' }}"
-                    wire:click="$set('pIsNt', true)">NT</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Master Grid (Phieu) -->
-    <div class="mb-3">
-        <h6>Danh sach phieu</h6>
-        <table class="table table-sm table-bordered">
-            <thead>
-                <tr>
-                    <th>Ngay CT</th>
-                    <th>So CT</th>
-                    <th>Khach hang</th>
-                    <th>Tien</th>
-                    <th>Thue</th>
-                    <th>Thanh toan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($pPhieuList as $i => $ph)
-                <tr wire:click="rowEnter({{ $i }})"
-                    class="{{ isset($selectedIndex) && $selectedIndex === $i ? 'table-primary' : '' }}">
-                    <td>{{ $ph['ngay_ct'] }}</td>
-                    <td>{{ $ph['so_ct'] }}</td>
-                    <td>{{ $ph['ten_kh'] }}</td>
-                    <td class="text-right">{{ number_format($ph['t_tien2']) }}</td>
-                    <td class="text-right">{{ number_format($ph['t_thue2']) }}</td>
-                    <td class="text-right">{{ number_format($ph['t_tt2']) }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Detail Grid (Chi tiet) -->
-    <div>
-        <h6>Chi tiet</h6>
-        <table class="table table-sm table-bordered">
-            <thead>
-                <tr>
-                    <th>Ma VT</th>
-                    <th>Ten VT</th>
-                    <th>DVT</th>
-                    <th>Kho</th>
-                    <th>So luong</th>
-                    <th>Gia</th>
-                    <th>Tien</th>
-                    <th>Thue</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($pChiTietFiltered as $ct)
-                <tr>
-                    <td>{{ $ct['ma_vt'] }}</td>
-                    <td>{{ $ct['ten_vt'] }}</td>
-                    <td>{{ $ct['dvt'] }}</td>
-                    <td>{{ $ct['ma_kho'] }}</td>
-                    <td class="text-right">{{ number_format($ct['so_luong'], 2) }}</td>
-                    <td class="text-right">{{ number_format($ct['gia2']) }}</td>
-                    <td class="text-right">{{ number_format($ct['tien2']) }}</td>
-                    <td class="text-right">{{ number_format($ct['thue_gtgt']) }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Export buttons -->
-    <div class="mt-3">
-        <button class="btn btn-primary" wire:click="exportExcel">Export Excel</button>
-        <button class="btn btn-secondary" wire:click="exportPdf">Export PDF</button>
-    </div>
-</div>
-```
-
-### 5. Routes
-
-```php
-Route::prefix('catalog/so')
-    ->name('catalog.so.')
-    ->group(function () {
-        Route::get('/bang-ke-ban-hang-01', [Bangkebanhang01::class, 'render'])
-            ->name('bangkebanhang01');
-    });
-```
-
----
+URL thuc te:
+- `http://portal.diepxuan.corp/simba/so/rpt/sorptbk01`
+- `http://portal.diepxuan.corp/simba/so/rpt/sorptbk01062002`
 
 ## Dependencies
 
 | Loai | Package | File | Ghi chu |
 |------|---------|------|---------|
-| Model | laravel-simba | SORptBK01.php | Data transfer |
-| SP | laravel-simba | AsSOGetRptBK01.php | Get data |
-| Component | laravel-catalog | Bangkebanhang01.php | Report component |
-| View | laravel-catalog | bangkebanhang01.blade.php | Report view |
-| Filter | laravel-catalog | BangKeBanHangFilters.php | Filter components |
+| SP | laravel-simba | AsSORptBK01.php | asSORptBK01, 2 result sets ct/ph |
+| Component | laravel-catalog | Http/Livewire/So/Rpt/Sorptbk01.php | Master-detail report |
+| View | laravel-catalog | resources/views/so/rpt/sorptbk01.blade.php | Filter + phieu/detail grids |
+| Lookup | laravel-simba | AsSIGetDmSo_ct.php | Danh muc loai chung tu SO |
 
 ---
 
 ## Progress Checklist
 
-- [ ] Phan tich yeu cau & review task nay
-- [ ] Tao Stored Procedure class AsSOGetRptBK01
-- [ ] Tao Livewire Bangkebanhang01 component
-- [ ] Tao View voi 2 DataGridView (master-detail)
-- [ ] Implement rowEnter de loc chi tiet
-- [ ] Them filter controls (ngay, loai phieu, KH, VT, kho...)
-- [ ] Them Routes
-- [ ] Test export Excel/PDF
-- [ ] Test filter va loc chi tiet
+- [x] Phan tich yeu cau & review task nay
+- [x] Tao Stored Procedure class AsSORptBK01 (callWithDataSets)
+- [x] Tao Livewire Sorptbk01 component
+- [x] Tao View voi 2 grid (phieu + chi tiet)
+- [x] Implement selectPhieu de loc chi tiet
+- [x] Them filter controls (ngay, loai phieu, KH, VT, kho...)
+- [x] Them Routes (so/rpt/sorptbk01 + compact suffix)
+- [x] Test export Excel (CSV)
+- [ ] Test filter va loc chi tiet voi du lieu thuc
 ---
 ## Audit Status
 - **Ngày audit:** 2026-05-10
@@ -474,6 +263,6 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
-- **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
-- **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+- **Status:** DONE (Livewire component + SP wrapper + route mapping)
+- **Source:** `simba-docs/data/sysReportInfo.md` (asSORptBK01), `simba-docs/decompiled/asia/SORptBK01.dll` (frmSORptBK01.cs), `simba-docs/procedures/SO/procedures.md` (asSIGetDmSo_ct).
+- **Note:** Chua verify voi du lieu thuc tren SQL Server; can chay E2E sau khi co session/login va database Simba.

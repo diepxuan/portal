@@ -36,6 +36,7 @@ use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01Sl as SoArrptbccn01Sl;
+use Diepxuan\Catalog\Http\Livewire\So\Rpt\Sorptbk01;
 use Diepxuan\Catalog\Http\Livewire\Po\Rpt\Arrptbccn01 as PoArrptbccn01;
 use Diepxuan\Catalog\Http\Livewire\Po\Rpt\Arrptbccn01Sl as PoArrptbccn01Sl;
 use Diepxuan\Catalog\Http\Livewire\Po\Vch\Povchpo3;
@@ -287,6 +288,8 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ['uri' => 'so/rpt/arrptbccn01', 'name' => 'so.rpt.arrptbccn01', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01', 'component' => Arrptbccn01::class],
             ['uri' => 'so/rpt/arrptbccn01063014', 'name' => 'so.rpt.arrptbccn01063014', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01063014', 'component' => Arrptbccn01::class],
             ['uri' => 'so/rpt/arrptbccn01063038', 'name' => 'so.rpt.arrptbccn01063038', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01063038', 'component' => SoArrptbccn01Sl::class],
+            ['uri' => 'so/rpt/sorptbk01', 'name' => 'so.rpt.sorptbk01', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01', 'component' => Sorptbk01::class],
+            ['uri' => 'so/rpt/sorptbk01062002', 'name' => 'so.rpt.sorptbk01062002', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01062002', 'component' => Sorptbk01::class],
             // ['uri' => 'so/rpt/arrptbccn01a', 'name' => 'so.rpt.arrptbccn01a', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01a', 'component' => SimbaPage::class],
             // ['uri' => 'so/rpt/arrptbccn02', 'name' => 'so.rpt.arrptbccn02', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn02', 'component' => SimbaPage::class],
             // ['uri' => 'so/rpt/arrptbccn03', 'name' => 'so.rpt.arrptbccn03', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn03', 'component' => SimbaPage::class],

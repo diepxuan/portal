@@ -199,7 +199,7 @@ System balance/process menus da co route Portal hien huu:
 | AP Tổng hợp số dư đầu | 10.30.44 | `ap.rpt.bccn03-open` | `Muahang\ApReportIndex` | `asARRptBCCN03` |
 | AP Tổng hợp số dư cuối | 10.30.47 | `ap.rpt.bccn03-close` | `Muahang\ApReportIndex` | `asARRptBCCN03` |
 | AP Biên bản đối chiếu công nợ chi tiết | 10.30.50 | `ap.rpt.bccn05-detail` | `Muahang\ApReportIndex` | `asARRptBCCN05` |
-| Bảng kê bán hàng | 06.20.02 | `so.rpt.bk01` | `Banhang\SoReportIndex` | `asSORptBK01` |
+| Bảng kê bán hàng | 06.20.02 | `so.rpt.sorptbk01` | `So\Rpt\Sorptbk01` | `asSORptBK01` |
 | Bảng kê bán hàng nhóm theo chỉ tiêu | 06.20.05 | `so.rpt.bk02` | `Banhang\SoReportIndex` | `asSORptBK02` |
 | Tổng hợp bán hàng | 06.20.08 | `so.rpt.th01` | `Banhang\SoReportIndex` | `asSORptTH01` |
 | Tổng hợp bán hàng theo kỳ | 06.20.11 | `so.rpt.th02` | `Banhang\SoReportIndex` | `asSORptTH02` |
