@@ -90,12 +90,13 @@ class KhachhangForm extends Component
      */
     public function mount(?string $id = null): void
     {
-        $this->loadDropdowns();
-
-        if ($id) {
-            $this->mode = 'edit';
-            $this->loadKhachHang($id);
-        }
+        // @deprecated Redirect sang So\Dict\ArdmkhForm canonical
+        $this->redirect(
+            $id
+                ? simbaroute('so.dict.ardmkh.edit', ['id' => $id])
+                : simbaroute('so.dict.ardmkh.create'),
+            navigate: true,
+        );
     }
 
     /**
