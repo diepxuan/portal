@@ -46,8 +46,8 @@ Hoàn thiện danh mục khách hàng phục vụ nghiệp vụ bán hàng, dùn
 | URI | Route name | Component |
 |-----|-----------|-----------|
 | `GET /simba/so/dict/ardmkh` | `so.dict.ardmkh` | `Banhang\Khachhang` |
-| `GET /simba/banhang/khachhang/create` | `so.dict.ardmkh.create` (qua redirect từ `Banhang\KhachhangForm`) | `Banhang\KhachhangForm` |
-| `GET /simba/banhang/khachhang/{id}/edit` | `so.dict.ardmkh.edit` | `Banhang\KhachhangForm` |
+| `GET /simba/so/dict/ardmkh/create` | `so.dict.ardmkh.create` | `So\Dict\ArdmkhForm` |
+| `GET /simba/so/dict/ardmkh/{id}/edit` | `so.dict.ardmkh.edit` | `So\Dict\ArdmkhForm` |
 
 URL thật: `http://portal.diepxuan.corp/simba/so/dict/ardmkh`
 

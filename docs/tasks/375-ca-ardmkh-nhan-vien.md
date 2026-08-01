@@ -48,8 +48,8 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 | URI | Route name | Component |
 |-----|-----------|-----------|
 | `GET /simba/ca/dict/ardmkh` | `ca.dict.ardmkh` | `Cash\Danhmuc\Nhanvien` |
-| `GET /simba/cash/nhanvien/create` | `ca.nhanvien.create` | `Cash\Danhmuc\NhanvienForm` |
-| `GET /simba/cash/nhanvien/{id}/edit` | `ca.nhanvien.edit` | `Cash\Danhmuc\NhanvienForm` |
+| `GET /simba/ca/dict/ardmkh/create` | `ca.dict.ardmkh.create` | `Cash\Danhmuc\NhanvienForm` |
+| `GET /simba/ca/dict/ardmkh/{id}/edit` | `ca.dict.ardmkh.edit` | `Cash\Danhmuc\NhanvienForm` |
 
 URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 
