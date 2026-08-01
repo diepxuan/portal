@@ -17,6 +17,7 @@ use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
 use Diepxuan\Catalog\Http\Livewire\AR\Danhmuc\Phanloaikhachhang;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
+use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Khachhang;
 use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\Nhanvien;
 use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\NhanvienForm;
@@ -75,6 +76,10 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
     // Canonical SO ARDMKH dict routes (task 374)
     Route::get('/so/dict/ardmkh/create', KhachhangForm::class)->name('so.dict.ardmkh.create');
     Route::get('/so/dict/ardmkh/{id}/edit', KhachhangForm::class)->name('so.dict.ardmkh.edit');
+
+    // CANONICAL SO KHACH HANG (task 374)
+    Route::get('/so/dict/ardmkh/create', SoArdmkhForm::class)->name('so.dict.ardmkh.create');
+    Route::get('/so/dict/ardmkh/{id}/edit', SoArdmkhForm::class)->name('so.dict.ardmkh.edit');
 
     Route::resource('banhang/bangkebanhang', SellController::class)->names('sell.list');
 
