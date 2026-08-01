@@ -1,6 +1,8 @@
 # Tasks - SimbaSql Asia App Analysis
 
-**Tổng quan:** 338 DLL được decompile, **329 files** (324 task ở root + 2 task ở `phase 1/` + 1 README + 2 `_index.md`).
+**Tổng quan:** 338 DLL được decompile, **342 files** (335 task ở root + 2 task ở `phase 1/` + 1 README + 2 `_index.md` + 1 SPEC + 1 _archive stub)
+
+> Tính đến 2026-07-28: task 356 (gộp KH+NCC+NV ARDMKH) đã tách thành 373 (PO nhà cung cấp, DONE code), 374 (SO khách hàng CRUD, PENDING), 375 (CA nhân viên, IN PROGRESS). Task 038 (cũ) đổi tên thành 374.
 
 > **Đối với AI agent:** Đọc §1 → §2 → §4 trước khi làm task. §3 là index tra cứu nhanh, không tự đổi trạng thái task.
 
@@ -17,9 +19,9 @@
 
 | Khu vực | Files | Trạng thái |
 |---|---:|---|
-| Root `docs/tasks/` | 324 | PENDING - đang chờ hoàn thành phase hiện tại |
+| Root `docs/tasks/` | 335 | PENDING - đang chờ hoàn thành phase hiện tại |
 | `docs/tasks/phase 1/` | 2 | DONE phase hiện tại: 008, 117 |
-| **Tổng task** | **326** | 324 PENDING + 2 phase 1 |
+| **Tổng task** | **337** | 335 PENDING + 2 phase 1 |
 
 ### Tổng quan root theo module
 
@@ -36,7 +38,7 @@
 | FA — Tài sản cố định | 39 | PENDING |
 | GL — Sổ cái tổng hợp | 103 | PENDING |
 | System — Framework & cross-link | 8 | PENDING |
-| **Tổng root** | **324** | PENDING |
+| **Tổng root** | **335** | PENDING |
 
 **Snapshot audit mới nhất (route/menu):** `../project/task-execution-coverage.md`, `../project/task-master-execution.md`, `../project/simba-router-menu-matrix.md`.
 
@@ -47,13 +49,13 @@
 | 008 | ar-bao-cao-cong-no-tk-kh | AR | phase 1 |
 | 117 | in-baocao-tonkho-02 | IN | [#241](https://github.com/diepxuan/portal/pull/241) |
 
-## 3. Index theo module (326 tasks)
+## 3. Index theo module (337 tasks)
 
 > Xem [`_index.md`](_index.md) cho root phase hiện tại và [`phase 1/_index.md`](phase%201/_index.md) cho task đã chuyển phase. Cả hai file sinh tự động từ `scripts/gen-tasks-index.php`.
 
 **Tóm tắt nhanh:**
 
-- Root phase hiện tại: 324 task, toàn bộ `PENDING`.
+- Root phase hiện tại: 335 task, toàn bộ `PENDING`.
 - Phase 1: 2 task `DONE` phase hiện tại (`008`, `117`).
 - Khi thêm hoặc chuyển task, chạy `php scripts/gen-tasks-index.php` để cập nhật `_index.md`.
 
