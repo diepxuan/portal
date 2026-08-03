@@ -10,7 +10,7 @@ Hoàn thiện danh mục khách hàng phục vụ nghiệp vụ bán hàng, dùn
 
 ## Trạng thái
 
-- **Status:** PENDING (route + component + view đã có, thiếu unit test Livewire riêng + gắn với task 001)
+- **Status:** IN PROGRESS (route + component + view đã có, bổ sung dropdown phân loại, khóa sử dụng và unit test cơ bản; chưa E2E)
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 038 (ban đầu dùng tên `038-ban-hang-khach-hang-them-sua-xoa.md`)
@@ -45,7 +45,7 @@ Hoàn thiện danh mục khách hàng phục vụ nghiệp vụ bán hàng, dùn
 
 | URI | Route name | Component |
 |-----|-----------|-----------|
-| `GET /simba/so/dict/ardmkh` | `so.dict.ardmkh` | `Banhang\Khachhang` |
+| `GET /simba/so/dict/ardmkh` | `so.dict.ardmkh` | `So\Dict\Ardmkh` |
 | `GET /simba/so/dict/ardmkh/create` | `so.dict.ardmkh.create` | `So\Dict\ArdmkhForm` |
 | `GET /simba/so/dict/ardmkh/{id}/edit` | `so.dict.ardmkh.edit` | `So\Dict\ArdmkhForm` |
 
@@ -53,13 +53,13 @@ URL thật: `http://portal.diepxuan.corp/simba/so/dict/ardmkh`
 
 ### Component
 
-- `Banhang\Khachhang` (index): search, paginate, `deleteDoiTuong(maKh)`.
-- `Banhang\KhachhangForm`: mode create/edit, `save()` chọn `AsARInsDMKH` / `AsARUpdDMKH` theo mode với `pIskh=1, pIsncc=0, pIsnv=0`.
+- `So\Dict\Ardmkh` (index): search, paginate, `deleteDoiTuong(maKh)`.
+- `So\Dict\ArdmkhForm`: mode create/edit, `save()` chọn `AsARInsDMKH` / `AsARUpdDMKH` theo mode với `pIskh=1, pIsncc=0, pIsnv=0`.
 
 ### View
 
-- `resources/views/banhang/khachhang.blade.php`: danh sách KH.
-- `resources/views/banhang/khachhang-form.blade.php`: form thêm/sửa.
+- `resources/views/so/dict/ardmkh.blade.php`: danh sách KH.
+- `resources/views/so/dict/ardmkh-form.blade.php`: form thêm/sửa (dropdown phân loại KH + checkbox khóa sử dụng).
 
 ### Trường bổ sung cho SO (theo task 038 cũ)
 
@@ -81,14 +81,14 @@ URL thật: `http://portal.diepxuan.corp/simba/so/dict/ardmkh`
 ## Thay đổi chính (đã có)
 
 - Route `so.dict.ardmkh` (`/so/dict/ardmkh`).
-- Component `Banhang\Khachhang` (list) + `Banhang\KhachhangForm` (form).
-- View `resources/views/banhang/khachhang.blade.php` + `khachhang-form.blade.php`.
+- Component `So\Dict\Ardmkh` (list) + `So\Dict\ArdmkhForm` (form).
+- View `resources/views/so/dict/ardmkh.blade.php` + `resources/views/so/dict/ardmkh-form.blade.php`.
 - Mapping `SimbaRouteRegistry`, `SimbaDictionaryRegistry`.
 
 ## Thay đổi dự kiến (PENDING)
 
 - Bổ sung 4 trường giao hàng (`dia_chi_gh`, `nguoi_nhan`, `dt_nguoi_nhan`, `email_giao_hang`) vào form và SP wrapper (cần verify metadata trước).
-- Unit test Livewire riêng cho `Banhang\Khachhang` + `Banhang\KhachhangForm`.
+- Unit test Livewire riêng cho `So\Dict\Ardmkh` + `So\Dict\ArdmkhForm`.
 - Liên kết business rule "chặn bán hàng" từ DMNHKH với SO1/SO3 (chưa có).
 
 ## Liên quan
@@ -103,4 +103,4 @@ URL thật: `http://portal.diepxuan.corp/simba/so/dict/ardmkh`
 
 - `php -l` pass cho component + view (đã verify ở session cũ).
 - `SourceRouteCoverageTest` expectation cho `so.dict.ardmkh` pass.
-- Không có unit test riêng cho `Banhang\Khachhang` / `Banhang\KhachhangForm` — cần bổ sung.
+- Có unit test cơ bản tại `tests/Unit/Packages/Catalog/ArdmkhFormTest.php`; cần bổ sung Livewire create/edit với DB test.

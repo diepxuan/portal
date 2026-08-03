@@ -66,7 +66,7 @@ System balance/process menus da co route Portal hien huu:
 | CA3 Báo có | 04.10.08 | `ca.nganhang.baoco` | `Cash\Nganhang\Baoco` | Registry verified as `voucher` |
 | CA4 Báo nợ | 04.10.11 | `ca.nganhang.baono` | `Cash\Nganhang\Baono` | Registry verified as `voucher` |
 | SO3 Hoá đơn bán hàng | 06.10.08 | `ar.ph.hdbh` | `Banhang\Hoadonbanhang` | Registry verified as `voucher` |
-| MA_KH Khách hàng | 06.90.02 | `ar.khachhang` | `Banhang\Khachhang` | Registry verified as `dictionary` |
+| MA_KH Khách hàng | 06.90.02 | `ar.khachhang` | `So\Dict\Ardmkh` | Registry verified as `dictionary` |
 | PO3 Hoá đơn mua hàng trong nước | 10.10.14 | `po.vch.povchpo3` | `Po\Vch\Povchpo3` | Registry verified as `voucher` |
 | MA_NCC Nhà cung cấp | 10.90.22 | `po.cungcap` | `Muahang\Cungcap` | Added; legacy `ar.cungcap` kept |
 | MA_CP Chi phí mua hàng | 10.90.14 | `po.dmcp` | `Muahang\PoDmCpIndex` | `asPOGetDMCP` |

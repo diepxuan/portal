@@ -15,6 +15,18 @@ File này ghi chú các chi tiết riêng của môi trường Portal. Skill và
 - **Trạng thái:** Readonly.
 - **Chi tiết:** `docs/SIMBA-DOCS.md`
 
+## Domain conventions
+
+- Đọc thêm `docs/PROJECT_CONVENTIONS.md` cho đầy đủ quy ước canonical, `ksd`, default khi save ARDMKH.
+
+### `ksd` — bắt buộc, không hỏi lại
+
+- `ksd = 1` nghĩa là **không sử dụng / khóa sử dụng** (disabled).
+- `ksd = 0` nghĩa là **đang sử dụng** (active).
+- Khi lọc dữ liệu active dùng `ksd = 0`; `ksd = 1` là loại trừ.
+- Checkbox `KSD` trong form checked = khóa sử dụng.
+- Áp dụng cho ARDMKH/SO/PO/CA và các danh mục dùng cùng quy ước; nếu một bảng cụ thể ghi khác trong `simba-docs`, ưu tiên chỉ dẫn này và báo Sếp nếu có nghi vấn thật sự, không tự đổi.
+
 ## Website Verification & Dev Server
 
 - `http://portal.diepxuan.corp` là local domain đã được cấu hình sẵn và luôn là URL mặc định khi kiểm tra UI/browser E2E cho Portal.

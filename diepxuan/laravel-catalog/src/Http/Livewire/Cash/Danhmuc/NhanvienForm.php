@@ -30,10 +30,6 @@ class NhanvienForm extends ArdmkhForm
     public ?string $cn_nh = null;
     public ?string $so_tk_nh = null;
     public ?string $tinh_tp_nh = null;
-    public ?string $ma_plkh1 = null;
-    public ?string $ma_plkh2 = null;
-    public ?string $ma_plkh3 = null;
-    public ?string $ma_nhkh = null;
     public ?string $ma_tt = null;
     public ?float $gh_no = null;
     public ?float $han_ck = null;
@@ -47,11 +43,8 @@ class NhanvienForm extends ArdmkhForm
         'email.email' => 'Email không đúng định dạng.',
     ];
 
-    public bool $isKh = false;
-    public bool $isNcc = false;
     public bool $isNv = true;
     public bool $tinh_dt_nb = false;
-    public bool $ksd = false;
 
     public function loadDoiTuong(string $maKh): void
     {
@@ -100,13 +93,17 @@ class NhanvienForm extends ArdmkhForm
             $this->tinh_dt_nb = (bool) ($this->field($row, 'tinh_dt_nb', 'TINH_DT_NB', false));
             $this->ksd = (bool) ($this->field($row, 'ksd', 'KSD', false));
         } catch (\Exception $e) {
+            report($e);
             $this->dispatch('error', message: 'Không thể tải nhân viên: ' . $e->getMessage());
         }
     }
 
     public function render(): View
     {
-        return view('catalog::cash.danhmuc.nhanvien-form')->layout('catalog::layouts.app');
+        return view('catalog::cash.danhmuc.nhanvien-form', [
+            'nhomKhOptions' => $this->nhomKhOptions,
+            'plkhOptions'   => $this->plkhOptions,
+        ])->layout('catalog::layouts.app');
     }
 
     public function save(): void
@@ -155,48 +152,51 @@ class NhanvienForm extends ArdmkhForm
         $user = auth()->user()->name ?? 'system';
 
         try {
-            $procedureClass::call([
+            $result = $procedureClass::call([
                 'pMa_cty' => SModel::CTY,
                 'pMa_kh' => $maKh,
                 'pLoai' => '1',
-                'pTen_kh' => $this->ten_kh,
-                'pMa_so_thue' => $this->ma_so_thue,
-                'pDia_chi' => $this->dia_chi,
-                'pTel' => $this->dien_thoai,
-                'pFax' => $this->fax,
-                'pEmail' => $this->email,
-                'pHome_page' => $this->home_page,
-                'pNguoi_gd' => $this->nguoi_gd,
-                'pMa_httt' => $this->ma_httt,
-                'pMa_httt_po' => $this->ma_httt_po,
-                'pGh_no' => $this->gh_no,
-                'pHan_tt' => $this->han_tt,
-                'pMa_ngh' => $this->ma_ngh,
-                'pTen_nh' => $this->ten_nh,
-                'pCn_nh' => $this->cn_nh,
-                'pSo_tk_nh' => $this->so_tk_nh,
-                'pTinh_tp_nh' => $this->tinh_tp_nh,
-                'pTk' => $this->tk_cn,
-                'pMa_plkh1' => $this->ma_plkh1,
-                'pMa_plkh2' => $this->ma_plkh2,
-                'pMa_plkh3' => $this->ma_plkh3,
-                'pMa_nhkh' => $this->ma_nhkh,
-                'pMa_tt' => $this->ma_tt,
-                'pHan_ck' => $this->han_ck,
-                'pTl_ck' => $this->tl_ck,
-                'pLs_qh' => $this->ls_qh,
-                'pGhi_chu' => $this->ghi_chu,
+                'pTen_kh' => $this->stringValue($this->ten_kh),
+                'pMa_so_thue' => $this->stringValue($this->ma_so_thue),
+                'pDia_chi' => $this->stringValue($this->dia_chi),
+                'pTel' => $this->stringValue($this->dien_thoai),
+                'pFax' => $this->stringValue($this->fax),
+                'pEmail' => $this->stringValue($this->email),
+                'pHome_page' => $this->stringValue($this->home_page),
+                'pNguoi_gd' => $this->stringValue($this->nguoi_gd),
+                'pMa_httt' => $this->stringValue($this->ma_httt),
+                'pMa_httt_po' => $this->stringValue($this->ma_httt_po),
+                'pGh_no' => $this->numberValue($this->gh_no),
+                'pHan_tt' => $this->numberValue($this->han_tt),
+                'pMa_ngh' => $this->stringValue($this->ma_ngh),
+                'pTen_nh' => $this->stringValue($this->ten_nh),
+                'pCn_nh' => $this->stringValue($this->cn_nh),
+                'pSo_tk_nh' => $this->stringValue($this->so_tk_nh),
+                'pTinh_tp_nh' => $this->stringValue($this->tinh_tp_nh),
+                'pTk' => $this->stringValue($this->tk_cn),
+                'pMa_plkh1' => $this->stringValue($this->ma_plkh1),
+                'pMa_plkh2' => $this->stringValue($this->ma_plkh2),
+                'pMa_plkh3' => $this->stringValue($this->ma_plkh3),
+                'pMa_nhkh' => $this->stringValue($this->ma_nhkh),
+                'pMa_tt' => $this->stringValue($this->ma_tt),
+                'pHan_ck' => $this->numberValue($this->han_ck),
+                'pTl_ck' => $this->numberValue($this->tl_ck),
+                'pLs_qh' => $this->numberValue($this->ls_qh),
+                'pGhi_chu' => $this->stringValue($this->ghi_chu),
                 'pTinh_dt_nb' => $this->tinh_dt_nb ? 1 : 0,
                 'pIskh' => $this->isKh ? 1 : 0,
                 'pIsncc' => $this->isNcc ? 1 : 0,
-                'pIsnv' => 1,  // CA always isNv=1
+                'pIsnv' => $this->isNv ? 1 : 0,
                 'pKsd' => $this->ksd ? 1 : 0,
                 'pLUser' => $user,
             ]);
 
+            $this->assertProcedureSuccess($result);
+
             $this->dispatch('success', message: 'Đã lưu nhân viên ' . $maKh);
             $this->redirect(simbaroute('ca.dict.ardmkh'), navigate: true);
         } catch (\Exception $e) {
+            report($e);
             $this->dispatch('error', message: 'Không thể lưu nhân viên: ' . $e->getMessage());
         }
     }

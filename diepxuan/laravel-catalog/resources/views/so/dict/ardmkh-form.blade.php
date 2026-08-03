@@ -16,25 +16,25 @@
             <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Mã KH <span class="text-red-500">*</span></span>
-                    <input wire:model="ma_kh" maxlength="50" @if($mode === 'edit') readonly @endif class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm @if($mode === 'edit') bg-gray-100 @endif" placeholder="VD: KH001" />
+                    <input wire:model="ma_kh" maxlength="20" @if($mode === 'edit') readonly @endif class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm @if($mode === 'edit') bg-gray-100 @endif" placeholder="VD: KH001" />
                     @error('ma_kh') <span class="mt-1 block text-xs text-red-600">{{ $message }}</span> @enderror
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Tên khách hàng <span class="text-red-500">*</span></span>
-                    <input wire:model="ten_kh" maxlength="200" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Tên khách hàng" />
+                    <input wire:model="ten_kh" maxlength="100" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Tên khách hàng" />
                     @error('ten_kh') <span class="mt-1 block text-xs text-red-600">{{ $message }}</span> @enderror
                 </label>
                 <label class="block md:col-span-2">
                     <span class="text-sm font-medium text-gray-700">Địa chỉ</span>
-                    <input wire:model="dia_chi" maxlength="500" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Địa chỉ" />
+                    <input wire:model="dia_chi" maxlength="255" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Địa chỉ" />
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Người giao dịch</span>
-                    <input wire:model="nguoi_gd" maxlength="100" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Người giao dịch" />
+                    <input wire:model="nguoi_gd" maxlength="30" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Người giao dịch" />
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Mã số thuế</span>
-                    <input wire:model="ma_so_thue" maxlength="50" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Mã số thuế" />
+                    <input wire:model="ma_so_thue" maxlength="20" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Mã số thuế" />
                 </label>
             </div>
         </div>
@@ -44,15 +44,15 @@
             <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2">
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Điện thoại</span>
-                    <input wire:model="dien_thoai" maxlength="50" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Điện thoại" />
+                    <input wire:model="dien_thoai" maxlength="30" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Điện thoại" />
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Fax</span>
-                    <input wire:model="fax" maxlength="50" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Fax" />
+                    <input wire:model="fax" maxlength="30" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Fax" />
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Email</span>
-                    <input wire:model="email" type="email" maxlength="100" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="email@example.com" />
+                    <input wire:model="email" type="email" maxlength="30" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="email@example.com" />
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">TK công nợ</span>
@@ -66,24 +66,45 @@
             <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-4">
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Phân loại 1</span>
-                    <input wire:model="ma_plkh1" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="MA_PLKH1" />
+                    <select wire:model="ma_plkh1" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[1] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Phân loại 2</span>
-                    <input wire:model="ma_plkh2" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="MA_PLKH2" />
+                    <select wire:model="ma_plkh2" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[2] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Phân loại 3</span>
-                    <input wire:model="ma_plkh3" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="MA_PLKH3" />
+                    <select wire:model="ma_plkh3" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[3] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-gray-700">Nhóm KH</span>
-                    <select wire:model="ma_nhkh" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm">
+                    <select wire:model="ma_nhkh" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="">— Chọn nhóm —</option>
                         @foreach($nhomKhOptions as $nhom)
-                            <option value="{{ $nhom->ma_nhkh }}">{{ $nhom->ten_nhkh }}</option>
+                            <option value="{{ $nhom->ma_nhkh }}">{{ $nhom->ma_nhkh }} - {{ $nhom->ten_nhkh }}</option>
                         @endforeach
                     </select>
+                </label>
+            </div>
+            <div class="border-t border-gray-100 px-6 py-3">
+                <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <input type="checkbox" wire:model="ksd" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                    Khóa sử dụng
                 </label>
             </div>
         </div>
@@ -91,7 +112,7 @@
         <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="border-b border-gray-100 bg-gray-50 px-6 py-3"><h3 class="text-sm font-semibold text-gray-700">Ghi chú</h3></div>
             <div class="p-6">
-                <textarea wire:model="ghi_chu" rows="3" maxlength="500" class="w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Ghi chú"></textarea>
+                <textarea wire:model="ghi_chu" rows="3" maxlength="255" class="w-full rounded-md border-gray-300 text-sm shadow-sm" placeholder="Ghi chú"></textarea>
             </div>
         </div>
 

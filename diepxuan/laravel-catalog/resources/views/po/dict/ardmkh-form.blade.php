@@ -147,6 +147,56 @@
 
         <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
             <div class="border-b border-gray-100 bg-gray-50 px-6 py-3">
+                <h3 class="text-sm font-semibold text-gray-700">Phân loại</h3>
+            </div>
+            <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-4">
+                <label class="block">
+                    <span class="text-sm font-medium text-gray-700">Phân loại 1</span>
+                    <select wire:model="ma_plkh1" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[1] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="text-sm font-medium text-gray-700">Phân loại 2</span>
+                    <select wire:model="ma_plkh2" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[2] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="text-sm font-medium text-gray-700">Phân loại 3</span>
+                    <select wire:model="ma_plkh3" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn —</option>
+                        @foreach ($plkhOptions[3] ?? [] as $pl)
+                            <option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label class="block">
+                    <span class="text-sm font-medium text-gray-700">Nhóm NCC</span>
+                    <select wire:model="ma_nhkh" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="">— Chọn nhóm —</option>
+                        @foreach ($nhomKhOptions as $nhom)
+                            <option value="{{ $nhom->ma_nhkh }}">{{ $nhom->ma_nhkh }} - {{ $nhom->ten_nhkh }}</option>
+                        @endforeach
+                    </select>
+                </label>
+            </div>
+            <div class="border-t border-gray-100 px-6 py-3">
+                <label class="flex items-center gap-2 text-sm text-gray-700">
+                    <input type="checkbox" wire:model="ksd" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                    Khóa sử dụng
+                </label>
+            </div>
+        </div>
+
+        <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            <div class="border-b border-gray-100 bg-gray-50 px-6 py-3">
                 <h3 class="text-sm font-semibold text-gray-700">Ghi chú</h3>
             </div>
             <div class="p-6">

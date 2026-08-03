@@ -1,6 +1,6 @@
 # Hướng dẫn phát triển Portal
 
-Tài liệu này hướng dẫn thiết lập môi trường phát triển (development) cho ứng dụng Portal trên máy local.
+Tài liệu này hướng dẫn thiết lập môi trường phát triển (development) cho ứng dụng Portal trên máy local. Trước khi code, đọc thêm [Project Conventions](PROJECT_CONVENTIONS.md) để nắm các quy ước bắt buộc (`ksd`, canonical dictionary).
 
 ## 1. Yêu cầu hệ thống
 

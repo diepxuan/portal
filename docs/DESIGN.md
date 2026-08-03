@@ -229,7 +229,7 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 
 Khi tạo hoặc sửa view trong `diepxuan/*/resources/views/`:
 
-1. Mở file này (`docs/DESIGN.md`) trước, lấy token cho color/typography/radius/spacing/component.
+1. Mở file này (`docs/DESIGN.md`) trước, lấy token cho color/typography/radius/spacing/component; nếu form/danh mục có field `KSD` hoặc tên component dictionary, đọc [Project Conventions](PROJECT_CONVENTIONS.md).
 2. Map sang Tailwind utility class theo bảng trong section Colors / Typography / Components.
 3. Khi cần component mới — thêm variant vào section Components, **không** tự ý thay đổi palette.
 4. Khi cần token ngoài bảng — mở task/PR riêng để mở rộng DESIGN.md + cập nhật `tailwind.config.js` (nếu cần), Sếp duyệt trước khi ship.

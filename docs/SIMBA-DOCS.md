@@ -12,7 +12,17 @@
 
 ---
 
-## 2. Cấu trúc tổng thể
+## 1.5. Liên kết Project Conventions
+
+- [Project Conventions](../PROJECT_CONVENTIONS.md) chứa quy ước bắt buộc: `ksd`, canonical ARDMKH/dictionary, default khi save ARDMKH.
+
+## 2. Quy ước field `ksd`
+
+- `ksd = 1`: **không sử dụng / khóa sử dụng**.
+- `ksd = 0`: **đang sử dụng**.
+- Đây là quy ước Portal áp dụng chung cho danh mục, đặc biệt ARDMKH (SO/PO/CA). Không hiểu `ksd = 1` là active.
+
+## 3. Cấu trúc tổng thể
 
 ```
 simba-docs/
@@ -45,7 +55,7 @@ simba-docs/
 
 ---
 
-## 3. 10 Module ERP (thư mục `asia/`)
+## 4. 10 Module ERP (thư mục `asia/`)
 
 | Code   | Module              | Summary              | Mô tả                                                        |
 | ------ | ------------------- | -------------------- | ------------------------------------------------------------ |
@@ -73,7 +83,7 @@ asia/ar/
 
 ---
 
-## 4. Decompiled DLL Analysis (`decompiled/asia/`)
+## 5. Decompiled DLL Analysis (`decompiled/asia/`)
 
 **338 DLL** đã được decompile và phân tích. Mỗi DLL có thư mục riêng chứa `README.md` với:
 
@@ -109,7 +119,7 @@ grep -r "SP_" simba-docs/decompiled/asia/*/README.md
 
 ---
 
-## 5. Stored Procedures (`procedures/`)
+## 6. Stored Procedures (`procedures/`)
 
 ### Cấu trúc
 
@@ -152,7 +162,7 @@ cat simba-docs/procedures/AR/SP_AR_DMKH_GET.sql 2>/dev/null || \
 
 ---
 
-## 6. System Data (`data/`)
+## 7. System Data (`data/`)
 
 | File                   | Nội dung           | Ứng dụng                       |
 | ---------------------- | ------------------ | ------------------------------ |
@@ -165,7 +175,7 @@ cat simba-docs/procedures/AR/SP_AR_DMKH_GET.sql 2>/dev/null || \
 
 ---
 
-## 7. Tài liệu tra cứu (`reference/`)
+## 8. Tài liệu tra cứu (`reference/`)
 
 | File                    | Mục đích                                   |
 | ----------------------- | ------------------------------------------ |
@@ -176,7 +186,7 @@ cat simba-docs/procedures/AR/SP_AR_DMKH_GET.sql 2>/dev/null || \
 
 ---
 
-## 8. Luồng nghiệp vụ liên module
+## 9. Luồng nghiệp vụ liên module
 
 File `asia/CROSS_MODULE_INTERACTIONS.md` mô tả:
 
@@ -190,7 +200,7 @@ File `asia/CROSS_MODULE_INTERACTIONS.md` mô tả:
 
 ---
 
-## 9. Database Schema
+## 10. Database Schema
 
 | Object           | Path                                | Count |
 | ---------------- | ----------------------------------- | ----- |
@@ -204,7 +214,7 @@ Xem tại: https://github.com/diepxuan/SimbaSql/tree/main/dbo
 
 ---
 
-## 10. Workflow khi implement task
+## 11. Workflow khi implement task
 
 Khi nhận task Portal, Bột làm theo thứ tự:
 
@@ -220,7 +230,7 @@ Khi nhận task Portal, Bột làm theo thứ tự:
 
 ---
 
-## 11. Quy tắc
+## 12. Quy tắc
 
 - `simba-docs/` là **readonly** — không ghi, sửa, xóa file trong mount
 - Đây là **nguồn sự thật** về logic nghiệp vụ Simba ERP
@@ -231,7 +241,7 @@ Khi nhận task Portal, Bột làm theo thứ tự:
 
 ---
 
-## 12. Liên kết ngoài
+## 13. Liên kết ngoài
 
 | Resource        | URL                                         |
 | --------------- | ------------------------------------------- |

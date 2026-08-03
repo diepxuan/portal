@@ -48,22 +48,7 @@ class AsSORptBK01
         $connection      = (new SModel())->getConnectionName();
         $pdo             = DB::connection($connection)->getPdo();
 
-        $execParts = [];
-        foreach (array_keys($procedureParams) as $key) {
-            $execParts[] = '@' . $key . ' = :' . $key;
-        }
-
-        $stmt = $pdo->prepare(
-            "SET NOCOUNT ON;\nEXECUTE [dbo].[asSORptBK01]\n    " . implode(",\n    ", $execParts)
-        );
-
-        foreach ($procedureParams as $key => $value) {
-            $bindValue = null === $value
-                ? null
-                : (is_bool($value) ? ($value ? 1 : 0) : (string) $value);
-            $stmt->bindValue(':' . $key, $bindValue, null === $bindValue ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        }
-
+        $stmt = $pdo->prepare(self::callSql($procedureParams));
         $stmt->execute();
 
         $sets = [];
@@ -81,6 +66,24 @@ class AsSORptBK01
             'ct' => collect($sets[0] ?? []),
             'ph' => collect($sets[1] ?? []),
         ];
+    }
+
+    /**
+     * Build the EXEC statement for both report result sets.
+     *
+     * Dùng Unicode literal giống ProcedureCaller để tránh lỗi binding
+     * tiếng Việt qua PDO SQLSRV khi tham số có dấu.
+     *
+     * @param array<string, mixed> $procedureParams
+     */
+    public static function callSql(array $procedureParams): string
+    {
+        $execParts = [];
+        foreach ($procedureParams as $key => $value) {
+            $execParts[] = '@' . $key . ' = ' . ProcedureCaller::toUnicodeLiteral($value);
+        }
+
+        return "SET NOCOUNT ON;\nEXECUTE [dbo].[asSORptBK01]\n    " . implode(",\n    ", $execParts);
     }
 
     /**

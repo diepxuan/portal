@@ -259,7 +259,29 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
   `(int) $ksd === 1`). Cho phep bool / int / string '1' / null.
 - SP wrapper la nguon lay data, KHONG Eloquent (theo policy).
 
-### 3.6 TOOLS.md/AGENTS.md updates — pattern pho bien
+### 3.6 KSD semantics — quy uoc bat buoc (2026-08-02)
+
+- `ksd = 1` nghia la **khong su dung / khoa su dung** (disabled).
+- `ksd = 0` nghia la **dang su dung** (active).
+- Loc active: `ksd = 0`; `ksd = 1` loai tru.
+- Checkbox `KSD` checked = khoa su dung.
+- Khong hoi lai, khong doi thanh `ksd = 1` la active.
+- Nguon: `simba-docs/asia/ar/vouchers/ARDMKH.md` (`chkKsd`, `Khoa su dung`), `simba-docs/data/...` va chi dan Sep 2026-08-02.
+
+### 3.7 ARDMKH save conventions (2026-08-02)
+
+- `asARInsDMKH` / `asARUpdDMKH` bat buoc co output `pRet`; wrapper phai khai bao
+  `'pRet' => ['type' => 'INT', 'output' => true]` va kiem tra `pRet != 0`.
+- KHONG hardcode `pIsnv=1` cho CA form; phai luu theo checkbox `isKh/isNcc/isNv`.
+- Form save canh bao loi phai `report($e)` de session sau doc duoc log.
+- `ArDmKh` co nhieu cot `NOT NULL` voi default: string `''`, decimal `0`. Payload `asARInsDMKH`/`asARUpdDMKH` phai chuyen null thanh `''`/`0`, khong gui `NULL` (loi dien hinh: `ma_ngh` null).
+
+### 3.8 ARDMKH dictionary canon (2026-08-02)
+
+- SO list dung `So\Dict\Ardmkh` + view `so/dict/ardmkh.blade.php`, KHONG dung `Banhang\Khachhang`.
+- PO: `Po\Dict\Ardmkh`; SO: `So\Dict\Ardmkh`; form SO: `So\Dict\ArdmkhForm`.
+
+### 3.9 TOOLS.md/AGENTS.md updates — pattern pho bien
 
 - Moi PR co docs/workflow deu record vao MEMORY.md (1 entry `DONE - merged`,
   format nhat quan: squash commit, branch da xoa, bai hoc ky thuat, PR state).

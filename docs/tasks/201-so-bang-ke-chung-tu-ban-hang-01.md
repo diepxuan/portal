@@ -1,154 +1,158 @@
-# Task 201: SO-Bang-Ke-Chung-Tu-Ban-Hang-01
+# Task 201: SO - Bảng kê chứng từ bán hàng 01
 
-## Nhom: SO (Sales Order - Don hang ban)
+## Nhóm: SO (Sales Order - Đơn hàng bán)
 
-## Muc tieu
-Chuyen doi chuc nang bang ke chung tu ban hang (BK01) tu .NET sang PHP Laravel, dat ket qua tuong duong SORptBK01.
+## Mục tiêu
 
-## Chi tiet
+Chuyển đổi chức năng bảng kê chứng từ bán hàng (BK01) từ .NET sang PHP Laravel, đạt kết quả tương đương `SORptBK01`.
+
+## Chi tiết
+
 - **DLL:** SORptBK01.dll
-- **Chuc nang:** Bang ke chung tu ban hang (Sale Voucher Register)
-- **Loai:** Report (RPT)
+- **Chức năng:** Bảng kê chứng từ bán hàng (Sale Voucher Register)
+- **Loại:** Report (RPT)
 - **Assembly Title:** Asia Enterprise
 - **Version:** 14.1.0.0
 - **Namespace:** `AsiaErp.UserInterface`
 - **Company:** Asia Software Development JSC
-- **Ma_ct:** SO (tat ca loai chung tu SO)
+- **Mã CT:** SO (tất cả loại chứng từ SO)
 
-## Tai lieu tham khao
-`/root/.openclaw/workspace/projects/SimbaSql/docs/decompiled/asia/SORptBK01.dll/README.md`
+## Tài liệu tham khảo
+
+- `simba-docs/asia/so/reports/SORptBK01.md`
+- `simba-docs/decompiled/asia/SORptBK01.dll/AsiaErp.UserInterface/frmSORptBK01.cs`
 
 ---
 
-## Cau truc du lieu
+## Cấu trúc dữ liệu
 
-### Du lieu master-detail (2 DataGridView)
+### Dữ liệu master-detail (2 DataGridView)
 
-#### Bang: PH (Phieu - Master)
+#### Bảng PH (Phiếu - Master)
 
-| Truong | Kieu | Mo ta |
+| Trường | Kiểu | Mô tả |
 |--------|------|-------|
-| stt_rec | varchar | So thu tu record |
-| ngay_ct | datetime | Ngay chung tu |
-| so_ct | varchar | So chung tu |
-| ma_kh | varchar | Ma khach hang |
-| ten_kh | nvarchar | Ten khach hang |
-| t_tien_nt2 | decimal | Tong tien NT |
-| t_tien2 | decimal | Tong tien VND |
-| t_thue_nt | decimal | Tong thue NT |
-| t_thue | decimal | Tong thue VND |
-| t_tt_nt | decimal | Tong thanh toan NT |
-| t_tt | decimal | Tong thanh toan VND |
+| `stt_rec` | varchar | Số thứ tự record |
+| `ngay_ct` | datetime | Ngày chứng từ |
+| `so_ct` | varchar | Số chứng từ |
+| `ma_kh` | varchar | Mã khách hàng |
+| `ten_kh` | nvarchar | Tên khách hàng |
+| `t_tien_nt2` | decimal | Tổng tiền NT |
+| `t_tien2` | decimal | Tổng tiền VND |
+| `t_thue_nt` | decimal | Tổng thuế NT |
+| `t_thue` | decimal | Tổng thuế VND |
+| `t_tt_nt` | decimal | Tổng thanh toán NT |
+| `t_tt` | decimal | Tổng thanh toán VND |
 
-#### Bang: CT (Chi tiet - Detail)
+#### Bảng CT (Chi tiết - Detail)
 
-| Truong | Kieu | Mo ta |
+| Trường | Kiểu | Mô tả |
 |--------|------|-------|
-| stt_rec | varchar | So thu tu record (FK) |
-| stt_rec0 | varchar | So thu tu chi tiet |
-| ma_vt | varchar | Ma vat tu |
-| ten_vt | nvarchar | Ten vat tu |
-| dvt | nvarchar | Don vi tinh |
-| ma_kho | varchar | Ma kho |
-| so_luong | decimal | So luong |
-| gia_nt2 | decimal | Gia NT |
-| tien_nt2 | decimal | Tien NT |
-| ts_gtgt | decimal | Thue suat GTGT |
-| thue_gtgt_nt | decimal | Thue NT |
-| gia2 | decimal | Gia VND |
-| tien2 | decimal | Tien VND |
-| ma_nvkd | varchar | Ma nhan vien kinh doanh |
+| `stt_rec` | varchar | Số thứ tự record (FK) |
+| `stt_rec0` | varchar | Số thứ tự chi tiết |
+| `ma_vt` | varchar | Mã vật tư |
+| `ten_vt` | nvarchar | Tên vật tư |
+| `dvt` | nvarchar | Đơn vị tính |
+| `ma_kho` | varchar | Mã kho |
+| `so_luong` | decimal | Số lượng |
+| `gia_nt2` | decimal | Giá NT |
+| `tien_nt2` | decimal | Tiền NT |
+| `ts_gtgt` | decimal | Thuế suất GTGT |
+| `thue_gtgt_nt` | decimal | Thuế NT |
+| `gia2` | decimal | Giá VND |
+| `tien2` | decimal | Tiền VND |
+| `ma_nvkd` | varchar | Mã nhân viên kinh doanh |
 
-### Table Navigation
+### Quan hệ bảng
 
-| Bang | Mo ta | Relationship |
+| Bảng | Mô tả | Relationship |
 |------|-------|---------------|
-| PH (SO1-SO5) | Cac phieu ban hang | PK stt_rec |
-| CT (SO2-SO4) | Chi tiet ban hang | FK stt_rec |
-| DMKH | Khach hang | FK ma_kh |
-| DMVT | Vat tu | FK ma_vt |
-| DMKHO | Kho | FK ma_kho |
-| DMNHKH | Nhom khach hang | Lookup |
-| DMPLVT | Phan loai vat tu | Lookup |
+| `PH` (SO1-SO5) | Các phiếu bán hàng | PK `stt_rec` |
+| `CT` (SO2-SO4) | Chi tiết bán hàng | FK `stt_rec` |
+| `DMKH` | Khách hàng | FK `ma_kh` |
+| `DMVT` | Vật tư | FK `ma_vt` |
+| `DMKHO` | Kho | FK `ma_kho` |
+| `DMNHKH` | Nhóm khách hàng | Lookup |
+| `DMPLVT` | Phân loại vật tư | Lookup |
 
 ---
 
 ## Form classes
 
-### frmSORptBK01 (Form bao cao chinh)
-- **Ke thua:** frmReport2DGV
-- **Chuc nang:** Hien thi bang ke 2 DataGridView: phieu (ph) va chi tiet (ct)
-- **Controls:**
+### frmSORptBK01 (Form báo cáo chính)
+
+- **Kế thừa:** frmReport2DGV
+- **Chức năng:** Hiển thị bảng kê 2 DataGridView: phiếu (`ph`) và chi tiết (`ct`)
 
 #### TabFilter
 
-| Control | Type | Mo ta |
+| Control | Type | Mô tả |
 |---------|------|-------|
-| cboMau_bc | ComboBox | Chon mau bao cao |
-| cboKyBc | ComboBox | Chon ky bao cao |
-| txtNgay1 | AsMaskedTextBox | Ngay bat dau |
-| txtNgay2 | AsMaskedTextBox | Ngay ket thuc |
-| txtTieu_De | TextBox | Tieu de bao cao |
-| txtSo_ct1 | TextBox | So chung tu tu |
-| txtSo_ct2 | TextBox | So chung tu den |
-| cboLoaiPhieu | AsComboBox | Loai phieu (SO1-SO5) |
-| cboTrang_Thai | AsComboBox | Trang thai |
-| txtMa_kh | AsTextBox | Ma khach hang |
-| txtMa_Nhkh | AsTextBox | Nhom khach hang |
-| txtMa_Plkh1 | AsTextBox | Phan loai KH 1 |
-| txtMa_Plkh2 | AsTextBox | Phan loai KH 2 |
-| txtMa_Plkh3 | AsTextBox | Phan loai KH 3 |
-| txtMa_hd | AsTextBox | Ma hop dong |
-| txtMa_nhhd | AsTextBox | Nhom hop dong |
-| txtMa_vt | AsTextBox | Ma vat tu |
-| txtMa_nhvt | AsTextBox | Nhom vat tu |
-| txtMa_plvt1 | AsTextBox | Phan loai VT 1 |
-| txtMa_plvt2 | AsTextBox | Phan loai VT 2 |
-| txtMa_plvt3 | AsTextBox | Phan loai VT 3 |
-| txtMa_kho | AsTextBox | Ma kho |
-| txtMa_bp | AsTextBox | Ma bo phan |
-| txtMa_nvkd | AsTextBox | Ma nhan vien kinh doanh |
-| txtMA_HTTT | AsTextBox | Hinh thuc thanh toan |
-| txtMA_DKTT | AsTextBox | Dieu khoan thanh toan |
-| txtMa_vitri | AsTextBox | Ma vi tri |
-| txtMaLo | AsTextBox | Ma lo |
-| txtMa_spct | AsTextBox | Ma san pham chi tiet |
-| txtMa_Nt | AsTextBox | Ma ngoai te |
-| optVND | RadioButton | Tien VND |
-| optNt | RadioButton | Tien ngoai te |
-| crvReportViewer | CrystalReportViewer | Viewer bao cao |
+| `cboMau_bc` | ComboBox | Chọn mẫu báo cáo |
+| `cboKyBc` | ComboBox | Chọn kỳ báo cáo |
+| `txtNgay1` | AsMaskedTextBox | Ngày bắt đầu |
+| `txtNgay2` | AsMaskedTextBox | Ngày kết thúc |
+| `txtTieu_De` | TextBox | Tiêu đề báo cáo |
+| `txtSo_ct1` | TextBox | Số chứng từ từ |
+| `txtSo_ct2` | TextBox | Số chứng từ đến |
+| `cboLoaiPhieu` | AsComboBox | Loại phiếu (SO1-SO5) |
+| `cboTrang_Thai` | AsComboBox | Trạng thái |
+| `txtMa_kh` | AsTextBox | Mã khách hàng |
+| `txtMa_Nhkh` | AsTextBox | Nhóm khách hàng |
+| `txtMa_Plkh1` | AsTextBox | Phân loại KH 1 |
+| `txtMa_Plkh2` | AsTextBox | Phân loại KH 2 |
+| `txtMa_Plkh3` | AsTextBox | Phân loại KH 3 |
+| `txtMa_hd` | AsTextBox | Mã hợp đồng |
+| `txtMa_nhhd` | AsTextBox | Nhóm hợp đồng |
+| `txtMa_vt` | AsTextBox | Mã vật tư |
+| `txtMa_nhvt` | AsTextBox | Nhóm vật tư |
+| `txtMa_plvt1` | AsTextBox | Phân loại VT 1 |
+| `txtMa_plvt2` | AsTextBox | Phân loại VT 2 |
+| `txtMa_plvt3` | AsTextBox | Phân loại VT 3 |
+| `txtMa_kho` | AsTextBox | Mã kho |
+| `txtMa_bp` | AsTextBox | Mã bộ phận |
+| `txtMa_nvkd` | AsTextBox | Mã nhân viên kinh doanh |
+| `txtMA_HTTT` | AsTextBox | Hình thức thanh toán |
+| `txtMA_DKTT` | AsTextBox | Điều khoản thanh toán |
+| `txtMa_vitri` | AsTextBox | Mã vị trí |
+| `txtMaLo` | AsTextBox | Mã lô |
+| `txtMa_spct` | AsTextBox | Mã sản phẩm chi tiết |
+| `txtMa_Nt` | AsTextBox | Mã ngoại tệ |
+| `optVND` | RadioButton | Tiền VND |
+| `optNt` | RadioButton | Tiền ngoại tệ |
+| `crvReportViewer` | CrystalReportViewer | Viewer báo cáo |
 
-#### Labels hien thi ten (AutoLookup)
+#### Label hiển thị tên (AutoLookup)
 
-| Label | Mo ta |
+| Label | Mô tả |
 |-------|-------|
-| lblTen_KH | Ten khach hang |
-| lblTen_nhkh | Ten nhom khach hang |
-| lblTen_lkh1-lkh3 | Ten phan loai KH |
-| lblTen_vt | Ten vat tu |
-| lblTen_Nhvt | Ten nhom vat tu |
-| lblTen_plvt1-plvt3 | Ten phan loai VT |
-| lblTen_kho | Ten kho |
-| lblTen_bp | Ten bo phan |
-| lblTen_nvkd | Ten nhan vien KD |
-| lblTenHTTT | Ten HTTT |
-| lblTen_TT | Ten dieu khoan TT |
-| lblTen_lo | Ten lo |
-| lblTen_spct | Ten san pham CT |
+| `lblTen_KH` | Tên khách hàng |
+| `lblTen_nhkh` | Tên nhóm khách hàng |
+| `lblTen_lkh1-lkh3` | Tên phân loại KH |
+| `lblTen_vt` | Tên vật tư |
+| `lblTen_Nhvt` | Tên nhóm vật tư |
+| `lblTen_plvt1-plvt3` | Tên phân loại VT |
+| `lblTen_kho` | Tên kho |
+| `lblTen_bp` | Tên bộ phận |
+| `lblTen_nvkd` | Tên nhân viên KD |
+| `lblTenHTTT` | Tên HTTT |
+| `lblTen_TT` | Tên điều khoản TT |
+| `lblTen_lo` | Tên lô |
+| `lblTen_spct` | Tên sản phẩm CT |
 
 #### DataGridViews
 
-| Control | Mo ta |
+| Control | Mô tả |
 |---------|-------|
-| dgvBCPh | Grid hien thi danh sach phieu |
-| dgvBCCt | Grid hien thi chi tiet (loc theo phieu) |
+| `dgvBCPh` | Grid hiển thị danh sách phiếu |
+| `dgvBCCt` | Grid hiển thị chi tiết (lọc theo phiếu) |
 
 ### Layout Grid
 
 ```
 SplitContainer (scGrid)
-├── dgvBCPh (tren) - Danh sach phieu
-└── dgvBCCt (duoi) - Chi tiet phieu duoc chon
+├── dgvBCPh (trên) - Danh sách phiếu
+└── dgvBCCt (dưới) - Chi tiết phiếu được chọn
 ```
 
 ---
@@ -161,12 +165,12 @@ SplitContainer (scGrid)
 ArrayList arrayList = new ArrayList();
 arrayList.Add(CompanyInformations.CompanyID);
 arrayList.Add(MyMenuInfo.moduleid);
-arrayList.Add("0");  // Khong loc theo loai CT
+arrayList.Add("0");  // Không lọc theo loại CT
 arrayList.Add(SystemInformations.CurrentCultureName);
 
 ArrayList arrayList2 = CBO<lstVoucherInfo>.FillCollection(
     Commons.GetDataReader("asSIGetDmSo_ct", arrayList.ToArray()));
-arrayList2.Add(new lstVoucherInfo("", "Tat ca")); // Them option "Tat ca"
+arrayList2.Add(new lstVoucherInfo("", "Tất cả")); // Thêm option "Tất cả"
 cboLoaiPhieu.DataSource = arrayList2;
 ```
 
@@ -175,14 +179,14 @@ cboLoaiPhieu.DataSource = arrayList2;
 ```csharp
 DataSet dataSet = MyController.GetDataSet(arrayList.ToArray());
 
-// Set nguon cho 2 grid
-set_MyDGVPhSource(isSet2Print: true, dataSet.Tables[1]);  // Phieu
-set_MyDGVCtSource(isSet2Print: true, dataSet.Tables[0]);  // Chi tiet
+// Set nguồn cho 2 grid
+set_MyDGVPhSource(isSet2Print: true, dataSet.Tables[1]);  // Phiếu
+set_MyDGVCtSource(isSet2Print: true, dataSet.Tables[0]);  // Chi tiết
 ```
 
 ### dgvBCPh_RowEnter()
 
-Loc chi tiet theo phieu duoc chon:
+Lọc chi tiết theo phiếu được chọn:
 
 ```csharp
 ((DataTable)dgvBCCt.DataSource).DefaultView.RowFilter =
@@ -191,12 +195,12 @@ Loc chi tiet theo phieu duoc chon:
 
 ### GetFilterTitle()
 
-Xay dung chuoi tieu de loc tu cac dieu kien da chon.
+Xây dựng chuỗi tiêu đề lọc từ các điều kiện đã chọn.
 
-### Loc theo loai phieu
+### Lọc theo loại phiếu
 
-- Tat ca chung tu SO1, SO2, SO3, SO4, SO5
-- Hoac chi mot loai cu the
+- Tất cả chứng từ SO1, SO2, SO3, SO4, SO5
+- Hoặc chỉ một loại cụ thể
 
 ---
 
@@ -206,21 +210,21 @@ Xay dung chuoi tieu de loc tu cac dieu kien da chon.
 
 - File: `diepxuan/laravel-simba/src/StoredProcedures/AsSORptBK01.php`
 - SP: `asSORptBK01` (sysReportInfo spname, report `SOBK013.rpt` / `SOBK014.rpt` / `SOBK011.rpt`)
-- `callWithDataSets()` doc tra ve 2 result sets: `ct` (Tables[0]) va `ph` (Tables[1]).
-- 28 tham so lay tu `frmSORptBK01.LoadData()` trong simba-docs/decompiled.
+- `callWithDataSets()` đọc và trả về 2 result sets: `ct` (Tables[0]) và `ph` (Tables[1]).
+- 28 tham số lấy từ `frmSORptBK01.LoadData()` trong simba-docs/decompiled.
 
 ### 2. Livewire Component
 
 - File: `diepxuan/laravel-catalog/src/Http/Livewire/So/Rpt/Sorptbk01.php`
 - Namespace: `Diepxuan\Catalog\Http\Livewire\So\Rpt`
-- Component hien thi master-detail: `phieuRows`, `chiTietRows`, `chiTietFiltered`.
-- Filter controls: ngay, loai phieu (`asSIGetDmSo_ct`), trang thai, so CT, KH, nhom/phan loai KH, HD, nhom HD, VT, nhom/phan loai VT, kho, vi tri, lo, HTTT, DKTT, bo phan, NVKD, SPCT, ngoai te.
+- Component hiển thị master-detail: `phieuRows`, `chiTietRows`, `chiTietFiltered`.
+- Filter controls: ngày, loại phiếu (`asSIGetDmSo_ct`), trạng thái, số CT, KH, nhóm/phân loại KH, HD, nhóm HD, VT, nhóm/phân loại VT, kho, vị trí, lô, HTTT, DKTT, bộ phận, NVKD, SPCT, ngoại tệ.
 
 ### 3. View
 
 - File: `diepxuan/laravel-catalog/resources/views/so/rpt/sorptbk01.blade.php`
 - Blade path: `catalog::so.rpt.sorptbk01`
-- Layout theo DESIGN.md va pattern task 008/359/370: `x-nav-tabs`, table wrapper `rounded-lg border border-gray-200 bg-white shadow-sm`.
+- Layout theo DESIGN.md và pattern task 008/359/370: `x-nav-tabs`, table wrapper `rounded-lg border border-gray-200 bg-white shadow-sm`.
 
 ### 4. Routes
 
@@ -230,39 +234,42 @@ Xay dung chuoi tieu de loc tu cac dieu kien da chon.
 ['uri' => 'so/rpt/sorptbk01062002', 'name' => 'so.rpt.sorptbk01062002', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01062002', 'component' => Sorptbk01::class],
 ```
 
-URL thuc te:
+URL thực tế:
 - `http://portal.diepxuan.corp/simba/so/rpt/sorptbk01`
 - `http://portal.diepxuan.corp/simba/so/rpt/sorptbk01062002`
 
 ## Dependencies
 
-| Loai | Package | File | Ghi chu |
+| Loại | Package | File | Ghi chú |
 |------|---------|------|---------|
 | SP | laravel-simba | AsSORptBK01.php | asSORptBK01, 2 result sets ct/ph |
 | Component | laravel-catalog | Http/Livewire/So/Rpt/Sorptbk01.php | Master-detail report |
-| View | laravel-catalog | resources/views/so/rpt/sorptbk01.blade.php | Filter + phieu/detail grids |
-| Lookup | laravel-simba | AsSIGetDmSo_ct.php | Danh muc loai chung tu SO |
+| View | laravel-catalog | resources/views/so/rpt/sorptbk01.blade.php | Filter + phiếu/chi tiết grids |
+| Lookup | laravel-simba | AsSIGetDmSo_ct.php | Danh mục loại chứng từ SO |
 
 ---
 
 ## Progress Checklist
 
-- [x] Phan tich yeu cau & review task nay
-- [x] Tao Stored Procedure class AsSORptBK01 (callWithDataSets)
-- [x] Tao Livewire Sorptbk01 component
-- [x] Tao View voi 2 grid (phieu + chi tiet)
-- [x] Implement selectPhieu de loc chi tiet
-- [x] Them filter controls (ngay, loai phieu, KH, VT, kho...)
-- [x] Them Routes (so/rpt/sorptbk01 + compact suffix)
+- [x] Phân tích yêu cầu và review task này
+- [x] Tạo Stored Procedure class `AsSORptBK01` (`callWithDataSets`)
+- [x] Tạo Livewire `Sorptbk01` component
+- [x] Tạo View với 2 grid (phiếu + chi tiết)
+- [x] Implement `selectPhieu` để lọc chi tiết
+- [x] Thêm filter controls (ngày, loại phiếu, KH, VT, kho...)
+- [x] Thêm routes (`so/rpt/sorptbk01` + compact suffix)
 - [x] Test export Excel (CSV)
-- [ ] Test filter va loc chi tiet voi du lieu thuc
+- [ ] Test filter và lọc chi tiết với dữ liệu thực
+
 ---
+
 ## Audit Status
+
 - **Ngày audit:** 2026-05-10
-- **Kết quả:** PENDING — spec đầy đủ, chưa implement
+- **Kết quả:** IN PROGRESS — implementation xong, chờ E2E với SQL Server
 
 ## Portal implementation status
 
-- **Status:** DONE (Livewire component + SP wrapper + route mapping)
+- **Status:** IN PROGRESS (Livewire component + SP wrapper + route mapping đã xong, chưa verify dữ liệu thực)
 - **Source:** `simba-docs/data/sysReportInfo.md` (asSORptBK01), `simba-docs/decompiled/asia/SORptBK01.dll` (frmSORptBK01.cs), `simba-docs/procedures/SO/procedures.md` (asSIGetDmSo_ct).
-- **Note:** Chua verify voi du lieu thuc tren SQL Server; can chay E2E sau khi co session/login va database Simba.
+- **Note:** Chưa verify với dữ liệu thực trên SQL Server; cần chạy E2E sau khi có session/login và database Simba.

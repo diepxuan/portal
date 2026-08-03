@@ -110,4 +110,47 @@ final class AsSORptBK01Test extends TestCase
             'ma_nt'  => 'USD',
         ]));
     }
+
+    public function testCallSqlUsesUnicodeLiteralsAndAllDocumentedParameters(): void
+    {
+        $params = AsSORptBK01::procedureParams([
+            'pMa_cty'   => 'GBB',
+            'pNgay1'    => '2026-07-01',
+            'pNgay2'    => '2026-07-31',
+            'pMa_ct'    => 'SO3',
+            'pTrang_thai' => '',
+            'pMa_kh'    => 'KH001',
+            'pMa_nhkh'  => 'NH01',
+            'pMa_vt'    => 'VT001',
+            'pMa_nhvt'  => 'NVT01',
+            'pMa_kho'   => 'KHO01',
+            'pMa_vitri' => 'A01',
+            'pMa_lo'    => 'LO01',
+            'pMa_httt'  => 'TM',
+            'pMa_TT'    => 'TT01',
+            'pMa_bp'    => 'BP01',
+            'pMa_nvkd'  => 'NV01',
+            'pMa_spct'  => 'SPCT01',
+            'pMa_hd'    => 'HD01',
+            'pMa_nhhd'  => 'NHD01',
+            'pMa_nt'    => 'USD',
+            'pSoct1'    => 'HD0001',
+            'pSoct2'    => 'HD0100',
+            'pMa_plkh1' => 'PL1',
+            'pMa_plkh2' => 'PL2',
+            'pMa_plkh3' => 'PL3',
+            'pMa_plvt1' => 'PLV1',
+            'pMa_plvt2' => 'PLV2',
+            'pMa_plvt3' => 'PLV3',
+        ]);
+        $params['pMa_kh'] = "Nguy\u1EC5n V\u0103n A";
+
+        $sql = AsSORptBK01::callSql($params);
+
+        self::assertStringContainsString("@pMa_kh = N'Nguy\u1EC5n V\u0103n A'", $sql);
+        self::assertStringNotContainsString('= :', $sql);
+        foreach (array_keys($params) as $parameter) {
+            self::assertStringContainsString('@' . $parameter, $sql);
+        }
+    }
 }

@@ -17,8 +17,8 @@ use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
 use Diepxuan\Catalog\Http\Livewire\AR\Danhmuc\Phanloaikhachhang;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
+use Diepxuan\Catalog\Http\Livewire\So\Dict\Ardmkh as SoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
-use Diepxuan\Catalog\Http\Livewire\Banhang\Khachhang;
 use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\Nhanvien;
 use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\NhanvienForm;
 use Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baoco;
@@ -31,7 +31,7 @@ use Diepxuan\Catalog\Http\Livewire\In\Dmkho;
 use Diepxuan\Catalog\Http\Livewire\In\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Rpt\Inrptcd02;
 use Diepxuan\Catalog\Http\Livewire\Muahang\PoDmCpIndex;
-use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as PoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01;
@@ -232,7 +232,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'in/vch/invchin3', 'name' => 'in.vch.invchin3', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin3', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin5', 'name' => 'in.vch.invchin5', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin5', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin6', 'name' => 'in.vch.invchin6', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin6', 'component' => SimbaPage::class],
-            ['uri' => 'po/dict/ardmkh', 'name' => 'po.dict.ardmkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Ardmkh::class],
+            ['uri' => 'po/dict/ardmkh', 'name' => 'po.dict.ardmkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => PoArdmkh::class],
             ['uri' => 'po/dict/ardmkh/create', 'name' => 'po.dict.ardmkh.create', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
             ['uri' => 'po/dict/ardmkh/{id}/edit', 'name' => 'po.dict.ardmkh.edit', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
             // ['uri' => 'po/dict/ardmplkh', 'name' => 'po.dict.ardmplkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => SimbaPage::class],
@@ -272,7 +272,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'po/vch/povchpo6', 'name' => 'po.vch.povchpo6', 'module' => 'po', 'kind' => 'vch', 'slug' => 'povchpo6', 'component' => SimbaPage::class],
             // ['uri' => 'po/vch/povchpo7', 'name' => 'po.vch.povchpo7', 'module' => 'po', 'kind' => 'vch', 'slug' => 'povchpo7', 'component' => SimbaPage::class],
             ['uri' => 'si/vch/smks', 'name' => 'si.vch.smks', 'module' => 'si', 'kind' => 'vch', 'slug' => 'smks', 'component' => Smks::class],
-            ['uri' => 'so/dict/ardmkh', 'name' => 'so.dict.ardmkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Khachhang::class],
+            ['uri' => 'so/dict/ardmkh', 'name' => 'so.dict.ardmkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkh::class],
             ['uri' => 'so/dict/ardmkh/create', 'name' => 'so.dict.ardmkh.create', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
             ['uri' => 'so/dict/ardmkh/{id}/edit', 'name' => 'so.dict.ardmkh.edit', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
             ['uri' => 'so/dict/ardmplkh', 'name' => 'so.dict.ardmplkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => Phanloaikhachhang::class],
@@ -384,7 +384,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         });
     });
 
-    Route::get('/', [SystemController::class, 'index']);
+    // Route::get('/', [SystemController::class, 'index']);
     Route::get('/', static fn () => view('catalog::dashboard'))->name('home');
     Route::get('/dashboard', DashboardLivewire::class)->name('dashboard');
 });

@@ -6,11 +6,11 @@ CA (Cash — Tiền mặt & Ngân hàng) / dictionary chung ARDMKH
 
 ## Mục tiêu
 
-Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung bảng Simba `ARDMKH` / form `frmARDMKH`, phân loại `pModuleId=CA`, cờ `pIsnv=1`. CRUD đầy đủ (xem, thêm, sửa, xóa) với SP wrappers chuẩn.
+Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung bảng Simba `ARDMKH` / form `frmARDMKH`, phân loại mặc định `pModuleId=CA`, cờ `pIsnv=1`; UI cho phép thay đổi cờ đối tượng (khách hàng/nhà cung cấp/nhân viên). CRUD đầy đủ (xem, thêm, sửa, xóa) với SP wrappers chuẩn.
 
 ## Trạng thái
 
-- **Status:** IN PROGRESS — blocker runtime trên form edit (`/cash/nhanvien/edit/{id}` chưa lưu được).
+- **Status:** IN PROGRESS — đã sửa `field()` private → protected, bổ sung output `pRet`, bỏ hardcode `pIsnv=1`, convert null thành ``/`0` cho cột NOT NULL; cần verify lại E2E.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 356 (gộp KH + NCC + NV) → tách thành 373/374/375
@@ -38,7 +38,7 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 |----|---------|---------|
 | `asARGetDMKH` | Lấy danh sách / chi tiết NV theo `pModuleId='CA'` | `Diepxuan\Simba\StoredProcedures\AsARGetDMKH` |
 | `asARInsDMKH` | Thêm NV (set `pIskh=0, pIsncc=0, pIsnv=1`) | `Diepxuan\Simba\StoredProcedures\AsARInsDMKH` |
-| `asARUpdDMKH` | Cập nhật NV | `Diepxuan\Simba\StoredProcedures\AsARUpdDMKH` |
+| `asARUpdDMKH` | Cập nhật NV (payload cờ đối tượng theo checkbox, không hardcode `pIsnv=1`) | `Diepxuan\Simba\StoredProcedures\AsARUpdDMKH` |
 | `asARDelDMKH` | Xóa NV (validate `KSd=0`) | `Diepxuan\Simba\StoredProcedures\AsARDelDMKH` |
 
 ## Phạm vi
@@ -92,12 +92,12 @@ URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 
 - `php -l` pass cho component + view kế thừa.
 - `SourceRouteCoverageTest` expectation cho `ca.dict.ardmkh` pass.
-- Không có unit test riêng cho `Nhanvien` / `NhanvienForm` — cần bổ sung.
-- **Cần debug runtime form edit** trước khi chuyển sang DONE.
+- Có unit test cơ bản tại `tests/Unit/Packages/Catalog/ArdmkhFormTest.php`; cần bổ sung Livewire create/edit với DB test.
+- **Đã fix visibility `field()` + output `pRet`; cần verify form edit với SQL Server trước khi chuyển sang DONE.**
 
 ## Công việc tiếp theo
 
-1. Reproduce bug trên `/cash/nhanvien/edit/1LETRUONGLUAT` (cần user thật hoặc DB test seed).
+1. Verify `/cash/nhanvien/edit/{id}` với DB thật sau khi chuyển `field()` sang `protected`.
 2. Trace `$rules()` của `NhanvienForm` — đảm bảo validate không chặn field thực sự required.
 3. Trace SP `AsARUpdDMKH` với payload NV — so sánh với `asARUpdDMKH` metadata.
-4. Sau khi fix bug, viết unit test Livewire (create + edit + delete) để khoá hành vi.
+4. Viết unit test Livewire (create + edit + delete) để khoá hành vi.
