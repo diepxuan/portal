@@ -15,7 +15,7 @@ Tài liệu quy ước dự án bắt buộc để các session sau không lặp
 - Component danh mục dictionary chính đặt theo `{Module}\Dict\{Slug}`.
 - View đặt theo `{module}/dict/{slug}.blade.php`.
 - Route name theo `{module}.dict.{slug}`.
-- Không dùng tên nghiệp vụ cũ cho route dictionary: `Banhang\Khachhang` đã được thay bằng `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` đã được thay bằng `Ca\Dict\Ardmkh*`.
+- Không dùng tên nghiệp vụ cũ cho route dictionary: `Banhang\Khachhang` đã được thay bằng `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` đã được thay bằng `Ca\Dict\Ardmkh*` (2026-08-03).
 
 ### Ví dụ đúng
 
@@ -56,6 +56,17 @@ Các wrapper `AsARInsDMKH` / `AsARUpdDMKH` phải khai báo output `pRet`:
 ```php
 'pRet' => ['type' => 'INT', 'output' => true],
 ```
+
+## 4. Header / SimbaPage
+
+- `SimbaPage` là nơi duy nhất render `x-head-title` và `x-slot name="header"` cho màn hình `/simba/*`.
+- Các Livewire component con trong `SimbaPage` **không được lặp lại** `x-head-title` / `x-slot name="header"`.
+- View danh sách đặt nút `Create` trong toolbar nội dung, không đưa vào header slot.
+- View form đặt link `Quay lại` trong toolbar nội dung; tiêu đề thêm/sửa hiển thị trong nội dung nếu cần.
+- Đã áp dụng cho ARDMKH SO/PO/CA:
+  - `so/dict/ardmkh*.blade.php`
+  - `po/dict/ardmkh*.blade.php`
+  - `ca/dict/ardmkh*.blade.php`
 
 ## Liên quan
 
