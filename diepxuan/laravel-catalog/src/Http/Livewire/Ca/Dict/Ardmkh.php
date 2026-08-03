@@ -14,66 +14,45 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\Ca\Dict;
 
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as BaseArdmkh;
-use Diepxuan\Simba\SModel\SModel;
-use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
-use Illuminate\View\View;
 
 /**
  * CA ARDMKH nhân viên — canonical namespace.
+ * Kế thừa Po\Dict\Ardmkh; chỉ đổi mode SP + view + label tiếng Việt.
  */
 class Ardmkh extends BaseArdmkh
 {
-    public function deleteDoiTuong(string $maKh): void
+    protected function spModuleId(): string
     {
-        $nhanVien = \Diepxuan\Catalog\Models\Simba\ArDmKh::withoutGlobalScopes()
-            ->where('ma_kh', $maKh)
-            ->first()
-        ;
-
-        if (!$nhanVien) {
-            $this->dispatch('error', message: 'Không tìm thấy nhân viên.');
-
-            return;
-        }
-
-        if ($nhanVien->hasTransactions()) {
-            $this->dispatch('error', message: 'Không thể xóa nhân viên đã có giao dịch.');
-
-            return;
-        }
-
-        try {
-            \Diepxuan\Simba\StoredProcedures\AsARDelDMKH::call([
-                'pMa_cty' => SModel::CTY,
-                'pMa_kh'  => $maKh,
-            ]);
-
-            $this->dispatch('success', message: 'Đã xóa nhân viên ' . $maKh);
-        } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Không thể xóa nhân viên: ' . $e->getMessage());
-        }
+        return 'CA';
     }
 
-    public function render(): View
+    protected function listView(): string
     {
-        return view('catalog::ca.dict.ardmkh', [
-            'arDmKhs' => $this->getEmployeesPaginated(),
-        ])->layout('catalog::layouts.app');
+        return 'catalog::ca.dict.ardmkh';
     }
 
-    protected function getEmployeesPaginated(): LengthAwarePaginatorContract
+    protected function moduleLabel(): string
     {
-        $results = AsARGetDMKH::getEmployees(
-            search: '' !== $this->search ? $this->search : null,
-        );
+        return 'CA';
+    }
 
-        $results = $this->normalizeRows($results);
+    protected function notFoundMessage(): string
+    {
+        return 'Không tìm thấy nhân viên.';
+    }
 
-        if ('' !== $this->search) {
-            $results = $this->filterSearchResults($results);
-        }
+    protected function hasTransactionsMessage(): string
+    {
+        return 'Không thể xóa nhân viên đã có giao dịch.';
+    }
 
-        return $this->paginateCollection($results);
+    protected function deletedMessage(string $maKh): string
+    {
+        return 'Đã xóa nhân viên ' . $maKh;
+    }
+
+    protected function deleteFailedMessage(string $maKh, string $reason): string
+    {
+        return 'Không thể xóa nhân viên ' . $maKh . ': ' . $reason;
     }
 }

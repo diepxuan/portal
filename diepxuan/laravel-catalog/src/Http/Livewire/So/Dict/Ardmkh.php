@@ -8,73 +8,52 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-08-02 00:00:00
+ * @lastupdate 2026-08-03 00:00:00
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\So\Dict;
 
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as BaseArdmkh;
-use Diepxuan\Simba\SModel\SModel;
-use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\View\View;
 
 /**
  * SO ARDMKH khách hàng — canonical namespace.
+ * Kế thừa Po\Dict\Ardmkh; chỉ đổi mode SP + view + label tiếng Việt.
  */
 class Ardmkh extends BaseArdmkh
 {
-    public function deleteDoiTuong(string $maKh): void
+    protected function spModuleId(): string
     {
-        $khachHang = \Diepxuan\Catalog\Models\Simba\ArDmKh::withoutGlobalScopes()
-            ->where('ma_kh', $maKh)
-            ->first()
-        ;
-
-        if (!$khachHang) {
-            $this->dispatch('error', message: 'Không tìm thấy khách hàng.');
-
-            return;
-        }
-
-        if ($khachHang->hasTransactions()) {
-            $this->dispatch('error', message: 'Không thể xóa khách hàng đã có giao dịch.');
-
-            return;
-        }
-
-        try {
-            \Diepxuan\Simba\StoredProcedures\AsARDelDMKH::call([
-                'pMa_cty' => SModel::CTY,
-                'pMa_kh'  => $maKh,
-            ]);
-
-            $this->dispatch('success', message: 'Đã xóa khách hàng ' . $maKh);
-        } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Không thể xóa khách hàng: ' . $e->getMessage());
-        }
+        return 'AR';
     }
 
-    public function render(): View
+    protected function listView(): string
     {
-        return view('catalog::so.dict.ardmkh', [
-            'arDmKhs' => $this->getCustomersPaginated(),
-        ])->layout('catalog::layouts.app');
+        return 'catalog::so.dict.ardmkh';
     }
 
-    protected function getCustomersPaginated(): LengthAwarePaginatorContract
+    protected function moduleLabel(): string
     {
-        $results = AsARGetDMKH::getCustomers(
-            maCty: SModel::CTY,
-            search: '' !== $this->search ? $this->search : null,
-        );
+        return 'SO';
+    }
 
-        $results = $this->normalizeRows($results);
+    protected function notFoundMessage(): string
+    {
+        return 'Không tìm thấy khách hàng.';
+    }
 
-        if ('' !== $this->search) {
-            $results = $this->filterSearchResults($results);
-        }
+    protected function hasTransactionsMessage(): string
+    {
+        return 'Không thể xóa khách hàng đã có giao dịch.';
+    }
 
-        return $this->paginateCollection($results);
+    protected function deletedMessage(string $maKh): string
+    {
+        return 'Đã xóa khách hàng ' . $maKh;
+    }
+
+    protected function deleteFailedMessage(string $maKh, string $reason): string
+    {
+        return 'Không thể xóa khách hàng ' . $maKh . ': ' . $reason;
     }
 }
