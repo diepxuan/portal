@@ -8,19 +8,19 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-05 00:00:00
+ * @lastupdate 2026-08-03 00:00:00
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Dict;
 
-use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm as BaseForm;
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
 use Diepxuan\Simba\StoredProcedures\AsARInsDMKH;
 use Diepxuan\Simba\StoredProcedures\AsARUpdDMKH;
 use Illuminate\View\View;
 
-class NhanvienForm extends ArdmkhForm
+class ArdmkhForm extends BaseForm
 {
     public ?string $home_page = null;
     public ?string $ma_httt = null;
@@ -49,7 +49,6 @@ class NhanvienForm extends ArdmkhForm
     public function loadDoiTuong(string $maKh): void
     {
         try {
-            // Dùng AsARGetDMKH::getEmployees() helper cho module CA
             $result = AsARGetDMKH::getEmployees(search: $maKh);
 
             if ($result->isEmpty()) {
@@ -58,7 +57,6 @@ class NhanvienForm extends ArdmkhForm
             }
 
             $row = $result->first();
-            // Dùng helper field() từ parent ArdmkhForm để access case-insensitive
             $this->ma_kh = $this->field($row, 'ma_kh', 'MA_KH', $maKh);
             $this->ten_kh = $this->field($row, 'ten_kh', 'TEN_KH', '');
             $this->dia_chi = $this->field($row, 'dia_chi', 'DIA_CHI', '');
@@ -100,7 +98,7 @@ class NhanvienForm extends ArdmkhForm
 
     public function render(): View
     {
-        return view('catalog::cash.danhmuc.nhanvien-form', [
+        return view('catalog::ca.dict.ardmkh-form', [
             'nhomKhOptions' => $this->nhomKhOptions,
             'plkhOptions'   => $this->plkhOptions,
         ])->layout('catalog::layouts.app');

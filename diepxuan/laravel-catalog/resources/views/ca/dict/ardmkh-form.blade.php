@@ -1,9 +1,8 @@
-<div class="mx-auto max-w-6xl">
-    <x-head-title>{{ 'Nhân viên' }}</x-head-title>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ 'Nhân viên' }}</h2>
-        <p class="text-sm text-gray-500">Theo Simba menu 04.90.05 / ARDMKH / frmARDMKH</p>
-    </x-slot>
+<div class="ca-ardmkh-form-container mx-auto max-w-6xl">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ $mode === 'create' ? 'Thêm nhân viên' : 'Sửa nhân viên: ' . $ma_kh }}</h2>
+        <a href="{{ simbaroute('ca.dict.ardmkh') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Quay lại</a>
+    </div>
 
     <form wire:submit="save" class="mt-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">

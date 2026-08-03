@@ -183,7 +183,7 @@ final class SourceRouteCoverageTest extends TestCase
     private function componentBackedSourceRoutes(): array
     {
         return [
-            ['module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'routeName' => 'ca.dict.ardmkh', 'url' => '/_simba-source/ca/dict/ardmkh', 'component' => \Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\Nhanvien::class],
+            ['module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'routeName' => 'ca.dict.ardmkh', 'url' => '/_simba-source/ca/dict/ardmkh', 'component' => \Diepxuan\Catalog\Http\Livewire\Ca\Dict\Ardmkh::class],
             ['module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca1', 'routeName' => 'ca.vch.cavchca1', 'url' => '/_simba-source/ca/vch/cavchca1', 'component' => \Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuthu::class],
             ['module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca2', 'routeName' => 'ca.vch.cavchca2', 'url' => '/_simba-source/ca/vch/cavchca2', 'component' => \Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuchi::class],
             ['module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca4', 'routeName' => 'ca.vch.cavchca4', 'url' => '/_simba-source/ca/vch/cavchca4', 'component' => \Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baoco::class],

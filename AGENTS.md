@@ -45,7 +45,7 @@ Nếu có xung đột giữa các tài liệu, ưu tiên: chỉ dẫn mới nh�
   - `Po\Dict\Ardmkh` / `po/dict/ardmkh.blade.php` / `po.dict.ardmkh`
   - Form SO: `So\Dict\ArdmkhForm` / `so/dict/ardmkh-form.blade.php`
 - Hành động xóa danh mục ARDMKH dùng tên method `deleteDoiTuong`, KHÔNG dùng `deleteKhachHang`.
-- Backlog: CA còn dùng `Cash\Danhmuc\Nhanvien*`; khi chạm task CA nên migrate sang `Ca\Dict\Ardmkh*` theo convention này.
+- CA đã canonical: `Ca\Dict\Ardmkh*` + `ca/dict/ardmkh*.blade.php`; không dùng `Cash\Danhmuc\Nhanvien*`.
 
 ---
 

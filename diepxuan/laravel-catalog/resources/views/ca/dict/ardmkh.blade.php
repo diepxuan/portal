@@ -1,18 +1,11 @@
-<div class="phieuthu-container w-full">
-    <x-head-title>{{ 'Nhân viên - Tiền mặt' }}</x-head-title>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ 'Danh mục nhân viên' }}</h2>
-                <p class="text-sm text-gray-500">Theo Simba menu 04.90.05 / ARDMKH / frmARDMKH</p>
-            </div>
-            <a href="{{ simbaroute('ca.dict.ardmkh.create') }}" class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">+ Thêm nhân viên</a>
-        </div>
-    </x-slot>
-
-    <div class="mt-4 flex items-center gap-4">
+<div class="ca-ardmkh-container w-full">
+<div class="mt-4 flex items-center gap-4">
         <input type="text" wire:model.live.debounce.300ms="search" placeholder="Tìm theo mã, tên, địa chỉ, điện thoại, mã số thuế..." class="w-full max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
         <span class="text-xs text-gray-500">{{ $arDmKhs->total() }} kết quả</span>
+    </div>
+
+    <div class="mb-3 flex justify-end">
+        <a href="{{ simbaroute('ca.dict.ardmkh.create') }}" class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">+ Thêm nhân viên</a>
     </div>
 
     <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

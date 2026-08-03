@@ -1,24 +1,5 @@
 <div class="po-ardmkh-container w-full">
-    <x-head-title>{{ 'Nhà cung cấp - Mua hàng' }}</x-head-title>
-
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    {{ 'Nhà cung cấp' }}
-                </h2>
-                <p class="text-sm text-gray-500">ARDMKH - Danh mục nhà cung cấp - menu PO 10.90.22</p>
-            </div>
-            <a
-                href="{{ simbaroute('po.dict.ardmkh.create') }}"
-                class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-            >
-                Thêm nhà cung cấp
-            </a>
-        </div>
-    </x-slot>
-
-    <div class="mt-4 flex flex-wrap items-center gap-4">
+<div class="mt-4 flex flex-wrap items-center gap-4">
         <div class="relative w-full max-w-md">
             <input
                 type="text"
@@ -39,6 +20,10 @@
         <span class="text-xs text-gray-500">
             {{ $arDmKhs->total() }} kết quả
         </span>
+    </div>
+
+    <div class="mb-3 flex justify-end">
+        <a href="{{ simbaroute('po.dict.ardmkh.create') }}" class="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">+ Thêm nhà cung cấp</a>
     </div>
 
     <div class="mt-4 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

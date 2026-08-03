@@ -15,7 +15,7 @@ Tài liệu quy ước dự án bắt buộc để các session sau không lặp
 - Component danh mục dictionary chính đặt theo `{Module}\Dict\{Slug}`.
 - View đặt theo `{module}/dict/{slug}.blade.php`.
 - Route name theo `{module}.dict.{slug}`.
-- Không dùng tên nghiệp vụ cũ cho route dictionary mới: `Banhang\Khachhang` đã được thay bằng `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` là backlog cần migrate sang `Ca\Dict\Ardmkh*` khi chạm task.
+- Không dùng tên nghiệp vụ cũ cho route dictionary: `Banhang\Khachhang` đã được thay bằng `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` đã được thay bằng `Ca\Dict\Ardmkh*`.
 
 ### Ví dụ đúng
 
@@ -24,6 +24,8 @@ Tài liệu quy ước dự án bắt buộc để các session sau không lặp
 | SO - Khách hàng | `So\Dict\Ardmkh` | `so/dict/ardmkh.blade.php` | `so.dict.ardmkh` |
 | PO - Nhà cung cấp | `Po\Dict\Ardmkh` | `po/dict/ardmkh.blade.php` | `po.dict.ardmkh` |
 | SO - Form | `So\Dict\ArdmkhForm` | `so/dict/ardmkh-form.blade.php` | `so.dict.ardmkh.create/edit` |
+| CA - Nhân viên | `Ca\Dict\Ardmkh` | `ca/dict/ardmkh.blade.php` | `ca.dict.ardmkh` |
+| CA - Form | `Ca\Dict\ArdmkhForm` | `ca/dict/ardmkh-form.blade.php` | `ca.dict.ardmkh.create/edit` |
 
 - Hành động xóa danh mục ARDMKH dùng method `deleteDoiTuong`, không dùng `deleteKhachHang`.
 

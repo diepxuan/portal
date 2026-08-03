@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Packages\Catalog;
 
-use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\NhanvienForm;
+use Diepxuan\Catalog\Http\Livewire\Ca\Dict\ArdmkhForm as CaArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Sorptbk01;
@@ -14,7 +14,7 @@ final class ArdmkhFormTest extends TestCase
 {
     public function testFieldHelperIsProtectedSoSubclassesCanLoadDoiTuong(): void
     {
-        foreach ([ArdmkhForm::class, SoArdmkhForm::class, NhanvienForm::class] as $class) {
+        foreach ([ArdmkhForm::class, SoArdmkhForm::class, CaArdmkhForm::class] as $class) {
             $method = new \ReflectionMethod($class, 'field');
             self::assertTrue($method->isProtected(), "{$class}::field() phai la protected de subclass goi duoc.");
         }

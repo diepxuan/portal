@@ -1,14 +1,8 @@
 <div class="so-ardmkh-form-container w-full">
-    <x-head-title>{{ $mode === 'create' ? 'Thêm khách hàng' : 'Sửa khách hàng' }}</x-head-title>
-    <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ simbaroute('so.dict.ardmkh') }}" class="rounded-md bg-gray-200 px-3 py-1 text-sm text-gray-700 hover:bg-gray-300">Quay lại</a>
-            <div>
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ $mode === 'create' ? 'Thêm khách hàng mới' : 'Sửa khách hàng: ' . $ma_kh }}</h2>
-                <p class="text-sm text-gray-500">ARDMKH — frmARDMKH — SO/AR customer context</p>
-            </div>
-        </div>
-    </x-slot>
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ $mode === 'create' ? 'Thêm khách hàng mới' : 'Sửa khách hàng: ' . $ma_kh }}</h2>
+        <a href="{{ simbaroute('so.dict.ardmkh') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Quay lại</a>
+    </div>
 
     <form wire:submit="save" class="mt-4 space-y-4">
         <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

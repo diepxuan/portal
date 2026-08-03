@@ -82,7 +82,7 @@ URL thật: `http://portal.diepxuan.corp/simba/po/dict/ardmkh`
 
 ## Bài học / Backlog
 
-- **Pattern chuẩn cho ARDMKH dictionary:** route concrete đầy đủ 3 endpoint (`index`, `create`, `edit`) + component đặt trong namespace `{module}\Dict\{Slug}` để khớp slug — em đã áp dụng đúng ở PO. SO (`So\Dict\Ardmkh`) và CA (`Cash\Danhmuc\Nhanvien`) KHÔNG theo pattern này (xem task 374, 375).
+- **Pattern chuẩn cho ARDMKH dictionary:** route concrete đầy đủ 3 endpoint (`index`, `create`, `edit`) + component đặt trong namespace `{module}\Dict\{Slug}` để khớp slug — em đã áp dụng đúng ở PO. SO (`So\Dict\Ardmkh`) và CA (`Ca\Dict\Ardmkh`) đã theo pattern này.
 - **Unit test Livewire riêng:** đã bổ sung test visibility `field()` và test `Sorptbk01` payload/lọc chi tiết tại `tests/Unit/Packages/Catalog/ArdmkhFormTest.php`; cần tiếp tục bổ sung Livewire CRUD với DB test cho `Po\Dict\Ardmkh` và `Po\Dict\ArdmkhForm`.
 - **Test DB baseline issue:** `PhieubaonoTest::test_update_khach_hang_auto_fills` hiện fail vì `RefreshDatabase` + `ArDmKh::create()` — không liên quan ARDMKH PO, nhưng cần lưu ý khi viết test mới dùng `ArDmKh::create()`.
 - **Token Simba:** `AsARGetDMKH::call` có `pStruct='0'` cố định; nếu sau này cần `pStruct='1'` cho form edit, cần verify metadata Simba trước.

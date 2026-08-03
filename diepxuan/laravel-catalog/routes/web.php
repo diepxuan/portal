@@ -19,8 +19,8 @@ use Diepxuan\Catalog\Http\Livewire\AR\Danhmuc\Phanloaikhachhang;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\Ardmkh as SoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
-use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\Nhanvien;
-use Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc\NhanvienForm;
+use Diepxuan\Catalog\Http\Livewire\Ca\Dict\Ardmkh as CaArdmkh;
+use Diepxuan\Catalog\Http\Livewire\Ca\Dict\ArdmkhForm as CaArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baoco;
 use Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuchi;
 use Diepxuan\Catalog\Http\Livewire\Cash\Tienmat\Phieuthu;
@@ -79,9 +79,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         ;
 
         $sourceRoutes = [
-            ['uri' => 'ca/dict/ardmkh', 'name' => 'ca.dict.ardmkh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => Nhanvien::class],
-            ['uri' => 'ca/dict/ardmkh/create', 'name' => 'ca.dict.ardmkh.create', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => NhanvienForm::class],
-            ['uri' => 'ca/dict/ardmkh/{id}/edit', 'name' => 'ca.dict.ardmkh.edit', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => NhanvienForm::class],
+            ['uri' => 'ca/dict/ardmkh', 'name' => 'ca.dict.ardmkh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkh::class],
+            ['uri' => 'ca/dict/ardmkh/create', 'name' => 'ca.dict.ardmkh.create', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
+            ['uri' => 'ca/dict/ardmkh/{id}/edit', 'name' => 'ca.dict.ardmkh.edit', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
             // ['uri' => 'ca/dict/sidmngh', 'name' => 'ca.dict.sidmngh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmngh', 'component' => SimbaPage::class],
             // ['uri' => 'ca/dict/sidmnt', 'name' => 'ca.dict.sidmnt', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmnt', 'component' => SimbaPage::class],
             // ['uri' => 'ca/dict/sidmtgnt', 'name' => 'ca.dict.sidmtgnt', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmtgnt', 'component' => SimbaPage::class],

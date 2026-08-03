@@ -8,17 +8,21 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-06-05 00:00:00
+ * @lastupdate 2026-08-03 00:00:00
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Dict;
 
-use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as BaseArdmkh;
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMKH;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\View\View;
 
-class Nhanvien extends Ardmkh
+/**
+ * CA ARDMKH nhân viên — canonical namespace.
+ */
+class Ardmkh extends BaseArdmkh
 {
     public function deleteDoiTuong(string $maKh): void
     {
@@ -44,6 +48,7 @@ class Nhanvien extends Ardmkh
                 'pMa_cty' => SModel::CTY,
                 'pMa_kh'  => $maKh,
             ]);
+
             $this->dispatch('success', message: 'Đã xóa nhân viên ' . $maKh);
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Không thể xóa nhân viên: ' . $e->getMessage());
@@ -52,12 +57,12 @@ class Nhanvien extends Ardmkh
 
     public function render(): View
     {
-        return view('catalog::cash.danhmuc.nhanvien', [
+        return view('catalog::ca.dict.ardmkh', [
             'arDmKhs' => $this->getEmployeesPaginated(),
         ])->layout('catalog::layouts.app');
     }
 
-    protected function getEmployeesPaginated()
+    protected function getEmployeesPaginated(): LengthAwarePaginatorContract
     {
         $results = AsARGetDMKH::getEmployees(
             search: '' !== $this->search ? $this->search : null,
