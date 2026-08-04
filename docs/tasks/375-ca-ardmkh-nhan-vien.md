@@ -6,11 +6,11 @@ CA (Cash — Tiền mặt & Ngân hàng) / dictionary chung ARDMKH
 
 ## Mục tiêu
 
-Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung bảng Simba `ARDMKH` / form `frmARDMKH`, phân loại `pModuleId=CA`, cờ `pIsnv=1`. CRUD đầy đủ (xem, thêm, sửa, xóa) với SP wrappers chuẩn.
+Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung bảng Simba `ARDMKH` / form `frmARDMKH`, phân loại mặc định `pModuleId=CA`, cờ `pIsnv=1`; UI cho phép thay đổi cờ đối tượng (khách hàng/nhà cung cấp/nhân viên). CRUD đầy đủ (xem, thêm, sửa, xóa) với SP wrappers chuẩn.
 
 ## Trạng thái
 
-- **Status:** IN PROGRESS — blocker runtime trên form edit (`/cash/nhanvien/edit/{id}` chưa lưu được).
+- **Status:** IN PROGRESS — đã sửa `field()` private → protected, bổ sung output `pRet`, bỏ hardcode `pIsnv=1`, convert null thành ``/`0` cho cột NOT NULL; cần verify lại E2E.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 356 (gộp KH + NCC + NV) → tách thành 373/374/375
@@ -38,7 +38,7 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 |----|---------|---------|
 | `asARGetDMKH` | Lấy danh sách / chi tiết NV theo `pModuleId='CA'` | `Diepxuan\Simba\StoredProcedures\AsARGetDMKH` |
 | `asARInsDMKH` | Thêm NV (set `pIskh=0, pIsncc=0, pIsnv=1`) | `Diepxuan\Simba\StoredProcedures\AsARInsDMKH` |
-| `asARUpdDMKH` | Cập nhật NV | `Diepxuan\Simba\StoredProcedures\AsARUpdDMKH` |
+| `asARUpdDMKH` | Cập nhật NV (payload cờ đối tượng theo checkbox, không hardcode `pIsnv=1`) | `Diepxuan\Simba\StoredProcedures\AsARUpdDMKH` |
 | `asARDelDMKH` | Xóa NV (validate `KSd=0`) | `Diepxuan\Simba\StoredProcedures\AsARDelDMKH` |
 
 ## Phạm vi
@@ -47,16 +47,16 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 
 | URI | Route name | Component |
 |-----|-----------|-----------|
-| `GET /simba/ca/dict/ardmkh` | `ca.dict.ardmkh` | `Cash\Danhmuc\Nhanvien` |
-| `GET /simba/cash/nhanvien/create` | `ca.nhanvien.create` | `Cash\Danhmuc\NhanvienForm` |
-| `GET /simba/cash/nhanvien/{id}/edit` | `ca.nhanvien.edit` | `Cash\Danhmuc\NhanvienForm` |
+| `GET /simba/ca/dict/ardmkh` | `ca.dict.ardmkh` | `Ca\Dict\Ardmkh` |
+| `GET /simba/ca/dict/ardmkh/create` | `ca.dict.ardmkh.create` | `Ca\Dict\ArdmkhForm` |
+| `GET /simba/ca/dict/ardmkh/{id}/edit` | `ca.dict.ardmkh.edit` | `Ca\Dict\ArdmkhForm` |
 
 URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 
 ### Component
 
-- [Nhanvien.php](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/src/Http/Livewire/Cash/Danhmuc/Nhanvien.php): kế thừa `Po\Dict\Ardmkh`, override `deleteDoiTuong()` với message NV.
-- [NhanvienForm.php](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/src/Http/Livewire/Cash/Danhmuc/NhanvienForm.php): kế thừa `Po\Dict\ArdmkhForm`, bổ sung 12 trường NV (`home_page`, `ma_httt`, `ma_httt_po`, `ma_ngh`, `ten_nh`, `cn_nh`, `so_tk_nh`, `tinh_tp_nh`, `ma_plkh1/2/3`, `ma_nhkh`, `ma_tt`, `gh_no`, `han_ck`, `tl_ck`, `han_tt`, `ls_qh`).
+- [Ardmkh.php](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/src/Http/Livewire/Ca/Dict/Ardmkh.php): kế thừa `Po\Dict\Ardmkh`, override `deleteDoiTuong()` với message NV.
+- [ArdmkhForm.php](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/src/Http/Livewire/Ca/Dict/ArdmkhForm.php): kế thừa `Po\Dict\ArdmkhForm`, bổ sung 12 trường NV (`home_page`, `ma_httt`, `ma_httt_po`, `ma_ngh`, `ten_nh`, `cn_nh`, `so_tk_nh`, `tinh_tp_nh`, `ma_plkh1/2/3`, `ma_nhkh`, `ma_tt`, `gh_no`, `han_ck`, `tl_ck`, `han_tt`, `ls_qh`).
 
 ### Trường bổ sung cho NV (so với KH/NCC)
 
@@ -71,13 +71,13 @@ URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 ## Thay đổi chính (đã có)
 
 - Route `ca.dict.ardmkh` (`/ca/dict/ardmkh`).
-- Component `Cash\Danhmuc\Nhanvien` + `NhanvienForm` (kế thừa PO).
-- Mapping `SimbaRouteRegistry`: `ca.nhanvien` → menu `04.90.05`.
-- Mapping `SimbaDictionaryRegistry`: `ca.nhanvien` → `MA_KH` / `ARDMKH`.
+- Component `Ca\Dict\Ardmkh` + `Ca\Dict\ArdmkhForm` (kế thừa PO).
+- Mapping `SimbaRouteRegistry`: `ca.dict.ardmkh` → menu `04.90.05`.
+- Mapping `SimbaDictionaryRegistry`: `ca.dict.ardmkh` → `MA_KH` / `ARDMKH`.
 
 ## Blocker hiện tại
 
-- **Form NV edit chưa lưu được trên `/cash/nhanvien/edit/1LETRUONGLUAT`** (ghi chú 2026-06-05 của task 356 cũ).
+- **Form NV edit chưa lưu được trên `/simba/ca/dict/ardmkh/1LETRUONGLUAT/edit`** (ghi chú 2026-06-05 của task 356 cũ).
 - Cần debug runtime: trace xem `mount()` có load đúng dữ liệu qua `AsARGetDMKH::call` không, `save()` có chạy `AsARUpdDMKH` không, error message gì.
 - Có thể liên quan: thiếu field trong `rules()`, validation fail im lặng, hoặc SP reject vì thiếu tham số.
 
@@ -92,12 +92,12 @@ URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 
 - `php -l` pass cho component + view kế thừa.
 - `SourceRouteCoverageTest` expectation cho `ca.dict.ardmkh` pass.
-- Không có unit test riêng cho `Nhanvien` / `NhanvienForm` — cần bổ sung.
-- **Cần debug runtime form edit** trước khi chuyển sang DONE.
+- Có unit test cơ bản tại `tests/Unit/Packages/Catalog/ArdmkhFormTest.php`; cần bổ sung Livewire create/edit với DB test.
+- **Đã fix visibility `field()` + output `pRet`; cần verify form edit với SQL Server trước khi chuyển sang DONE.**
 
 ## Công việc tiếp theo
 
-1. Reproduce bug trên `/cash/nhanvien/edit/1LETRUONGLUAT` (cần user thật hoặc DB test seed).
-2. Trace `$rules()` của `NhanvienForm` — đảm bảo validate không chặn field thực sự required.
+1. Verify `/simba/ca/dict/ardmkh/{id}/edit` với DB thật sau khi chuyển `field()` sang `protected`.
+2. Trace `$rules()` của `Ca\Dict\ArdmkhForm` — đảm bảo validate không chặn field thực sự required.
 3. Trace SP `AsARUpdDMKH` với payload NV — so sánh với `asARUpdDMKH` metadata.
-4. Sau khi fix bug, viết unit test Livewire (create + edit + delete) để khoá hành vi.
+4. Viết unit test Livewire (create + edit + delete) để khoá hành vi.

@@ -61,7 +61,7 @@ URL thật: `http://portal.diepxuan.corp/simba/po/dict/ardmkh`
 ### Views
 
 - [`po/dict/ardmkh.blade.php`](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/resources/views/po/dict/ardmkh.blade.php): bảng NCC + 8 cột (mã, tên, địa chỉ, điện thoại, người GD, HTTT mua, thao tác), nút Thêm / Sửa / Xóa (`wire:confirm` cho xóa), `wire:model.live.debounce.300ms="search"`.
-- [`po/dict/ardmkh-form.blade.php`](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/resources/views/po/dict/ardmkh-form.blade.php): 3 section (Thông tin cơ bản / Liên hệ và thanh toán / Ghi chú), 2-col grid `md:grid-cols-2`, `wire:submit="save"`, `readonly` cho `ma_kh` khi edit.
+- [`po/dict/ardmkh-form.blade.php`](/root/.openclaw/workspace/projects/portal/diepxuan/laravel-catalog/resources/views/po/dict/ardmkh-form.blade.php): 4 section (Thông tin cơ bản / Liên hệ và thanh toán / Phân loại / Ghi chú), dropdown phân loại + nhóm NCC, checkbox khóa sử dụng, `wire:submit="save"`, `readonly` cho `ma_kh` khi edit.
 
 ### Model
 
@@ -82,8 +82,8 @@ URL thật: `http://portal.diepxuan.corp/simba/po/dict/ardmkh`
 
 ## Bài học / Backlog
 
-- **Pattern chuẩn cho ARDMKH dictionary:** route concrete đầy đủ 3 endpoint (`index`, `create`, `edit`) + component đặt trong namespace `{module}\Dict\{Slug}` để khớp slug — em đã áp dụng đúng ở PO. SO/AR (`Banhang\Khachhang`) và CA (`Cash\Danhmuc\Nhanvien`) KHÔNG theo pattern này (xem task 374, 375).
-- **Unit test Livewire riêng:** hiện chỉ có route coverage test. Cần bổ sung test cho `Po\Dict\Ardmkh` (render, search, paginate, delete guard `hasTransactions()`, validation) và `Po\Dict\ArdmkhForm` (create vs edit chọn đúng SP wrapper, validation rules) — pattern tham khảo PR #255 cho SP wrappers reflection-based.
+- **Pattern chuẩn cho ARDMKH dictionary:** route concrete đầy đủ 3 endpoint (`index`, `create`, `edit`) + component đặt trong namespace `{module}\Dict\{Slug}` để khớp slug — em đã áp dụng đúng ở PO. SO (`So\Dict\Ardmkh`) và CA (`Ca\Dict\Ardmkh`) đã theo pattern này.
+- **Unit test Livewire riêng:** đã bổ sung test visibility `field()` và test `Sorptbk01` payload/lọc chi tiết tại `tests/Unit/Packages/Catalog/ArdmkhFormTest.php`; cần tiếp tục bổ sung Livewire CRUD với DB test cho `Po\Dict\Ardmkh` và `Po\Dict\ArdmkhForm`.
 - **Test DB baseline issue:** `PhieubaonoTest::test_update_khach_hang_auto_fills` hiện fail vì `RefreshDatabase` + `ArDmKh::create()` — không liên quan ARDMKH PO, nhưng cần lưu ý khi viết test mới dùng `ArDmKh::create()`.
 - **Token Simba:** `AsARGetDMKH::call` có `pStruct='0'` cố định; nếu sau này cần `pStruct='1'` cho form edit, cần verify metadata Simba trước.
 

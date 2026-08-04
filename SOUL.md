@@ -66,5 +66,6 @@ Mỗi session phải đọc theo thứ tự:
 6. **memory/<hôm-qua>.md** — daily context (nếu có)
 7. **MEMORY.md** — long-term memory (chỉ MAIN SESSION)
 8. **docs/DESIGN.md** — nếu task có UI/Blade/Livewire/Alpine
+9. **docs/PROJECT_CONVENTIONS.md** — quy ước dự án: `ksd`, canonical ARDMKH/dictionary, save defaults
 
 **Không bỏ qua boot sequence. Không hành động khi chưa nắm đủ context.**

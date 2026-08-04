@@ -16,6 +16,7 @@ Mỗi session PHẢI đọc theo đúng thứ tự dưới đây. KHÔNG đượ
 6. **memory/<hôm-qua>.md** - daily context hôm qua (nếu có)
 7. **MEMORY.md** - long-term memory (chỉ MAIN SESSION)
 8. **docs/DESIGN.md** - nếu task có chạm UI/Blade/Livewire/Alpine: design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
+9. **docs/PROJECT_CONVENTIONS.md** - quy ước dự án bắt buộc: `ksd`, canonical ARDMKH/dictionary, ARDMKH save defaults
 
 Nếu có xung đột giữa các tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → SOUL.md → USER.md → IDENTITY.md → AGENTS.md → tài liệu dự án còn lại.
 
@@ -35,9 +36,21 @@ Nếu có xung đột giữa các tài liệu, ưu tiên: chỉ dẫn mới nh�
 - `app/Models/`
 - `config/*.php`
 
+### Code Architecture: Canonical ARDMKH/dictionary
+
+- Mỗi danh mục dictionary chính phải đặt theo `{Module}\Dict\{Slug}` và view tương ứng `{module}/dict/{slug}.blade.php`; route name `{module}.dict.{slug}`.
+- KHÔNG đặt component dictionary theo tên nghiệp vụ cũ (`Banhang\Khachhang`, `Cash\Danhmuc\Nhanvien*`) trong route mới.
+- Ví dụ đúng:
+  - `So\Dict\Ardmkh` / `so/dict/ardmkh.blade.php` / `so.dict.ardmkh`
+  - `Po\Dict\Ardmkh` / `po/dict/ardmkh.blade.php` / `po.dict.ardmkh`
+  - Form SO: `So\Dict\ArdmkhForm` / `so/dict/ardmkh-form.blade.php`
+- Hành động xóa danh mục ARDMKH dùng tên method `deleteDoiTuong`, KHÔNG dùng `deleteKhachHang`.
+- CA đã canonical: `Ca\Dict\Ardmkh*` + `ca/dict/ardmkh*.blade.php`; không dùng `Cash\Danhmuc\Nhanvien*`.
+
 ---
 
 ## 2. Simba Domain Knowledge
+
 
 - Mount readonly tại `simba-docs/` — nguồn sự thật duy nhất
 - **Cấm tuyệt đối:** tự đặt tên bảng/SP/field, tạo bảng mới, ALTER/CREATE/INSERT SQL

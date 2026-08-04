@@ -1,9 +1,8 @@
-<div class="mx-auto max-w-6xl">
-    <x-head-title>{{ 'Nhân viên' }}</x-head-title>
-    <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ 'Nhân viên' }}</h2>
-        <p class="text-sm text-gray-500">Theo Simba menu 04.90.05 / ARDMKH / frmARDMKH</p>
-    </x-slot>
+<div class="ca-ardmkh-form-container mx-auto max-w-6xl">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <h2 class="text-xl font-semibold leading-tight text-gray-800">{{ $mode === 'create' ? 'Thêm nhân viên' : 'Sửa nhân viên: ' . $ma_kh }}</h2>
+        <a href="{{ simbaroute('ca.dict.ardmkh') }}" class="rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Quay lại</a>
+    </div>
 
     <form wire:submit="save" class="mt-4 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -59,10 +58,10 @@
         <div class="mt-6 border-t border-gray-200 pt-4">
             <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-700">Phân loại</h3>
             <div class="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 1</span><input wire:model="ma_plkh1" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" /></label>
-                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 2</span><input wire:model="ma_plkh2" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" /></label>
-                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 3</span><input wire:model="ma_plkh3" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" /></label>
-                <label class="block"><span class="text-sm font-medium text-gray-700">Nhóm KH</span><input wire:model="ma_nhkh" maxlength="8" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm" /></label>
+                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 1</span><select wire:model="ma_plkh1" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm"><option value="">— Chọn —</option>@foreach ($plkhOptions[1] ?? [] as $pl)<option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>@endforeach</select></label>
+                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 2</span><select wire:model="ma_plkh2" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm"><option value="">— Chọn —</option>@foreach ($plkhOptions[2] ?? [] as $pl)<option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>@endforeach</select></label>
+                <label class="block"><span class="text-sm font-medium text-gray-700">Phân loại 3</span><select wire:model="ma_plkh3" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm"><option value="">— Chọn —</option>@foreach ($plkhOptions[3] ?? [] as $pl)<option value="{{ $pl->ma_plkh }}">{{ $pl->ma_plkh }} - {{ $pl->ten_plkh }}</option>@endforeach</select></label>
+                <label class="block"><span class="text-sm font-medium text-gray-700">Nhóm KH</span><select wire:model="ma_nhkh" class="mt-1 w-full rounded-md border-gray-300 text-sm shadow-sm"><option value="">— Chọn nhóm —</option>@foreach ($nhomKhOptions as $nhom)<option value="{{ $nhom->ma_nhkh }}">{{ $nhom->ma_nhkh }} - {{ $nhom->ten_nhkh }}</option>@endforeach</select></label>
             </div>
         </div>
 

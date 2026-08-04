@@ -13,6 +13,7 @@ Tài liệu chung cho toàn bộ dự án.
 | **[Design System (DESIGN.md)](DESIGN.md)** | Design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec — nguồn sự thật cho AI agents và humans khi build Blade/Livewire UI |
 | **[Development Setup](DEVELOPMENT.md)** | Hướng dẫn setup môi trường dev (PHP, Composer, Vite, Mailpit, Redis) |
 | **[Simba Docs Mount](SIMBA-DOCS.md)** | Hướng dẫn đọc `simba-docs/` (readonly) để tra cứu logic SimbaERP / SP / field |
+| **[Project Conventions](PROJECT_CONVENTIONS.md)** | Quy ước dự án bắt buộc: `ksd`, canonical ARDMKH/dictionary, default khi save ARDMKH |
 | **[Workspace Guide](project/workspace-guide.md)** | Cấu trúc thư mục, quy tắc tạo file, Git workflow |
 | **[Core Package Loading](project/core-package-loading.md)** | Hệ thống auto-discovery và auto-registration packages |
 | **[Package Namespace Conventions](project/package-namespace-conventions.md)** | Quy ước namespace cho 14 packages |
@@ -63,6 +64,7 @@ docs/
 ├── DESIGN.md                    # Design system (DESIGN.md spec alpha)
 ├── DEVELOPMENT.md               # Setup môi trường dev
 ├── SIMBA-DOCS.md                # Hướng dẫn đọc simba-docs/ mount
+├── PROJECT_CONVENTIONS.md       # Quy ước dự án bắt buộc (ksd, canonical, ARDMKH)
 ├── project/                     # Project-wide documentation
 │   ├── workspace-guide.md
 │   ├── core-package-loading.md
