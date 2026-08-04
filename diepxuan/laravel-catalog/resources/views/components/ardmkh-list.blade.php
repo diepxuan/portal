@@ -4,12 +4,11 @@
     'createUrl' => null,
     'editUrl'   => 'po.dict.ardmkh.edit',
     'emptyMsg'  => 'Không tìm thấy đối tượng nào.',
-    'pageSize'  => 50,
 ])
 
 @php
-    $rowsJson = json_encode($rows, JSON_UNESCAPED_UNICODE);
-    // Tạo URL từ route name + module để edit; view cha truyền 'editUrl'.
+    $rowsJson = json_encode($rows, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+    $editUrlTemplate = simbaroute($editUrl, ['id' => '__MA_KH__']);
     $placeholder = match ($module) {
         'SO' => 'Tìm theo mã, tên, địa chỉ, điện thoại...',
         'CA' => 'Tìm theo mã, tên, địa chỉ, điện thoại, mã số thuế...',
@@ -23,8 +22,9 @@
 @endphp
 
 <div class="ardmkh-list-container w-full"
-     x-data="ardmkhListComponent(@js($rowsJson), @js($editUrl), @js($pageSize))"
-     x-init="initComponent()">
+     x-data="ardmkhListComponent(@js($editUrlTemplate))"
+     x-init="initComponent($refs.payload)">
+    <script type="application/json" x-ref="payload">{!! $rowsJson !!}</script>
     <div class="mt-4 flex flex-wrap items-center gap-4">
         <div class="relative w-full max-w-md">
             <input type="text" x-model="search" @input.debounce.150ms="onSearch()"
@@ -66,9 +66,9 @@
                 </tr>
             </thead>
             <tbody>
-                <template x-for="(row, index) in paginated" :key="row.ma_kh">
+                <template x-for="(row, index) in filtered" :key="row.ma_kh">
                     <tr class="hover:bg-sky-50">
-                        <td class="border-b border-gray-100 px-3 py-2 text-gray-500" x-text="(page - 1) * pageSize + index + 1"></td>
+                        <td class="border-b border-gray-100 px-3 py-2 text-gray-500" x-text="index + 1"></td>
                         <td class="border-b border-gray-100 px-3 py-2 font-mono text-xs" x-text="row.ma_kh"></td>
                         <td class="border-b border-gray-100 px-3 py-2"><span class="font-medium text-gray-900" x-text="row.ten_kh"></span></td>
                         <td class="border-b border-gray-100 px-3 py-2 text-gray-600" x-text="truncate(row.dia_chi, 40)"></td>
@@ -95,15 +95,6 @@
         </table>
     </div>
 
-    <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
-        <span>Trang <span x-text="page"></span> / <span x-text="totalPages"></span></span>
-        <div class="flex gap-2">
-            <button type="button" @click="prevPage()" :disabled="page <= 1"
-                class="rounded border border-gray-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50">Trước</button>
-            <button type="button" @click="nextPage()" :disabled="page >= totalPages"
-                class="rounded border border-gray-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-gray-50">Sau</button>
-        </div>
-    </div>
 </div>
 
 @once
@@ -114,25 +105,21 @@
             return;
         }
 
-        window.ardmkhListComponent = function (rows, editRouteName, pageSize) {
+        window.ardmkhListComponent = function (editUrlTemplate) {
             return {
-                rows: Array.isArray(rows) ? rows : [],
-                editRouteName: editRouteName || 'po.dict.ardmkh.edit',
-                pageSize: parseInt(pageSize, 10) || 50,
+                rows: [],
+                editUrlTemplate: editUrlTemplate || '#',
                 search: '',
-                page: 1,
                 filtered: [],
-                paginated: [],
-                totalPages: 1,
                 resultLabel: '0 kết quả',
-                routeCache: {}, // ma_kh -> href
-
-                initComponent() {
+                
+                initComponent(payloadEl) {
+                    const rows = JSON.parse((payloadEl && payloadEl.textContent) ? payloadEl.textContent : '[]');
+                    this.rows = Array.isArray(rows) ? rows : [];
                     this.recompute();
                 },
 
                 onSearch() {
-                    this.page = 1;
                     this.recompute();
                 },
 
@@ -141,21 +128,8 @@
                     this.onSearch();
                 },
 
-                prevPage() {
-                    if (this.page > 1) {
-                        this.page -= 1;
-                        this.recompute(true);
-                    }
-                },
 
-                nextPage() {
-                    if (this.page < this.totalPages) {
-                        this.page += 1;
-                        this.recompute(true);
-                    }
-                },
-
-                recompute(skipSlice) {
+                recompute() {
                     const needle = this.normalize(this.search);
                     this.filtered = !needle
                         ? this.rows.slice()
@@ -163,19 +137,9 @@
                             const haystack = [
                                 row.ma_kh, row.ten_kh, row.dia_chi,
                                 row.tel, row.ma_so_thue, row.nguoi_gd,
-                            ].map((v) => this.normalize(v || '')).join(' \x1f ');
+                            ].map((v) => this.normalize(v || '')).join(' ');
                             return haystack.indexOf(needle) !== -1;
                         });
-
-                    this.totalPages = Math.max(1, Math.ceil(this.filtered.length / this.pageSize));
-                    if (this.page > this.totalPages) {
-                        this.page = this.totalPages;
-                    }
-
-                    const start = (this.page - 1) * this.pageSize;
-                    this.paginated = skipSlice
-                        ? this.filtered.slice(start, start + this.pageSize)
-                        : this.filtered.slice(0, start + this.pageSize);
 
                     const total = this.rows.length;
                     this.resultLabel = this.filtered.length === total
@@ -201,15 +165,7 @@
 
                 editUrlFor(row) {
                     if (!row || !row.ma_kh) return '#';
-                    if (this.routeCache[row.ma_kh]) return this.routeCache[row.ma_kh];
-                    const base = (typeof window.Ziggy !== 'undefined' && window.Ziggy.routes
-                        ? window.Ziggy.routes[this.editRouteName]
-                        : null);
-                    const href = (typeof window.route === 'function')
-                        ? window.route(this.editRouteName, { id: row.ma_kh })
-                        : (base ? base.uri.replace(/\/+$/, '').replace(/\{.*?\}/g, encodeURIComponent(row.ma_kh)) : '#');
-                    this.routeCache[row.ma_kh] = href;
-                    return href;
+                    return this.editUrlTemplate.replace('__MA_KH__', encodeURIComponent(row.ma_kh));
                 },
             };
         };
