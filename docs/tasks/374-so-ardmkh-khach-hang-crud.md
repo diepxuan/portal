@@ -53,7 +53,7 @@ URL thật: `http://portal.diepxuan.corp/simba/so/dict/ardmkh`
 
 ### Component
 
-- `So\Dict\Ardmkh` (index): search, paginate, `deleteDoiTuong(maKh)`.
+- `So\Dict\Ardmkh` (index): client-side Alpine search, không dùng pagination, `deleteDoiTuong(maKh)`.
 - `So\Dict\ArdmkhForm`: mode create/edit, `save()` chọn `AsARInsDMKH` / `AsARUpdDMKH` theo mode với `pIskh=1, pIsncc=0, pIsnv=0`.
 
 ### View

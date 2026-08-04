@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 /**
  * Pin hành vi Alpine-search của 3 danh sách ARDMKH: load toàn bộ rows một lần,
- * tìm kiếm + phân trang chạy phía client (Alpine).
+ * tìm kiếm chạy phía client (Alpine); page không dùng pagination.
  */
 final class ArdmkhListTest extends TestCase
 {

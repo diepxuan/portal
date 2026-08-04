@@ -23,14 +23,14 @@ use Livewire\Component;
  * Base cho 3 danh sách ARDMKH (PO/SO/CA).
  *
  * Load toàn bộ rows một lần qua SP `asARGetDMKH` (pModuleId thay đổi theo module);
- * search + phân trang chạy phía client bằng Alpine trong view để tránh gọi lại SP mỗi lần gõ.
+ * search chạy phía client bằng Alpine trong view, page không dùng pagination.
  */
 class Ardmkh extends Component
 {
     /** Mã công ty hiện tại (truyền cho view để render, không dùng trong search). */
     public string $maCty;
 
-    /** Toàn bộ rows sau khi normalize; view dùng Alpine filter + paginate. */
+    /** Toàn bộ rows sau khi normalize; view dùng Alpine filter, không dùng pagination. */
     public array $rows = [];
 
     public function mount(): void

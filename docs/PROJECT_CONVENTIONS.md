@@ -62,6 +62,7 @@ Các wrapper `AsARInsDMKH` / `AsARUpdDMKH` phải khai báo output `pRet`:
 - `SimbaPage` là nơi duy nhất render `x-head-title` và `x-slot name="header"` cho màn hình `/simba/*`.
 - Các Livewire component con trong `SimbaPage` **không được lặp lại** `x-head-title` / `x-slot name="header"`.
 - View danh sách đặt nút `Create` trong toolbar nội dung, không đưa vào header slot.
+- Danh sách ARDMKH không dùng pagination; load toàn bộ rows một lần và dùng client-side JS filter (Alpine).
 - View form đặt link `Quay lại` trong toolbar nội dung; tiêu đề thêm/sửa hiển thị trong nội dung nếu cần.
 - Đã áp dụng cho ARDMKH SO/PO/CA:
   - `so/dict/ardmkh*.blade.php`
