@@ -10,16 +10,16 @@
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 5 | 0 | 5 | 0 |
 | AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
-| CA — Tiền mặt & Ngân hàng | 14 | 0 | 14 | 0 |
+| CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
 | GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
-| PO — Đơn hàng mua | 20 | 0 | 20 | 0 |
+| PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
 | SI — System Integration | 34 | 0 | 34 | 0 |
-| SO — Đơn hàng bán | 48 | 0 | 48 | 0 |
+| SO — Đơn hàng bán | 46 | 0 | 46 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **337** | | | |
+| **Tổng** | **333** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -69,7 +69,6 @@
 | 031 | `031-ca-voucher-khe-uoc-vay.md` | CAVchCA5.dll | PENDING |
 | 032-038 | `032-038-ca-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | PENDING |
 | 159-165 | `159-165-ca-rpt-tmnh-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | PENDING |
-| 375 | `375-ca-ardmkh-nhan-vien.md` |  | PENDING |
 
 ## CO — Sản xuất
 
@@ -306,7 +305,6 @@
 | 079 | `079-PO-bangke-thue-dauvao.md` | POTAIN.dll | PENDING |
 | 080 | `080-PO-don-dat-hang-mua.md` | POVchPO7.dll | PENDING |
 | 217 | `217-po-hoa-don-mua-dich-vu.md` | PoVchPO6.dll | PENDING |
-| 373 | `373-po-ardmkh-nha-cung-cap.md` |  | PENDING |
 
 ## SI — System Integration
 
@@ -381,7 +379,6 @@
 | 198 | `198-so-hoa-don-ban-hang-underscore.md` | SOVchSO3_.dll | PENDING |
 | 199 | `199-so-phieu-nhap-hang-ban-tra-lai.md` | SOVchSO4.dll | PENDING |
 | 200 | `200-so-hoa-don-ban-dich-vu.md` | SOVchSO5.dll | PENDING |
-| 201 | `201-so-bang-ke-chung-tu-ban-hang-01.md` | SORptBK01.dll | PENDING |
 | 202 | `202-so-bao-cao-phan-tich-f5-06.md` | SORptF5BCPT06.dll | PENDING |
 | 203 | `203-so-bao-cao-tong-hop-f5.md` | SORptF5TH0.dll | PENDING |
 | 204 | `204-so-bao-cao-tong-hop-ban-hang-02.md` | SORptTH02.dll | PENDING |
@@ -398,7 +395,6 @@
 | 215 | `215-so-thong-bao-mat-chay-hong-hoa-don.md` | SOND51mchhd.dll | PENDING |
 | 216 | `216-so-thong-bao-xoa-hoa-don.md` | SOND51xoahd.dll | PENDING |
 | 370 | `370-so-chi-tiet-cong-no-khach-hang-co-so-luong-06-30-38.md` | ARRptBCCN01.dll (form dùng chung cho AR và AP, menuid phân biệt) | PENDING |
-| 374 | `374-so-ardmkh-khach-hang-crud.md` |  | PENDING |
 
 ## System — Framework & cross-link
 
