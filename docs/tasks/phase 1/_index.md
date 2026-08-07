@@ -10,11 +10,13 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
 | AR — Công nợ phải thu | 1 | 1 | 0 | 0 |
+| CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
-| PO — Đơn hàng mua | 1 | 1 | 0 | 0 |
+| PO — Đơn hàng mua | 2 | 2 | 0 | 0 |
 | SI — System Integration | 1 | 1 | 0 | 0 |
+| SO — Đơn hàng bán | 2 | 2 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **6** | | | |
+| **Tổng** | **10** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -28,6 +30,12 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 |---|---|---|---|
 | 008 | `008-ar-bao-cao-cong-no-tk-kh.md` | ARRptBCCN01.dll, ARRptBCCN01a.dll | DONE |
 
+## CA — Tiền mặt & Ngân hàng
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 375 | `375-ca-ardmkh-nhan-vien.md` |  | DONE |
+
 ## IN — Tồn kho
 
 | ID | File | DLL | Status |
@@ -39,12 +47,20 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 069 | `069-po-hoadon-mua-hang.md` | `POVchPO3.dll` (form `frmPOVchPO3`, namespace `AsiaErp.UserInterface`) | DONE |
+| 373 | `373-po-ardmkh-nha-cung-cap.md` |  | DONE |
 
 ## SI — System Integration
 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 360 | `360-si-smks-khoa-so-lieu-ky.md` |  | DONE |
+
+## SO — Đơn hàng bán
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 201 | `201-so-bang-ke-chung-tu-ban-hang-01.md` | SORptBK01.dll | DONE |
+| 374 | `374-so-ardmkh-khach-hang-crud.md` |  | DONE |
 
 ## System — Framework & cross-link
 
