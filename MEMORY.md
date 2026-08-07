@@ -430,3 +430,23 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
     trực tiếp các lệnh ghi local (không cần flag), chỉ push/PR/network mới
     cần Sếp duyệt riêng. Trong session này push + gh đều chạy OK, không
     bị sandbox block (filesystem writable).
+
+## 2026-08-08: PR #276 merged - phase 1 tasks docs (DONE)
+
+- **PR #276** squash `4ae79c924` docs(tasks): chuyen task 201/373/374/375 sang phase 1.
+- Move 4 file (khong sua noi dung) sang `docs/tasks/phase 1/`:
+  + `201-so-bang-ke-chung-tu-ban-hang-01.md`
+  + `373-po-ardmkh-nha-cung-cap.md`
+  + `374-so-ardmkh-khach-hang-crud.md`
+  + `375-ca-ardmkh-nhan-vien.md`
+- `_index.md` tong quan: CA `14 → 13`, PO `20 → 19`, SO `48 → 46`, Tong `337 → 333`.
+- `phase 1/_index.md` them 4 task moi (9 task tong phase 1).
+- Merge flow dung AGENTS.md §5.1: `gh pr merge 276 --repo diepxuan/portal --squash --delete-branch`
+  → state MERGED, mergeCommit `4ae79c92422a0acaad987e5cb95dca278cebaea6`,
+  mergedAt `2026-08-07T23:38:39Z`.
+- Local cleanup: `git fetch --prune` xoa 6 remote refs cu (fix/ardmkh-ga-foundation,
+  fix/ca-ardmkh-nhanvien, fix/so-ardmkh-khachhang*, task/373-split-356-po-ardmkh,
+  task/phase1-201-373-374-375), `git branch -D task/phase1-...` sau khi main ff.
+- Lesson: PR docs-only merge xong, branch local co the KHONG fully-merged
+  (do squash remote != head local cu) — dung `-D` thay `-d`. Van an toan
+  vi squash content da nam tren main.
