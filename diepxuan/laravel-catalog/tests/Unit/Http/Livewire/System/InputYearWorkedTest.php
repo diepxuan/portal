@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Tests\Unit\Http\Livewire\System;
 
 use Diepxuan\Catalog\Http\Livewire\Component\InputYearWorked;
+use Illuminate\Support\Facades\Session;
+use Livewire\Livewire;
 use PHPUnit\Framework\TestCase;
 
-final class InputYearWorkedTest extends TestCase
+final class InputYearWorkedTest extends \Tests\TestCase
 {
     public function testRangeIsCurrentYearMinusTenToPlusTen(): void
     {
@@ -30,5 +32,18 @@ final class InputYearWorkedTest extends TestCase
     public function testYearRangeConstantMatchesDllWindow(): void
     {
         self::assertSame(10, InputYearWorked::YEAR_RANGE);
+    }
+
+    public function testSelectYearUpdatesSessionAndRedirectsToCurrentUrl(): void
+    {
+        Session::start();
+
+        Livewire::test(InputYearWorked::class)
+            ->call('selectYear', 2026)
+            ->assertSet('selectedYear', 2026)
+            ->assertRedirect(url()->current())
+        ;
+
+        self::assertSame(2026, Session::get('year'));
     }
 }

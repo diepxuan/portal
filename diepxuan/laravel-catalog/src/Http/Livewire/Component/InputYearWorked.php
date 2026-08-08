@@ -60,6 +60,7 @@ class InputYearWorked extends Component
         $this->selectedYear  = catalog()->year($year);
         $this->statusMessage = __('Đã chọn năm làm việc :year.', ['year' => $this->selectedYear]);
         $this->open          = false;
+        $this->redirect(request()->url(), navigate: true);
     }
 
     public function render(): View
