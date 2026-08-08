@@ -29,7 +29,7 @@
                                 class="w-full border-transparent ps-4 hover:border-transparent focus:border-transparent md:px-3">
                                 {{ __('Đơn vị') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('system.year')" :active="$this->isActive('system.year')"
+                            <x-nav-link :href="route('si.vch.year')" :active="$this->isActive('si.vch.year')"
                                 class="w-full border-transparent ps-4 hover:border-transparent focus:border-transparent md:px-3">
                                 {{ __('Năm làm việc') }}
                             </x-nav-link>

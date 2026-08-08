@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-16 00:28:08
+ * @lastupdate 2026-08-08
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\System;
+namespace Diepxuan\Catalog\Http\Livewire\Si\Vch;
 
 use Illuminate\View\View;
 use Livewire\Component;
@@ -19,6 +19,7 @@ use Livewire\Component;
 class YearSelector extends Component
 {
     public int $selectedYear;
+
     public ?string $statusMessage = null;
 
     public function mount(): void
@@ -40,8 +41,13 @@ class YearSelector extends Component
 
     public function render(): View
     {
-        return view('catalog::system.year-selector', [
-            'years' => range(now()->year + 1, 2_006),
+        // Match DLL frmSiChangeFY: range = (current - 10) -> (current + 10)
+        $currentYear = (int) now()->year;
+        $from        = $currentYear - 10;
+        $to          = $currentYear + 10;
+
+        return view('catalog::si.vch.year-selector', [
+            'years' => range($from, $to),
         ])->layout('catalog::layouts.app');
     }
 }
