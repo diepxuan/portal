@@ -16,10 +16,10 @@
 | GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
 | PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
-| SI — System Integration | 34 | 0 | 34 | 0 |
+| SI — System Integration | 33 | 0 | 33 | 0 |
 | SO — Đơn hàng bán | 46 | 0 | 46 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **333** | | | |
+| **Tổng** | **332** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -329,7 +329,6 @@
 | 097 | `097-SI-saoluu-phuchoi-dulieu.md` | SIBackupData.dll | PENDING |
 | 098 | `098-SI-danhmuc-hopdong.md` | SIDMHD.dll | PENDING |
 | 099 | `099-SI-thongke-capnhat-chungtu.md` | SIRptLOGCT.dll | PENDING |
-| 218 | `218-si-thay-doi-nam-tai-chinh.md` | SiChangeFY.dll | PENDING |
 | 219 | `219-si-chuyen-so-lieu-import-export.md` | SiImExData.dll | PENDING |
 | 220 | `220-si-thong-tin-san-pham.md` | SiInfomationProduct.dll | PENDING |
 | 221 | `221-si-sap-xep-lai-so-chung-tu.md` | SiReOrderVoucherNumber.dll | PENDING |

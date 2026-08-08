@@ -50,7 +50,7 @@ System balance/process menus da co route Portal hien huu:
 | Nhap phat sinh luy ke tu khi khoi cong | 18.10.14 | `system.balance.cumulative-transactions` |
 | Quan ly nguoi su dung | 90.20.02 | `system.user.index` |
 | Doi mat khau | 90.20.08 | `profile.show` |
-| Chon nam lam viec | 90.30.02 | `system.year` |
+| Chon nam lam viec | 90.30.02 | `si.vch.year` |
 | Khoa so lieu | 90.30.05 | `si.vch.smks` |
 | Chon don vi | 90.40.17 | `system.company` |
 

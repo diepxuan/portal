@@ -7,7 +7,7 @@
                 {{ __('Chọn năm làm việc') }}
             </h2>
             <p class="text-sm text-gray-600">
-                {{ __('Menu 90.30.02') }}
+                {{ __('SiChangeFY · menu 90.30.02') }}
             </p>
         </div>
     </x-slot>
