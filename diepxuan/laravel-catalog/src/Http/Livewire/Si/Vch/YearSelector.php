@@ -32,7 +32,7 @@ class YearSelector extends Component
     public function selectYear(int $year): void
     {
         $currentYear = (int) now()->year;
-        if ($year < $currentYear - InputYearWorked::YEAR_RANGE || $year > $currentYear + InputYearWorked::YEAR_RANGE) {
+        if ($year < InputYearWorked::FIRST_YEAR || $year > $currentYear + 1) {
             $this->addError('selectedYear', __('Năm làm việc không hợp lệ.'));
 
             return;

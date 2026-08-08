@@ -30,9 +30,8 @@ ghi SQL Server.
    `diepxuan/laravel-catalog/routes/web.php:274`).
 2. Move component từ `System\YearSelector` → `Si\Vch\YearSelector`.
 3. Sửa range năm trong component khớp DLL gốc: `now()->year - 10` → `now()->year + 10`
-   (hiện tại `range(now()->year + 1, 2006)` chỉ đúng cho năm hiện tại ≥ 2006 và
-   bị cố định cận dưới ở 2006 — bug khi user mở sau năm 2006 vẫn OK, nhưng KHÔNG
-   khớp với `frmSiChangeFY`).
+   (đã được chỉnh theo yêu cầu Sếp 2026-08-09: danh sách mặc định từ `2016`
+   đến `năm hiện tại + 1`, không dùng DLL `now - 10 → now + 10`).
 4. Giữ session key là `session('year')` (đúng với `CatalogService::year()` ở
    `diepxuan/laravel-catalog/src/Services/CatalogService.php:178` và
    `CatalogFunctions::afNamTC()` ở `:82`). Bỏ key `session('financial_year')` ở

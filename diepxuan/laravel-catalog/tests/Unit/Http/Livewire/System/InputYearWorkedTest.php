@@ -11,27 +11,27 @@ use PHPUnit\Framework\TestCase;
 
 final class InputYearWorkedTest extends \Tests\TestCase
 {
-    public function testRangeIsCurrentYearMinusTenToPlusTen(): void
+    public function testRangeStartsAt2016AndEndsAtCurrentYearPlusOne(): void
     {
         $years = InputYearWorked::availableYears(2026);
 
         self::assertSame(2016, $years->first());
-        self::assertSame(2036, $years->last());
-        self::assertCount(21, $years);
+        self::assertSame(2027, $years->last());
+        self::assertCount(12, $years);
     }
 
-    public function testRangeAlwaysIncludesCurrentYearAndBothBounds(): void
+    public function testRangeAlwaysIncludesCurrentYear(): void
     {
         $years = InputYearWorked::availableYears(2026);
 
         self::assertContains(2016, $years);
         self::assertContains(2026, $years);
-        self::assertContains(2036, $years);
+        self::assertContains(2027, $years);
     }
 
-    public function testYearRangeConstantMatchesDllWindow(): void
+    public function testFirstYearConstantIsFixedAt2016(): void
     {
-        self::assertSame(10, InputYearWorked::YEAR_RANGE);
+        self::assertSame(2016, InputYearWorked::FIRST_YEAR);
     }
 
     public function testSelectYearUpdatesSessionAndRedirectsToCurrentUrl(): void
