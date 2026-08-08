@@ -280,6 +280,7 @@ class SimbaErpMenus extends Component
             SimbaMenuRouteMetadata::TYPE_DICTIONARY => 'Danh muc',
             SimbaMenuRouteMetadata::TYPE_VOUCHER    => 'Chung tu',
             SimbaMenuRouteMetadata::TYPE_CUSTOM     => 'Portal',
+            SimbaMenuRouteMetadata::TYPE_UTILITY    => 'Tien ich',
             default                             => 'Portal',
         };
     }

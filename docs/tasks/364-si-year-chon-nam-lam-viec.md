@@ -15,7 +15,7 @@ ghi SQL Server.
 
 ## Trạng thái
 
-- **Status:** 🔄 IMPLEMENTING — shell `system.year` đã có; route mới `si.vch.year` chưa đăng ký.
+- **Status:** 🔄 IMPLEMENTING — route `si.vch.year` đã đăng ký, đang hoàn thiện header chọn năm.
 - **Menu Simba:** `90.30.02` (theo `simba-docs/data/sysMenu.md:634`).
 - **DLL:** `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`).
 - **Route hiện tại:** `/hethong/year` (route name: `system.year`).
@@ -41,6 +41,10 @@ ghi SQL Server.
    bookmark / link cũ).
 6. Cập nhật `docs/project/simba-router-menu-matrix.md` mục `Chon nam lam viec`
    (90.30.02) → `si.vch.year`.
+7. Thêm `InputYearWorked` vào header `layouts/app.blade.php` để chọn năm làm
+   việc trực tiếp trên mọi màn hình, thay thế `<x-sys-year />` display-only.
+8. Thêm override metadata cho menu utility `90.30.02` để Simba menu trỏ về
+   `si.vch.year` và hiển thị nhãn `Tien ich`.
 
 ## Bằng chứng merge (218 ≡ 364)
 
@@ -95,16 +99,17 @@ chạy được. Gộp về 364, xóa 218.
 
 - [x] Đọc simba-docs (`SiChangeFY.dll`, `sysMenu.md`).
 - [x] Verify menuid 90.30.02 chỉ có 1 entry trong sysMenu.
-- [ ] Tạo branch `task/364-merge-218-year-selector`.
-- [ ] Tạo component `Si\Vch\YearSelector` (move từ `System\YearSelector`, sửa range năm theo DLL).
-- [ ] Sửa view `catalog::si.vch.year-selector` (move từ `system.year-selector`).
-- [ ] Đăng ký route concrete `si/vch/year` trong `_simba-source` group.
-- [ ] Giữ alias redirect `hethong/year` → `si/vch/year` (back-compat).
-- [ ] Cập nhật `docs/project/simba-router-menu-matrix.md`.
-- [ ] Xóa file `docs/tasks/218-si-thay-doi-nam-tai-chinh.md` (gộp vào đây).
-- [ ] Cập nhật `docs/tasks/_index.md` (bỏ entry 218).
-- [ ] `php -l` các file PHP mới.
-- [ ] `php artisan route:list --name=si.vch.year` verify route.
+- [x] Tạo branch `task/364-merge-218-year-selector`.
+- [x] Tạo component `Si\Vch\YearSelector` (move từ `System\YearSelector`, sửa range năm theo DLL).
+- [x] Sửa view `catalog::si.vch.year-selector` (move từ `system.year-selector`).
+- [x] Đăng ký route concrete `si/vch/year` trong `_simba-source` group.
+- [x] Giữ alias redirect `hethong/year` → `si/vch/year` (back-compat).
+- [x] Cập nhật `docs/project/simba-router-menu-matrix.md`.
+- [x] Xóa file `docs/tasks/218-si-thay-doi-nam-tai-chinh.md` (gộp vào đây).
+- [x] Cập nhật `docs/tasks/_index.md` (bỏ entry 218).
+- [x] Thêm `InputYearWorked` header + override metadata utility.
+- [x] `php -l` các file PHP mới.
+- [x] `php artisan route:list --name=si.vch.year` verify route.
 - [ ] Commit + push + mở PR.
 
 ## Độ phức tạp
@@ -117,4 +122,4 @@ chạy được. Gộp về 364, xóa 218.
 - **2026-07-20:** Tách từ task 181-196.
 - **2026-08-08:** Merge với task 218 (cùng menuid/DLL). Cập nhật range năm khớp
   DLL. Chuẩn hóa session key = `session('year')` theo `CatalogService` (nguồn
-  sự thật codebase).
+  sự thật codebase). Thêm header input chọn năm và metadata utility.
