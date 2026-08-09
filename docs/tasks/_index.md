@@ -374,7 +374,7 @@
 | 060 | `060-SO-dondathang-bomauhoadon.md` | SOND51bmhd.dll | PENDING |
 | 061 | `061-SO-xuatdulieu-banhang.md` | SOTaOut.dll | PENDING |
 | 062 | `062-SO-danhmuc-khuyenmai.md` | SODMTKM.dll | PENDING |
-| 197 | `197-so-hoa-don-ban-hang.md` | SOVchSO3.dll | PENDING |
+| 197 | `197-so-hoa-don-ban-hang.md` | SOVchSO3.dll | DONE |
 | 198 | `198-so-hoa-don-ban-hang-underscore.md` | SOVchSO3_.dll | PENDING |
 | 199 | `199-so-phieu-nhap-hang-ban-tra-lai.md` | SOVchSO4.dll | PENDING |
 | 200 | `200-so-hoa-don-ban-dich-vu.md` | SOVchSO5.dll | PENDING |
@@ -407,4 +407,3 @@
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 | 367 | `367-system-framework-libraries.md` |  | PENDING |
 | 372 | `372-fix-simba-menu-route-suffix-deterministic.md` |  | PENDING |
-
