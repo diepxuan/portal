@@ -48,18 +48,17 @@ class Povchpo3 extends Component
 
     public function mount(): void
     {
-        $this->loadData();
+        $this->invoices = collect();
     }
 
     public function updated($property): void
     {
         if (str_starts_with((string) $property, 'p')) {
             $this->pPageIndex = 1;
-            $this->loadData();
         }
     }
 
-    public function loadData(): void
+    public function submit(): void
     {
         $maCty = (string) \CatalogService::company()->id;
         $sets = AsPOFilt3::callWithDataSets([
@@ -76,6 +75,10 @@ class Povchpo3 extends Component
 
         $this->invoices = $sets['ph']
             ->map(static fn (mixed $row): array => (array) $row);
+
+        if ($this->invoices->isNotEmpty()) {
+            $this->dispatch('switch-tab', 'content');
+        }
     }
 
     public function resetFilters(): void
@@ -87,7 +90,7 @@ class Povchpo3 extends Component
         \CatalogService::timer(['id' => 't' . str_pad((string) now()->month, 2, '0', STR_PAD_LEFT)]);
         $this->timerKey++;
 
-        $this->loadData();
+        $this->invoices = collect();
     }
 
     public function exportCsv(): \Symfony\Component\HttpFoundation\StreamedResponse

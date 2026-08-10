@@ -16,6 +16,8 @@ namespace Diepxuan\Simba\StoredProcedures;
 use Diepxuan\Simba\Helper\ParamHelper;
 use Diepxuan\Simba\SModel\SModel;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use PDO;
 
 /**
  * Stored procedure asSoFilt3.
@@ -43,6 +45,55 @@ class AsSoFilt3
             'pKeyPh' => $paramObj->pKeyPh ?? null,
             'pKeyCt' => $paramObj->pKeyCt ?? null,
         ], $connection);
+    }
+
+    /**
+     * Gọi asSoFilt3 và trả về tất cả result set.
+     *
+     * @return array{ph: Collection<int, array<string, mixed>>, ct: Collection<int, array<string, mixed>>}
+     */
+    public static function callWithDataSets(array $params): array
+    {
+        $paramObj = ParamHelper::fromArray($params);
+        $connection = (new SModel())->getConnectionName();
+
+        $pdo = DB::connection($connection)->getPdo();
+        $stmt = $pdo->prepare(self::callSql([
+            'pKeyPh' => $paramObj->pKeyPh ?? null,
+            'pKeyCt' => $paramObj->pKeyCt ?? null,
+        ]));
+        $stmt->execute();
+
+        $sets = [];
+        do {
+            $sets[] = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } while ($stmt->nextRowset());
+
+        try {
+            $stmt->closeCursor();
+        } catch (\Throwable) {
+            // Bỏ qua lỗi closeCursor sau khi đã đọc hết result set.
+        }
+
+        return [
+            'ph' => collect($sets[0] ?? []),
+            'ct' => collect($sets[1] ?? []),
+        ];
+    }
+
+    /**
+     * Build EXEC statement dùng Unicode literal giống ProcedureCaller.
+     *
+     * @param array<string, mixed> $procedureParams
+     */
+    public static function callSql(array $procedureParams): string
+    {
+        $execParts = [];
+        foreach ($procedureParams as $key => $value) {
+            $execParts[] = '@' . $key . ' = ' . ProcedureCaller::toUnicodeLiteral($value);
+        }
+
+        return "SET NOCOUNT ON;\nEXECUTE [dbo].[asSoFilt3]\n    " . implode(",\n    ", $execParts);
     }
 
     /**

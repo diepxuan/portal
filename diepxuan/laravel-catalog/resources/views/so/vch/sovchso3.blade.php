@@ -49,18 +49,13 @@
                     <div class="col-span-2 flex flex-wrap items-center gap-2">
                         <x-button-loading
                             class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
-                            wire:click="loadData">
+                            wire:click="submit">
                             Thực hiện
                         </x-button-loading>
                         <button type="button"
                             class="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
                             wire:click="resetFilters">
                             Xóa lọc
-                        </button>
-                        <button type="button"
-                            class="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
-                            wire:click="exportCsv">
-                            Xuất Excel
                         </button>
                         <a href="{{ simbaroute('so.vch.sovchso3.create') }}"
                             class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
@@ -122,6 +117,11 @@
                         </div>
                         <div class="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-500">
                             <span>{{ $invoices->count() }} dòng dữ liệu</span>
+                            <button type="button"
+                                class="rounded-md bg-gray-700 px-2.5 py-1 text-xs text-white hover:bg-gray-800"
+                                wire:click="exportCsv">
+                                Xuất Excel
+                            </button>
                         </div>
                     </div>
                 @endif

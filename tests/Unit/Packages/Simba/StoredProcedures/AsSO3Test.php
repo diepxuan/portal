@@ -11,6 +11,18 @@ use Tests\TestCase;
 
 final class AsSO3Test extends TestCase
 {
+    public function testCallSqlUsesCanonicalProcedureAndParams(): void
+    {
+        $sql = AsSoFilt3::callSql([
+            'pKeyPh' => "ma_cty = '001'",
+            'pKeyCt' => "ma_cty = '001'",
+        ]);
+
+        self::assertStringContainsString('EXECUTE [dbo].[asSoFilt3]', $sql);
+        self::assertStringContainsString('@pKeyPh = N\'ma_cty = \'\'001\'\'\'', $sql);
+        self::assertStringContainsString('@pKeyCt = N\'ma_cty = \'\'001\'\'\'', $sql);
+    }
+
     public function testAsSoFilt3BuildsHeaderKeyWithPortalFilters(): void
     {
         self::assertSame(
