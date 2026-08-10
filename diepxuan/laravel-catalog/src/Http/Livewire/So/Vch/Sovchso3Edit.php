@@ -28,7 +28,6 @@ use Diepxuan\Simba\StoredProcedures\AsSOGetPH3;
 use Diepxuan\Simba\StoredProcedures\AsSOInsCT3;
 use Diepxuan\Simba\StoredProcedures\AsSOInsPH3;
 use Diepxuan\Simba\StoredProcedures\AsSOUpdPH3;
-use Diepxuan\Simba\StoredProcedures\ZasSOUpdCT3;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -42,11 +41,11 @@ use Livewire\Component;
  * - menuID : `06.10.08` (sysMenu, sysVoucherInfo ma_ct = `SO3`).
  * - DLL    : `SOVchSO3.dll` (form `frmSoVchSO3`).
  * - SP     : `asSOGetPH3` + `asSOGetCT3` (load); `asSOInsPH3`/`asSOUpdPH3`,
- *            `asSOInsCT3`/`zasSOUpdCT3`/`asSODelCT3` (save); `asSODelPH3` (xóa).
+ *            `asSOInsCT3`/`asSODelCT3` (save); `asSODelPH3` (xóa).
  * - Route  : `_simba-source/so/vch/sovchso3/{stt_rec?}/edit`.
  *
- * Phân hệ SO3 không có SP save gộp như PO3, nên giữ transaction và gọi đúng
- * bộ SP header/detail gốc từ SimbaSql.
+ * Phân hệ SO3 không có SP save gộp như PO3. Khi sửa, framework .NET xóa toàn
+ * bộ chi tiết theo `stt_rec` rồi insert lại nên Portal giữ đúng cơ chế đó.
  */
 class Sovchso3Edit extends Component
 {
@@ -532,35 +531,26 @@ class Sovchso3Edit extends Component
 
     protected function saveDetails(): void
     {
-        $nextSttRec0 = 1;
-        foreach ($this->pChiTiet as $index => $row) {
-            $sttRec0 = (string) ($row['stt_rec0'] ?? '');
-            if ('' === $sttRec0) {
-                while (\in_array((string) $nextSttRec0, $this->existingDetailKeys, true)) {
-                    $nextSttRec0++;
-                }
-                $sttRec0 = (string) $nextSttRec0;
-                $this->pChiTiet[$index]['stt_rec0'] = $sttRec0;
-                $result = AsSOInsCT3::call($this->detailPayload($row, $sttRec0));
-            } else {
-                $result = ZasSOUpdCT3::call($this->detailPayload($row, $sttRec0));
-            }
-
-            $this->assertProcedureSuccess($result);
-            $nextSttRec0++;
-        }
-
-        foreach ($this->existingDetailKeys as $existingKey) {
-            $stillExists = \in_array($existingKey, array_column($this->pChiTiet, 'stt_rec0'), true);
-            if ($stillExists) {
-                continue;
-            }
-
+        if ('edit' === $this->pMode && ! empty($this->pStt_rec)) {
             $result = AsSODelCT3::call([
                 'pMa_cty'  => SModel::CTY,
                 'pStt_rec' => $this->pStt_rec,
             ]);
             $this->assertProcedureSuccess($result);
+            $this->existingDetailKeys = [];
+        }
+
+        $nextSttRec0 = 1;
+        foreach ($this->pChiTiet as $index => $row) {
+            while (\in_array((string) $nextSttRec0, $this->existingDetailKeys, true)) {
+                $nextSttRec0++;
+            }
+
+            $sttRec0 = (string) $nextSttRec0;
+            $this->pChiTiet[$index]['stt_rec0'] = $sttRec0;
+            $result = AsSOInsCT3::call($this->detailPayload($row, $sttRec0));
+            $this->assertProcedureSuccess($result);
+            $nextSttRec0++;
         }
     }
 

@@ -57,7 +57,12 @@
                             wire:click="resetFilters">
                             Xóa lọc
                         </button>
-                        <a href="{{ route('po.vch.povchpo3.create') }}"
+                        <button type="button"
+                            class="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+                            wire:click="exportCsv">
+                            Xuất Excel
+                        </button>
+                        <a href="{{ simbaroute('po.vch.povchpo3.create') }}"
                             class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
                             Thêm mới
                         </a>
@@ -66,7 +71,7 @@
             </div>
 
             <div x-show="activeTab === 'content'" class="w-full overflow-x-auto py-2">
-                @if ([] === $invoices)
+                @if (empty($invoices))
                     <div class="rounded border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
                         Chưa có dữ liệu. Nhập điều kiện lọc rồi bấm Thực hiện.
                     </div>
@@ -91,7 +96,7 @@
                                     @foreach ($invoices as $invoice)
                                         <tr class="hover:bg-sky-50">
                                             <td class="whitespace-nowrap px-2 py-2">
-                                                <a href="{{ route('po.vch.povchpo3.edit', $invoice->stt_rec) }}"
+                                                <a href="{{ simbaroute('po.vch.povchpo3.edit', $invoice['stt_rec']) }}"
                                                     class="rounded border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:border-sky-300 hover:text-sky-700">
                                                     Sửa
                                                 </a>
@@ -99,16 +104,16 @@
                                             <td class="whitespace-nowrap px-2 py-2 text-right tabular-nums text-gray-400">
                                                 {{ $loop->iteration }}
                                             </td>
-                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice->so_ct }}</td>
-                                            <td class="whitespace-nowrap px-2 py-2 text-gray-700">{{ optional($invoice->ngay_ct)->format('d/m/Y') }}</td>
-                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice->so_hd }}</td>
-                                            <td class="whitespace-nowrap px-2 py-2 text-gray-700">{{ optional($invoice->ngay_hd)->format('d/m/Y') }}</td>
-                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice->ma_kh }}</td>
+                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice['so_ct'] }}</td>
+                                            <td class="whitespace-nowrap px-2 py-2 text-gray-700">{{ !empty($invoice['ngay_ct']) ? \Illuminate\Support\Carbon::parse($invoice['ngay_ct'])->format('d/m/Y') : '' }}</td>
+                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice['so_hd'] ?? '' }}</td>
+                                            <td class="whitespace-nowrap px-2 py-2 text-gray-700">{{ !empty($invoice['ngay_hd']) ? \Illuminate\Support\Carbon::parse($invoice['ngay_hd'])->format('d/m/Y') : '' }}</td>
+                                            <td class="whitespace-nowrap px-2 py-2 font-mono text-gray-700">{{ $invoice['ma_kh'] }}</td>
                                             <td class="px-2 py-2 text-gray-700">
-                                                <div class="max-w-[420px] truncate">{{ $invoice->dien_giai ?? '' }}</div>
+                                                <div class="max-w-[420px] truncate">{{ $invoice['dien_giai'] ?? '' }}</div>
                                             </td>
                                             <td class="whitespace-nowrap px-2 py-2 text-right font-mono text-gray-700">
-                                                {{ number_format((float) ($invoice->t_tt ?? 0), 0, ',', '.') }}
+                                                {{ number_format((float) ($invoice['t_tt'] ?? 0), 0, ',', '.') }}
                                             </td>
                                         </tr>
                                     @endforeach

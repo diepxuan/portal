@@ -15,11 +15,11 @@
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
 | GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
-| PO — Đơn hàng mua | 19 | 0 | 19 | 0 |
+| PO — Đơn hàng mua | 18 | 0 | 18 | 0 |
 | SI — System Integration | 33 | 0 | 33 | 0 |
-| SO — Đơn hàng bán | 46 | 0 | 46 | 0 |
+| SO — Đơn hàng bán | 45 | 0 | 45 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **332** | | | |
+| **Tổng** | **330** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -292,7 +292,6 @@
 | 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | PENDING |
 | 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | PENDING |
 | 068 | `068-PO-danhmuc-hinhthuc-thanhtoan.md` | PODMHTTT.dll | PENDING |
-| 069 | `069-po-hoadon-mua-hang.md` | `POVchPO3.dll` (form `frmPOVchPO3`, namespace `AsiaErp.UserInterface`) | PENDING |
 | 070 | `070-PO-chungtu-nhan-hang-mua.md` | POVchPO4.dll | PENDING |
 | 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | PENDING |
 | 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | PENDING |
@@ -339,7 +338,7 @@
 | 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | `SMFFY.dll` | PENDING |
 | 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | `SMUserInfo.dll` | PENDING |
 | 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
-| 364 | `364-si-year-chon-nam-lam-viec.md` |  | PENDING |
+| 364 | `364-si-year-chon-nam-lam-viec.md` | `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`). | PENDING |
 | 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
 | 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | PENDING |
 | 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | PENDING |
@@ -374,7 +373,6 @@
 | 060 | `060-SO-dondathang-bomauhoadon.md` | SOND51bmhd.dll | PENDING |
 | 061 | `061-SO-xuatdulieu-banhang.md` | SOTaOut.dll | PENDING |
 | 062 | `062-SO-danhmuc-khuyenmai.md` | SODMTKM.dll | PENDING |
-| 197 | `197-so-hoa-don-ban-hang.md` | SOVchSO3.dll | DONE |
 | 198 | `198-so-hoa-don-ban-hang-underscore.md` | SOVchSO3_.dll | PENDING |
 | 199 | `199-so-phieu-nhap-hang-ban-tra-lai.md` | SOVchSO4.dll | PENDING |
 | 200 | `200-so-hoa-don-ban-dich-vu.md` | SOVchSO5.dll | PENDING |
