@@ -164,6 +164,13 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - **error message** — `<x-input-error for="pNgay1" class="mt-1" />` (đã có `text-sm text-red-600`).
 - **input có icon (clear/search)** — wrapper `relative` + `<input>` + button clear absolute `right-2 top-1/2 -translate-y-1/2` (`x-catalog::component.input-khachhang`).
 
+### Autocomplete / Search
+
+- **autocomplete dropdown** — `absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg`; item `cursor-pointer px-3 py-2 hover:bg-blue-50`, highlight `bg-blue-50`.
+- **autocomplete search normalization** — NFD strip diacritics, quy `đ/Đ` về `d`, lowercase, trim, collapse spaces.
+- **autocomplete priority** — mã chính xác → tên chính xác → viết tắt prefix → tên prefix → contains; chỉ tự chọn khi 1 kết quả rõ ràng.
+- **autocomplete abbreviation** — tạo chuỗi chữ cái đầu từ mỗi từ của tên để hỗ trợ `tdh` → `Thủy Đông Hà`.
+
 ### Badges (status pill)
 
 - **badge-success** — `inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800` — Hoạt động, Đã duyệt.
@@ -194,6 +201,13 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - **link Sửa** — `rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-700 hover:bg-yellow-200`.
 - **link Xem** — `rounded border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:border-sky-300 hover:text-sky-700` (task 359).
 - **link Xóa** — `rounded bg-red-100 px-2 py-1 text-xs text-red-700 hover:bg-red-200` + `wire:confirm="..."`.
+
+### Danh sách chứng từ + bảng phụ chi tiết
+
+- **table row click** — `cursor-pointer hover:bg-sky-50`, row đang chọn `bg-sky-50`; dùng `wire:click="selectPhieu(...)"`.
+- **detail table panel** — dùng `space-y-4` giữa bảng chính và bảng phụ; bảng phụ là `rounded-lg border border-gray-200 bg-white shadow-sm`.
+- **detail panel header** — `flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 py-2`, tiêu đề `text-sm font-medium text-gray-700`, số chứng từ `font-mono text-xs text-gray-500`, action `gap-2`.
+- **detail panel actions** — nút `Sửa` dùng `button-warning`, nút `Xóa` dùng `button-danger` + `wire:confirm`; không đặt action row trong bảng danh sách.
 
 ---
 

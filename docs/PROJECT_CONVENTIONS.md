@@ -69,6 +69,22 @@ Các wrapper `AsARInsDMKH` / `AsARUpdDMKH` phải khai báo output `pRet`:
   - `po/dict/ardmkh*.blade.php`
   - `ca/dict/ardmkh*.blade.php`
 
+## 5. Input autocomplete khách hàng / đối tượng
+
+- `input-khachhang` là lookup dùng chung cho khách hàng, nhà cung cấp và nhân viên theo `mode`.
+- Search luôn chuẩn hóa trước khi so khớp: bỏ dấu NFD, quy `đ/Đ` về `d`, lowercase, gộp khoảng trắng.
+- Ngoài tên đầy đủ, cần tạo thêm chuỗi viết tắt từ chữ cái đầu mỗi từ để hỗ trợ tìm nhanh, ví dụ `tdh` khớp `Thủy Đông Hà`.
+- Thứ tự kết quả ưu tiên: mã chính xác → tên chính xác → viết tắt prefix → tên prefix → contains.
+- `commitSearch()` chỉ tự chọn khi có một kết quả rõ ràng; nhiều kết quả thì giữ dropdown để người dùng chọn.
+
+## 6. Danh sách chứng từ và bảng phụ chi tiết
+
+- Danh sách voucher SO3/PO3 không đặt nút `Sửa` trực tiếp trong bảng chính và không có cột `Chi tiết`.
+- Click dòng chứng từ sẽ mở bảng phụ `Chi tiết phiếu #N` bên dưới; click lại dòng đang mở sẽ đóng, click dòng khác sẽ chuyển selection.
+- Bảng phụ hiển thị chi tiết vật tư lấy từ CT result set của SP filter, không gọi SP load edit riêng.
+- Nút `Sửa` / `Xóa` đặt bên phải header bảng phụ; action xóa dùng `wire:confirm` và SP delete gốc.
+- `Xuất Excel` đặt ở footer bảng chính, không đặt trong tab lọc.
+
 ## Liên quan
 
 - `docs/README.md` — documentation index
