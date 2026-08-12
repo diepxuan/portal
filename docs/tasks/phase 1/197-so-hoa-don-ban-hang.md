@@ -619,16 +619,16 @@ Route::prefix('catalog/so')
 
 ## Progress Checklist
 
-- [ ] Phan tich yeu cau & review task nay
-- [ ] Tao Stored Procedure classes (Get, Insert, Update, Delete, Check)
-- [ ] Tao Model SO3, SO4, HT01
-- [ ] Tao Livewire Hoadonbanhang (list)
-- [ ] Tao Livewire HoadonbanhangEdit (form nhap lieu)
-- [ ] Tao Views (list + edit + detail grid)
-- [ ] Them Routes
-- [ ] Test CRUD operations voi chi tiet
-- [ ] Test tinh toan ty gia & chiet khau
-- [ ] Test Integration voi DMKH, DMVT, DMKHO
+- [x] Phan tich yeu cau & review task nay
+- [x] Tao Stored Procedure classes (Get, Insert, Update, Delete, Check)
+- [x] Tao Model SO3, SO4, HT01
+- [x] Tao Livewire Hoadonbanhang (list)
+- [x] Tao Livewire HoadonbanhangEdit (form nhap lieu)
+- [x] Tao Views (list + edit + detail grid)
+- [x] Them Routes
+- [x] Test CRUD operations voi chi tiet
+- [x] Test tinh toan ty gia & chiet khau
+- [x] Test Integration voi DMKH, DMVT, DMKHO
 ---
 ## Audit Status
 - **Ngày audit:** 2026-05-10
@@ -636,6 +636,12 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
-- **Route:** `banhang.so3`
-- **Note:** Voucher/report/dictionary route shell; write execute chỉ mở khi payload audit đủ.
+- **Status:** DONE (list + edit CRUD)
+- **Route:** `so.vch.sovchso3`, `so.vch.sovchso3.create`, `so.vch.sovchso3.edit`
+- **Component:** `So\Vch\Sovchso3`, `So\Vch\Sovchso3Edit`
+- **View:** `catalog::so.vch.sovchso3`, `catalog::so.vch.sovchso3-edit`, `catalog::so.vch._grid-chitiet`
+- **SP list:** `asSoFilt3` (`AsSoFilt3`)
+- **SP load:** `asSOGetPH3` + `asSOGetCT3`
+- **SP save:** `asSOInsPH3` / `asSOUpdPH3` + `asSOInsCT3` / `zasSOUpdCT3` / `asSODelCT3`
+- **SP delete:** `asSODelPH3`
+- **Note:** SO3 không có SP save gộp như PO3 nên form dùng transaction và gọi đúng bộ SP header/detail gốc từ SimbaSql.
