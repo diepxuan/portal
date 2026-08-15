@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Diepxuan\Catalog\Tests\Unit\Http\Livewire\System;
+namespace Diepxuan\Catalog\Tests\Unit\Http\Livewire\Component;
 
 use Diepxuan\Catalog\Http\Livewire\Component\InputYearWorked;
 use Illuminate\Support\Facades\Session;
 use Livewire\Livewire;
-use PHPUnit\Framework\TestCase;
 
 final class InputYearWorkedTest extends \Tests\TestCase
 {
@@ -34,15 +33,20 @@ final class InputYearWorkedTest extends \Tests\TestCase
         self::assertSame(2016, InputYearWorked::FIRST_YEAR);
     }
 
-    public function testSelectYearUpdatesSessionAndRedirectsToCurrentUrl(): void
+    public function testSelectYearUpdatesSessionAndRedirectsToOriginalPageUrl(): void
     {
         Session::start();
 
-        Livewire::test(InputYearWorked::class)
+        $testable = Livewire::test(InputYearWorked::class)
             ->call('selectYear', 2026)
             ->assertSet('selectedYear', 2026)
-            ->assertRedirect(url()->current())
         ;
+
+        // Redirect phai tro ve URL trang goc (memo.path trong snapshot),
+        // KHONG duoc tro ve /livewire/update (request()->url() trong update request).
+        $testable->assertRedirectContains('livewire-unit-test-endpoint');
+
+        self::assertStringNotContainsString('livewire/update', $testable->effects['redirect']);
 
         self::assertSame(2026, Session::get('year'));
     }
