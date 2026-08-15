@@ -351,4 +351,32 @@ final class ArdmkhFormTest extends TestCase
         self::assertSame('01/07/2026', $component->phieuCellValue(['ngay_lct' => '2026-07-01'], 'ngay_lct'));
         self::assertSame('Ghi chú bán hàng', $component->phieuCellValue(['dien_giai' => 'Ghi chú bán hàng'], 'dien_giai'));
     }
+
+    public function testSorptbk01SelectedVoucherActionsOnlyForSo3(): void
+    {
+        $component = new Sorptbk01();
+        $component->selectedPhieu = ['STT_REC' => 'SO3-STT', 'MA_CT' => 'SO3', 'SO_CT' => 'HD001'];
+
+        self::assertTrue($component->canEditSelectedVoucher());
+        self::assertSame('SO3-STT', $component->selectedVoucherSttRec());
+        self::assertSame('HD001', $component->selectedVoucherSoCt());
+
+        $component->selectedPhieu = ['STT_REC' => 'SO4-STT', 'MA_CT' => 'SO4', 'SO_CT' => 'PK001'];
+        self::assertFalse($component->canEditSelectedVoucher());
+
+        $component->selectedPhieu = ['STT_REC' => 'SO5-STT', 'MA_CT' => 'SO5', 'SO_CT' => 'DV001'];
+        self::assertFalse($component->canEditSelectedVoucher());
+
+        $component->selectedPhieu = [];
+        self::assertFalse($component->canEditSelectedVoucher());
+    }
+
+    public function testSorptbk01SelectedVoucherSttRecNormalizesRawCase(): void
+    {
+        $component = new Sorptbk01();
+        $component->selectedPhieu = ['stt_rec' => 'P1', 'ma_ct' => 'SO3', 'so_ct' => 'HD001'];
+
+        self::assertSame('P1', $component->selectedVoucherSttRec());
+        self::assertSame('HD001', $component->selectedVoucherSoCt());
+    }
 }

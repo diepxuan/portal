@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\So\Rpt;
 
 use Diepxuan\Simba\StoredProcedures\AsSIGetDmSo_ct;
+use Diepxuan\Simba\StoredProcedures\AsSODelPH3;
 use Diepxuan\Simba\StoredProcedures\AsSORptBK01;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -189,6 +191,69 @@ class Sorptbk01 extends Component
         $this->selectedPhieuIndex = null;
         $this->selectedPhieu      = [];
         $this->chiTietFiltered    = [];
+    }
+
+    public function canEditSelectedVoucher(): bool
+    {
+        if ([] === $this->selectedPhieu) {
+            return false;
+        }
+
+        return 'SO3' === $this->voucherTypeCode($this->selectedPhieu)
+            && '' !== $this->selectedVoucherSttRec();
+    }
+
+    public function selectedVoucherSttRec(): string
+    {
+        return (string) self::rowValue($this->selectedPhieu, ['stt_rec', 'Stt_rec', 'STT_REC']);
+    }
+
+    public function selectedVoucherSoCt(): string
+    {
+        return self::csvValue(self::rowValue($this->selectedPhieu, ['so_ct', 'So_ct']));
+    }
+
+    public function deleteSelectedVoucher(): void
+    {
+        if (!$this->canEditSelectedVoucher()) {
+            session()->flash('error', 'Chứng từ đang chọn không hỗ trợ xóa từ bảng kê này.');
+
+            return;
+        }
+
+        $sttRec = $this->selectedVoucherSttRec();
+
+        DB::beginTransaction();
+
+        try {
+            $result = AsSODelPH3::call([
+                'pMa_cty' => $this->companyId(),
+                'pStt_rec' => $sttRec,
+            ]);
+            $row = $result->first();
+            $pRet = \is_array($row) ? ($row['pRet'] ?? null) : ($row->pRet ?? null);
+
+            if (null !== $pRet && 0 !== (int) $pRet) {
+                throw new \RuntimeException('Stored procedure trả về mã lỗi ' . (int) $pRet . '.');
+            }
+
+            $this->phieuRows = array_values(array_filter(
+                $this->phieuRows,
+                static fn (array $phieu): bool => (string) self::rowValue($phieu, ['stt_rec', 'Stt_rec', 'STT_REC']) !== $sttRec
+            ));
+            $this->chiTietRows = array_values(array_filter(
+                $this->chiTietRows,
+                static fn (array $row): bool => (string) self::rowValue($row, ['stt_rec', 'Stt_rec', 'STT_REC']) !== $sttRec
+            ));
+            $this->clearSelectedPhieu();
+
+            DB::commit();
+            session()->flash('success', 'Đã xóa hóa đơn bán hàng.');
+        } catch (\Throwable $exception) {
+            DB::rollBack();
+            report($exception);
+            session()->flash('error', 'Lỗi khi xóa hóa đơn: ' . $exception->getMessage());
+        }
     }
 
     public function exportCsv(): ?StreamedResponse
