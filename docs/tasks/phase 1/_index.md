@@ -13,10 +13,10 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
 | PO — Đơn hàng mua | 2 | 2 | 0 | 0 |
-| SI — System Integration | 1 | 1 | 0 | 0 |
+| SI — System Integration | 2 | 2 | 0 | 0 |
 | SO — Đơn hàng bán | 2 | 2 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **10** | | | |
+| **Tổng** | **11** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -54,6 +54,7 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 360 | `360-si-smks-khoa-so-lieu-ky.md` |  | DONE |
+| 364 | `364-si-year-chon-nam-lam-viec.md` | `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`). | DONE |
 
 ## SO — Đơn hàng bán
 
