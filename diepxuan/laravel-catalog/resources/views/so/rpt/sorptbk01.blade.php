@@ -281,7 +281,7 @@
                                                 class="cursor-pointer {{ $selectedPhieuIndex === $loop->index ? 'bg-sky-50' : 'hover:bg-sky-50' }}">
                                                 <td class="px-2 py-2 text-right tabular-nums text-gray-400">{{ $loop->iteration }}</td>
                                                 @foreach ($phieuColumns as $column)
-                                                    <td class="{{ $column['class'] }} px-2 py-2 text-gray-700">
+                                                    <td class="{{ $column['class'] }} px-2 py-2 {{ $this->phieuCellClass($phieu, $column['key']) }}">
                                                         {{ $this->phieuCellValue($phieu, $column['key']) }}
                                                     </td>
                                                 @endforeach
@@ -324,7 +324,7 @@
                                                     <tr class="hover:bg-sky-50">
                                                         <td class="px-2 py-2 text-right tabular-nums text-gray-400">{{ $loop->iteration }}</td>
                                                         @foreach ($chiTietColumns as $column)
-                                                            <td class="{{ $column['class'] }} px-2 py-2 text-gray-700">
+                                                            <td class="{{ $column['class'] }} px-2 py-2 {{ $this->chiTietCellClass($chiTiet, $column['key']) }}">
                                                                 {{ $this->chiTietCellValue($chiTiet, $column['key']) }}
                                                             </td>
                                                         @endforeach
