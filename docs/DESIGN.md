@@ -164,6 +164,13 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - **error message** — `<x-input-error for="pNgay1" class="mt-1" />` (đã có `text-sm text-red-600`).
 - **input có icon (clear/search)** — wrapper `relative` + `<input>` + button clear absolute `right-2 top-1/2 -translate-y-1/2` (`x-catalog::component.input-khachhang`).
 
+### Autocomplete / Search
+
+- **autocomplete dropdown** — `absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg`; item `cursor-pointer px-3 py-2 hover:bg-blue-50`, highlight `bg-blue-50`.
+- **autocomplete search normalization** — NFD strip diacritics, quy `đ/Đ` về `d`, lowercase, trim, collapse spaces.
+- **autocomplete priority** — mã chính xác → tên chính xác → viết tắt prefix → tên prefix → contains; chỉ tự chọn khi 1 kết quả rõ ràng.
+- **autocomplete abbreviation** — tạo chuỗi chữ cái đầu từ mỗi từ của tên để hỗ trợ `tdh` → `Thủy Đông Hà`.
+
 ### Badges (status pill)
 
 - **badge-success** — `inline-flex rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800` — Hoạt động, Đã duyệt.
@@ -194,6 +201,16 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - **link Sửa** — `rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-700 hover:bg-yellow-200`.
 - **link Xem** — `rounded border border-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:border-sky-300 hover:text-sky-700` (task 359).
 - **link Xóa** — `rounded bg-red-100 px-2 py-1 text-xs text-red-700 hover:bg-red-200` + `wire:confirm="..."`.
+
+### Danh sách chứng từ + bảng phụ chi tiết
+
+- **table row click** — `cursor-pointer hover:bg-sky-50`, row đang chọn `bg-sky-50`; dùng `wire:click="selectPhieu(...)"`.
+- **detail table panel** — dùng `space-y-4` giữa bảng chính và bảng phụ; bảng phụ là `rounded-lg border border-gray-200 bg-white shadow-sm`.
+- **detail panel header** — `flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 py-2`, tiêu đề `text-sm font-medium text-gray-700`, số chứng từ `font-mono text-xs text-gray-500`, action `gap-2`.
+- **detail panel actions** — nút `Sửa` dùng `button-warning`, nút `Xóa` dùng `button-danger` + `wire:confirm`; không đặt action row trong bảng danh sách.
+- **cột Loại phiếu (bảng kê gộp nhiều loại chứng từ)** — khi một bảng kê hiển thị nhiều loại chứng từ (vd SORptBK01: SO3 bán hàng, SO4 phiếu nhập hàng bán bị trả lại, SO5 dịch vụ), cột đầu tiên của bảng phiếu phải là `Loại phiếu` (`text-left whitespace-nowrap`), hiển thị `ten_ct` map từ `ma_ct` qua danh mục `asSIGetDmSo_ct`; nếu `ma_ct` chưa có trong danh mục thì fallback hiển thị chính `ma_ct`.
+- **bảng hiển thị đầy đủ cột của SP (bảng kê / report master-detail)** — giống DataGridView của SimbaERP (`ReportGridviewBrowseDynamic` tự sinh cột từ DataTable): bảng phiếu và bảng chi tiết phải tự bổ sung **mọi cột còn lại** mà SP trả về (ngoài các cột đã khai báo tường minh), không chỉ hiển thị subset cố định. Ví dụ `So\Rpt\Sorptbk01`: `appendDynamicColumns()` gom các cột động (dien_giai, ma_nt, ty_gia, so_seri, so_hd, ngay_lct, ma_httt, t_ck, ts_gtgt…) với nhãn tiếng Việt (`extraColumnLabel()`), canh lề theo loại cột (`extraColumnClass()`: tiền/số lượng `text-right`, diễn giải/địa chỉ `text-left` cho phép xuống dòng, còn lại `whitespace-nowrap`), định dạng cell theo loại (`dynamicCellValue()`: tiền/ngày/số lượng); bỏ qua cột liên kết nội bộ `stt_rec`, biến thể tiền tệ không được chọn (VND/NT theo `pMa_nt`, `isCurrencyVariantToSkip()`) và cột raw không có nhãn tiếng Việt (`isUnlabeledColumnToSkip()`). Cột tiền PH/CT dùng đúng tên result set của `asSORptBK01`: `tien2`/`tien_nt2`, `thue_gtgt`/`thue_gtgt_nt`, `tt`/`tt_nt` (PH) và thêm `gia2`/`gia_nt2` (CT).
+- **phiếu trả lại (SO4) / giá trị âm** — SO4 (phiếu nhập hàng bán bị trả lại) lưu số tiền **dương** trong `SoPh4`; dấu âm chỉ áp dụng khi post GL (`asPostSoPh4_glct`). Vì vậy cell tiền của phiếu SO4 phải được đánh dấu theo **`ma_ct == 'SO4'`** (không phải theo dấu âm) để phiếu trả hàng luôn có màu; cell âm nói chung vẫn được đánh dấu. Màu dùng `text-red-500` (đỏ nhạt, nhẹ nhàng, không gây rối / không xáo trộn design), không đổi nền row (giữ `hover:bg-sky-50` / chọn `bg-sky-50`). Ô trống cột tiền (phiếu không phát sinh tiền, vd SO1 đơn đặt hàng) hiển thị `—` (em dash, `text-gray-700`) thay vì để trống; CSV export vẫn xuất chuỗi rỗng `''`.
 
 ---
 

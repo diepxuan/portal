@@ -33,16 +33,17 @@ Chuyển đổi chức năng bảng kê chứng từ bán hàng (BK01) từ .NET
 | Trường | Kiểu | Mô tả |
 |--------|------|-------|
 | `stt_rec` | varchar | Số thứ tự record |
+| `ma_ct` | varchar | Loại chứng từ (SO1-SO5) — nguồn `asSIGetDmSo_ct` (MA_CT/TEN_CT) |
 | `ngay_ct` | datetime | Ngày chứng từ |
 | `so_ct` | varchar | Số chứng từ |
 | `ma_kh` | varchar | Mã khách hàng |
 | `ten_kh` | nvarchar | Tên khách hàng |
-| `t_tien_nt2` | decimal | Tổng tiền NT |
-| `t_tien2` | decimal | Tổng tiền VND |
-| `t_thue_nt` | decimal | Tổng thuế NT |
-| `t_thue` | decimal | Tổng thuế VND |
-| `t_tt_nt` | decimal | Tổng thanh toán NT |
-| `t_tt` | decimal | Tổng thanh toán VND |
+| `tien_nt2` | decimal | Tổng tiền NT |
+| `tien2` | decimal | Tổng tiền VND |
+| `thue_gtgt_nt` | decimal | Tổng thuế NT |
+| `thue_gtgt` | decimal | Tổng thuế VND |
+| `tt_nt` | decimal | Tổng thanh toán NT |
+| `tt` | decimal | Tổng thanh toán VND |
 
 #### Bảng CT (Chi tiết - Detail)
 
@@ -56,11 +57,13 @@ Chuyển đổi chức năng bảng kê chứng từ bán hàng (BK01) từ .NET
 | `ma_kho` | varchar | Mã kho |
 | `so_luong` | decimal | Số lượng |
 | `gia_nt2` | decimal | Giá NT |
-| `tien_nt2` | decimal | Tiền NT |
-| `ts_gtgt` | decimal | Thuế suất GTGT |
-| `thue_gtgt_nt` | decimal | Thuế NT |
 | `gia2` | decimal | Giá VND |
+| `tien_nt2` | decimal | Tiền NT |
 | `tien2` | decimal | Tiền VND |
+| `thue_gtgt_nt` | decimal | Thuế NT |
+| `thue_gtgt` | decimal | Thuế VND |
+| `tt_nt` | decimal | Thanh toán NT |
+| `tt` | decimal | Thanh toán VND |
 | `ma_nvkd` | varchar | Mã nhân viên kinh doanh |
 
 ### Quan hệ bảng
@@ -259,6 +262,11 @@ URL thực tế:
 - [x] Thêm filter controls (ngày, loại phiếu, KH, VT, kho...)
 - [x] Thêm routes (`so/rpt/sorptbk01` + compact suffix)
 - [x] Test export Excel (CSV)
+- [x] Bổ sung cột `Loại phiếu` (map `ma_ct` → `ten_ct` qua `asSIGetDmSo_ct`) để phân biệt phiếu bán hàng SO3 với phiếu nhập hàng bán bị trả lại SO4
+- [x] Đánh dấu phiếu trả lại (SO4) theo `ma_ct == 'SO4'` (SoPh4 lưu tiền dương, âm chỉ khi post GL) + cell âm, màu đỏ nhạt `text-red-500`; ô tiền trống (SO1 đơn đặt hàng không phát sinh tiền) hiển thị `—`, CSV vẫn xuất `''`
+- [x] Bảng hiển thị đầy đủ cột của SP theo SimbaERP: `appendDynamicColumns()` tự bổ sung mọi cột còn lại mà `asSORptBK01` trả về (dien_giai, ma_nt, ty_gia, so_seri, so_hd, ngay_lct, ma_httt, t_ck, ts_gtgt…) với nhãn tiếng Việt (`extraColumnLabel()`), canh lề theo loại cột (`extraColumnClass()`), định dạng cell theo loại (`dynamicCellValue()`: tiền/ngày/số lượng); bỏ qua `stt_rec` và biến thể tiền tệ không được chọn (`isCurrencyVariantToSkip()`); CSV export kèm đủ cột động
+- [x] Map đúng tên cột result set thật của `asSORptBK01` (SQL definition + data kiểm tra): PH/CT dùng `tien2`/`tien_nt2`, `thue_gtgt`/`thue_gtgt_nt`, `tt`/`tt_nt`; CT thêm `gia2`/`gia_nt2`. Bỏ cột raw không có nhãn hiển thị (vd `ma_cty`, `stt_rec0`, `ma_lo`, `ma_vitri`, `tk_pt`, `tk_thue`, `tk_ck_ds`) để bảng không còn hiện tên cột `tien2`, `tt_nt`, `tt` phía sau `Mã NT`/`Tỷ giá`
+- [x] Đổi nhãn chiết khấu sang dạng đầy đủ: `ck_ds`/`t_ck_ds` hiển thị `Chiết khấu doanh số`, `tien_ck` hiển thị `Tiền chiết khấu`, `tk_ck_ds` hiển thị `TK chiết khấu doanh số`; không dùng `CK ĐS`/`Tiền CK`
 - [ ] Test filter và lọc chi tiết với dữ liệu thực
 
 ---

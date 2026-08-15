@@ -14,9 +14,9 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 | IN — Tồn kho | 1 | 1 | 0 | 0 |
 | PO — Đơn hàng mua | 2 | 2 | 0 | 0 |
 | SI — System Integration | 2 | 2 | 0 | 0 |
-| SO — Đơn hàng bán | 2 | 2 | 0 | 0 |
+| SO — Đơn hàng bán | 3 | 3 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **11** | | | |
+| **Tổng** | **12** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -60,6 +60,7 @@ Các task đã xong phase hiện tại và được chuyển sang phase 1 để 
 
 | ID | File | DLL | Status |
 |---|---|---|---|
+| 197 | `197-so-hoa-don-ban-hang.md` | SOVchSO3.dll | DONE |
 | 201 | `201-so-bang-ke-chung-tu-ban-hang-01.md` | SORptBK01.dll | DONE |
 | 374 | `374-so-ardmkh-khach-hang-crud.md` |  | DONE |
 

@@ -8,32 +8,30 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-07-18
+ * @lastupdate 2026-08-09
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Po\Vch;
+namespace Diepxuan\Catalog\Http\Livewire\So\Vch;
 
-use Diepxuan\Simba\StoredProcedures\AsPOFilt3;
-use Diepxuan\Simba\StoredProcedures\AsPODeletePO3;
+use Diepxuan\Simba\StoredProcedures\AsSoFilt3;
+use Diepxuan\Simba\StoredProcedures\AsSODelPH3;
+use Diepxuan\Simba\StoredProcedures\AsSOGetCT3;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Component;
 
 /**
- * Danh sách hóa đơn mua hàng (PO3).
+ * Danh sách hóa đơn bán hàng (SO3).
  *
  * Mapping:
- * - menuID   : `10.10.14` (sysMenu).
- * - DLL      : `POVchPO3.dll` (form `frmPOVchPO3`).
- * - SP       : `asPOFilt3` (danh sách header + chi tiết) + `asPOGetPO3` (mở edit).
- * - Route    : `_simba-source/po/vch/povchpo3` (slug khong suffix menuid vi PO3 la 1-1 sysMenu).
- *
- * Refactor tu `Muahang\Hoadonmua` (dead code) sang pattern chuan `Po\Vch\Povchpo3`
- * (giong `So\Vch\Sovchso3`). Bind SP `asPOFilt3` thay vi Eloquent `PoPh3`.
+ * - menuID : `06.10.08` (sysMenu, sysVoucherInfo ma_ct = `SO3`).
+ * - DLL    : `SOVchSO3.dll` (form `frmSoVchSO3`).
+ * - SP     : `asSoFilt3` (danh sách header + chi tiết) + `asSOGetPH3`/`asSOGetCT3` (mở edit).
+ * - Route  : `_simba-source/so/vch/sovchso3`.
  */
-class Povchpo3 extends Component
+class Sovchso3 extends Component
 {
-    public const MA_CT = 'PO3';
+    public const MA_CT = 'SO3';
 
     public string $pSearch = '';
 
@@ -74,8 +72,8 @@ class Povchpo3 extends Component
     public function submit(): void
     {
         $maCty = (string) \CatalogService::company()->id;
-        $sets = AsPOFilt3::callWithDataSets([
-            'pKeyPh' => AsPOFilt3::keyPh(
+        $sets  = AsSoFilt3::callWithDataSets([
+            'pKeyPh' => AsSoFilt3::keyPh(
                 $maCty,
                 self::MA_CT,
                 \CatalogService::timerFrom(),
@@ -83,15 +81,15 @@ class Povchpo3 extends Component
                 $this->pMa_kh,
                 $this->pSearch
             ),
-            'pKeyCt' => AsPOFilt3::keyCt($maCty),
+            'pKeyCt' => AsSoFilt3::keyCt($maCty),
         ]);
 
         $this->phieuRows = $sets['ph']
-            ->map(static fn (mixed $row): array => (array) $row)
+            ->map(static fn (mixed $row): array => AsSoFilt3::normalizePh($row))
             ->values()
             ->all();
         $this->chiTietRows = $sets['ct']
-            ->map(static fn (mixed $row): array => self::normalizePoDetail($row))
+            ->map(static fn (mixed $row): array => AsSOGetCT3::normalizeDetail($row))
             ->values()
             ->all();
         $this->clearSelection();
@@ -150,7 +148,7 @@ class Povchpo3 extends Component
         DB::beginTransaction();
 
         try {
-            $result = AsPODeletePO3::call([
+            $result = AsSODelPH3::call([
                 'pMa_cty' => (string) \CatalogService::company()->id,
                 'pStt_rec' => $sttRec,
             ]);
@@ -172,7 +170,7 @@ class Povchpo3 extends Component
             $this->clearSelection();
 
             DB::commit();
-            session()->flash('success', 'Đã xóa hóa đơn mua hàng.');
+            session()->flash('success', 'Đã xóa hóa đơn bán hàng.');
         } catch (\Throwable $exception) {
             DB::rollBack();
             report($exception);
@@ -183,7 +181,7 @@ class Povchpo3 extends Component
     public function exportCsv(): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         $rows = $this->phieuRows;
-        $filename = 'po3-hoa-don-mua-hang-' . now()->format('Ymd-His') . '.csv';
+        $filename = 'so3-hoa-don-ban-hang-' . now()->format('Ymd-His') . '.csv';
 
         return response()->streamDownload(static function () use ($rows): void {
             $handle = fopen('php://output', 'wb');
@@ -192,14 +190,14 @@ class Povchpo3 extends Component
             }
 
             fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['Số CT', 'Số HĐ', 'Ngày CT', 'Ngày HĐ', 'Mã NCC', 'Diễn giải', 'Tổng tiền']);
+            fputcsv($handle, ['Số CT', 'Số seri', 'Ngày CT', 'Mã KH', 'Tên KH', 'Diễn giải', 'Tổng tiền']);
             foreach ($rows as $row) {
                 fputcsv($handle, [
                     (string) ($row['so_ct'] ?? ''),
-                    (string) ($row['so_hd'] ?? ''),
+                    (string) ($row['so_seri'] ?? ''),
                     (string) ($row['ngay_ct'] ?? ''),
-                    (string) ($row['ngay_hd'] ?? ''),
                     (string) ($row['ma_kh'] ?? ''),
+                    (string) ($row['ten_kh'] ?? ''),
                     (string) ($row['dien_giai'] ?? ''),
                     (string) ($row['t_tt'] ?? 0),
                 ]);
@@ -211,33 +209,11 @@ class Povchpo3 extends Component
 
     public function render(): View
     {
-        return view('catalog::po.vch.povchpo3', [
+        return view('catalog::so.vch.sovchso3', [
             'phieuRows' => $this->phieuRows,
             'chiTietFiltered' => $this->chiTietFiltered,
             'selectedPhieuIndex' => $this->selectedPhieuIndex,
             'selectedPhieu' => $this->selectedPhieu,
         ])->layout('catalog::layouts.app');
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private static function normalizePoDetail(mixed $row): array
-    {
-        $row = \is_array($row) ? $row : (array) $row;
-
-        return [
-            'stt_rec' => (string) ($row['stt_rec'] ?? ''),
-            'stt_rec0' => (string) ($row['stt_rec0'] ?? ''),
-            'ma_vt' => (string) ($row['ma_vt'] ?? ''),
-            'ten_vt' => (string) ($row['ten_vt'] ?? ''),
-            'dvt' => (string) ($row['dvt'] ?? ''),
-            'ma_kho' => (string) ($row['ma_kho'] ?? ''),
-            'so_luong' => (float) ($row['so_luong'] ?? 0),
-            'gia_nt0' => (float) ($row['gia_nt0'] ?? 0),
-            'tien_nt0' => (float) ($row['tien_nt0'] ?? 0),
-            'thue_gtgt_nt' => (float) ($row['thue_gtgt_nt'] ?? 0),
-            'tt_nt' => (float) ($row['tt_nt'] ?? 0),
-        ];
     }
 }

@@ -9,7 +9,7 @@ Chuyển đổi chứng từ **Phiếu nhập mua hàng (PO3)** từ Simba .NET 
 ## Trạng thái hiện tại
 
 - **Status:** DONE — refactor Phase A-E hoàn tất, push lên PR #251 ngày 2026-07-18
-- **Ngày audit/cập nhật:** 2026-07-19 (việt hóa UI + message theo yêu cầu Sếp)
+- **Ngày audit/cập nhật:** 2026-07-21 (đồng bộ convention Input* + reset HTTT khi đổi NCC + flash khi SP empty)
 - **Branch:** `task/251-po3-doc-rewrite`
 - **URL public (server thật):** `http://portal.diepxuan.corp/simba/po/vch/povchpo3` — render component `Po\Vch\Povchpo3`
 - **URL source (route binding):** `/_simba-source/po/vch/povchpo3`
@@ -224,15 +224,17 @@ Theo schema Simba ERP (`simba-docs/decompiled/.../dbo/Tables/PoPh3.sql, PoCt3.sq
 - [x] Auto-fill NCC info (ten_kh, dia_chi, ma_so_thue) khi chọn `ma_kh`
 - [x] Sinh `stt_rec` qua `AsGetSttRec::call(pMa_ct: 'PO3')` khi tạo mới
 - [x] Sinh `so_ct` qua `AsGetSoCt::call(pMa_ct: 'PO3', pNgay_Ct)` (Vietnamese flash messages)
-- [ ] Auto-fill `tk_pt`, `tk_thue` từ `ma_httt` lookup (deferred — chưa có lookup component)
-- [ ] Phân bổ chi phí theo `tt_pb`: 1 = theo số lượng, 2 = theo tiền hàng (button "Phân bổ")
+- [x] Auto-fill `tk_pt`, `tk_thue` từ `ma_httt` lookup (PR #251: InputHttt component + `updatedPMaHttt` hook qua `AsGetDMHTTT`)
+- [ ] Phân bổ chi phí theo `tt_pb`: 1 = theo số lượng, 2 = theo tiền hàng (button "Phân bổ") — phase sau
 - [ ] Check trùng so_ct qua `AsChkSoCt` trước khi save
 - [ ] Recalc sau save: gọi `AsReCalPO3`
 
-### Phase F — Testing (PENDING — task riêng)
-- [ ] Unit test `AsPOGetPO3::procedureParams()` (chưa có file test)
-- [ ] Unit test `AsPOSavePO3::procedureParams()` (chưa có file test)
-- [ ] Unit test `AsPODeletePO3::procedureParams()` (chưa có file test)
+### Phase F — Testing (DONE 2026-07-20, PR #255)
+- [x] Unit test `AsPOGetPO3Test` (4 tests, reflection-based param mapping, DB skip khi không có sqlsrv)
+- [x] Unit test `AsPOSavePO3Test` (10 tests, kiểm tra 50+ parameters + defaults + `pRet` output)
+- [x] Unit test `AsPODeletePO3Test` (phủ signature + DB skip)
+
+Xem: `diepxuan/laravel-simba/tests/Unit/As*Test.php`
 - [ ] Test route `po.vch.povchpo3` trả 200, render component `Po\Vch\Povchpo3`
 - [ ] Test route `_simba-source/po/vch/povchpo3` redirect → `/simba/po/vch/povchpo3`
 - [ ] Test list filter, tạo mới header + detail + chi phí, sửa, xóa, cảnh báo trùng so_ct
@@ -308,4 +310,4 @@ Theo schema Simba ERP (`simba-docs/decompiled/.../dbo/Tables/PoPh3.sql, PoCt3.sq
 - **Audit 4:** 2026-07-18 — đổi tên file sang format phase 1 (`069-po-hoadon-mua-hang.md`), viết lại theo cấu trúc phase 1 (008, 117, 358, 359), confirm SP wrappers PO3 đã có sẵn
 - **Audit 5:** 2026-07-18 — fetch server thật `povchpo3` xác nhận (1) shell metadata đang render, (2) route name thật là `po.vch.povchpo3` không suffix, (3) shell cũ `Muahang\Hoadonmua*` là dead code không có route bind, (4) đối chiếu DLL ↔ code cũ ↔ code mới, lập Phase A-F checklist theo PR review #251
 - **Audit 6:** 2026-07-18 — Phase A-E refactor code: xóa shell cũ, tạo `Po/Vch/Povchpo3*` + view + partial, uncomment route, update matrix. Push lên PR #251 commit `6f58a66fc`. CI 14/14 SUCCESS.
-- **Audit 7 (nay):** 2026-07-19 — Việt hóa UI + message theo yêu cầu Sếp. View blade, PHP session flash, validation messages đều có dấu tiếng Việt. Giữ nguyên identifier, slug, route name (ASCII theo convention codebase).
+- **Audit 7:** 2026-07-21 — Đồng bộ convention InputHttt/Chiphi/Ngoaite dùng `#[Modelable]` + `HasKsdFilter` trait; reset `pMa_httt/pTk_pt/pTk_thue` khi clear NCC; flash warning khi `fillTaiKhoanFromHttt` trả empty; đánh tick `[x]` Phase E auto-fill HTTT + Phase F tests đã làm ở PR #255.
