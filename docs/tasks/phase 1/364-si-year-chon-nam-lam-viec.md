@@ -15,7 +15,7 @@ ghi SQL Server.
 
 ## Trạng thái
 
-- **Status:** 🔄 IMPLEMENTING — route `si.vch.year` đã đăng ký, đang hoàn thiện header chọn năm.
+- **Status:** ✅ DONE — đã merge qua PR #277 (squash `5da940726`).
 - **Menu Simba:** `90.30.02` (theo `simba-docs/data/sysMenu.md:634`).
 - **DLL:** `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`).
 - **Route hiện tại:** `/hethong/year` (route name: `system.year`).
@@ -109,7 +109,7 @@ chạy được. Gộp về 364, xóa 218.
 - [x] Thêm `InputYearWorked` header + override metadata utility.
 - [x] `php -l` các file PHP mới.
 - [x] `php artisan route:list --name=si.vch.year` verify route.
-- [ ] Commit + push + mở PR.
+- [x] Commit + push + mở PR (PR #277, squash `5da940726`).
 
 ## Độ phức tạp
 
@@ -122,3 +122,18 @@ chạy được. Gộp về 364, xóa 218.
 - **2026-08-08:** Merge với task 218 (cùng menuid/DLL). Cập nhật range năm khớp
   DLL. Chuẩn hóa session key = `session('year')` theo `CatalogService` (nguồn
   sự thật codebase). Thêm header input chọn năm và metadata utility.
+- **2026-08-16:** Verify live trên `portal.diepxuan.corp`: page `/simba/si/vch/year`
+  200, 24 nút năm 2016→2027, header `InputYearWorked` render `[ 2026 ]`,
+  alias `hethong/year` 302 → `/simba/si/vch/year`. Test `InputYearWorkedTest`
+  4/4 pass. Cleanup follow-up (branch `task/364-year-selector-cleanup`):
+  xóa dead code `SysYear` view component, move test sang namespace
+  `Tests\Unit\Http\Livewire\Component`, cập nhật status doc.
+- **2026-08-16 (bug fix):** Sếp báo lỗi sau khi chọn năm ở header:
+  `The GET method is not supported for route livewire/update`. Root cause:
+  `InputYearWorked::selectYear()` dùng `request()->url()` — trong Livewire
+  update request, `request()` trỏ về endpoint `/livewire/update` (POST) chứ
+  không phải trang đang xem, nên `redirect(..., navigate: true)` sinh GET tới
+  `/livewire/update`. Fix: dùng `Livewire::originalUrl()` (đọc `memo.path` từ
+  snapshot, vendor `LivewireManager::originalUrl()`). Test cũ pin hành vi bug
+  (`assertRedirect(url()->current())` = URL update request) được sửa thành
+  assert redirect về URL trang gốc + không chứa `livewire/update`.

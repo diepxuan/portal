@@ -16,10 +16,10 @@
 | GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
 | PO — Đơn hàng mua | 18 | 0 | 18 | 0 |
-| SI — System Integration | 33 | 0 | 33 | 0 |
+| SI — System Integration | 32 | 0 | 32 | 0 |
 | SO — Đơn hàng bán | 45 | 0 | 45 | 0 |
 | System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **330** | | | |
+| **Tổng** | **329** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -338,7 +338,6 @@
 | 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | `SMFFY.dll` | PENDING |
 | 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | `SMUserInfo.dll` | PENDING |
 | 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
-| 364 | `364-si-year-chon-nam-lam-viec.md` | `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`). | PENDING |
 | 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
 | 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | PENDING |
 | 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | PENDING |
@@ -405,3 +404,4 @@
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 | 367 | `367-system-framework-libraries.md` |  | PENDING |
 | 372 | `372-fix-simba-menu-route-suffix-deterministic.md` |  | PENDING |
+
