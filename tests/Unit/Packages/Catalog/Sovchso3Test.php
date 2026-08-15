@@ -85,4 +85,47 @@ final class Sovchso3Test extends TestCase
         self::assertSame(10.0, $component->pT_ck_ds_nt);
         self::assertSame(209.0, $component->pT_tt_nt);
     }
+
+    public function testListSelectPhieuFiltersDetailRowsAndTogglesOff(): void
+    {
+        $component = new Sovchso3();
+        $component->phieuRows = [
+            ['stt_rec' => 'SO1', 'so_ct' => 'HD001'],
+            ['stt_rec' => 'SO2', 'so_ct' => 'HD002'],
+        ];
+        $component->chiTietRows = [
+            ['stt_rec' => 'SO1', 'ma_vt' => 'VT1'],
+            ['stt_rec' => 'SO2', 'ma_vt' => 'VT2'],
+        ];
+
+        $component->selectPhieu(0);
+
+        self::assertSame(0, $component->selectedPhieuIndex);
+        self::assertSame([['stt_rec' => 'SO1', 'ma_vt' => 'VT1']], $component->chiTietFiltered);
+
+        $component->selectPhieu(0);
+
+        self::assertNull($component->selectedPhieuIndex);
+        self::assertSame([], $component->chiTietFiltered);
+    }
+
+    public function testListSelectPhieuSwitchesBetweenRows(): void
+    {
+        $component = new Sovchso3();
+        $component->phieuRows = [
+            ['stt_rec' => 'SO1', 'so_ct' => 'HD001'],
+            ['stt_rec' => 'SO2', 'so_ct' => 'HD002'],
+        ];
+        $component->chiTietRows = [
+            ['stt_rec' => 'SO1', 'ma_vt' => 'VT1'],
+            ['stt_rec' => 'SO2', 'ma_vt' => 'VT2'],
+        ];
+
+        $component->selectPhieu(0);
+        $component->selectPhieu(1);
+
+        self::assertSame(1, $component->selectedPhieuIndex);
+        self::assertSame([['stt_rec' => 'SO2', 'ma_vt' => 'VT2']], $component->chiTietFiltered);
+    }
+
 }
