@@ -53,24 +53,74 @@ final class ArdmkhFormTest extends TestCase
         $method->invoke($form, collect([(object) ['pRet' => 1]]));
     }
 
-    public function testSorptbk01FiltersDetailRowsBySttRec(): void
+    public function testSorptbk01ReportRowsAreNotPublicLivewireState(): void
+    {
+        // Rows/cot bao cao khong duoc nam trong snapshot Livewire (nguyen
+        // nhan gay cham truoc day): chi giu phia server + dispatch 1 lan.
+        foreach (['phieuRows', 'chiTietRows', 'phieuColumns', 'chiTietColumns'] as $property) {
+            $reflection = new \ReflectionProperty(Sorptbk01::class, $property);
+            self::assertTrue($reflection->isPrivate(), "{$property} phai la private de khong nam trong snapshot Livewire.");
+        }
+    }
+
+    public function testSorptbk01ClientRowsPreformatCellsAndKeepKeys(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [
-            ['STT_REC' => 'P1', 'so_ct' => 'SO1'],
-            ['stt_rec' => 'P2', 'so_ct' => 'SO2'],
-        ];
-        $component->chiTietRows = [
-            ['stt_rec' => 'P1', 'ma_vt' => 'VT001'],
-            ['Stt_rec' => 'P2', 'ma_vt' => 'VT002'],
-        ];
+        $phieuRows = [[
+            'stt_rec'   => 'P1',
+            'ma_ct'     => 'SO3',
+            'so_ct'     => 'HD001',
+            'ngay_ct'   => '2026-07-01',
+            'ma_kh'     => 'KH001',
+            'ten_kh'    => 'Khách A',
+            'tien2'     => '70000',
+            'thue_gtgt' => '7000',
+            'tt'        => '77000',
+        ]];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
 
-        $component->selectPhieu(0);
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
 
-        self::assertSame(0, $component->selectedPhieuIndex);
-        self::assertSame('P1', $component->selectedPhieu['STT_REC']);
-        self::assertCount(1, $component->chiTietFiltered);
-        self::assertSame('VT001', $component->chiTietFiltered[0]['ma_vt']);
+        self::assertSame('P1', $rows[0]['stt_rec']);
+        self::assertSame('SO3', $rows[0]['ma_ct']);
+        self::assertSame('HD001', $rows[0]['so_ct']);
+        self::assertCount(\count($columns), $rows[0]['cells']);
+        self::assertSame('70,000', $rows[0]['cells'][self::columnIndex($columns, 'tien2')]['v']);
+        self::assertSame('01/07/2026', $rows[0]['cells'][self::columnIndex($columns, 'ngay_ct')]['v']);
+    }
+
+    public function testSorptbk01ClientRowsNormalizeRawCaseKeys(): void
+    {
+        $component = new Sorptbk01();
+        $phieuRows = [['STT_REC' => 'P1', 'MA_CT' => 'SO3', 'SO_CT' => 'HD001', 'TIEN2' => '-500000']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
+
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
+
+        self::assertSame('P1', $rows[0]['stt_rec']);
+        self::assertSame('SO3', $rows[0]['ma_ct']);
+        self::assertSame('HD001', $rows[0]['so_ct']);
+
+        $tien2 = self::columnIndex($columns, 'tien2');
+        self::assertSame('-500,000', $rows[0]['cells'][$tien2]['v']);
+        self::assertSame('text-red-500', $rows[0]['cells'][$tien2]['c']);
+    }
+
+    public function testSorptbk01ClientRowsInheritMaCtFromParentPhieu(): void
+    {
+        // Chi tiet ct khong co ma_ct — phai ke thua ma_ct phieu cha theo
+        // stt_rec de Alpine biet phieu SO3 (duoc sua/xoa) hay SO4 (mau do).
+        $component = new Sorptbk01();
+        $phieuRows = [['stt_rec' => 'P1', 'ma_ct' => 'SO4', 'so_ct' => 'PK001']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
+
+        $chiTietRows = [['stt_rec' => 'P1', 'ma_vt' => 'VT001', 'so_luong' => '2', 'tien2' => '100000']];
+        $columns = self::callPrivate($component, 'buildChiTietColumns', [$chiTietRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$chiTietRows, $columns, 'chiTietCellValue']);
+
+        self::assertSame('SO4', $rows[0]['ma_ct']);
     }
 
     public function testSorptbk01PayloadMapsDkttToPMaTT(): void
@@ -92,7 +142,7 @@ final class ArdmkhFormTest extends TestCase
     public function testSorptbk01PhieuColumnsIncludeVoucherTypeColumn(): void
     {
         $component = new Sorptbk01();
-        $columns = $component->phieuColumns();
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [[]]);
 
         self::assertSame('ma_ct', $columns[0]['key']);
         self::assertSame('Loại phiếu', $columns[0]['label']);
@@ -101,7 +151,7 @@ final class ArdmkhFormTest extends TestCase
     public function testSorptbk01PhieuColumnsUseAsSORptBK01ResultNames(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [[
+        $rows = [[
             'tien2'     => '70000',
             'thue_gtgt' => '7000',
             'tt'        => '77000',
@@ -110,7 +160,7 @@ final class ArdmkhFormTest extends TestCase
             'tt_nt'     => '77',
         ]];
 
-        $columns = $component->phieuColumns();
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$rows]);
         $keys = array_column($columns, 'key');
 
         self::assertContains('tien2', $keys);
@@ -152,27 +202,39 @@ final class ArdmkhFormTest extends TestCase
         self::assertSame('', $component->phieuCellValue([], 'ma_ct'));
     }
 
-    public function testSorptbk01PhieuMoneyCellNegativeUsesRedText(): void
+    public function testSorptbk01ClientRowsNegativeMoneyUsesRedText(): void
     {
         $component = new Sorptbk01();
+        $phieuRows = [['stt_rec' => 'P1', 'ma_ct' => 'SO3', 't_ck' => '-500000']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
 
-        self::assertSame('text-red-500', $component->phieuCellClass(['t_tien' => '-500000'], 't_tien'));
-        self::assertSame('text-red-500', $component->phieuCellClass(['T_TIEN' => '-500000'], 't_tien'));
-        self::assertSame('text-gray-700', $component->phieuCellClass(['t_tien' => '500000'], 't_tien'));
-        self::assertSame('text-gray-700', $component->phieuCellClass(['t_tien' => '0'], 't_tien'));
-        self::assertSame('text-gray-700', $component->phieuCellClass([], 't_tien'));
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
+
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
+
+        $phieuRows = [['stt_rec' => 'P1', 'ma_ct' => 'SO3', 't_ck' => '500000']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
+
+        self::assertSame('text-gray-700', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
     }
 
-    public function testSorptbk01PhieuMoneyCellRedWhenReturnVoucherSo4(): void
+    public function testSorptbk01ClientRowsRedWhenReturnVoucherSo4(): void
     {
         $component = new Sorptbk01();
 
         // SO4 luu so tien duong trong SoPh4; dau am chi ap dung khi post GL —
         // phai nhan dien theo ma_ct de phiếu tra hang co mau.
-        self::assertSame('text-red-500', $component->phieuCellClass(['ma_ct' => 'SO4', 't_tien' => '500000'], 't_tien'));
-        self::assertSame('text-red-500', $component->phieuCellClass(['MA_CT' => 'SO4', 't_thue' => '50000'], 't_thue'));
-        self::assertSame('text-gray-700', $component->phieuCellClass(['ma_ct' => 'SO3', 't_tien' => '500000'], 't_tien'));
-        self::assertSame('text-gray-700', $component->phieuCellClass(['ma_ct' => 'SO4', 'ten_kh' => 'KH'], 'ten_kh'));
+        $phieuRows = [['stt_rec' => 'P1', 'ma_ct' => 'SO4', 't_ck' => '500000', 'ten_kh' => 'KH']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
+
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
+
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
+        self::assertSame('text-gray-700', $rows[0]['cells'][self::columnIndex($columns, 'ten_kh')]['c']);
     }
 
     public function testSorptbk01PhieuEmptyMoneyCellShowsPlaceholder(): void
@@ -185,29 +247,32 @@ final class ArdmkhFormTest extends TestCase
         self::assertSame('500,000', $component->phieuCellValue(['t_tien' => '500000'], 't_tien'));
     }
 
-    public function testSorptbk01ChiTietNegativeQuantityAndMoneyUseRedText(): void
+    public function testSorptbk01ClientRowsChiTietNegativeUsesRedText(): void
     {
         $component = new Sorptbk01();
+        self::setPrivate($component, 'phieuRows', [['stt_rec' => 'P1', 'ma_ct' => 'SO3']]);
+        $chiTietRows = [['stt_rec' => 'P1', 'so_luong' => '-2', 't_ck' => '-100000', 'thue_gtgt' => '-10000', 'ma_vt' => 'VT1']];
 
-        self::assertSame('text-red-500', $component->chiTietCellClass(['so_luong' => '-2'], 'so_luong'));
-        self::assertSame('text-red-500', $component->chiTietCellClass(['tien' => '-100000'], 'tien'));
-        self::assertSame('text-red-500', $component->chiTietCellClass(['thue_gtgt' => '-10000'], 'thue_gtgt'));
-        self::assertSame('text-gray-700', $component->chiTietCellClass(['so_luong' => '2'], 'so_luong'));
-        self::assertSame('text-gray-700', $component->chiTietCellClass(['tien' => '100000'], 'tien'));
-        self::assertSame('text-gray-700', $component->chiTietCellClass(['so_luong' => '2'], 'ma_vt'));
+        $columns = self::callPrivate($component, 'buildChiTietColumns', [$chiTietRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$chiTietRows, $columns, 'chiTietCellValue']);
+
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 'so_luong')]['c']);
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 'thue_gtgt')]['c']);
+        self::assertSame('text-gray-700', $rows[0]['cells'][self::columnIndex($columns, 'ma_vt')]['c']);
     }
 
     public function testSorptbk01ChiTietColumnsUseAsSORptBK01ResultNames(): void
     {
         $component = new Sorptbk01();
-        $component->chiTietRows = [[
+        $rows = [[
             'gia2'      => '70000',
             'tien2'     => '70000',
             'thue_gtgt' => '7000',
             'tt'        => '77000',
         ]];
 
-        $keys = array_column($component->chiTietColumns(), 'key');
+        $keys = array_column(self::callPrivate($component, 'buildChiTietColumns', [$rows]), 'key');
 
         self::assertContains('gia2', $keys);
         self::assertContains('tien2', $keys);
@@ -215,20 +280,24 @@ final class ArdmkhFormTest extends TestCase
         self::assertContains('tt', $keys);
     }
 
-    public function testSorptbk01ChiTietMoneyCellRedWhenSelectedPhieuIsSo4(): void
+    public function testSorptbk01ClientRowsChiTietRedWhenParentPhieuIsSo4(): void
     {
         $component = new Sorptbk01();
-        $component->selectedPhieu = ['ma_ct' => 'SO4'];
+        self::setPrivate($component, 'phieuRows', [['stt_rec' => 'P1', 'ma_ct' => 'SO4']]);
+        $chiTietRows = [['stt_rec' => 'P1', 'so_luong' => '2', 't_ck' => '100000', 'ma_vt' => 'VT1']];
 
-        self::assertSame('text-red-500', $component->chiTietCellClass(['so_luong' => '2'], 'so_luong'));
-        self::assertSame('text-red-500', $component->chiTietCellClass(['tien' => '100000'], 'tien'));
-        self::assertSame('text-gray-700', $component->chiTietCellClass(['so_luong' => '2'], 'ma_vt'));
+        $columns = self::callPrivate($component, 'buildChiTietColumns', [$chiTietRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$chiTietRows, $columns, 'chiTietCellValue']);
+
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 'so_luong')]['c']);
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
+        self::assertSame('text-gray-700', $rows[0]['cells'][self::columnIndex($columns, 'ma_vt')]['c']);
     }
 
     public function testSorptbk01PhieuColumnsAppendAllSpResultFields(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [[
+        $rows = [[
             'stt_rec'  => 'P1',
             'ma_ct'    => 'SO3',
             'so_ct'    => 'HD001',
@@ -240,7 +309,7 @@ final class ArdmkhFormTest extends TestCase
             't_ck'     => '10000',
         ]];
 
-        $keys = array_column($component->phieuColumns(), 'key');
+        $keys = array_column(self::callPrivate($component, 'buildPhieuColumns', [$rows]), 'key');
 
         // Các cột quen thuộc vẫn đứng trước
         self::assertSame('ma_ct', $keys[0]);
@@ -258,7 +327,7 @@ final class ArdmkhFormTest extends TestCase
     public function testSorptbk01DynamicColumnsSkipInactiveCurrencyVariants(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [[
+        $rows = [[
             'tien2'    => '1000000',
             'tien_nt2' => '1000',
             't_ck'     => '10000',
@@ -266,7 +335,7 @@ final class ArdmkhFormTest extends TestCase
         ]];
 
         // Mặc định VND: cột quen thuộc lấy tien2, bỏ qua biến thể NT động (t_ck_nt)
-        $keys = array_column($component->phieuColumns(), 'key');
+        $keys = array_column(self::callPrivate($component, 'buildPhieuColumns', [$rows]), 'key');
         self::assertContains('tien2', $keys);
         self::assertNotContains('tien_nt2', $keys);
         self::assertNotContains('t_ck_nt', $keys);
@@ -274,7 +343,7 @@ final class ArdmkhFormTest extends TestCase
 
         // Chọn NT: cột quen thuộc giữ key, cột động giữ biến thể NT, bỏ VND
         $component->pMa_nt = 'USD';
-        $keys = array_column($component->phieuColumns(), 'key');
+        $keys = array_column(self::callPrivate($component, 'buildPhieuColumns', [$rows]), 'key');
         self::assertContains('tien2', $keys);
         self::assertNotContains('t_ck', $keys);
         self::assertContains('t_ck_nt', $keys);
@@ -283,7 +352,7 @@ final class ArdmkhFormTest extends TestCase
     public function testSorptbk01DynamicColumnsSkipRawFieldsWithoutLabels(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [[
+        $rows = [[
             'ma_cty'    => '001',
             'stt_rec0'  => '001',
             'stt_rec'   => 'P1',
@@ -297,7 +366,7 @@ final class ArdmkhFormTest extends TestCase
             'so_seri'   => '01AA',
         ]];
 
-        $keys = array_column($component->phieuColumns(), 'key');
+        $keys = array_column(self::callPrivate($component, 'buildPhieuColumns', [$rows]), 'key');
 
         // Cột liên kết nội bộ không hiển thị.
         self::assertNotContains('stt_rec', $keys);
@@ -317,14 +386,14 @@ final class ArdmkhFormTest extends TestCase
     public function testSorptbk01DiscountColumnLabelsAreNotAbbreviated(): void
     {
         $component = new Sorptbk01();
-        $component->phieuRows = [[
+        $rows = [[
             'tien_ck'    => '10000',
             'tien_ck_nt' => '10',
             'ck_ds'      => '5000',
             'ck_ds_nt'   => '5',
         ]];
 
-        $labels = array_column($component->phieuColumns(), 'label');
+        $labels = array_column(self::callPrivate($component, 'buildPhieuColumns', [$rows]), 'label');
 
         self::assertContains('Tiền chiết khấu', $labels);
         self::assertContains('Chiết khấu doanh số', $labels);
@@ -340,8 +409,13 @@ final class ArdmkhFormTest extends TestCase
         self::assertSame('10,000', $component->phieuCellValue(['t_ck' => '10000'], 't_ck'));
         self::assertSame('', $component->phieuCellValue(['t_ck' => null], 't_ck', true));
         self::assertSame('—', $component->phieuCellValue(['t_ck' => null], 't_ck'));
-        self::assertSame('text-red-500', $component->phieuCellClass(['t_ck' => '-10000'], 't_ck'));
-        self::assertSame('text-red-500', $component->phieuCellClass(['ma_ct' => 'SO4', 't_ck' => '10000'], 't_ck'));
+
+        $phieuRows = [['stt_rec' => 'P1', 'ma_ct' => 'SO4', 't_ck' => '10000']];
+        self::setPrivate($component, 'phieuRows', $phieuRows);
+        $columns = self::callPrivate($component, 'buildPhieuColumns', [$phieuRows]);
+        $rows    = self::callPrivate($component, 'clientRows', [$phieuRows, $columns, 'phieuCellValue']);
+
+        self::assertSame('text-red-500', $rows[0]['cells'][self::columnIndex($columns, 't_ck')]['c']);
     }
 
     public function testSorptbk01DynamicDateAndTextCells(): void
@@ -352,31 +426,54 @@ final class ArdmkhFormTest extends TestCase
         self::assertSame('Ghi chú bán hàng', $component->phieuCellValue(['dien_giai' => 'Ghi chú bán hàng'], 'dien_giai'));
     }
 
-    public function testSorptbk01SelectedVoucherActionsOnlyForSo3(): void
+    public function testSorptbk01DeleteVoucherGuardsInvalidAndNonSo3(): void
     {
+        \Illuminate\Support\Facades\Session::start();
+
+        // stt_rec rong: flash loi, khong goi SP.
         $component = new Sorptbk01();
-        $component->selectedPhieu = ['STT_REC' => 'SO3-STT', 'MA_CT' => 'SO3', 'SO_CT' => 'HD001'];
+        $component->deleteVoucher('');
+        self::assertNotEmpty(session('error'));
 
-        self::assertTrue($component->canEditSelectedVoucher());
-        self::assertSame('SO3-STT', $component->selectedVoucherSttRec());
-        self::assertSame('HD001', $component->selectedVoucherSoCt());
-
-        $component->selectedPhieu = ['STT_REC' => 'SO4-STT', 'MA_CT' => 'SO4', 'SO_CT' => 'PK001'];
-        self::assertFalse($component->canEditSelectedVoucher());
-
-        $component->selectedPhieu = ['STT_REC' => 'SO5-STT', 'MA_CT' => 'SO5', 'SO_CT' => 'DV001'];
-        self::assertFalse($component->canEditSelectedVoucher());
-
-        $component->selectedPhieu = [];
-        self::assertFalse($component->canEditSelectedVoucher());
+        // Phieu SO4 trong session: flash loi (chi SO3 duoc xoa tu bang ke).
+        session()->forget('error');
+        $component = new Sorptbk01();
+        $component->setId('test-component');
+        session(['sorptbk01.report.test-component' => [
+            'phieu'   => [['stt_rec' => 'P1', 'ma_ct' => 'SO4', 'so_ct' => 'PK001']],
+            'chitiet' => [],
+        ]]);
+        $component->deleteVoucher('P1');
+        self::assertNotEmpty(session('error'));
     }
 
-    public function testSorptbk01SelectedVoucherSttRecNormalizesRawCase(): void
+    /**
+     * @param list<array{key:string,label:string,class:string}> $columns
+     */
+    private static function columnIndex(array $columns, string $key): int
     {
-        $component = new Sorptbk01();
-        $component->selectedPhieu = ['stt_rec' => 'P1', 'ma_ct' => 'SO3', 'so_ct' => 'HD001'];
+        foreach ($columns as $index => $column) {
+            if ($column['key'] === $key) {
+                return $index;
+            }
+        }
 
-        self::assertSame('P1', $component->selectedVoucherSttRec());
-        self::assertSame('HD001', $component->selectedVoucherSoCt());
+        self::fail("Column {$key} not found in column list.");
+    }
+
+    private static function setPrivate(object $target, string $property, mixed $value): void
+    {
+        $reflection = new \ReflectionProperty($target::class, $property);
+        $reflection->setValue($target, $value);
+    }
+
+    /**
+     * @param list<mixed> $args
+     */
+    private static function callPrivate(object $target, string $method, array $args): mixed
+    {
+        $reflection = new \ReflectionMethod($target::class, $method);
+
+        return $reflection->invokeArgs($target, $args);
     }
 }
