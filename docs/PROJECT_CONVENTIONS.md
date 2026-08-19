@@ -72,10 +72,20 @@ Các wrapper `AsARInsDMKH` / `AsARUpdDMKH` phải khai báo output `pRet`:
 ## 5. Input autocomplete khách hàng / đối tượng
 
 - `input-khachhang` là lookup dùng chung cho khách hàng, nhà cung cấp và nhân viên theo `mode`.
+
+### Quy tắc search chung (áp dụng cho mọi filter/list/autocomplete)
+
 - Search luôn chuẩn hóa trước khi so khớp: bỏ dấu NFD, quy `đ/Đ` về `d`, lowercase, gộp khoảng trắng.
-- Ngoài tên đầy đủ, cần tạo thêm chuỗi viết tắt từ chữ cái đầu mỗi từ để hỗ trợ tìm nhanh, ví dụ `tdh` khớp `Thủy Đông Hà`.
-- Thứ tự kết quả ưu tiên: mã chính xác → tên chính xác → viết tắt prefix → tên prefix → contains.
+- Khớp theo **dãy con đúng thứ tự** (subsequence) sau khi bỏ khoảng trắng: query không cần nằm liền nhau, không cần bắt đầu từ, và không cần là chữ cái đầu mỗi từ.
+- Ví dụ `Thủy Đông Hà` khớp cả `tdh`, `tda`, `ygh`, `thuy dong`, `dong ha`.
+- Không dùng alias, không dùng bí danh từ khóa, không dùng viết tắt chữ cái đầu mỗi từ, không hardcode từ khóa nào vào filter.
+- Thứ tự kết quả ưu tiên: mã chính xác → tên chính xác → chuỗi liên tiếp (contains) → dãy con đúng thứ tự.
 - `commitSearch()` chỉ tự chọn khi có một kết quả rõ ràng; nhiều kết quả thì giữ dropdown để người dùng chọn.
+
+### Chi tiết áp dụng
+
+- Search luôn chuẩn hóa trước khi so khớp: bỏ dấu NFD, quy `đ/Đ` về `d`, lowercase, gộp khoảng trắng.
+- Danh sách dùng client-side filter (vd ARDMKH, INDMVT) phải áp dụng cùng quy tắc dãy con đúng thứ tự cho toàn bộ field được tìm kiếm.
 
 ## 6. Danh sách chứng từ và bảng phụ chi tiết
 

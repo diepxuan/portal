@@ -168,8 +168,8 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 
 - **autocomplete dropdown** — `absolute z-50 mt-1 w-full overflow-hidden rounded-md border border-gray-300 bg-white shadow-lg`; item `cursor-pointer px-3 py-2 hover:bg-blue-50`, highlight `bg-blue-50`.
 - **autocomplete search normalization** — NFD strip diacritics, quy `đ/Đ` về `d`, lowercase, trim, collapse spaces.
-- **autocomplete priority** — mã chính xác → tên chính xác → viết tắt prefix → tên prefix → contains; chỉ tự chọn khi 1 kết quả rõ ràng.
-- **autocomplete abbreviation** — tạo chuỗi chữ cái đầu từ mỗi từ của tên để hỗ trợ `tdh` → `Thủy Đông Hà`.
+- **autocomplete priority** — mã chính xác → tên chính xác → chuỗi liên tiếp → dãy con đúng thứ tự; chỉ tự chọn khi 1 kết quả rõ ràng.
+- **autocomplete subsequence search** — tìm theo dãy ký tự con đúng thứ tự sau khi chuẩn hóa, không dùng alias/viết tắt chữ cái đầu; ví dụ `tdh`, `tda`, `ygh` đều khớp `Thủy Đông Hà`.
 
 ### Badges (status pill)
 
