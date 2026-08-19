@@ -389,15 +389,16 @@
                     this.chiTietColumns = detail.chiTietColumns || [];
                     this.phieuRows = detail.phieu || [];
                     this.chiTietRows = detail.chiTiet || [];
-                    this.loaded = true;
-                    this.selectPhieu(this.phieuRows.length > 0 ? 0 : null);
+                    this.loaded = this.phieuRows.length > 0;
+                    this.selectPhieu(this.loaded ? 0 : null);
                 },
 
                 onDeleted(detail) {
                     const sttRec = detail.sttRec;
                     this.phieuRows = this.phieuRows.filter((row) => row.stt_rec !== sttRec);
                     this.chiTietRows = this.chiTietRows.filter((row) => row.stt_rec !== sttRec);
-                    this.selectPhieu(this.phieuRows.length > 0 ? 0 : null);
+                    this.loaded = this.phieuRows.length > 0;
+                    this.selectPhieu(this.loaded ? 0 : null);
                 },
 
                 selectPhieu(index) {
