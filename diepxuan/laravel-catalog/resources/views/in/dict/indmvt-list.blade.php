@@ -15,7 +15,8 @@
         selectRow(el) {
             const ds = el.dataset;
             const field = (name) => {
-                const cell = el.querySelector('[data-field="' + name + '"]');
+                const cell = Array.from(el.querySelectorAll('[data-field]'))
+                    .find((node) => node.dataset.field === name);
                 return cell ? (cell.textContent || '').trim() : '';
             };
 
