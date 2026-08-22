@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Diepxuan\Support\Http\Middleware\SessionDomain;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(['simba/si/vch/year/select']);
+        // Cookie session/XSRF theo host: Portal chay tren ca
+        // portaldev.diepxuan.io.vn, portal.diepxuan.corp va portal.diepxuan.io.vn.
+        $middleware->append(SessionDomain::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
