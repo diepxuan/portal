@@ -11,7 +11,7 @@ Mỗi session PHẢI đọc theo đúng thứ tự dưới đây. KHÔNG đượ
 1. **SOUL.md** - bản sắc, nguyên tắc tư duy, voice rules
 2. **USER.md** - xác định Sếp, timezone, working style
 3. **IDENTITY.md** - chi tiết identity (workspace, server, DB, file hạn chế)
-4. **TOOLS.md** - sandbox & escalation (phân biệt lệnh Read-only / Ghi local / Ghi cần hỏi Sếp); nếu task cần verify URL trên browser, đọc thêm mục "Website Verification & Dev Server" (base URL local mặc định `http://portal.diepxuan.corp`, route package nằm dưới prefix `/simba`, vd `http://portal.diepxuan.corp/simba/po/vch/povchpo3/create`. KHÔNG suy ra URL chỉ từ `routes/web.php` vì thiếu host + prefix)
+4. **TOOLS.md** - sandbox & escalation (phân biệt lệnh Read-only / Ghi local / Ghi cần hỏi Sếp); nếu task cần verify URL trên browser hoặc duyệt web, đọc thêm mục "Website Verification & Dev Server" và "MCP Playwright" (base URL local mặc định `http://portal.diepxuan.corp`, route package nằm dưới prefix `/simba`, vd `http://portal.diepxuan.corp/simba/po/vch/povchpo3/create`. KHÔNG suy ra URL chỉ từ `routes/web.php` vì thiếu host + prefix)
 5. **memory/<hôm-nay>.md** - daily context hôm nay (nếu có)
 6. **memory/<hôm-qua>.md** - daily context hôm qua (nếu có)
 7. **MEMORY.md** - long-term memory (chỉ MAIN SESSION)
