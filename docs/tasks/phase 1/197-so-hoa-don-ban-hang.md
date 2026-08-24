@@ -645,3 +645,9 @@ Route::prefix('catalog/so')
 - **SP save:** `asSOInsPH3` / `asSOUpdPH3` + `asSOInsCT3` / `zasSOUpdCT3` / `asSODelCT3`
 - **SP delete:** `asSODelPH3`
 - **Note:** SO3 không có SP save gộp như PO3 nên form dùng transaction và gọi đúng bộ SP header/detail gốc từ SimbaSql.
+- **Fix 2026-08-23:** truyền `:value` cho `InputKhachhang`, `InputNgoaite`, `InputHttt` khi mở edit để Alpine hiển thị đúng selection ban đầu. Verify record `001wSO30000000633055`: DOM trả về `KL/Khách lẻ`, `VND/đồng`, `111/Tiền mặt` và 17 dòng chi tiết.
+- **Fix 2026-08-24 (tiếp):** Livewire v3 chỉ seed prop `#[Modelable]` từ parent trên các request kế tiếp (`SupportWireModelingNestedComponents::hydrate`, memo `bindings`) — lần render đầu SSR không seed, nên TK phải thu/thuế/CK doanh số và Mã VT/Mã kho grid chi tiết hiện trống. Sửa:
+  + Thêm prop `$value` (SSR-only seed, convention như InputKhachhang) vào `InputTaikhoan`, `InputIndmvt`, `InputIndmkho`; blade dùng `@js($pTk ?: $value)`; `render()` đồng bộ `$value` theo lựa chọn hiện tại.
+  + View `sovchso3-edit`: `:value="$pTk_pt|$pTk_thue|$pTk_ck_ds"`; `_grid-chitiet`: `:value="$row['ma_vt']|$row['ma_kho']"`.
+  + `Sovchso3Edit::loadInvoice()` bổ sung `pGh_no` lấy từ danh mục khách hàng (theo `simba-docs/asia/so/vouchers/SO3.md` — gh_no là field hiển thị từ DMKH qua GetKhInfo, không lưu trên PH).
+  - Verify live `001wSO30000000633055/edit` (curl SSR): seed lookup `KL/Khách lẻ`, `VND`, `111/Tiền mặt`, TK `131/33311/5211`, 17 dòng VT+KHO; snapshot header đầy đủ (`pDu13=-76414197`, tổng NT 23.750.002). Test: `Sovchso3Test` 8 tests / 33 assertions PASS.

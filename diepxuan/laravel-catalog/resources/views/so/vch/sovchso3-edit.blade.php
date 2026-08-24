@@ -40,7 +40,7 @@
                     <div class="grid grid-cols-12 items-center gap-x-4 gap-y-3">
                         <label class="col-span-3 text-right text-sm text-gray-700">Mã khách hàng <span class="text-red-500">*</span></label>
                         <div class="col-span-9">
-                            <livewire:catalog::component.input-khachhang mode="khachhang" wire:model.live="pMa_kh" />
+                            <livewire:catalog::component.input-khachhang mode="khachhang" :value="$pMa_kh" wire:model.live="pMa_kh" />
                             <x-input-error for="pMa_kh" class="mt-1" />
                         </div>
 
@@ -108,7 +108,7 @@
                         </div>
                         <div>
                             <label class="mb-1 block text-xs font-medium text-gray-500">Mã ngoại tệ <span class="text-red-500">*</span></label>
-                            <livewire:catalog::component.input-ngoaite wire:model="pMa_nt" placeholder="Chọn ngoại tệ" />
+                            <livewire:catalog::component.input-ngoaite :value="$pMa_nt" wire:model="pMa_nt" placeholder="Chọn ngoại tệ" />
                             <x-input-error for="pMa_nt" class="mt-1" />
                         </div>
                         <div>
@@ -129,19 +129,19 @@
                     <div class="grid grid-cols-12 items-center gap-x-4 gap-y-3">
                         <label class="col-span-4 text-right text-sm text-gray-700">Hình thức thanh toán</label>
                         <div class="col-span-8">
-                            <livewire:catalog::component.input-httt wire:model="pMa_httt" module-id="SO" placeholder="Chọn hình thức thanh toán" />
+                            <livewire:catalog::component.input-httt :value="$pMa_httt" wire:model="pMa_httt" module-id="SO" placeholder="Chọn hình thức thanh toán" />
                         </div>
                         <label class="col-span-4 text-right text-sm text-gray-700">TK phải thu</label>
                         <div class="col-span-8">
-                            <livewire:catalog::component.input-taikhoan wire:model="pTk_pt" />
+                            <livewire:catalog::component.input-taikhoan :value="$pTk_pt" wire:model="pTk_pt" />
                         </div>
                         <label class="col-span-4 text-right text-sm text-gray-700">TK thuế GTGT</label>
                         <div class="col-span-8">
-                            <livewire:catalog::component.input-taikhoan wire:model="pTk_thue" />
+                            <livewire:catalog::component.input-taikhoan :value="$pTk_thue" wire:model="pTk_thue" />
                         </div>
                         <label class="col-span-4 text-right text-sm text-gray-700">TK chiết khấu doanh số</label>
                         <div class="col-span-8">
-                            <livewire:catalog::component.input-taikhoan wire:model="pTk_ck_ds" />
+                            <livewire:catalog::component.input-taikhoan :value="$pTk_ck_ds" wire:model="pTk_ck_ds" />
                         </div>
                     </div>
                 </div>

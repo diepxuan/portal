@@ -40,6 +40,28 @@ curl -I http://portal.diepxuan.corp/simba
 
 - Chỉ start/stop/restart dev server khi Sếp yêu cầu rõ ràng hoặc task trực tiếp là xử lý dev-server process. Nếu thật sự cần, phải xin phép Sếp trước và báo rõ lý do.
 
+## MCP Playwright
+
+### Trạng thái và phạm vi
+
+- Codex global config đã khai báo MCP server tên `playwright` trong `~/.codex/config.toml`, dùng STDIO với lệnh tuyệt đối `/root/.npm-global/bin/playwright-mcp --headless`; session mới dùng được ngay mà không phải cài lại.
+- Cấu hình này áp dụng cho Codex CLI/IDE/desktop dùng chung `~/.codex/config.toml`. Runtime agent khác phải tự kiểm tra connector/MCP riêng; không giả định nó đã có sẵn.
+- Shell login hiện tại không có `/root/.npm-global/bin` trong `PATH`; không gọi tên rút gọn `playwright-mcp`. Khi debug thủ công, dùng đúng đường dẫn tuyệt đối hoặc dựa vào MCP server do Codex khởi động.
+- Fallback chỉ dùng để debug: `/usr/bin/npx --offline --no-install @playwright/mcp@0.0.79`. Phương án này chạy được nhưng chậm hơn binary trực tiếp; nếu npm cache trống và offline thì thất bại. Không tự install package mới khi chưa được Sếp chấp thuận.
+- Kiểm chứng ngày 2026-08-23: `@playwright/mcp@0.0.79`, runtime Playwright của server `1.63.0-alpha-2026-08-05`; server expose 24 tool và gọi thành công `browser_navigate` trên Chromium headless.
+
+### Quy trình duyệt web / verify UI
+
+- Ưu tiên gọi tool từ MCP server `playwright`; không spawn browser/process Playwright riêng khi mục tiêu chỉ là duyệt hoặc kiểm thử UI. Tên tool trong runtime có thể được prefix dạng `mcp__playwright__...`; chọn tool thuộc server `playwright`.
+- Kiểm tra nhanh khi nghi ngờ server chưa sẵn sàng: trong Codex TUI dùng `/mcp`, ngoài TUI dùng `codex mcp list --json`.
+- Với Portal, luôn bắt đầu từ `http://portal.diepxuan.corp` + prefix `/simba`; không suy URL chỉ từ `routes/web.php`.
+- Flow chuẩn: `browser_navigate` → `browser_snapshot` → tương tác theo ref mới nhất trong snapshot → `browser_snapshot` lại sau hành động → kiểm tra `browser_console_messages` và `browser_network_requests`. Với Livewire/Alpine, dùng `browser_wait_for` nếu DOM chưa kịp cập nhật.
+- Dùng `browser_take_screenshot` làm bằng chứng UI khi cần; artifact mặc định nằm dưới `.playwright-mcp/` và đã bị git ignore, không commit trừ khi task yêu cầu thật sự.
+- `browser_click`, `browser_type`, `browser_fill_form`, `browser_select_option`, `browser_press_key` có thể gây mutation nếu thao tác submit/save/delete. Chỉ thực hiện action ghi khi task yêu cầu rõ; action phá dữ liệu hoặc xác nhận destructive phải hỏi Sếp trước.
+- `browser_evaluate` và `browser_run_code_unsafe` là phương án cuối cùng khi snapshot/click/form không đủ; báo cáo rõ đoạn code đã chạy và lý do.
+- Nếu MCP fail: dừng, báo lỗi/tool bị thiếu, kiểm tra `codex mcp get playwright --json`. Không tự đổi global config hay fallback sang browser GUI khi chưa có chỉ thị của Sếp.
+- Giao việc cho đệ phải nêu rõ URL/mục tiêu/kết quả mong muốn và nhắc đệ tuân theo chính sách mutation ở trên; đệ không mở rộng phạm vi duyệt web.
+
 ## Sandbox & Escalation
 
 Mặc định agent chỉ được đọc/ghi trong workspace Portal và các thư mục được môi trường cho phép. Mọi hành động cần quyền ngoài sandbox phải xin phép Sếp trước khi chạy.
@@ -236,5 +258,3 @@ Triệu chứng thực tế của runtime `ninerouter` trong phiên này, ghi đ
 - **KHÔNG tự `gh auth login`** khi gặp `authentication failed` — dừng và báo Sếp. Sếp cấp token mới qua channel an toàn.
 - Token scope khuyến nghị cho agent Portal: `repo`, `read:org`, `workflow`. Expiration ≤ 30 ngày.
 - Không commit token, không in ra log, không paste vào file trong workspace (kể cả `/tmp/`).
-
-

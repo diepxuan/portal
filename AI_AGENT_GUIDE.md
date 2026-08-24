@@ -4,7 +4,7 @@
 >
 > Nguyên tắc cao nhất: **an toàn > tốc độ**. Khi không chắc chắn → dừng và hỏi.
 >
-> Ngày cập nhật cuối: 2026-07-22 (session refactor, đồng bộ với AGENTS.md/TOOLS.md/MEMORY.md).
+> Ngày cập nhật cuối: 2026-08-23 (đồng bộ MCP Playwright với AGENTS.md/TOOLS.md).
 
 ---
 
@@ -26,11 +26,11 @@
 
 1. `SOUL.md` — bản sắc, nguyên tắc cao nhất.
 2. `USER.md` — định danh Sếp, timezone (`Asia/Ho_Chi_Minh`), working style.
-3. `TOOLS.md` — local notes + **Sandbox & Escalation** (§Codex CLI) + Website Verification (`http://portal.diepxuan.corp/simba/...`).
+3. `TOOLS.md` — local notes + **Sandbox & Escalation** (§Codex CLI) + Website Verification (`http://portal.diepxuan.corp/simba/...`) + **MCP Playwright**.
 4. `memory/<YYYY-MM-DD>.md` (hôm nay) + `memory/<YYYY-MM-DD>.md` (hôm qua) — daily context.
 5. `MEMORY.md` — long-term memory (5 sections: §0 quy tắc / §1 PRs / §2 Tasks / §3 lessons / §4 domain / §5 backlog).
 6. Nếu task chạm UI/Blade/Livewire/Alpine: `docs/DESIGN.md` — design tokens.
-7. Nếu task cần test/URL/dev server: §"Website Verification & Dev Server" trong `TOOLS.md` (base URL `http://portal.diepxuan.corp`, các route nằm dưới prefix `/simba`).
+7. Nếu task cần test/URL/dev server/browser/web research: §"Website Verification & Dev Server" và §"MCP Playwright" trong `TOOLS.md` (base URL Portal là `http://portal.diepxuan.corp`, các route nằm dưới prefix `/simba`).
 
 ### 2.1. Ngữ cảnh nhanh
 
@@ -39,6 +39,7 @@
 - **Thay đổi trong `diepxuan/*`** ảnh hưởng trực tiếp ứng dụng chính (autoload symlink).
 - **Design tokens:** `docs/DESIGN.md` là nguồn sự thật duy nhất (chuẩn Google Labs `design.md` spec). Mọi sửa view/Blade/Livewire/Alpine phải map token → Tailwind class. Cần mở rộng → mở PR riêng cho `docs/DESIGN.md`.
 - **Simba docs:** `simba-docs/` mount readonly — nguồn sự thật về table/field/SP. Mọi thao tác Simba ưu tiên SP wrapper; Eloquent chỉ fallback khi không có SP phù hợp.
+- **Browser:** dùng MCP server `playwright` để duyệt web và verify UI; tuân theo policy mutation trong `TOOLS.md`.
 
 ---
 
@@ -177,6 +178,7 @@ Cho task lớn: thêm Verification checklist + báo cáo cuối rõ ràng cho S�
 - **Mỗi thư mục = 1 package** với cấu trúc Laravel chuẩn.
 - **Workflow**: đọc task → tạo branch → sửa → commit → push → PR → chờ review.
 - **Boot**: đọc `MEMORY.md` + `TOOLS.md` trước mỗi task lớn.
+- **Browser**: task browser/UI dùng MCP Playwright theo `TOOLS.md`.
 - **Design**: `docs/DESIGN.md` cho UI.
 - **Simba**: `simba-docs/` + SP wrapper, Eloquent fallback.
 - **Merge**: chỉ khi Sếp bảo, dùng `gh pr merge --squash --delete-branch`.
@@ -191,7 +193,7 @@ Cho task lớn: thêm Verification checklist + báo cáo cuối rõ ràng cho S�
 | `AGENTS.md` | Định danh + nguyên tắc agent | Boot sequence §1-2 |
 | `SOUL.md` | Bản sắc + nguyên tắc cao nhất | Boot §1 |
 | `USER.md` | Định danh Sếp + timezone + working style | Boot §2 |
-| `TOOLS.md` | Local notes + Sandbox + Website Verification | Boot §3, mỗi task có lệnh |
+| `TOOLS.md` | Local notes + Sandbox + Website Verification + MCP Playwright | Boot §3, browser/UI task, mỗi task có lệnh |
 | `MEMORY.md` | Long-term memory (PRs, lessons, domain) | Boot §5, trước task lớn |
 | `docs/DESIGN.md` | Design tokens + UI patterns | Task UI |
 | `docs/DEVELOPMENT.md` | Quy trình phát triển Portal | Setup môi trường |
@@ -201,4 +203,4 @@ Cho task lớn: thêm Verification checklist + báo cáo cuối rõ ràng cho S�
 
 ---
 
-*Tài liệu này cập nhật lần cuối: 2026-07-22. Mọi AI agent làm việc trên repository `diepxuan/portal` phải tuân thủ các quy tắc trên.*
+*Tài liệu này cập nhật lần cuối: 2026-08-23. Mọi AI agent làm việc trên repository `diepxuan/portal` phải tuân thủ các quy tắc trên.*
