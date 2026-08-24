@@ -67,7 +67,7 @@
 
                         <label class="col-span-3 text-right text-sm text-gray-700">Hình thức TT</label>
                         <div class="col-span-9">
-                            <livewire:catalog::component.input-httt wire:model="pMa_httt" module-id="PO" placeholder="Chọn hình thức thanh toán" />
+                            <livewire:catalog::component.input-httt :value="$pMa_httt" wire:model="pMa_httt" module-id="PO" placeholder="Chọn hình thức thanh toán" />
                             <x-input-error for="pMa_httt" class="mt-1" />
                         </div>
 
@@ -120,7 +120,7 @@
                         </div>
                         <div>
                             <label class="mb-1 block text-xs font-medium text-gray-500">Mã ngoại tệ</label>
-                            <livewire:catalog::component.input-ngoaite wire:model="pMa_nt" placeholder="Chọn ngoại tệ" />
+                            <livewire:catalog::component.input-ngoaite :value="$pMa_nt" wire:model="pMa_nt" placeholder="Chọn ngoại tệ" />
                             <x-input-error for="pMa_nt" class="mt-1" />
                         </div>
                         <div>
