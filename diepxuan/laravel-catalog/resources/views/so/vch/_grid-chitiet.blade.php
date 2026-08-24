@@ -20,10 +20,10 @@
         <tbody>
             @forelse ($pChiTiet ?? [] as $i => $row)
                 <tr wire:key="so3-ct-{{ $i }}" class="border-b">
-                    <td class="px-1 py-1"><livewire:catalog::component.input-indmvt wire:model="pChiTiet.{{ $i }}.ma_vt" wire:key="so3-ct-mavt-{{ $i }}" /></td>
+                    <td class="px-1 py-1"><livewire:catalog::component.input-indmvt :value="$row['ma_vt'] ?? ''" wire:model="pChiTiet.{{ $i }}.ma_vt" wire:key="so3-ct-mavt-{{ $i }}" /></td>
                     <td class="px-1 py-1"><input wire:model="pChiTiet.{{ $i }}.ten_vt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs" readonly /></td>
                     <td class="px-1 py-1"><input wire:model="pChiTiet.{{ $i }}.dvt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs" readonly /></td>
-                    <td class="px-1 py-1"><livewire:catalog::component.input-indmkho wire:model="pChiTiet.{{ $i }}.ma_kho" wire:key="so3-ct-makho-{{ $i }}" /></td>
+                    <td class="px-1 py-1"><livewire:catalog::component.input-indmkho :value="$row['ma_kho'] ?? ''" wire:model="pChiTiet.{{ $i }}.ma_kho" wire:key="so3-ct-makho-{{ $i }}" /></td>
                     <td class="px-1 py-1"><input wire:model="pChiTiet.{{ $i }}.ton_kho" class="w-20 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
                     <td class="px-1 py-1"><input type="number" step="0.0001" wire:model.blur="pChiTiet.{{ $i }}.so_luong" wire:change="calculateChiTietRow({{ $i }})" class="w-24 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
                     <td class="px-1 py-1"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.gia_nt2" wire:change="calculateChiTietRow({{ $i }})" class="w-28 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
