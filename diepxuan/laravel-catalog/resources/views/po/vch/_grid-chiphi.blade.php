@@ -1,4 +1,5 @@
 <div class="space-y-2">
+    <div class="overflow-x-auto">
     <table class="min-w-max w-full text-xs">
         <thead class="bg-gray-50 border-b">
             <tr>
@@ -39,6 +40,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     <div class="flex justify-end gap-2 pt-2">
         <button type="button" wire:click="addChiPhiRow" class="rounded border border-gray-300 px-3 py-1 text-xs text-gray-700 hover:bg-gray-50">+ Thêm dòng chi phí</button>
     </div>

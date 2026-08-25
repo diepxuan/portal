@@ -37,7 +37,7 @@
                     <div class="grid grid-cols-12 items-center gap-x-4 gap-y-3">
                         <label class="col-span-3 text-right text-sm text-gray-700">Mã NCC <span class="text-red-500">*</span></label>
                         <div class="col-span-9">
-                            <livewire:catalog::component.input-khachhang mode="nhacungcap" wire:model.live="pMa_kh" />
+                            <livewire:catalog::component.input-khachhang mode="nhacungcap" :value="$pMa_kh" wire:model.live="pMa_kh" />
                             <x-input-error for="pMa_kh" class="mt-1" />
                         </div>
 
@@ -205,7 +205,7 @@
                     </div>
                     <div class="text-center">
                         <span class="text-gray-500">Tổng TT NT</span>
-                        <div class="text-lg font-bold text-blue-700">{{ number_format($pT_tt_nt, 2, ',', '.') }}</div>
+                        <div class="text-lg font-semibold text-blue-700">{{ number_format($pT_tt_nt, 2, ',', '.') }}</div>
                     </div>
                 </div>
             </div>
