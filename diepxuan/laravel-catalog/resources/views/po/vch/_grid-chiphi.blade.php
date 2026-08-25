@@ -5,16 +5,16 @@
             <tr>
                 <th class="px-2 py-1 text-left font-medium text-gray-600">Mã chi phí</th>
                 <th class="px-2 py-1 text-left font-medium text-gray-600">Tên chi phí</th>
-                <th class="px-2 py-1 text-center font-medium text-gray-600">PP</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Tiền CP NT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">% VAT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Thuế NT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Tổng NT</th>
-                <th class="px-2 py-1 text-left font-medium text-gray-600">Mã BP</th>
-                <th class="px-2 py-1 text-left font-medium text-gray-600">Mã phí</th>
-                <th class="px-2 py-1 text-left font-medium text-gray-600">Mã SPCT</th>
-                <th class="px-2 py-1 text-left font-medium text-gray-600">Mã lô</th>
-                <th class="px-2 py-1 text-center font-medium text-gray-600">Thao tác</th>
+                <th class="px-2 py-1 min-w-12 px-2 py-1 text-center font-medium text-gray-600">PP</th>
+                <th class="px-2 py-1 min-w-28 px-2 py-1 text-right font-medium text-gray-600">Tiền CP NT</th>
+                <th class="px-2 py-1 min-w-14 px-2 py-1 text-right font-medium text-gray-600">% VAT</th>
+                <th class="px-2 py-1 min-w-24 px-2 py-1 text-right font-medium text-gray-600">Thuế NT</th>
+                <th class="px-2 py-1 min-w-28 px-2 py-1 text-right font-medium text-gray-600">Tổng NT</th>
+                <th class="px-2 py-1 min-w-20 px-2 py-1 text-left font-medium text-gray-600">Mã BP</th>
+                <th class="px-2 py-1 min-w-20 px-2 py-1 text-left font-medium text-gray-600">Mã phí</th>
+                <th class="px-2 py-1 min-w-20 px-2 py-1 text-left font-medium text-gray-600">Mã SPCT</th>
+                <th class="px-2 py-1 min-w-20 px-2 py-1 text-left font-medium text-gray-600">Mã lô</th>
+                <th class="w-1 whitespace-nowrap px-2 py-1 text-center font-medium text-gray-600">Thao tác</th>
             </tr>
         </thead>
         <tbody>
@@ -22,16 +22,16 @@
                 <tr wire:key="cp-{{ $i }}" class="border-b">
                     <td class="p-0 align-middle"><livewire:catalog::component.input-chiphi wire:model="pChiPhi.{{ $i }}.ma_cp" wire:key="cp-macp-{{ $i }}" /></td>
                     <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ten_cp" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.tt_pb" class="w-12 rounded border border-gray-200 px-2 py-1 text-center text-xs" /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiPhi.{{ $i }}.tien_cp_nt" wire:change="calculateChiPhiRow({{ $i }})" class="w-28 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiPhi.{{ $i }}.ts_gtgt" wire:change="calculateChiPhiRow({{ $i }})" class="w-16 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.thue_gtgt_nt" class="w-24 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.tt_nt" class="w-28 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_bp" class="w-20 rounded border border-gray-200 px-2 py-1 text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_phi" class="w-20 rounded border border-gray-200 px-2 py-1 text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_spct" class="w-20 rounded border border-gray-200 px-2 py-1 text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_lo" class="w-20 rounded border border-gray-200 px-2 py-1 text-xs" /></td>
-                    <td class="p-0 align-middle text-center">
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.tt_pb" class="w-full rounded border border-gray-200 px-2 py-1 text-center text-xs" /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiPhi.{{ $i }}.tien_cp_nt" wire:change="calculateChiPhiRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiPhi.{{ $i }}.ts_gtgt" wire:change="calculateChiPhiRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.thue_gtgt_nt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.tt_nt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_bp" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_phi" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_spct" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiPhi.{{ $i }}.ma_lo" class="w-full rounded border border-gray-200 px-2 py-1 text-xs" /></td>
+                    <td class="w-1 p-0 align-middle text-center">
                         <button type="button" wire:click="removeChiPhiRow({{ $i }})" class="rounded border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50">Xóa</button>
                     </td>
                 </tr>

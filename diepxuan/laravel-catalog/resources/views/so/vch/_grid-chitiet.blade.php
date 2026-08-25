@@ -7,15 +7,15 @@
                 <th class="px-2 py-1 text-left font-medium text-gray-600">Tên VT</th>
                 <th class="px-2 py-1 text-left font-medium text-gray-600">ĐVT</th>
                 <th class="px-2 py-1 text-left font-medium text-gray-600">Mã kho</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Tồn</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Số lượng</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Giá NT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Tiền NT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">% CK</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">CK NT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">% VAT</th>
-                <th class="px-2 py-1 text-right font-medium text-gray-600">Thuế NT</th>
-                <th class="px-2 py-1 text-center font-medium text-gray-600">Thao tác</th>
+                <th class="min-w-16 px-2 py-1 text-right font-medium text-gray-600">Tồn</th>
+                <th class="min-w-20 px-2 py-1 text-right font-medium text-gray-600">Số lượng</th>
+                <th class="min-w-28 px-2 py-1 text-right font-medium text-gray-600">Giá NT</th>
+                <th class="min-w-28 px-2 py-1 text-right font-medium text-gray-600">Tiền NT</th>
+                <th class="min-w-14 px-2 py-1 text-right font-medium text-gray-600">% CK</th>
+                <th class="min-w-24 px-2 py-1 text-right font-medium text-gray-600">CK NT</th>
+                <th class="min-w-14 px-2 py-1 text-right font-medium text-gray-600">% VAT</th>
+                <th class="min-w-24 px-2 py-1 text-right font-medium text-gray-600">Thuế NT</th>
+                <th class="w-1 whitespace-nowrap px-2 py-1 text-center font-medium text-gray-600">Thao tác</th>
             </tr>
         </thead>
         <tbody>
@@ -25,15 +25,15 @@
                     <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.ten_vt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs" readonly /></td>
                     <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.dvt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs" readonly /></td>
                     <td class="p-0 align-middle"><livewire:catalog::component.input-indmkho :value="$row['ma_kho'] ?? ''" wire:model="pChiTiet.{{ $i }}.ma_kho" wire:key="so3-ct-makho-{{ $i }}" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.ton_kho" class="w-20 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.0001" wire:model.blur="pChiTiet.{{ $i }}.so_luong" wire:change="calculateChiTietRow({{ $i }})" class="w-24 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.gia_nt2" wire:change="calculateChiTietRow({{ $i }})" class="w-28 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.tien_nt2" class="w-28 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.tl_ck" wire:change="calculateChiTietRow({{ $i }})" class="w-16 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.tien_ck_nt" class="w-24 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.ts_gtgt" wire:change="calculateChiTietRow({{ $i }})" class="w-16 rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
-                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.thue_gtgt_nt" class="w-24 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
-                    <td class="p-0 align-middle text-center">
+                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.ton_kho" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.0001" wire:model.blur="pChiTiet.{{ $i }}.so_luong" wire:change="calculateChiTietRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.gia_nt2" wire:change="calculateChiTietRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.tien_nt2" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.tl_ck" wire:change="calculateChiTietRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.tien_ck_nt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="p-0 align-middle"><input type="number" step="0.01" wire:model.blur="pChiTiet.{{ $i }}.ts_gtgt" wire:change="calculateChiTietRow({{ $i }})" class="w-full rounded border border-gray-200 px-2 py-1 text-right text-xs" /></td>
+                    <td class="p-0 align-middle"><input wire:model="pChiTiet.{{ $i }}.thue_gtgt_nt" class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 text-right text-xs" readonly /></td>
+                    <td class="w-1 p-0 align-middle text-center">
                         <button type="button" wire:click="removeChiTietRow({{ $i }})" class="rounded border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50">Xóa</button>
                     </td>
                 </tr>
