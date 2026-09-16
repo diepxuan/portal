@@ -112,7 +112,6 @@
             run();
             window.addEventListener('resize', run);
             document.addEventListener('livewire:navigated', run);
-            window.addEventListener('resize', run);
 
             // User go: fit ngay theo noi dung dang go
             const fromGridInput = (e) => !!(e.target && e.target.closest && e.target.closest('table.js-autofit'));
