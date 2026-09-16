@@ -190,6 +190,8 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 
 - **tab nav** — `<x-nav-tabs default-tab="filter">` component, dùng Alpine `x-data="{ activeTab: '...' }"` + dispatch event `switch-tab` từ Livewire.
 - **tab link** — `inline-block rounded-t-lg border-b-2 p-4` + dynamic class `border-blue-500 text-blue-600` (active) / `border-transparent hover:text-gray-600 hover:border-gray-300` (inactive).
+- **chỉ dùng tab bar khi có >= 2 tab thật** — form/chứng từ chỉ có một section dùng heading section (`h3` theo H3 token) thay vì tab bar một-tab.
+- **spinner trong tab bar** — `<x-nav-tabs>` chỉ render icon loading khi dùng chế độ data-driven (`:tabs="[...]"`); chế độ slot (`x-slot:nav`/`x-slot:content`) tự quản nav, không có spinner mặc định.
 
 ### Modal & Loading
 
@@ -205,6 +207,10 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 ### Danh sách chứng từ + bảng phụ chi tiết
 
 - **table row click** — `cursor-pointer hover:bg-sky-50`, row đang chọn `bg-sky-50`; dùng `wire:click="selectPhieu(...)"`.
+- **grid chi tiết cuộn ngang trong card** — table nhiều cột (`min-w-max`) bắt buộc bọc `<div class="overflow-x-auto">` để tràn bên trong card, không phá vỡ layout form (áp dụng cho `_grid-chitiet`, `_grid-chiphi` SO3/PO3).
+- **form voucher hai cột** — khối trái (khách hàng/NCC) và các khối grid 12 cột dùng nhịp label/input thống nhất: label `col-span-3 text-right text-sm` + field `col-span-9`; không đổi nhịp giữa các khối trong cùng một form.
+- **lookup seed khi sửa chứng từ** — component lookup có prop modelable phải nhận thêm `:value` từ parent ở lần render đầu (SSR); Livewire chỉ seed `#[Modelable]` từ request thứ hai. Xem pattern `input-khachhang|taikhoan|indmvt|indmkho|httt|ngoaite` + view `sovchso3-edit`.
+- **field chỉ hiển thị từ danh mục** — giá trị tính/display-only lấy từ danh mục gốc khi load (vd `gh_no`/`du13` của SO3 đọc từ DMKH theo simba-docs), không lưu vào bảng chứng từ.
 - **detail table panel** — dùng `space-y-4` giữa bảng chính và bảng phụ; bảng phụ là `rounded-lg border border-gray-200 bg-white shadow-sm`.
 - **detail panel header** — `flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 py-2`, tiêu đề `text-sm font-medium text-gray-700`, số chứng từ `font-mono text-xs text-gray-500`, action `gap-2`.
 - **detail panel actions** — nút `Sửa` dùng `button-warning`, nút `Xóa` dùng `button-danger` + `wire:confirm`; không đặt action row trong bảng danh sách.
@@ -234,6 +240,8 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - KHÔNG dùng màu ngoài palette (`bg-purple-600`, `bg-pink-500`, `bg-orange-500`, ...) trừ khi design token mới được thêm vào file này.
 - KHÔNG hard-code shadow ngoài `shadow-sm` / `shadow` / `shadow-lg` / `shadow-xl`.
 - KHÔNG dùng `font-bold` (700) trên label/button — dùng `font-semibold` (600) là tối đa.
+- KHÔNG để table `min-w-max` nằm trần không có wrapper `overflow-x-auto` bên trong card.
+- KHÔNG render tab bar cho form chỉ có một section — dùng heading section thay thế.
 - KHÔNG scale font theo viewport (cấm `sm:text-lg md:text-xl`).
 - KHÔNG set `letter-spacing` âm; KHÔNG set line-height lẻ.
 - KHÔNG bind `wire:model` cho field display-only — chỉ render `{{ $value }}` trong thẻ `<div>` với class readonly.
@@ -255,4 +263,4 @@ Khi tạo hoặc sửa view trong `diepxuan/*/resources/views/`:
 
 ---
 
-*Cập nhật lần cuối: 2026-07-17 · Bột (Portal Project Assistant) · theo pattern phase 1 (008 AR BCCN01, 117 INRptCD02, 358 route metadata, 359 AP BCCN01 SL).*
+*Cập nhật lần cuối: 2026-08-24 · Bột (Portal Project Assistant) · theo pattern phase 1 (008 AR BCCN01, 117 INRptCD02, 358 route metadata, 359 AP BCCN01 SL) + chuẩn hóa form voucher SO3/PO3 (#284, layout edit).*
