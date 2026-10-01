@@ -127,20 +127,20 @@
             <div class="grid grid-cols-2 gap-0 border-b border-gray-200">
                 <div class="border-r border-gray-200 p-5">
                     <div class="grid grid-cols-12 items-center gap-x-4 gap-y-3">
-                        <label class="col-span-4 text-right text-sm text-gray-700">Hình thức thanh toán</label>
-                        <div class="col-span-8">
+                        <label class="col-span-3 text-right text-sm text-gray-700">Hình thức thanh toán</label>
+                        <div class="col-span-9">
                             <livewire:catalog::component.input-httt :value="$pMa_httt" wire:model="pMa_httt" module-id="SO" placeholder="Chọn hình thức thanh toán" />
                         </div>
-                        <label class="col-span-4 text-right text-sm text-gray-700">TK phải thu</label>
-                        <div class="col-span-8">
+                        <label class="col-span-3 text-right text-sm text-gray-700">TK phải thu</label>
+                        <div class="col-span-9">
                             <livewire:catalog::component.input-taikhoan :value="$pTk_pt" wire:model="pTk_pt" />
                         </div>
-                        <label class="col-span-4 text-right text-sm text-gray-700">TK thuế GTGT</label>
-                        <div class="col-span-8">
+                        <label class="col-span-3 text-right text-sm text-gray-700">TK thuế GTGT</label>
+                        <div class="col-span-9">
                             <livewire:catalog::component.input-taikhoan :value="$pTk_thue" wire:model="pTk_thue" />
                         </div>
-                        <label class="col-span-4 text-right text-sm text-gray-700">TK chiết khấu doanh số</label>
-                        <div class="col-span-8">
+                        <label class="col-span-3 text-right text-sm text-gray-700">TK chiết khấu doanh số</label>
+                        <div class="col-span-9">
                             <livewire:catalog::component.input-taikhoan :value="$pTk_ck_ds" wire:model="pTk_ck_ds" />
                         </div>
                     </div>
@@ -160,22 +160,10 @@
             </div>
 
             <div class="p-5">
-                <x-nav-tabs :default-tab="'chitiet'">
-                    <x-slot:nav>
-                        <li class="mr-2">
-                            <a href="#" x-on:click.prevent="activeTab = 'chitiet'"
-                                :class="{ 'border-blue-500 text-blue-600': activeTab === 'chitiet', 'border-transparent hover:text-gray-600 hover:border-gray-300': activeTab !== 'chitiet' }"
-                                class="inline-block rounded-t-lg border-b-2 p-3 text-sm">
-                                Chi tiết hàng hóa
-                            </a>
-                        </li>
-                    </x-slot:nav>
-                    <x-slot:content>
-                        <div class="pt-2">
-                            @include('catalog::so.vch._grid-chitiet')
-                        </div>
-                    </x-slot:content>
-                </x-nav-tabs>
+                {{-- Form hiện chỉ có một section chi tiết — dùng heading thay tab bar
+                     (x-nav-tabs chỉ dùng khi có >= 2 tab thật, xem docs/DESIGN.md). --}}
+                <h3 class="mb-3 border-b border-gray-100 pb-2 text-sm font-semibold text-gray-700">Chi tiết hàng hóa</h3>
+                @include('catalog::so.vch._grid-chitiet')
 
                 <div class="mt-4 grid grid-cols-6 gap-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-xs">
                     <div class="text-center">
