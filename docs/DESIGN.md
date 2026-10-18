@@ -208,6 +208,8 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 
 - **table row click** — `cursor-pointer hover:bg-sky-50`, row đang chọn `bg-sky-50`; dùng `wire:click="selectPhieu(...)"`.
 - **grid chi tiết cuộn ngang trong card** — table nhiều cột (`min-w-max`) bắt buộc bọc `<div class="overflow-x-auto">` để tràn bên trong card, không phá vỡ layout form (áp dụng cho `_grid-chitiet`, `_grid-chiphi` SO3/PO3).
+- **cột grid tự fit nội dung** — table chi tiết thêm class `js-autofit`; `window.PortalGridAutofit` (`resources/js/app.js`) đo nội dung bằng canvas rồi set `style.width` từng cột, cột nút thao tác đánh dấu `data-no-fit`. Cấm nhúng JS autofit inline trong partial — logic dùng chung đặt ở `resources/js/app.js`, nạp qua vite.
+- **ô trong grid chi tiết** — cell dùng `p-0 align-middle`, input `w-full` + `rounded-none` (viền input trở thành đường kẻ ô); nhờ `js-autofit` giữ chiều rộng theo nội dung nên không cần `w-*` cố định hay `min-w-*` trên `th`.
 - **form voucher hai cột** — khối trái (khách hàng/NCC) và các khối grid 12 cột dùng nhịp label/input thống nhất: label `col-span-3 text-right text-sm` + field `col-span-9`; không đổi nhịp giữa các khối trong cùng một form.
 - **lookup seed khi sửa chứng từ** — component lookup có prop modelable phải nhận thêm `:value` từ parent ở lần render đầu (SSR); Livewire chỉ seed `#[Modelable]` từ request thứ hai. Xem pattern `input-khachhang|taikhoan|indmvt|indmkho|httt|ngoaite` + view `sovchso3-edit`.
 - **field chỉ hiển thị từ danh mục** — giá trị tính/display-only lấy từ danh mục gốc khi load (vd `gh_no`/`du13` của SO3 đọc từ DMKH theo simba-docs), không lưu vào bảng chứng từ.
@@ -241,6 +243,7 @@ Ngôn ngữ hình dạng: **Soft Utility**. Toàn bộ giao diện dùng corner-
 - KHÔNG hard-code shadow ngoài `shadow-sm` / `shadow` / `shadow-lg` / `shadow-xl`.
 - KHÔNG dùng `font-bold` (700) trên label/button — dùng `font-semibold` (600) là tối đa.
 - KHÔNG để table `min-w-max` nằm trần không có wrapper `overflow-x-auto` bên trong card.
+- KHÔNG nhúng `<script>` autofit inline trong partial Blade — đặt ở `resources/js/app.js` và nạp qua vite.
 - KHÔNG render tab bar cho form chỉ có một section — dùng heading section thay thế.
 - KHÔNG scale font theo viewport (cấm `sm:text-lg md:text-xl`).
 - KHÔNG set `letter-spacing` âm; KHÔNG set line-height lẻ.
@@ -263,4 +266,4 @@ Khi tạo hoặc sửa view trong `diepxuan/*/resources/views/`:
 
 ---
 
-*Cập nhật lần cuối: 2026-08-24 · Bột (Portal Project Assistant) · theo pattern phase 1 (008 AR BCCN01, 117 INRptCD02, 358 route metadata, 359 AP BCCN01 SL) + chuẩn hóa form voucher SO3/PO3 (#284, layout edit).*
+*Cập nhật lần cuối: 2026-10-01 · Bột (Portal Project Assistant) · theo pattern phase 1 (008 AR BCCN01, 117 INRptCD02, 358 route metadata, 359 AP BCCN01 SL) + chuẩn hóa form voucher SO3/PO3 (#284, layout edit).*
