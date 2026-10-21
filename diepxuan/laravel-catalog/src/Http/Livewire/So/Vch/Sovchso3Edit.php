@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Diepxuan\Catalog\Http\Livewire\So\Vch;
 
+use Diepxuan\Catalog\Services\KhoaSo;
+use Diepxuan\Catalog\Services\KhoaSoException;
 use Diepxuan\Simba\Models\ArDmKh;
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsGetArkhInfo_SO;
@@ -423,6 +425,16 @@ class Sovchso3Edit extends Component
             'pNgay_lct.required' => 'Ngày lập chứng từ không được để trống.',
             'pTy_gia.gt'        => 'Tỷ giá phải lớn hơn 0.',
         ]);
+
+        // Kiểm tra khóa sổ liệu kỳ (SiSetup.ngay_ks) — tương đương validation
+        // `ngay_ct > ngay_ks` của SOVchSO3.dll trước khi ghi dữ liệu.
+        try {
+            app(KhoaSo::class)->assertDocumentDateNotLocked($this->pNgay_ct);
+        } catch (KhoaSoException $exception) {
+            $this->addError('pNgay_ct', $exception->getMessage());
+
+            return;
+        }
 
         DB::beginTransaction();
 

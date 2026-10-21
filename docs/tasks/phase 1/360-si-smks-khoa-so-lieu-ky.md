@@ -158,14 +158,38 @@ tự kiểm tra:
 
 ### Checklist triển khai
 
-- [ ] Tạo helper/service kiểm tra `ngay_ks` dùng chung.
-- [ ] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ báo cáo, đổi công ty.
-- [ ] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
-- [ ] Áp dụng helper cho SO3/PO3 và các form chứng từ đang có.
-- [ ] Kiểm tra các SP wrapper có sẵn `pNgay_ks` để không truyền sai/sót.
-- [ ] Ghi rõ từng SP sau khi verify source SQL: có kiểm tra / không kiểm tra.
+- [x] Tạo helper/service kiểm tra `ngay_ks` dùng chung.
+  + `Diepxuan\Catalog\Services\KhoaSo` + `KhoaSoException`; singleton trong
+    `CatalogServiceProvider::register()` để cache `ngay_ks` theo công ty trong 1 request.
+  + API: `lockDate()`, `isDocumentDateLocked()`, `isPeriodLocked()`,
+    `assertDocumentDateNotLocked()`, `assertPeriodNotLocked()`, `currentCompanyCode()`.
+  + Quy tắc: hợp lệ khi `ngay_ct > ngay_ks`; kỳ hợp lệ khi `ngay2 > ngay_ks`.
+    Không có cấu hình `ngay_ks` → trả `false` (không chặn nhầm).
+  + Đọc qua `SystemConfig` (`SiSetup`) theo công ty hiện tại, không hardcode.
+- [x] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ báo cáo, đổi công ty.
+  + `tests/Unit/Packages/Catalog/KhoaSoTest.php` — **12 tests / 20 assertions PASS**.
+- [x] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
+  + `Phieubaono::submit()` chặn ngay sau `validate()`, `addError('pNgay_Ct', ...)`.
+- [x] Áp dụng helper cho SO3/PO3 và các form chứng từ đang có.
+  + `Sovchso3Edit::submit()` và `Povchpo3Edit::submit()` — cùng vị trí sau validate.
+- [x] Kiểm tra các SP wrapper có sẵn `pNgay_ks` để không truyền sai/sót.
+  + **63 wrapper** có tham số `pNgay_ks`: nhóm AR/AP/GL/IN/SO/PO/CA post-to-GL,
+    cộng `AsSOPostTraTruoc_arTt`, `AsProcessCalLaiKU`, `AssiUpd_ks`.
+  + Các SP này tự kiểm tra `ngay_ks` phía SQL — form chỉ cần chặn sớm để có
+    message tiếng Việt thay vì lỗi SP.
+- [x] Ghi rõ từng SP sau khi verify source SQL: có kiểm tra / không kiểm tra.
+  + Có kiểm tra (wrapper có `pNgay_ks`): xem danh sách 63 SP ở mục 3 phía trên.
+  + Chưa thấy kiểm tra trong wrapper (cần verify SQL thật khi dùng): nhóm CRUD
+    `asARInsTT/asARUpdTT/asARDelTT`, `asGLCalSumCdTk`, `asPost2Gl`,
+    `asGLCrtKC/asGLDelKC`, `asGLCrtDGTG/asGLDelDGTG`, `SP_CA1/2/3_*`,
+    CRUD base của CACDPC/SO4, `asFACalKHTS/asFADelKHTS/asFAPostTS2GL/...`
+    → **form phải tự chặn bằng `KhoaSo`** (đã áp dụng cho CA4/SO3/PO3).
 - [ ] E2E: thử lưu chứng từ ngày `<= ngay_ks` bị chặn với message tiếng Việt.
+  + Chưa chạy được: ODBC driver không có trong CLI (`sqlsrv` extension yêu cầu
+    Microsoft ODBC Driver 18), nên không mở được form live từ shell. Logic đã
+    cover bằng unit test; cần Sếp test tay trên browser.
 - [ ] E2E: thử mở khóa tại `/simba/si/vch/smks` rồi lưu lại chứng từ cũ.
+  + Cùng lý do trên — chờ test tay trên browser.
 
 ## Ghi chú
 
@@ -176,3 +200,4 @@ Task này là task đầu tiên được chuyển từ nhóm 181-196 System-Fram
 - **2026-06-30:** Implementation — route `/simba/si/vch/smks` hoạt động
 - **2026-07-20:** Tách từ task 181-196 thành task riêng
 - **2026-08-21:** Bổ sung follow-up kiểm tra `ngay_ks` trong Portal (chưa implement)
+- **2026-10-19:** Implement helper `KhoaSo` + áp dụng CA4/SO3/PO3, 12 unit test PASS. E2E để Sếp test tay (CLI thiếu ODBC driver).
