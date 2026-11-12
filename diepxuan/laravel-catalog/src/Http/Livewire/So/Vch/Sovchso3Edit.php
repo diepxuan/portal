@@ -468,6 +468,17 @@ class Sovchso3Edit extends Component
             return;
         }
 
+        // Kiểm tra khóa sổ liệu kỳ (SiSetup.ngay_ks). asSODelPH3 không có tham số
+        // pNgay_ks nên SQL không tự chặn — form phải guard, đúng quy tắc
+        // `ngay_ct > ngay_ks` của SOVchSO3.dll.
+        try {
+            app(KhoaSo::class)->assertDocumentDateNotLocked($this->pNgay_ct);
+        } catch (KhoaSoException $exception) {
+            session()->flash('error', $exception->getMessage());
+
+            return;
+        }
+
         DB::beginTransaction();
 
         try {

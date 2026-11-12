@@ -128,6 +128,35 @@ final class KhoaSoTest extends TestCase
         self::assertFalse($khoaSo->isDocumentDateLocked('2026-09-15', '001'));
     }
 
+    public function testLockDateReturnsNullWhenServiceCannotResolveConfig(): void
+    {
+        // Khong co ket noi DB trong unit test -> lockDate() phai tra null
+        // thay vi nem exception, va khong chan nham chung tu.
+        $khoaSo = new KhoaSo();
+
+        self::assertNull($khoaSo->lockDate('001'));
+        self::assertFalse($khoaSo->isDocumentDateLocked('2020-01-01', '001'));
+    }
+
+    public function testLockDateCachesPerCompany(): void
+    {
+        $khoaSo = $this->service('2026-06-30', ['002' => '2025-12-31']);
+
+        // Goi lap lai nhieu lan cho cung cong ty phai tra cung ket qua.
+        self::assertSame('2026-06-30', $khoaSo->lockDate('001'));
+        self::assertSame('2026-06-30', $khoaSo->lockDate('001'));
+        self::assertSame('2025-12-31', $khoaSo->lockDate('002'));
+    }
+
+    public function testDocumentDateLockedAcceptsDateTimeStringFormat(): void
+    {
+        $khoaSo = $this->service('2026-06-30');
+
+        // Du lieu tu SQL Server co the ve dang 'Y-m-d H:i:s'.
+        self::assertTrue($khoaSo->isDocumentDateLocked('2026-06-15 08:30:00'));
+        self::assertFalse($khoaSo->isDocumentDateLocked('2026-07-15 23:59:59'));
+    }
+
     public function testMessageConstantsAreVietnameseAndMentionKhoaSo(): void
     {
         self::assertStringContainsString('khóa sổ', KhoaSo::MESSAGE_DOCUMENT_LOCKED);

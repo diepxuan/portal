@@ -715,6 +715,17 @@ class Phieubaono extends Component
             return;
         }
 
+        // Kiểm tra khóa sổ liệu kỳ (SiSetup.ngay_ks). Nhóm SP asCADelCT2/asCADelPH2
+        // không có tham số pNgay_ks nên SQL không tự chặn — form phải guard.
+        try {
+            app(\Diepxuan\Catalog\Services\KhoaSo::class)
+                ->assertDocumentDateNotLocked($this->pNgay_Ct);
+        } catch (\Diepxuan\Catalog\Services\KhoaSoException $exception) {
+            $this->dispatch('action-message', ['on' => 'delete-error', 'message' => $exception->getMessage()]);
+
+            return;
+        }
+
         $maCty = \CatalogService::company()->id ?? '001';
         $lUser = \Auth::user()->name ?? '';
 

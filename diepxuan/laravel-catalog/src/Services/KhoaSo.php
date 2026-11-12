@@ -105,9 +105,15 @@ class KhoaSo
     }
 
     /**
-     * Kỳ báo cáo (ngay1..ngay2) có bị khóa sổ hay không.
+     * Kỳ (ngay1..ngay2) có bị khóa sổ hay không.
      *
      * Simba kiểm tra theo ngày cuối kỳ: hợp lệ khi `ngay2 > ngay_ks`.
+     *
+     * Phạm vi sử dụng: chỉ dùng cho hành động **ghi dữ liệu theo kỳ** (tính
+     * khấu hao, kết chuyển, post GL theo kỳ — vd `asFACalKHTS`, `asGLCrtKC`).
+     * KHÔNG dùng để chặn màn xem báo cáo/tra cứu dữ liệu lịch sử: báo cáo vẫn
+     * phải xem được kỳ đã khóa sổ. Các báo cáo hiện có (`Sorptbk01`,
+     * `Arrptbccn01*`) cố ý không gọi method này.
      */
     public function isPeriodLocked(?string $ngay1, ?string $ngay2, ?string $maCty = null): bool
     {

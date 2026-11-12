@@ -170,20 +170,30 @@ tự kiểm tra:
   + `tests/Unit/Packages/Catalog/KhoaSoTest.php` — **12 tests / 20 assertions PASS**.
 - [x] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
   + `Phieubaono::submit()` chặn ngay sau `validate()`, `addError('pNgay_Ct', ...)`.
+  + `Phieubaono::deletePhieu()` chặn luôn đường xóa (asCADelCT2/asCADelPH2 không
+    có `pNgay_ks` nên SQL không tự chặn).
 - [x] Áp dụng helper cho SO3/PO3 và các form chứng từ đang có.
   + `Sovchso3Edit::submit()` và `Povchpo3Edit::submit()` — cùng vị trí sau validate.
+  + `Sovchso3Edit::deleteInvoice()` và `Povchpo3Edit::deleteInvoice()` — chặn xóa.
+    Lý do: `asSODelPH3` và `asPODeletePO3` **không có** `pNgay_ks`
+    (xác nhận qua wrapper + `simba-docs/procedures/SO/procedures.md:2087` chỉ có
+    `pMa_cty/pStt_rec/pLUser`), nên nếu chỉ guard ở submit thì xóa chứng từ cũ vẫn lọt.
 - [x] Kiểm tra các SP wrapper có sẵn `pNgay_ks` để không truyền sai/sót.
   + **63 wrapper** có tham số `pNgay_ks`: nhóm AR/AP/GL/IN/SO/PO/CA post-to-GL,
     cộng `AsSOPostTraTruoc_arTt`, `AsProcessCalLaiKU`, `AssiUpd_ks`.
   + Các SP này tự kiểm tra `ngay_ks` phía SQL — form chỉ cần chặn sớm để có
     message tiếng Việt thay vì lỗi SP.
+  + **`AsPostCaPh2_glct` KHÔNG có `pNgay_ks`** (grep wrapper = 0) — nằm trong nhóm
+    "chưa kiểm tra", nên guard ở `Phieubaono::submit()` là bắt buộc chứ không
+    phải lớp chặn sớm thừa.
 - [x] Ghi rõ từng SP sau khi verify source SQL: có kiểm tra / không kiểm tra.
   + Có kiểm tra (wrapper có `pNgay_ks`): xem danh sách 63 SP ở mục 3 phía trên.
   + Chưa thấy kiểm tra trong wrapper (cần verify SQL thật khi dùng): nhóm CRUD
     `asARInsTT/asARUpdTT/asARDelTT`, `asGLCalSumCdTk`, `asPost2Gl`,
     `asGLCrtKC/asGLDelKC`, `asGLCrtDGTG/asGLDelDGTG`, `SP_CA1/2/3_*`,
-    CRUD base của CACDPC/SO4, `asFACalKHTS/asFADelKHTS/asFAPostTS2GL/...`
-    → **form phải tự chặn bằng `KhoaSo`** (đã áp dụng cho CA4/SO3/PO3).
+    CRUD base của CACDPC/SO4, `asSOUpdPH3/asPOUpdPH3`, `asSODelPH3/asPODeletePO3`,
+    `AsPostCaPh2_glct`, `asFACalKHTS/asFADelKHTS/asFAPostTS2GL/...`
+    → **form phải tự chặn bằng `KhoaSo`** (đã áp dụng cho CA4/SO3/PO3 cả submit + delete).
 - [ ] E2E: thử lưu chứng từ ngày `<= ngay_ks` bị chặn với message tiếng Việt.
   + Chưa chạy được: ODBC driver không có trong CLI (`sqlsrv` extension yêu cầu
     Microsoft ODBC Driver 18), nên không mở được form live từ shell. Logic đã
