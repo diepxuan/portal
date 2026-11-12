@@ -2,7 +2,7 @@
 
 Memory dai han cho Portal agent (Bột). Moi entry khi co PR merged hoac insight dang nho
 deu ghi vao day. Doc MEMORY.md nay truoc moi task lon de khong lap lai loi cu.
-Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol port).
+Cap nhat lan cuoi: 2026-10-19 (PR #284/#285/#286 merged — SO3/PO3 lookup seed + layout voucher + grid autofit).
 
 ---
 
@@ -170,6 +170,65 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
   + `a64eef296` §4 phan biet `gh auth status` (local) vs `gh api` (network).
   + `05cd36a6f` MEMORY.md record §4 fix.
 
+### 1.9 PR #284 — SO3/PO3 lookup seed ban dau khi mo form sua (2026-08-24)
+
+- Squash: `09f375279`, 16 files, +248/−21.
+- Root cause: Livewire v3 chi seed prop `#[Modelable]` tu parent o cac request
+  ke tiep (`SupportWireModelingNestedComponents::hydrate` qua memo `bindings`);
+  lan render dau SSR khong seed -> TK phai thu/thue/CK doanh so, Ma VT/Ma kho
+  grid chi tiet, va HTTT/Ngoai te PO3 deu hien trong.
+- Fix: them prop `$value` (SSR-only seed, convention nhu InputKhachhang) vao
+  `InputTaikhoan`, `InputIndmvt`, `InputIndmkho`; blade dung `@js($pTk ?: $value)`;
+  `render()` dong bo `$value` theo lua chon hien tai. View truyen `:value` tuong ung.
+- `Sovchso3Edit::loadInvoice()` bo sung `pGh_no` lay tu danh muc khach hang
+  (theo `simba-docs/asia/so/vouchers/SO3.md` — gh_no la field hien thi qua
+  GetKhInfo, khong luu tren dong PH).
+- Verify live `001wSO30000000633055`: seed `KL/Khach le`, `VND`, `111/Tien mat`,
+  TK `131/33311/5211`, 17 dong VT+KHO; `pDu13=-76414197`.
+
+### 1.10 PR #285 — Chuan hoa layout form voucher SO3/PO3 + zero-gap grid (2026-10-01)
+
+- Squash: `1d8cdaf58`.
+- P1: PO3 `input-khachhang` thieu `:value` (cung loi seed nhu #284); grid chi tiet
+  thieu `overflow-x-auto` -> bang tran vo card man hep.
+- P2: `x-nav-tabs` chi render spinner o che do data-driven (`:tabs`), slot-mode
+  het icon loading treo (anh huong 11 cho dung); SO3 bo tab bar 1-tab -> heading
+  section; nhip label khoi thanh toan ve 3/9; `input-khachhang` `py-2` -> `py-1.5`;
+  PO3 `font-bold` -> `font-semibold`.
+- Zero-gap: td `px-1 py-1` -> `p-0 align-middle`, input `w-full rounded-none`,
+  `[&_div_input]:text-xs` de dong nhat chieu cao field (lookup 34px vs thuong
+  26px truoc do).
+- `docs/DESIGN.md` them tieu chuan: tab >= 2 tab that, wrapper overflow, nhip
+  label 3/9, lookup seed SSR, field display-only tu danh muc.
+
+### 1.11 PR #286 — Grid autofit thanh JS module dung chung (2026-10-18)
+
+- Squash: `1b83c5982`.
+- Van de sau #285: logic fit cot nhung inline `<script>` trong ca 3 partial
+  (`_grid-chitiet` SO3/PO3, `_grid-chiphi` PO3) -> lap code, phu thuoc `@once`
+  (khong dam bao khi Livewire render lai); ban inline con dang ky listener
+  `resize` trung 2 lan.
+- Fix: chuyen sang `window.PortalGridAutofit` trong `resources/js/app.js` (cung
+  convention `window.PortalSearch`), nap qua vite; partial chi con
+  `class="js-autofit"` + `data-no-fit`.
+- `docs/DESIGN.md`: them token grid autofit + muc Don't "khong nhung script
+  autofit inline trong partial Blade".
+- Verify: SO3 edit gap ngang 0, `inputHeights [26]`, go `1234567.8901` ->
+  cot So luong 64 -> 108px, 0 page error; PO3 create 2 bang autofit, 0 inline script.
+
+---
+
+## 1b. Su co quy trinh: PR bi merge khi dang sua (2026-10-19)
+
+- Dang sua tiep PR #285 (fix resize listener trung + tach JS ra module) thi phat
+  hien PR da duoc merge tu truoc (`1d8cdaf58`, 2026-10-01); local dang o `main`
+  voi thay doi chua commit.
+- Xu ly dung: KHONG commit thang `main` (AGENTS.md §5) — tao branch moi
+  `refactor/grid-autofit-js-module`, commit phan con lai, mo PR #286.
+- **Quy tac moi:** truoc khi tiep tuc sua mot PR, chay
+  `gh pr view <N> --json state` de chac chan con OPEN; neu da merge thi tao
+  branch moi tu `main`, khong dung lai branch cu.
+
 ---
 
 ## 2. Tasks done (theo task ID, lien ket PR)
@@ -255,9 +314,42 @@ Cap nhat lan cuoi: 2026-07-22 (cleanup local branches + xoa 9router protocol por
   + `#[Modelable]` cho p parent bind qua `wire:model`.
   + Dispatch `{slug}-updated` khi user chon/xoa de parent auto-fill.
   + `updatedValue()` dong bo `search` khi value doi tu server (parent reset).
+  + **Bat buoc them prop `$value` (SSR-only seed)** va parent truyen `:value` khi
+    mo form sua. Ly do: Livewire v3 chi seed `#[Modelable]` o request thu 2 tro di
+    (`SupportWireModelingNestedComponents::hydrate` qua memo `bindings`), lan SSR
+    dau khong seed -> lookup hien trong. Xem PR #284.
 - Filter `ksd` qua trait `Concerns/HasKsdFilter::isActiveRow()` (khong inline
   `(int) $ksd === 1`). Cho phep bool / int / string '1' / null.
 - SP wrapper la nguon lay data, KHONG Eloquent (theo policy).
+
+### 3.7 Tailwind + Chromium: 3 cai bay da gap (2026-10-19)
+
+- **Arbitrary variant chua `>` bi content scanner bo qua.** Viet
+  `[&_td>div>input]:text-xs` -> khong sinh CSS rule nao du build thanh cong.
+  Dung descendant underscore: `[&_div_input]:text-xs`. Luon verify bang
+  `grep rule public/build/assets/app-*.css`, dung tin class trong Blade.
+- **Shorthand `getComputedStyle(el).font` co the tra chuoi RONG tren Chromium.**
+  Canvas `measureText` se fallback font mac dinh (10px) -> do sai hoan toan.
+  Ghep longhand: `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`.
+- **`Livewire.hook('commit')` khong fire on dinh; `MutationObserver` khong thay
+  `input.value`** (property change khong tao mutation). Dung event `input`/`change`
+  cho thao tac nguoi dung + polling 400ms so signature gia tri de bat thay doi do
+  server tinh lai (o readonly, them/xoa dong). Khong phu thuoc API noi bo Livewire.
+
+### 3.8 Grid bang chi tiet: zero-gap + autofit (2026-10-19)
+
+- **Zero-gap:** cell `p-0 align-middle`, input `w-full rounded-none` de vien input
+  tro thanh duong ke o. Phai dong nhat chieu cao field: lookup input thieu `text-xs`
+  render 16px/24px (cao 34px) vs input thuong 26px -> td bi keo len 35px, input
+  thuong noi giua, ho gap tren/duoi.
+- **`table-auto` + `w-full` = cot chia gan deu** khi input khong con width co dinh.
+  Fix: do noi dung bang canvas `measureText` (gom padding, border, spinner cua
+  `number` input) roi set `style.width` tung cot; cot nut thao tac danh dau
+  `data-no-fit` de lay width theo phan tu con.
+- **Thoi diem fit phai sau morph cua Livewire** — fit trong luc morph se doc
+  `tbody` tam rong va chi ra width cua header.
+- Logic dung chung dat o `resources/js/app.js` (`window.PortalGridAutofit`),
+  KHONG nhung inline `<script>` trong partial Blade.
 
 ### 3.6 KSD semantics — quy uoc bat buoc (2026-08-02)
 
