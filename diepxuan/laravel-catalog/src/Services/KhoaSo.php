@@ -42,7 +42,7 @@ class KhoaSo
      */
     public const MESSAGE_DOCUMENT_LOCKED = 'Không được nhập/sửa/xóa chứng từ trước ngày khóa sổ.';
 
-    public const MESSAGE_PERIOD_LOCKED = 'Kỳ báo cáo đã khóa sổ, không thể thực hiện.';
+    public const MESSAGE_PERIOD_LOCKED = 'Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển.';
 
     public const MESSAGE_MISSING_CONFIG = 'Không tìm thấy cấu hình ngày khóa sổ (SiSetup.ngay_ks) cho công ty :ma_cty.';
 
@@ -109,11 +109,23 @@ class KhoaSo
      *
      * Simba kiểm tra theo ngày cuối kỳ: hợp lệ khi `ngay2 > ngay_ks`.
      *
-     * Phạm vi sử dụng: chỉ dùng cho hành động **ghi dữ liệu theo kỳ** (tính
-     * khấu hao, kết chuyển, post GL theo kỳ — vd `asFACalKHTS`, `asGLCrtKC`).
-     * KHÔNG dùng để chặn màn xem báo cáo/tra cứu dữ liệu lịch sử: báo cáo vẫn
-     * phải xem được kỳ đã khóa sổ. Các báo cáo hiện có (`Sorptbk01`,
-     * `Arrptbccn01*`) cố ý không gọi method này.
+     * NGUỒN SỰ THẬT: rà toàn bộ `simba-docs/decompiled/asia/*` cho thấy chỉ có
+     * 15 DLL dùng `ngay_ks`, và **không DLL nào là báo cáo** (`*Rpt*`). Tất cả
+     * đều là hành động GHI dữ liệu theo kỳ:
+     *
+     *   - Tính toán: `FACalKHTS` (khấu hao), `INCalGiaNTXT` (giá FIFO),
+     *     `CoCalcCost` (giá thành).
+     *   - Kết chuyển/post: `GLPost2GL`, `GLPost2GLKC`, `GLPost2DGTG`,
+     *     `CoPostCPTT2GL`, `CoDelPostCP2GL`, `FAPostCC2GL`, `FADelTS2GL`,
+     *     `FADelCC2GL`.
+     *   - Chứng từ: `SOTaOut`, `ARCDKH` (số dư đầu kỳ — nhập liệu), `SMKS`
+     *     (chính là màn cập nhật `ngay_ks`).
+     *
+     * Vì vậy: chỉ dùng method này cho hành động ghi/tính theo kỳ. KHÔNG dùng để
+     * chặn màn xem báo cáo/tra cứu — xem kỳ đã khóa sổ là hợp lệ và cần thiết.
+     * Lưu ý thuật ngữ: "kỳ báo cáo" trong simba-docs là tham số đầu vào của
+     * hành động tính/post (vd form `FACalKHTS` có `cboKyBc`), KHÔNG phải màn
+     * hiển thị báo cáo.
      */
     public function isPeriodLocked(?string $ngay1, ?string $ngay2, ?string $maCty = null): bool
     {

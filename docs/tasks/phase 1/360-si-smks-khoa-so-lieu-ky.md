@@ -43,11 +43,40 @@ giống SimbaERP. Hiện tại Portal mới chỉ cập nhật được `ngay_ks
 
 - Mốc được lưu tại `SiSetup.ngay_ks`, công ty hiện tại qua `CompanyInformations.CompanyID`.
 - Quy tắc chung: chứng từ chỉ được phép thao tác khi `ngay_ct > ngay_ks`.
-- Với kỳ báo cáo: kỳ hợp lệ khi `ngay2 > ngay_ks` (ngày cuối kỳ sau ngày khóa sổ).
+- Với **kỳ tính toán/post**: hợp lệ khi `ngay2 > ngay_ks` (ngày cuối kỳ sau ngày khóa sổ).
 - Simba kiểm tra ở 2 tầng:
   1. UI/form dùng `Environment.GetSIConfiguration().ngay_ks` để chặn sớm, thường báo
      lỗi `50136` / `50012`.
   2. SP post/process đọc `ngay_ks` và return/không thực hiện khi ngày thuộc kỳ đã khóa.
+
+#### `ngay_ks` KHÔNG liên quan tới màn xem báo cáo
+
+Đây là điểm dễ hiểu nhầm, cần chốt rõ:
+
+- Rà toàn bộ `simba-docs/decompiled/asia/*/README.md`: chỉ **15 DLL** nhắc `ngay_ks`,
+  và **không DLL nào là báo cáo** (`*Rpt*`). Danh sách đầy đủ:
+  `CoCalcCost`, `CoDelPostCP2GL`, `CoPostCPTT2GL`, `FACalKHTS`, `FADelCC2GL`,
+  `FADelKHTS`, `FADelTS2GL`, `FAPostCC2GL`, `GLPost2DGTG`, `GLPost2GL`,
+  `GLPost2GLKC`, `INCalGiaNTXT`, `SIAbout`, `SMKS`, `SOTaOut`.
+- **Toàn bộ** đều là hành động **ghi/tính dữ liệu**: tính khấu hao, tính giá FIFO,
+  tính giá thành, kết chuyển, post GL, xóa dữ liệu đã post, hoặc nhập chứng từ.
+- Các báo cáo thuần đọc (`ARRptBCCN01*`, `ARRptBK01*`, `APRptBK01*`, `CARptTMNH*`);
+  không có DLL báo cáo nào dùng `ngay_ks` → **xem báo cáo kỳ đã khóa sổ là hợp lệ**.
+- Thuật ngữ trong simba-docs dễ gây nhầm: `cboKyBc` / "kỳ báo cáo" ở form
+  `FACalKHTS`, `INCalGiaNTXT`, `CoPostCPTT2GL` là **tham số đầu vào của hành động
+  tính/post**, không phải màn hiển thị báo cáo. Vì vậy message lỗi trong Portal
+  đặt là "Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển", không dùng
+  chữ "kỳ báo cáo".
+
+Hệ quả khi triển khai Portal:
+
+| Loại màn hình | Có guard `ngay_ks`? |
+|---|---|
+| Form chứng từ (nhập/sửa/xóa: SO3, PO3, CA4…) | **Có** — theo `ngay_ct` |
+| Hành động tính/post theo kỳ (khấu hao, kết chuyển, post GL) | **Có** — theo `ngay2` |
+| Màn cập nhật `ngay_ks` (`/simba/si/vch/smks`) | Không (chính là nơi mở khóa) |
+| Màn xem báo cáo / tra cứu dữ liệu | **Không** — phải xem được kỳ đã khóa |
+| Đường xóa chứng từ (kể cả xóa từ bảng kê báo cáo) | **Có** — xóa là ghi dữ liệu |
 
 ### Phạm vi triển khai đề xuất
 
@@ -62,7 +91,7 @@ giống SimbaERP. Hiện tại Portal mới chỉ cập nhật được `ngay_ks
 - Ngày khóa sổ lấy từ `SiSetup` theo company hiện tại, không hardcode.
 - Trả message tiếng Việt rõ ràng, ví dụ:
   - `Không được nhập/sửa/xóa chứng từ trước ngày khóa sổ.`
-  - `Kỳ báo cáo đã khóa sổ, không thể thực hiện.`
+  - `Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển.`
 
 #### 2. Áp dụng cho UI/form chứng từ
 
@@ -166,8 +195,8 @@ tự kiểm tra:
   + Quy tắc: hợp lệ khi `ngay_ct > ngay_ks`; kỳ hợp lệ khi `ngay2 > ngay_ks`.
     Không có cấu hình `ngay_ks` → trả `false` (không chặn nhầm).
   + Đọc qua `SystemConfig` (`SiSetup`) theo công ty hiện tại, không hardcode.
-- [x] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ báo cáo, đổi công ty.
-  + `tests/Unit/Packages/Catalog/KhoaSoTest.php` — **12 tests / 20 assertions PASS**.
+- [x] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ tính toán, đổi công ty.
+  + `tests/Unit/Packages/Catalog/KhoaSoTest.php` — **15 tests / 27 assertions PASS**.
 - [x] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
   + `Phieubaono::submit()` chặn ngay sau `validate()`, `addError('pNgay_Ct', ...)`.
   + `Phieubaono::deletePhieu()` chặn luôn đường xóa (asCADelCT2/asCADelPH2 không
