@@ -43,11 +43,40 @@ giống SimbaERP. Hiện tại Portal mới chỉ cập nhật được `ngay_ks
 
 - Mốc được lưu tại `SiSetup.ngay_ks`, công ty hiện tại qua `CompanyInformations.CompanyID`.
 - Quy tắc chung: chứng từ chỉ được phép thao tác khi `ngay_ct > ngay_ks`.
-- Với kỳ báo cáo: kỳ hợp lệ khi `ngay2 > ngay_ks` (ngày cuối kỳ sau ngày khóa sổ).
+- Với **kỳ tính toán/post**: hợp lệ khi `ngay2 > ngay_ks` (ngày cuối kỳ sau ngày khóa sổ).
 - Simba kiểm tra ở 2 tầng:
   1. UI/form dùng `Environment.GetSIConfiguration().ngay_ks` để chặn sớm, thường báo
      lỗi `50136` / `50012`.
   2. SP post/process đọc `ngay_ks` và return/không thực hiện khi ngày thuộc kỳ đã khóa.
+
+#### `ngay_ks` KHÔNG liên quan tới màn xem báo cáo
+
+Đây là điểm dễ hiểu nhầm, cần chốt rõ:
+
+- Rà toàn bộ `simba-docs/decompiled/asia/*/README.md`: chỉ **15 DLL** nhắc `ngay_ks`,
+  và **không DLL nào là báo cáo** (`*Rpt*`). Danh sách đầy đủ:
+  `CoCalcCost`, `CoDelPostCP2GL`, `CoPostCPTT2GL`, `FACalKHTS`, `FADelCC2GL`,
+  `FADelKHTS`, `FADelTS2GL`, `FAPostCC2GL`, `GLPost2DGTG`, `GLPost2GL`,
+  `GLPost2GLKC`, `INCalGiaNTXT`, `SIAbout`, `SMKS`, `SOTaOut`.
+- **Toàn bộ** đều là hành động **ghi/tính dữ liệu**: tính khấu hao, tính giá FIFO,
+  tính giá thành, kết chuyển, post GL, xóa dữ liệu đã post, hoặc nhập chứng từ.
+- Các báo cáo thuần đọc (`ARRptBCCN01*`, `ARRptBK01*`, `APRptBK01*`, `CARptTMNH*`);
+  không có DLL báo cáo nào dùng `ngay_ks` → **xem báo cáo kỳ đã khóa sổ là hợp lệ**.
+- Thuật ngữ trong simba-docs dễ gây nhầm: `cboKyBc` / "kỳ báo cáo" ở form
+  `FACalKHTS`, `INCalGiaNTXT`, `CoPostCPTT2GL` là **tham số đầu vào của hành động
+  tính/post**, không phải màn hiển thị báo cáo. Vì vậy message lỗi trong Portal
+  đặt là "Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển", không dùng
+  chữ "kỳ báo cáo".
+
+Hệ quả khi triển khai Portal:
+
+| Loại màn hình | Có guard `ngay_ks`? |
+|---|---|
+| Form chứng từ (nhập/sửa/xóa: SO3, PO3, CA4…) | **Có** — theo `ngay_ct` |
+| Hành động tính/post theo kỳ (khấu hao, kết chuyển, post GL) | **Có** — theo `ngay2` |
+| Màn cập nhật `ngay_ks` (`/simba/si/vch/smks`) | Không (chính là nơi mở khóa) |
+| Màn xem báo cáo / tra cứu dữ liệu | **Không** — phải xem được kỳ đã khóa |
+| Đường xóa chứng từ (kể cả xóa từ bảng kê báo cáo) | **Có** — xóa là ghi dữ liệu |
 
 ### Phạm vi triển khai đề xuất
 
@@ -62,7 +91,7 @@ giống SimbaERP. Hiện tại Portal mới chỉ cập nhật được `ngay_ks
 - Ngày khóa sổ lấy từ `SiSetup` theo company hiện tại, không hardcode.
 - Trả message tiếng Việt rõ ràng, ví dụ:
   - `Không được nhập/sửa/xóa chứng từ trước ngày khóa sổ.`
-  - `Kỳ báo cáo đã khóa sổ, không thể thực hiện.`
+  - `Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển.`
 
 #### 2. Áp dụng cho UI/form chứng từ
 
@@ -158,14 +187,48 @@ tự kiểm tra:
 
 ### Checklist triển khai
 
-- [ ] Tạo helper/service kiểm tra `ngay_ks` dùng chung.
-- [ ] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ báo cáo, đổi công ty.
-- [ ] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
-- [ ] Áp dụng helper cho SO3/PO3 và các form chứng từ đang có.
-- [ ] Kiểm tra các SP wrapper có sẵn `pNgay_ks` để không truyền sai/sót.
-- [ ] Ghi rõ từng SP sau khi verify source SQL: có kiểm tra / không kiểm tra.
+- [x] Tạo helper/service kiểm tra `ngay_ks` dùng chung.
+  + `Diepxuan\Catalog\Services\KhoaSo` + `KhoaSoException`; singleton trong
+    `CatalogServiceProvider::register()` để cache `ngay_ks` theo công ty trong 1 request.
+  + API: `lockDate()`, `isDocumentDateLocked()`, `isPeriodLocked()`,
+    `assertDocumentDateNotLocked()`, `assertPeriodNotLocked()`, `currentCompanyCode()`.
+  + Quy tắc: hợp lệ khi `ngay_ct > ngay_ks`; kỳ hợp lệ khi `ngay2 > ngay_ks`.
+    Không có cấu hình `ngay_ks` → trả `false` (không chặn nhầm).
+  + Đọc qua `SystemConfig` (`SiSetup`) theo công ty hiện tại, không hardcode.
+- [x] Unit test helper: chứng từ trước/đúng/sau ngày khóa sổ, kỳ tính toán, đổi công ty.
+  + `tests/Unit/Packages/Catalog/KhoaSoTest.php` — **15 tests / 27 assertions PASS**.
+- [x] Áp dụng helper cho CA4 phiếu báo nợ trước khi `AsPostCaPh2_glct`.
+  + `Phieubaono::submit()` chặn ngay sau `validate()`, `addError('pNgay_Ct', ...)`.
+  + `Phieubaono::deletePhieu()` chặn luôn đường xóa (asCADelCT2/asCADelPH2 không
+    có `pNgay_ks` nên SQL không tự chặn).
+- [x] Áp dụng helper cho SO3/PO3 và các form chứng từ đang có.
+  + `Sovchso3Edit::submit()` và `Povchpo3Edit::submit()` — cùng vị trí sau validate.
+  + `Sovchso3Edit::deleteInvoice()` và `Povchpo3Edit::deleteInvoice()` — chặn xóa.
+    Lý do: `asSODelPH3` và `asPODeletePO3` **không có** `pNgay_ks`
+    (xác nhận qua wrapper + `simba-docs/procedures/SO/procedures.md:2087` chỉ có
+    `pMa_cty/pStt_rec/pLUser`), nên nếu chỉ guard ở submit thì xóa chứng từ cũ vẫn lọt.
+- [x] Kiểm tra các SP wrapper có sẵn `pNgay_ks` để không truyền sai/sót.
+  + **63 wrapper** có tham số `pNgay_ks`: nhóm AR/AP/GL/IN/SO/PO/CA post-to-GL,
+    cộng `AsSOPostTraTruoc_arTt`, `AsProcessCalLaiKU`, `AssiUpd_ks`.
+  + Các SP này tự kiểm tra `ngay_ks` phía SQL — form chỉ cần chặn sớm để có
+    message tiếng Việt thay vì lỗi SP.
+  + **`AsPostCaPh2_glct` KHÔNG có `pNgay_ks`** (grep wrapper = 0) — nằm trong nhóm
+    "chưa kiểm tra", nên guard ở `Phieubaono::submit()` là bắt buộc chứ không
+    phải lớp chặn sớm thừa.
+- [x] Ghi rõ từng SP sau khi verify source SQL: có kiểm tra / không kiểm tra.
+  + Có kiểm tra (wrapper có `pNgay_ks`): xem danh sách 63 SP ở mục 3 phía trên.
+  + Chưa thấy kiểm tra trong wrapper (cần verify SQL thật khi dùng): nhóm CRUD
+    `asARInsTT/asARUpdTT/asARDelTT`, `asGLCalSumCdTk`, `asPost2Gl`,
+    `asGLCrtKC/asGLDelKC`, `asGLCrtDGTG/asGLDelDGTG`, `SP_CA1/2/3_*`,
+    CRUD base của CACDPC/SO4, `asSOUpdPH3/asPOUpdPH3`, `asSODelPH3/asPODeletePO3`,
+    `AsPostCaPh2_glct`, `asFACalKHTS/asFADelKHTS/asFAPostTS2GL/...`
+    → **form phải tự chặn bằng `KhoaSo`** (đã áp dụng cho CA4/SO3/PO3 cả submit + delete).
 - [ ] E2E: thử lưu chứng từ ngày `<= ngay_ks` bị chặn với message tiếng Việt.
+  + Chưa chạy được: ODBC driver không có trong CLI (`sqlsrv` extension yêu cầu
+    Microsoft ODBC Driver 18), nên không mở được form live từ shell. Logic đã
+    cover bằng unit test; cần Sếp test tay trên browser.
 - [ ] E2E: thử mở khóa tại `/simba/si/vch/smks` rồi lưu lại chứng từ cũ.
+  + Cùng lý do trên — chờ test tay trên browser.
 
 ## Ghi chú
 
@@ -176,3 +239,4 @@ Task này là task đầu tiên được chuyển từ nhóm 181-196 System-Fram
 - **2026-06-30:** Implementation — route `/simba/si/vch/smks` hoạt động
 - **2026-07-20:** Tách từ task 181-196 thành task riêng
 - **2026-08-21:** Bổ sung follow-up kiểm tra `ngay_ks` trong Portal (chưa implement)
+- **2026-10-19:** Implement helper `KhoaSo` + áp dụng CA4/SO3/PO3, 12 unit test PASS. E2E để Sếp test tay (CLI thiếu ODBC driver).

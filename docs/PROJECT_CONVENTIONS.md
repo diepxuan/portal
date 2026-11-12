@@ -120,6 +120,48 @@ Các wrapper `AsARInsDMKH` / `AsARUpdDMKH` phải khai báo output `pRet`:
 - Ô tiền/thuế/thanh toán trống (phiếu không phát sinh tiền, vd SO1 đơn đặt hàng) hiển thị `—` trong UI nhưng CSV export vẫn xuất `''`.
 - Ví dụ đã áp dụng: `So\Rpt\Sorptbk01` (`phieuCellClass()` / `chiTietCellClass()` đánh dấu theo `ma_ct == 'SO4'` hoặc giá trị âm; `moneyDisplay()` cho placeholder `—`; `columnKeys()` map tên cột PH/CT; `appendDynamicColumns()` + `dynamicCellValue()` cho cột động của SP).
 
+## 8. Khóa sổ liệu kỳ (`SiSetup.ngay_ks`)
+
+### Quy tắc
+
+- Mốc khóa sổ lưu ở `SiSetup.ngay_ks`, đọc theo công ty hiện tại — **không hardcode**.
+- Chứng từ hợp lệ khi `ngay_ct > ngay_ks` (bằng ngày khóa sổ **vẫn bị chặn**).
+- Hành động tính/post theo kỳ hợp lệ khi `ngay2 > ngay_ks`.
+- Không có cấu hình `ngay_ks` → **không chặn** (tránh chặn nhầm).
+- Dùng service `Diepxuan\Catalog\Services\KhoaSo` (singleton, cache theo request):
+  `lockDate()`, `isDocumentDateLocked()`, `isPeriodLocked()`,
+  `assertDocumentDateNotLocked()`, `assertPeriodNotLocked()`.
+- Message tiếng Việt: "Không được nhập/sửa/xóa chứng từ trước ngày khóa sổ." và
+  "Kỳ đã khóa sổ, không thể thực hiện tính toán/kết chuyển."
+
+### `ngay_ks` KHÔNG liên quan màn xem báo cáo
+
+Đã rà toàn bộ `simba-docs/decompiled/asia/*`: chỉ **15 DLL** dùng `ngay_ks` và
+**không DLL nào là báo cáo** (`*Rpt*`). Tất cả đều là hành động ghi/tính dữ liệu:
+`CoCalcCost`, `CoDelPostCP2GL`, `CoPostCPTT2GL`, `FACalKHTS`, `FADelCC2GL`,
+`FADelKHTS`, `FADelTS2GL`, `FAPostCC2GL`, `GLPost2DGTG`, `GLPost2GL`,
+`GLPost2GLKC`, `INCalGiaNTXT`, `SIAbout`, `SMKS`, `SOTaOut`.
+
+Cảnh báo thuật ngữ: "kỳ báo cáo" (`cboKyBc`) trong simba-docs là **tham số đầu vào
+của hành động tính/post** (vd `FACalKHTS`, `INCalGiaNTXT`, `CoPostCPTT2GL`), không
+phải màn hiển thị báo cáo. Vì thế message lỗi không dùng chữ "kỳ báo cáo".
+
+| Loại màn hình | Guard `ngay_ks`? |
+|---|---|
+| Form chứng từ (nhập/sửa/xóa) | **Có** — theo `ngay_ct`, áp cho cả `submit()` và `delete*()` |
+| Hành động tính/post theo kỳ | **Có** — theo `ngay2` |
+| Màn cập nhật `ngay_ks` (`/simba/si/vch/smks`) | Không (chính là nơi mở khóa) |
+| Màn xem báo cáo / tra cứu | **Không** — phải xem được kỳ đã khóa |
+| Đường xóa chứng từ (kể cả xóa từ bảng kê báo cáo) | **Có** — xóa là ghi dữ liệu |
+
+### Bắt buộc: guard cả đường xóa
+
+Nhiều SP xóa **không có** tham số `pNgay_ks` nên SQL không tự chặn:
+`asSODelPH3`, `asPODeletePO3`, `asCADelCT2`, `asCADelPH2`, `asSOUpdPH3`,
+`asPOUpdPH3`, `AsPostCaPh2_glct`. Các form gọi nhóm này **phải tự guard** ở tầng
+Livewire cho cả `submit()` lẫn `delete*()`. Đã áp dụng: `Sovchso3Edit`,
+`Povchpo3Edit`, `Phieubaono`, `Sorptbk01::deleteVoucher()`.
+
 ## Liên quan
 
 - `docs/README.md` — documentation index
