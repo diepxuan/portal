@@ -223,12 +223,38 @@ tự kiểm tra:
     CRUD base của CACDPC/SO4, `asSOUpdPH3/asPOUpdPH3`, `asSODelPH3/asPODeletePO3`,
     `AsPostCaPh2_glct`, `asFACalKHTS/asFADelKHTS/asFAPostTS2GL/...`
     → **form phải tự chặn bằng `KhoaSo`** (đã áp dụng cho CA4/SO3/PO3 cả submit + delete).
-- [ ] E2E: thử lưu chứng từ ngày `<= ngay_ks` bị chặn với message tiếng Việt.
-  + Chưa chạy được: ODBC driver không có trong CLI (`sqlsrv` extension yêu cầu
-    Microsoft ODBC Driver 18), nên không mở được form live từ shell. Logic đã
-    cover bằng unit test; cần Sếp test tay trên browser.
-- [ ] E2E: thử mở khóa tại `/simba/si/vch/smks` rồi lưu lại chứng từ cũ.
-  + Cùng lý do trên — chờ test tay trên browser.
+- [x] E2E: thử lưu chứng từ ngày `<= ngay_ks` bị chặn với message tiếng Việt.
+  + **PASS** (2026-11-12, browser thật Playwright + Chromium trên
+    `http://portal.diepxuan.corp`, KHÔNG qua CLI).
+  + `ngay_ks` hiện tại = `2026-08-30` (đọc từ `/simba/si/vch/smks`).
+  + Mở SO3 `001wSO30000000633055` (`ngay_ct = 2025-09-03` → thuộc kỳ đã khóa),
+    gọi `submit()`: form giữ nguyên trang, DOM hiển thị đúng
+    **"Không được nhập/sửa/xóa chứng từ trước ngày khóa sổ."**; không có
+    transaction nào được commit.
+- [x] E2E: thử mở khóa tại `/simba/si/vch/smks` rồi lưu lại chứng từ cũ.
+  + **PASS** (cùng ngày/phương pháp).
+  + Đổi `ngay_ks` → `2025-01-01` tại `/simba/si/vch/smks` → "Đã cập nhật ngày
+    khóa sổ."; submit lại cùng chứng từ: guard **không còn chặn** (không còn
+    message khóa sổ) → chứng minh `KhoaSo` đọc đúng giá trị mới.
+  + Đã **khôi phục** `ngay_ks = 2026-08-30` ngay sau test để không đổi dữ liệu
+    vận hành.
+
+#### Phát hiện thêm trong E2E (bug có sẵn, KHÔNG do task 360)
+
+Sau khi mở khóa, submit đi qua guard thành công nhưng tầng ghi dữ liệu fail:
+
+```
+SQLSTATE[42000]: Procedure or function asSOUpdPH3 has too many arguments specified.
+```
+
+- App gửi **69 tham số**, `simba-docs/procedures/SO/procedures.md` (section
+  `asSOUpdPH3`) cũng khai **69** — danh sách khớp từng tên, không thừa/thiếu.
+- Nghĩa là **signature SP thực tế trong DB khác simba-docs** (ít hơn 69 tham số).
+- Đây là lỗi có trước, thuộc wrapper `AsSOUpdPH3` / DB, **không liên quan**
+  `KhoaSo`. Cần task riêng: đối chiếu `sys.parameters` của SP thật với wrapper.
+- Lưu ý: không thể query `sys.parameters` từ shell (không có ODBC Driver 18);
+  phải nhờ một màn hình Portal có sẵn chức năng đọc metadata, hoặc Sếp cung cấp
+  kết quả query từ SQL Server Management Studio.
 
 ## Ghi chú
 
