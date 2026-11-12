@@ -40,6 +40,7 @@
 - **Design tokens:** `docs/DESIGN.md` là nguồn sự thật duy nhất (chuẩn Google Labs `design.md` spec). Mọi sửa view/Blade/Livewire/Alpine phải map token → Tailwind class. Cần mở rộng → mở PR riêng cho `docs/DESIGN.md`.
 - **Simba docs:** `simba-docs/` mount readonly — nguồn sự thật về table/field/SP. Mọi thao tác Simba ưu tiên SP wrapper; Eloquent chỉ fallback khi không có SP phù hợp.
 - **Browser:** dùng MCP server `playwright` để duyệt web và verify UI; tuân theo policy mutation trong `TOOLS.md`.
+- **Không có DB từ shell:** máy này thiếu `Microsoft ODBC Driver 18 for SQL Server` nên `sqlsrv` không chạy được ngoài web server. Không dùng `artisan tinker`/`db`/`migrate`/`sqlcmd` để đọc-ghi dữ liệu; verify dữ liệu và luồng nghiệp vụ bằng browser thật tại `http://portal.diepxuan.corp/simba`. `phpunit` chỉ cho unit test thuần logic.
 
 ---
 
