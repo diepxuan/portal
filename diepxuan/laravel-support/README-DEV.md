@@ -170,12 +170,27 @@ This package is designed to work seamlessly with the Portal project:
 ```
 
 ### Artisan Integration
+
+Lệnh artisan **không chạm DB** dùng bình thường trên máy dev:
+
 ```bash
-# All artisan commands work normally
-php artisan migrate
+php artisan route:list
+php artisan config:clear
 php artisan make:model Post
-php artisan queue:work
+php artisan optimize:clear
 ```
+
+Lệnh artisan **cần kết nối DB** không dùng được trên máy dev (máy không nối trực
+tiếp database):
+
+```bash
+php artisan migrate      # can ket noi DB
+php artisan db:seed      # can ket noi DB
+php artisan queue:work   # can ket noi DB cho driver != sync
+```
+
+Với dữ liệu, dùng browser thật tại `http://portal.diepxuan.corp/simba`.
+Xem `docs/DEVELOPMENT.md` mục 4.1–4.3.
 
 ## 🐛 Troubleshooting
 

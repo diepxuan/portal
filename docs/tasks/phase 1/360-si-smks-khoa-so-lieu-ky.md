@@ -252,9 +252,9 @@ SQLSTATE[42000]: Procedure or function asSOUpdPH3 has too many arguments specifi
 - Nghĩa là **signature SP thực tế trong DB khác simba-docs** (ít hơn 69 tham số).
 - Đây là lỗi có trước, thuộc wrapper `AsSOUpdPH3` / DB, **không liên quan**
   `KhoaSo`. Cần task riêng: đối chiếu `sys.parameters` của SP thật với wrapper.
-- Lưu ý: không thể query `sys.parameters` từ shell (không có ODBC Driver 18);
-  phải nhờ một màn hình Portal có sẵn chức năng đọc metadata, hoặc Sếp cung cấp
-  kết quả query từ SQL Server Management Studio.
+- Lưu ý: máy dev không kết nối trực tiếp DB nên không query `sys.parameters` từ
+  shell được (xem `docs/DEVELOPMENT.md` §4.1). Cần màn hình Portal có sẵn chức năng
+  đọc metadata, hoặc Sếp cung cấp kết quả query từ SQL Server Management Studio.
 
 ## Ghi chú
 
@@ -265,4 +265,4 @@ Task này là task đầu tiên được chuyển từ nhóm 181-196 System-Fram
 - **2026-06-30:** Implementation — route `/simba/si/vch/smks` hoạt động
 - **2026-07-20:** Tách từ task 181-196 thành task riêng
 - **2026-08-21:** Bổ sung follow-up kiểm tra `ngay_ks` trong Portal (chưa implement)
-- **2026-10-19:** Implement helper `KhoaSo` + áp dụng CA4/SO3/PO3, 12 unit test PASS. E2E để Sếp test tay (CLI thiếu ODBC driver).
+- **2026-10-19:** Implement helper `KhoaSo` + áp dụng CA4/SO3/PO3, 12 unit test PASS. E2E chuyển sang browser (máy dev không kết nối trực tiếp DB).
