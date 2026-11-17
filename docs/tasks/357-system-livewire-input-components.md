@@ -155,3 +155,24 @@ Mọi thao tác hiển thị danh sách, search, lookup, validate selected value
 - `php artisan test diepxuan/laravel-catalog/tests/Unit/Services/SimbaMetadataServiceTest.php`: pass, 5 tests / 10 assertions.
 - Chua chay browser E2E/dev server cho CA4, ARRptBCCN01, INRptCD02; can verify UI thuc te sau merge.
 - PR #244 da merge bang squash len main (2026-07-11 20:31 GMT+7) theo lenh Sep; browser E2E se chay trong task tiep theo neu can.
+
+## Checklist triển khai (chuẩn Kanban)
+
+- [x] Audit toàn bộ `Input*` component hiện có (10 component)
+- [x] Lập Data Access Map từ `simba-docs` cho component dùng danh mục
+- [x] Thay Eloquent/query trực tiếp bằng SP wrapper — **8/10 component**:
+  `InputKhachhang` (AsARGetDMKH), `InputTaikhoan` (CatalogService::glDmTks → AsGLGetDMTK),
+  `InputIndmvt` (AsINGetDMVT), `InputIndmkho` (AsINGetDMKHO), `InputHttt` (AsGetDMHTTT),
+  `InputNgoaite` (AsSIGetDMNT), `InputChiphi` (AsPOGetDMCP), `InputIndmnhvt` (AsINGetDMNHVT)
+- [x] Giữ tương thích `wire:model`, props, event, view đang dùng
+- [x] Bổ sung seed `$value` cho render SSR (PR #284 — Livewire không seed `#[Modelable]` lần đầu)
+- [x] Chạy `php -l` cho file PHP sửa đổi
+- [x] Unit test metadata + lint PASS
+- [x] Merge PR #244 (squash `aa6c8c8fc`) vào main
+- [ ] `InputDonVi` dùng SP wrapper (hiện đang hardcode/không qua SP)
+- [ ] `InputYearWorked` chuyển sang nguồn dữ liệu chuẩn (hiện dùng Alpine client-side)
+- [ ] Browser E2E cho toàn bộ component trong form CA4 + IN
+
+> **Đối chiếu code 2026-11-17:** kiểm tra trực tiếp 10 class trong
+> `diepxuan/laravel-catalog/src/Http/Livewire/Component/` xác nhận 8/10 dùng SP wrapper;
+> `InputDonVi` và `InputYearWorked` chưa qua SP.

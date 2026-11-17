@@ -1,11 +1,13 @@
 ---
-ID: 26
-Title: "Tong hop"
+ID: P004
+Title: "Tổng hợp dữ liệu báo cáo"
 Status: OPEN
 Labels: []
 ---
 
-# Tong hop
+**Loại:** Portal task
+
+# Portal Task P004: Tổng hợp dữ liệu báo cáo
 
 ## Mo ta
 

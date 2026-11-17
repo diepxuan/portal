@@ -1,6 +1,8 @@
-# Task 032: SO - Tong hop module Ban hang
+# Module SO — Bán hàng (tổng quan)
 
-## Nhom: SO (Sales Order - Don hang ban)
+> **Loại:** Tài liệu tổng quan module (không phải task) — tham chiếu khi làm task SO.
+
+**Module:** SO (Sales Order — Đơn hàng bán)
 
 ## Muc tieu
 Task tong hop cho toan bo module ban hang (Sales Order). Day la meta-task de theo tien do cac submodule.

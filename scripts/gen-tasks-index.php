@@ -200,11 +200,32 @@ $phase1Tasks = is_dir($phase1Dir) ? parseTaskFiles($phase1Dir, 'DONE') : [];
 
 $rootNote = '';
 if (count($phase1Tasks) > 0) {
-    $rootNote = '**Lưu ý:** Task đã xong phase hiện tại được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md). Phase 1 sẽ tiếp tục hoàn thiện chức năng và UI theo task cụ thể.';
+    $rootNote = implode("\n", [
+        '**Lưu ý:** Task đã xong phase port được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md)',
+        '(giai đoạn phát triển thêm chức năng cho Portal).',
+        '',
+        'Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, task board...) nằm riêng trong',
+        '[`portaltask/_index.md`](portaltask/_index.md), không trộn với task port SimbaERP.',
+    ]);
 }
 $rootMd = renderIndex('Tasks Index', $rootTasks, $rootNote);
+$phase1Note = implode("\n", [
+    '**Đây là phase 1** — giai đoạn phát triển thêm và hoàn thiện chức năng **cho Portal**',
+    'sau khi đã port xong từ SimbaERP .NET.',
+    '',
+    '| Phase | Ý nghĩa | Thư mục |',
+    '|---|---|---|',
+    '| **Phase hiện tại (port)** | Chuyển đổi chức năng từ SimbaERP .NET sang PHP Laravel | `docs/tasks/*.md` |',
+    '| **Phase 1 (mở rộng)** | Phát triển thêm chức năng, hoàn thiện UI/UX, tối ưu cho Portal | `docs/tasks/phase 1/*.md` |',
+    '',
+    'Task trong phase 1 xuất phát từ task đã xong ở phase port, sau đó tiếp tục được phát',
+    'triển thêm: bổ sung tính năng, chuẩn hóa UI theo `docs/DESIGN.md`, tối ưu hiệu năng,',
+    'sửa lỗi phát sinh trong quá trình vận hành Portal.',
+    '',
+    '**Quy ước:** ID giữ nguyên từ task gốc; mỗi task chỉ tồn tại **một bản** trong phase 1.',
+]);
 $phaseMd = $phase1Tasks
-    ? renderIndex('Phase 1 Tasks', $phase1Tasks, 'Các task đã xong phase hiện tại và được chuyển sang phase 1 để tiếp tục hoàn thiện chức năng nghiệp vụ và UI.')
+    ? renderIndex('Phase 1 — Phát triển thêm chức năng cho Portal', $phase1Tasks, $phase1Note)
     : '';
 
 if ($dryRun) {

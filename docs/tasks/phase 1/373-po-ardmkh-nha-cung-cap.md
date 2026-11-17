@@ -93,3 +93,18 @@ URL thật: `http://portal.diepxuan.corp/simba/po/dict/ardmkh`
 - Task **374** (`374-so-ardmkh-khach-hang-crud.md`) — SO khách hàng (cùng bảng DMKH, namespace lệch — backlog refactor).
 - Task **375** (`375-ca-ardmkh-nhan-vien.md`) — CA nhân viên (cùng bảng DMKH, namespace lệch, blocker debug runtime).
 - Task 069 (`069-po-hoadon-mua-hang.md`) — PO3 hoá đơn mua hàng, dùng `Po\Dict\Ardmkh` làm NCC lookup.
+
+## Checklist triển khai (chuẩn Kanban)
+
+- [x] Component canonical `Po\Dict\Ardmkh` + `Po\Dict\ArdmkhForm`
+- [x] View `po/dict/ardmkh.blade.php` + `ardmkh-form.blade.php`
+- [x] Route `po.dict.ardmkh` + `.create` + `.edit` (đã đăng ký, resolve đúng component)
+- [x] Dùng SP wrapper `asARGetDMKH` (moduleId AP) thay query Eloquent
+- [x] Method xóa đặt tên `deleteDoiTuong` (theo PROJECT_CONVENTIONS §2)
+- [x] Áp quy ước `ksd`: `ksd=0` active, `ksd=1` khóa
+- [x] Danh sách load toàn bộ + client-side filter (không pagination)
+- [x] Merge qua PR #214, #230, #255
+
+> **Đối chiếu code 2026-11-17:** `php artisan route:list --name=po.dict.ardmkh` xác nhận 3 route
+> đã đăng ký; class `Po\Dict\Ardmkh` + `ArdmkhForm` tồn tại trong
+> `diepxuan/laravel-catalog/src/Http/Livewire/Po/Dict/`.

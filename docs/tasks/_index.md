@@ -2,7 +2,11 @@
 
 > Tự động sinh bởi `scripts/gen-tasks-index.php`. **Không sửa tay** — sửa script rồi chạy lại.
 
-**Lưu ý:** Task đã xong phase hiện tại được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md). Phase 1 sẽ tiếp tục hoàn thiện chức năng và UI theo task cụ thể.
+**Lưu ý:** Task đã xong phase port được tách riêng trong `phase 1/` — xem [`phase 1/_index.md`](phase%201/_index.md)
+(giai đoạn phát triển thêm chức năng cho Portal).
+
+Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, task board...) nằm riêng trong
+[`portaltask/_index.md`](portaltask/_index.md), không trộn với task port SimbaERP.
 
 ## Tổng quan
 
@@ -16,10 +20,10 @@
 | GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
 | IN — Tồn kho | 30 | 0 | 30 | 0 |
 | PO — Đơn hàng mua | 18 | 0 | 18 | 0 |
-| SI — System Integration | 32 | 0 | 32 | 0 |
-| SO — Đơn hàng bán | 45 | 0 | 45 | 0 |
-| System — Framework & cross-link | 8 | 0 | 8 | 0 |
-| **Tổng** | **329** | | | |
+| SI — System Integration | 31 | 0 | 31 | 0 |
+| SO — Đơn hàng bán | 44 | 0 | 44 | 0 |
+| System — Framework & cross-link | 3 | 0 | 3 | 0 |
+| **Tổng** | **322** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -98,7 +102,6 @@
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 051 | `341-FA-baocao-phantich-tscd-01.md` | FARptBCPT01.dll | PENDING |
 | 118 | `118-FA-baocao-BCTS09.md` | FARptBCTS09.dll | PENDING |
 | 119 | `119-FA-tinh-khauhao-tscd.md` | FACalKHTS.dll | PENDING |
 | 120 | `120-FA-baocao-BCTS07.md` | FARptBCTS07.dll | PENDING |
@@ -137,6 +140,7 @@
 | 251 | `251-fa-bao-cao-bien-dong-ts-05.md` | FARptBCTS05.dll | PENDING |
 | 252 | `252-fa-so-theo-doi-tscd-ccdc.md` | FARptSoSD.dll | PENDING |
 | 253 | `253-fa-kiem-ke-tai-san.md` | Fakkts.dll | PENDING |
+| 341 | `341-FA-baocao-phantich-tscd-01.md` | FARptBCPT01.dll | PENDING |
 
 ## GL — Sổ cái tổng hợp
 
@@ -251,7 +255,6 @@
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 059 | `59-hang-ton-kho.md` |  | PENDING |
 | 100 | `100-IN-danhmuc-kho.md` | INDMKHO.dll | PENDING |
 | 101 | `101-IN-congno-dinhmuc-fifo.md` | INCDFIFO.dll | PENDING |
 | 102 | `102-IN-baocao-tonghop-nhap-01.md` | INRptTHN01.dll | PENDING |
@@ -280,6 +283,7 @@
 | 233 | `233-in-tong-hop-hang-nhap-kho.md` | INRptTHN02.dll | PENDING |
 | 234 | `234-in-tong-hop-hang-xuat-kho.md` | INRptTHX02.dll | PENDING |
 | 235 | `235-in-tinh-gia-nhap-truoc-xuat-truoc.md` | INCalGiaNTXT.dll | PENDING |
+| 354 | `354-IN-hang-ton-kho.md` |  | PENDING |
 | 355 | `355-in-danh-muc-vattu-bom.md` | INDMVT_.dll | PENDING |
 
 ## PO — Đơn hàng mua
@@ -334,7 +338,6 @@
 | 222 | `222-si-cong-cu-he-thong.md` | SiTools.dll | PENDING |
 | 223 | `223-si-cong-cu-he-thong-2.md` | SiTools_2.dll | PENDING |
 | 224 | `224-si-cap-nhat-log.md` | SiUpdateLog.dll | PENDING |
-| 360 | `360-si-smks-khoa-so-lieu-ky.md` |  | PENDING |
 | 361 | `361-si-smffy-khoa-so-lieu-cuoi-nam.md` | `SMFFY.dll` | PENDING |
 | 362 | `362-si-smuserinfo-quan-ly-nguoi-dung.md` | `SMUserInfo.dll` | PENDING |
 | 363 | `363-si-company-chon-cong-ty.md` |  | PENDING |
@@ -346,25 +349,21 @@
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 032 | `32-ban-hang.md` | SOVchSO1.dll, SOVchSO3.dll, SOUtilities.dll | PENDING |
-| 034 | `34-ban-hang-khach-hang-lien-ket-ngan-hang.md` |  | PENDING |
-| 035 | `35-ban-hang-khach-hang-lien-ket-nhom-phan-loai.md` |  | PENDING |
-| 036 | `36-ban-hang-khach-hang-lien-ket-danh-muc-tai-khoan.md` |  | PENDING |
-| 037 | `37-ban-hang-khach-hang-lien-ket-ma-thanh-toan.md` |  | PENDING |
+| 034 | `034-ban-hang-khach-hang-lien-ket-ngan-hang.md` |  | PENDING |
+| 035 | `035-ban-hang-khach-hang-lien-ket-nhom-phan-loai.md` |  | PENDING |
+| 036 | `036-ban-hang-khach-hang-lien-ket-danh-muc-tai-khoan.md` |  | PENDING |
+| 037 | `037-ban-hang-khach-hang-lien-ket-ma-thanh-toan.md` |  | PENDING |
 | 043 | `043-SO-dondathang-ma-khach-dac-biet.md` | SOND51dmqdadhd.dll | PENDING |
 | 044 | `044-SO-baocao-banhang-chitieu.md` | SORptBCPT06.dll | PENDING |
 | 045 | `045-SO-baocao-loi-nhuan.md` | SORptLaiLo.dll | PENDING |
 | 046 | `046-SO-tien-ich-ban-hang.md` | SOUtilities.dll | PENDING |
 | 047 | `047-SO-dondathang-diembanhang.md` | SOND51adhd.dll | PENDING |
 | 048 | `048-SO-baocao-tonghop-banhang.md` | SORptTH01.dll | PENDING |
-| 049 | `340-SO-phieuxuat-banle.md` | SOVchSO1.dll | PENDING |
 | 050 | `050-SO-dondathang-phuongthuc-hung.md` | SOND51phhd.dll | PENDING |
-| 051 | `339-SO-dondathang-mauhoadon.md` | SOND51mhd.dll | PENDING |
 | 052 | `052-SO-danhmuc-trungtam-dinhkhoan.md` | SODMTD.dll | PENDING |
 | 053 | `053-SO-danhmuc-giaban.md` | SODMGIABAN.dll | PENDING |
 | 054 | `054-SO-baocao-phantich-banhang-03.md` | SORptBCPT03.dll | PENDING |
 | 055 | `055-SO-danhmuc-phuongtien-vantai.md` | SODMPTVT.dll | PENDING |
-| 055 | `55-ban-hang-hoa-don-ban-hang.md` | SOVchSO3.dll | PENDING |
 | 056 | `056-SO-dondathang-mathang.md` | SOND51mathd.dll | PENDING |
 | 057 | `057-SO-baocao-phantich-banhang-04.md` | SORptBCPT04.dll | PENDING |
 | 058 | `058-SO-danhmuc-hanghoa-khuyenmai.md` | SODMHHKM.dll | PENDING |
@@ -390,17 +389,15 @@
 | 214 | `214-so-danh-muc-mau-hoa-don.md` | SOND51dmmhd.dll | PENDING |
 | 215 | `215-so-thong-bao-mat-chay-hong-hoa-don.md` | SOND51mchhd.dll | PENDING |
 | 216 | `216-so-thong-bao-xoa-hoa-don.md` | SOND51xoahd.dll | PENDING |
+| 338 | `338-SO-phieuxuat-banle.md` | SOVchSO1.dll | PENDING |
+| 339 | `339-SO-dondathang-mauhoadon.md` | SOND51mhd.dll | PENDING |
+| 340 | `340-SO-dondathang-mauhoadon-SOVchSO3.md` | SOVchSO3.dll | PENDING |
 | 370 | `370-so-chi-tiet-cong-no-khach-hang-co-so-luong-06-30-38.md` | ARRptBCCN01.dll (form dùng chung cho AR và AP, menuid phân biệt) | PENDING |
 
 ## System — Framework & cross-link
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-|  | `CA4-PHIEU-BAONO-SPEC.md` |  | PENDING |
-| 1 | `1-simba-login.md` |  | PENDING |
-| 5 | `5-developer-support.md` |  | PENDING |
-| 11 | `11-admin-dashboard.md` |  | PENDING |
-| 26 | `26-tong-hop.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 | 367 | `367-system-framework-libraries.md` |  | PENDING |
 | 372 | `372-fix-simba-menu-route-suffix-deterministic.md` |  | PENDING |

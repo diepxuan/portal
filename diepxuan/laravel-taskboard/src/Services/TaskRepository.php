@@ -62,7 +62,9 @@ class TaskRepository
     {
         $rows = collect();
 
-        foreach ($this->phaseDirectories() as $phase => $dir) {
+        // Thứ tự thư mục quyết định độ ưu tiên khi trùng ID: phase 1 thắng root
+        // (phase 1 là bản mới nhất/đầy đủ nhất). Xem merge task 360.
+        foreach (array_reverse($this->phaseDirectories(), true) as $phase => $dir) {
             foreach ($this->markdownFiles($dir) as $path) {
                 $task = $this->parse($path, $phase);
 
@@ -72,7 +74,56 @@ class TaskRepository
             }
         }
 
+        // Dedupe theo ID (đã chuẩn hóa): giữ bản đầu tiên gặp — tức phase 1.
+        $rows = $rows->unique(static fn (array $t): string => $t['id'] !== '' ? $t['id'] : $t['phase'] . '|' . $t['file']);
+
         return $rows->sortBy(static fn (array $t): array => $t['sort_key'])->values();
+    }
+
+    /**
+     * Các ID bị trùng giữa nhiều file (dùng để cảnh báo/kiểm tra dữ liệu).
+     *
+     * @return array<string, array<int, string>>
+     */
+    public function duplicateIds(): array
+    {
+        $byId = [];
+
+        foreach ($this->phaseDirectories() as $phase => $dir) {
+            foreach ($this->markdownFiles($dir) as $path) {
+                $task = $this->parse($path, $phase);
+
+                if ($task !== null && $task['id'] !== '') {
+                    $byId[$task['id']][] = $task['relative_path'];
+                }
+            }
+        }
+
+        return array_filter($byId, static fn (array $files): bool => \count($files) > 1);
+    }
+
+    /**
+     * Nội dung mô tả của một nhóm (đọc từ `_index.md` trong thư mục).
+     *
+     * Dùng để hiển thị mô tả "Portal Task" / "Phase 1" trên board.
+     */
+    public function groupDescription(string $group): string
+    {
+        $dir = match ($group) {
+            'portaltask' => $this->tasksPath . '/portaltask',
+            'phase 1'    => $this->tasksPath . '/phase 1',
+            default      => $this->tasksPath,
+        };
+
+        $index = $dir . '/_index.md';
+
+        if (! is_file($index)) {
+            return '';
+        }
+
+        $content = (string) file_get_contents($index);
+
+        return trim((string) preg_replace('/^#\s+[^\n]*\n+/u', '', $content, 1));
     }
 
     /**
@@ -294,11 +345,25 @@ class TaskRepository
      */
     protected function parseIdentity(string $content, string $file): array
     {
+        // SimbaERP task: "# Task 197: ..."
         if (preg_match('/^#\s+Task\s+(\d+(?:-\d+)?):\s*(.+)$/mu', $content, $m)) {
             return [$m[1], trim($m[2])];
         }
 
-        $id = preg_match('/^(\d+(?:-\d+)?)-/', $file, $fm) ? $fm[1] : '';
+        // Portal task: "# Portal Task P001: ..."
+        if (preg_match('/^#\s+Portal\s+Task\s+(P\d+):\s*(.+)$/mu', $content, $m)) {
+            return [$m[1], trim($m[2])];
+        }
+
+        // Frontmatter ID (cac file meta cu)
+        if (preg_match('/^---\n.*?^ID:\s*(P?\d+(?:-\d+)?)\s*$/msu', $content, $fm)) {
+            $id = $fm[1];
+            $title = preg_match('/^#\s+(.+)$/mu', $content, $tm) ? trim($tm[1]) : pathinfo($file, PATHINFO_FILENAME);
+
+            return [$id, $title];
+        }
+
+        $id = preg_match('/^(P?\d+(?:-\d+)?)-/', $file, $fm2) ? $fm2[1] : '';
 
         if (preg_match('/^#\s+(.+)$/mu', $content, $m)) {
             return [$id, trim($m[1])];
@@ -334,7 +399,12 @@ class TaskRepository
             return $module === 'SYSTEM' ? 'SYS' : $module;
         }
 
-        $stripped = preg_replace('/^\d+(?:-\d+)?-/', '', mb_strtoupper($file)) ?? '';
+        // Portal task -> module riêng
+        if (str_starts_with($file, 'P') && preg_match('/^P\d+-/', mb_strtoupper($file))) {
+            return 'PORTAL';
+        }
+
+        $stripped = preg_replace('/^P?\d+(?:-\d+)?-/', '', mb_strtoupper($file)) ?? '';
 
         foreach (['AR', 'AP', 'CA', 'CO', 'SO', 'PO', 'SI', 'IN', 'FA', 'GL'] as $prefix) {
             if (str_starts_with($stripped, $prefix . '-') || str_starts_with($stripped, $prefix . '_')) {
@@ -383,6 +453,12 @@ class TaskRepository
             if (is_dir($phase1)) {
                 $dirs['phase 1'] = $phase1;
             }
+
+            $portal = $this->tasksPath . '/portaltask';
+
+            if (is_dir($portal)) {
+                $dirs['portaltask'] = $portal;
+            }
         }
 
         return $dirs;
@@ -424,6 +500,11 @@ class TaskRepository
      */
     protected function sortKey(string $id, string $file): array
     {
+        // Portal task: xep theo so sau P (P001, P002, ...)
+        if (preg_match('/^P(\d+)$/', $id, $m)) {
+            return [-1, (int) $m[1], $file];
+        }
+
         if (preg_match('/^(\d+)(?:-(\d+))?$/', $id, $m)) {
             return [(int) $m[1], isset($m[2]) ? (int) $m[2] : (int) $m[1], $file];
         }

@@ -95,3 +95,15 @@ Backward-compat: route cũ `so.rpt.arrptbccn01` (line 285) giữ nguyên, alias 
 
 - Test cũ `testRouteNameSuffixAppendsCompactMenuId` không phát hiện bug vì input luôn đúng thứ tự làm menu đầu tiên rơi vào base. Test mới `testRouteNameSuffixDeterministicRegardlessOfInputOrder` chạy cả 2 hướng và so sánh set equality, không phụ thuộc thứ tự input.
 - Quy ước đặt tên route có thể phụ thuộc state → cần 2-pass khi có quyết định dựa trên "đã có chưa" trong cùng một vòng lặp.
+
+## Checklist triển khai
+
+- [x] Xác định nguyên nhân: route name phụ thuộc thứ tự lặp `SimbaMenuRepository::activeMenus()`
+- [x] Sửa logic sinh suffix deterministic theo `menuId` (PO `10.30.11` → `po.rpt.arrptbccn01103011`)
+- [x] Áp dụng đồng nhất cho SO `06.30.14` (theo task 358)
+- [x] Route đăng ký đúng: `po.rpt.arrptbccn01103011`, `po.rpt.arrptbccn01103023`, `so.rpt.arrptbccn01063014`, `so.rpt.arrptbccn01063038`
+- [x] Cột `Route` trong SimbaErpMenus hiển thị khớp route thật
+- [x] Merge PR #266 (squash `037c8495e`)
+
+> **Đối chiếu code 2026-11-17:** `php artisan route:list --path=arrptbccn` xác nhận cả 4 route
+> suffix deterministic đã đăng ký và resolve đúng component.
