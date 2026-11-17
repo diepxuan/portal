@@ -16,6 +16,8 @@ ghi SQL Server.
 ## Trạng thái
 
 - **Status:** ✅ DONE — đã merge qua PR #277 (squash `5da940726`).
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/si/vch/year` → HTTP **200**, title `Chọn năm làm việc [SimbaERP]`, 5 Livewire, **0 console error**.
 - **Menu Simba:** `90.30.02` (theo `simba-docs/data/sysMenu.md:634`).
 - **DLL:** `SiChangeFY.dll` (namespace `AsiaErp.UserInterface`, form `frmSiChangeFY`).
 - **Route hiện tại:** `/hethong/year` (route name: `system.year`).

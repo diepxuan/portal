@@ -9,6 +9,9 @@ Chuyển đổi chứng từ **Phiếu nhập mua hàng (PO3)** từ Simba .NET 
 ## Trạng thái hiện tại
 
 - **Status:** DONE — refactor Phase A-E hoàn tất, push lên PR #251 ngày 2026-07-18
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/po/vch/povchpo3` → HTTP **200**, title `Hoá đơn mua hàng trong nước [SimbaERP]`,
+    7 Livewire component, có table, **0 console error**.
 - **Ngày audit/cập nhật:** 2026-07-21 (đồng bộ convention Input* + reset HTTT khi đổi NCC + flash khi SP empty)
 - **Branch:** `task/251-po3-doc-rewrite`
 - **URL public (server thật):** `http://portal.diepxuan.corp/simba/po/vch/povchpo3` — render component `Po\Vch\Povchpo3`

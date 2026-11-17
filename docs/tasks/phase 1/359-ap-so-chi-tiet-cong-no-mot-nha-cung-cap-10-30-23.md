@@ -9,6 +9,11 @@ Chuyen doi chuc nang **Sổ chi tiết công nợ một nhà cung cấp - có s�
 ## Trang thai hien tai
 
 - **Status:** DONE - merged PR #247 (squash commit 12c1ae27d)
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/po/rpt/arrptbccn01103023` → HTTP **200**, title `Sổ chi tiết công nợ một nhà cung cấp - có số lượng`,
+    8 Livewire component, có table, **0 console error**. Slug khớp kỳ vọng của task 358.
+  + **Lưu ý:** `asARRptBCCN01SL` **không có định nghĩa trong `simba-docs/procedures/`** (đã grep toàn bộ);
+    wrapper `AsARRptBCCN01SL` + call-site tồn tại và chạy được. Cần bổ sung tài liệu SP.
 - **Ngay tao:** 2026-07-13
 - **Nguoi tao:** Bot (Portal Agent)
 - **Branch:** chua tao

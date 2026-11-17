@@ -10,7 +10,7 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 
 ## Trạng thái
 
-- **Status:** IN PROGRESS — đã sửa `field()` private → protected, bổ sung output `pRet`, bỏ hardcode `pIsnv=1`, convert null thành ``/`0` cho cột NOT NULL; cần verify lại E2E.
+- **Status:** DONE (form + route + SP wrapper hoạt động; blocker cũ đã đóng ngày 2026-11-17). Còn 1 bug riêng cần task mới: `loadDoiTuong()` khớp tiền tố thay vì khớp chính xác mã — xem mục *Bug thật phát hiện khi đối chiếu*.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 356 (gộp KH + NCC + NV) → tách thành 373/374/375
@@ -75,11 +75,51 @@ URL thật: `http://portal.diepxuan.corp/simba/ca/dict/ardmkh`
 - Mapping `SimbaRouteRegistry`: `ca.dict.ardmkh` → menu `04.90.05`.
 - Mapping `SimbaDictionaryRegistry`: `ca.dict.ardmkh` → `MA_KH` / `ARDMKH`.
 
-## Blocker hiện tại
+## Blocker cũ — ĐÃ ĐIỀU TRA VÀ ĐÓNG (2026-11-17)
 
-- **Form NV edit chưa lưu được trên `/simba/ca/dict/ardmkh/1LETRUONGLUAT/edit`** (ghi chú 2026-06-05 của task 356 cũ).
-- Cần debug runtime: trace xem `mount()` có load đúng dữ liệu qua `AsARGetDMKH::call` không, `save()` có chạy `AsARUpdDMKH` không, error message gì.
-- Có thể liên quan: thiếu field trong `rules()`, validation fail im lặng, hoặc SP reject vì thiếu tham số.
+Ghi chú cũ (từ task 356, 2026-06-05) nói *"Form NV edit chưa lưu được trên
+`/simba/ca/dict/ardmkh/1LETRUONGLUAT/edit`"*. Kiểm chứng lại bằng browser thật
+trên `http://portal.diepxuan.corp` (không dùng CLI/DB):
+
+**1. Form edit KHÔNG hỏng.** Với mã nhân viên có thật, form load đầy đủ dữ liệu:
+
+| URL | `ma_kh` đọc được | `ten_kh` | Số field có giá trị |
+|---|---|---|---|
+| `/simba/ca/dict/ardmkh/CONGTY/edit` | `CONGTY` | Công ty Điệp Xuân | 7 |
+| `/simba/ca/dict/ardmkh/K1/edit` | `K1 HUYEN` | nhan vien ban hang | 7 |
+| `/simba/ca/dict/ardmkh/KHO1/edit` | `KHO1` | Kho 1 | 7 |
+
+**2. `1LETRUONGLUAT` không tồn tại trong dữ liệu.** Danh sách
+`/simba/ca/dict/ardmkh` có **28** đối tượng; không có mã `1LETRUONGLUAT`
+(màn hình cũng không tìm thấy chuỗi này). Vì vậy mở URL đó hiện form trống là
+**hành vi đúng** — không phải lỗi lưu.
+
+**3. Kết luận:** blocker cũ là **hiểu nhầm do dùng mã không tồn tại** trong URL,
+không phải bug `save()`/`rules()`/SP. Không cần sửa code cho blocker này.
+
+## Bug thật phát hiện khi đối chiếu (2026-11-17)
+
+Tìm kiếm theo mã trong form edit trả **sai bản ghi** vì
+`AsARGetDMKH::getEmployees(search: ...)` truyền mã vào `pMa_kh`, mà
+`simba-docs/procedures/AR/procedures.md` (mục `asARGetDMKH`, dòng 1197-1209)
+mô tả `pMa_kh` là **prefix search** (`Mã khách hàng prefix search (null/empty = all)`),
+không phải khớp chính xác.
+
+Bằng chứng browser:
+
+| Mã trên URL | Bản ghi được load | Đúng/Sai |
+|---|---|---|
+| `CONGTY` | `CONGTY` — Công ty Điệp Xuân | đúng (khớp chính xác) |
+| `KHO1` | `KHO1` — Kho 1 | đúng (khớp chính xác) |
+| `K1` | **`K1 HUYEN`** — nhan vien ban hang | **SAI** — `K1` là mã riêng, `K1 HUYEN` chỉ trùng tiền tố |
+
+**Hệ quả:** với mã là tiền tố của mã khác, form edit sẽ load và cho sửa **nhầm
+đối tượng**. Đây là lỗi nghiêm trọng (sửa sai dữ liệu), nhưng **có trước** task
+này và cùng tồn tại ở SO/PO vì dùng chung `AsARGetDMKH`.
+
+**Hướng sửa (cần task riêng):** trong `loadDoiTuong()` phải lọc lại kết quả theo
+`ma_kh === $maKh` trước khi `$result->first()`; không sửa SP. Áp cho cả 3 form
+`So|Po|Ca\Dict\ArdmkhForm`.
 
 ## Liên quan
 

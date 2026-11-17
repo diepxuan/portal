@@ -10,7 +10,18 @@ Hoàn thiện danh mục khách hàng phục vụ nghiệp vụ bán hàng, dùn
 
 ## Trạng thái
 
-- **Status:** IN PROGRESS (route + component + view đã có, bổ sung dropdown phân loại, khóa sử dụng và unit test cơ bản; chưa E2E)
+- **Status:** DONE (2026-11-17 — verify E2E bằng browser thật)
+- **Verify 2026-11-17** (Playwright + Chromium, `http://portal.diepxuan.corp`):
+  + `/simba/so/dict/ardmkh` → HTTP **200**, title `Khách hàng [SimbaERP]`, **666 dòng** render.
+  + `/simba/so/dict/ardmkh/create` → HTTP **200**, 10 field `wire:model`, có nút Lưu.
+  + Component `So\Dict\Ardmkh` + `So\Dict\ArdmkhForm`; route `so.dict.ardmkh[.create|.edit]`.
+  + **Lỗi JS phát hiện (P2, không chặn chức năng):** console có `SyntaxError: Unexpected string`
+    từ Alpine khi parse `x-data` của menu sidebar (`div.w-[360px]`, ~19KB). Lỗi xuất hiện trên cả
+    3 màn ARDMKH (SO/PO/CA) nhưng **không** ở `/simba`, SO3 list, SMKS, `/login`.
+    Alpine vẫn init (v3.15.12), dữ liệu vẫn render, form vẫn thao tác được; chỉ menu sidebar
+    không nhận state Alpine. Cần task riêng để truy nguyên biểu thức gây lỗi.
+  + **Bug dùng chung:** xem task 375 — `loadDoiTuong()` khớp tiền tố (`pMa_kh` là prefix search
+    theo simba-docs), nên mã là tiền tố của mã khác sẽ load nhầm bản ghi. Áp cho cả SO/PO/CA.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 038 (ban đầu dùng tên `038-ban-hang-khach-hang-them-sua-xoa.md`)

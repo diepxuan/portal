@@ -9,6 +9,10 @@ Chuyển đổi chức năng **Sổ chi tiết công nợ một khách hàng** t
 ## Trạng thái hiện tại
 
 - **Status:** DONE — merged PR phase 1
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/so/rpt/arrptbccn01` → HTTP **200**, title `Sổ chi tiết công nợ một khách hàng [SimbaERP]`,
+    8 Livewire component, có table, **0 console error**. SP `asARRptBCCN01` có định nghĩa trong
+    `simba-docs/procedures/AR/procedures.md` (khớp).
 - **Ngày tạo:** 2026-05-10
 - **Ghi chú:** Đây là task gốc đầu tiên của dòng `ARRptBCCN01`, được implement trước khi có task 358 (slug convention) và task 359 (AP version).
 - **Nguồn:** simba-docs/decompiled

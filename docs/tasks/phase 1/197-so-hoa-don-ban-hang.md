@@ -637,6 +637,9 @@ Route::prefix('catalog/so')
 ## Portal implementation status
 
 - **Status:** DONE (list + edit CRUD)
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/so/vch/sovchso3` → HTTP **200**, title `Hoá đơn bán hàng [SimbaERP]`, 7 Livewire, **0 console error**.
+  + `/simba/so/vch/sovchso3/001wSO30000000633055/edit` → load đầy đủ, guard khóa sổ hoạt động (xem task 360).
 - **Route:** `so.vch.sovchso3`, `so.vch.sovchso3.create`, `so.vch.sovchso3.edit`
 - **Component:** `So\Vch\Sovchso3`, `So\Vch\Sovchso3Edit`
 - **View:** `catalog::so.vch.sovchso3`, `catalog::so.vch.sovchso3-edit`, `catalog::so.vch._grid-chitiet`
