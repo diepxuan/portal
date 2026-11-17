@@ -7,7 +7,10 @@ Tài liệu này hướng dẫn thiết lập môi trường phát triển (deve
 - **PHP**: ^8.2 (khuyến nghị 8.2+)
 - **Composer**: 2.6+
 - **Node.js**: 18+ (cho Vite, build frontend)
-- **MySQL**: 8.0+ (hoặc MariaDB 10.5+)
+- **SQL Server**: bản dùng cho SimbaERP (`sqlsrv`) — đây là DB nghiệp vụ Simba
+- **MySQL**: 8.0+ — chỉ cho DB ứng dụng Laravel (users/sessions/jobs)
+- **Microsoft ODBC Driver 18 for SQL Server**: bắt buộc để `sqlsrv` hoạt động;
+  **chưa có trên máy agent/CI** (xem cảnh báo ở mục 4.4)
 - **Redis**: 7+ (tùy chọn, cache/session/queue)
 - **Git**: 2.30+
 
@@ -46,7 +49,11 @@ APP_DEBUG=true
 APP_URL=http://localhost:8000
 ```
 
-### 3.2. Cấu hình database (MySQL)
+### 3.2. Cấu hình database
+
+Portal dùng **2 kết nối**:
+
+**a) DB ứng dụng (MySQL)** — users, sessions, jobs, cache:
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -55,6 +62,22 @@ DB_DATABASE=portal_dev
 DB_USERNAME=root
 DB_PASSWORD=your_password
 ```
+
+**b) DB nghiệp vụ Simba (SQL Server)** — đọc/ghi qua SP wrapper. Tên biến lấy
+đúng theo `config/database.php` (connection `sqlsrv`):
+```
+SQLSRV_HOST=...
+SQLSRV_PORT=1433
+SQLSRV_DATABASE=...
+SQLSRV_USERNAME=...
+SQLSRV_PASSWORD=...
+SQLSRV_URL=            # tùy chọn, ghi đè toàn bộ DSN
+```
+
+Model Simba luôn dùng connection tên `sqlsrv`
+(`Diepxuan\Simba\Traits\HasSimbaConnection::getSimbaConnectionName()` →
+`config('simba.connection', 'sqlsrv')`; biến `simba.connection` chưa được khai báo
+trong `diepxuan/laravel-simba/config/simba.php` nên luôn rơi về `sqlsrv`).
 
 ### 3.3. Cấu hình cache & session
 ```
@@ -96,6 +119,28 @@ php artisan migrate
 ```bash
 php artisan db:seed
 ```
+
+### 4.4. Giới hạn môi trường agent/CI — KHÔNG dùng DB từ shell
+
+Máy agent và runner CI hiện **chưa cài `Microsoft ODBC Driver 18 for SQL Server`**,
+nên extension `sqlsrv`/`pdo_sqlsrv` **không kết nối được DB từ CLI**. Lỗi đặc trưng:
+
+```
+SQLSTATE[IMSSP]: This extension requires the Microsoft ODBC Driver for SQL Server
+to communicate with SQL Server
+```
+
+Vì vậy với agent:
+
+- **KHÔNG** chạy `php artisan migrate`, `db:seed`, `db:*`, `tinker` (khi câu lệnh chạm
+  model/SP), `sqlcmd`, hay script PHP gọi SP — sẽ fail hoặc treo.
+- Các lệnh trên **chỉ đúng khi lập trình viên đã cài ODBC Driver 18** trên máy mình.
+- **Kiểm chứng dữ liệu/luồng nghiệp vụ phải dùng browser thật** trên
+  `http://portal.diepxuan.corp` + prefix `/simba` (web server chạy PHP-FPM đã có driver).
+- `vendor/bin/phpunit` chỉ dùng cho **unit test thuần logic**; test cần DB/SP phải
+  verify bằng browser E2E.
+
+Chi tiết policy: `TOOLS.md` §"Môi trường thực thi: KHÔNG dùng DB từ shell".
 
 ## 5. Chạy ứng dụng
 
@@ -282,6 +327,10 @@ Các package phải là symlink trỏ đến `../../diepxuan/`.
 ```bash
 php artisan tinker
 ```
+
+> **Lưu ý cho agent/CI:** mục này chỉ dùng được khi máy đã cài
+> `Microsoft ODBC Driver 18 for SQL Server`. Trên máy agent hiện tại, mọi câu lệnh
+> tinker chạm model/SP Simba sẽ fail — xem mục 4.4.
 
 ## 10. Workflow Git
 

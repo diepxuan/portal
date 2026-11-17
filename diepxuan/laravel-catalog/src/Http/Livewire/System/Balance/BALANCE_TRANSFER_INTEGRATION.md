@@ -89,6 +89,12 @@
 php artisan tinker --execute="echo class_exists('Diepxuan\Simba\StoredProcedures\AsGLChuyenSdTk') ? 'OK' : 'NOT FOUND';"
 ```
 
+> **Lưu ý cho agent/CI:** cần `Microsoft ODBC Driver 18 for SQL Server`; máy agent
+> hiện tại không có nên lệnh này fail. Cách thay thế không cần DB: kiểm tra file
+> wrapper tồn tại bằng `ls diepxuan/laravel-simba/src/StoredProcedures/AsGLChuyenSdTk.php`
+> và verify luồng qua browser tại `http://portal.diepxuan.corp/simba`.
+> Xem `docs/DEVELOPMENT.md` mục 4.4.
+
 ### 5.2. Kiểm tra route
 ```bash
 php artisan route:list | grep balance.transfer

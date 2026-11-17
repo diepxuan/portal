@@ -177,6 +177,12 @@ php artisan make:model Post
 php artisan queue:work
 ```
 
+> **Lưu ý cho agent/CI:** `php artisan migrate` chạm DB nên cần
+> `Microsoft ODBC Driver 18 for SQL Server` — máy agent hiện tại **không có**,
+> lệnh sẽ fail với `SQLSTATE[IMSSP]`. Agent verify dữ liệu/luồng nghiệp vụ bằng
+> browser thật tại `http://portal.diepxuan.corp/simba`.
+> Xem `docs/DEVELOPMENT.md` mục 4.4.
+
 ## 🐛 Troubleshooting
 
 ### "Command not found"

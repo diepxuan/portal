@@ -138,6 +138,12 @@ php artisan tinker
 >>> config('support.namespace') // Should return 'Diepxuan\Support'
 ```
 
+> **Lưu ý cho agent/CI:** `artisan tinker` cần DB khả dụng và máy phải có
+> `Microsoft ODBC Driver 18 for SQL Server`. Trên máy agent hiện tại lệnh này
+> **không chạy được** — kiểm tra config bằng cách đọc `config/*.php` trực tiếp,
+> hoặc verify qua browser trên `http://portal.diepxuan.corp/simba`.
+> Xem `docs/DEVELOPMENT.md` mục 4.4.
+
 ### Test 3: Command registration
 ```bash
 php artisan | grep -i "catalog\|support"  # Should show package commands
