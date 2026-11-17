@@ -11,6 +11,9 @@ Hoàn thiện danh mục nhân viên phục vụ nghiệp vụ CA, dùng chung b
 ## Trạng thái
 
 - **Status:** DONE (form + route + SP wrapper hoạt động; blocker cũ đã đóng ngày 2026-11-17). Còn 1 bug riêng cần task mới: `loadDoiTuong()` khớp tiền tố thay vì khớp chính xác mã — xem mục *Bug thật phát hiện khi đối chiếu*.
+- **Fix 2026-11-17 (PR #296):** dùng chung helper `firstExactMatch()` cho tra cứu khớp chính xác;
+  CA form vốn đã đọc đúng 3 checkbox `isKh`/`isNcc`/`isNv` (PO/SO mới được sửa cùng đợt),
+  và đã gửi `pHome_page`. Quy tắc cờ loại đối tượng ghi tại `docs/PROJECT_CONVENTIONS.md` §9.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 356 (gộp KH + NCC + NV) → tách thành 373/374/375
