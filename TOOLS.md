@@ -27,6 +27,28 @@ File này ghi chú các chi tiết riêng của môi trường Portal. Skill và
 - Checkbox `KSD` trong form checked = khóa sử dụng.
 - Áp dụng cho ARDMKH/SO/PO/CA và các danh mục dùng cùng quy ước; nếu một bảng cụ thể ghi khác trong `simba-docs`, ưu tiên chỉ dẫn này và báo Sếp nếu có nghi vấn thật sự, không tự đổi.
 
+## Môi trường thực thi: KHÔNG dùng DB từ shell
+
+Sếp chốt 2026-11-12 — áp dụng cho mọi agent/session:
+
+- **Không cài/không có `Microsoft ODBC Driver 18 for SQL Server`** trên máy này.
+  Extension `sqlsrv`/`pdo_sqlsrv` không kết nối được DB từ CLI.
+- **Không dùng DB từ shell.** Mọi lệnh sau đều FAIL hoặc treo, không được thử lại nhiều lần:
+  `php artisan tinker` (khi câu lệnh chạm model/SP), `php artisan db:*`,
+  `php artisan migrate*`, query qua `sqlcmd`, script PHP gọi SP.
+- Lỗi đặc trưng:
+  `SQLSTATE[IMSSP]: This extension requires the Microsoft ODBC Driver for SQL Server
+  to communicate with SQL Server`.
+- **Cách đúng để kiểm chứng dữ liệu/luồng nghiệp vụ: dùng browser thật** trên
+  `http://portal.diepxuan.corp` + prefix `/simba`. Browser chạy qua PHP-FPM của
+  web server (đã có driver), không qua CLI.
+- Hệ quả với test: `vendor/bin/phpunit` vẫn dùng được cho **unit test thuần logic**
+  (không chạm DB). Test cần DB/SP phải verify bằng browser E2E, không cố chạy qua CLI.
+- Khi cần đọc/ghi dữ liệu để verify: mở đúng màn hình Portal, thao tác như người dùng,
+  đọc kết quả từ DOM/message hiển thị.
+- Muốn điều tra SQL/schema: **không** tạo route debug tạm, **không** thêm code chạm DB
+  chỉ để query. Dùng `simba-docs` làm nguồn sự thật; nếu docs lệch DB thật thì báo Sếp.
+
 ## Website Verification & Dev Server
 
 - `http://portal.diepxuan.corp` là local domain đã được cấu hình sẵn và luôn là URL mặc định khi kiểm tra UI/browser E2E cho Portal.

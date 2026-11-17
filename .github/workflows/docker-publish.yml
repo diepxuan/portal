@@ -41,7 +41,7 @@ jobs:
 
       - name: Install Composer dependencies
         run: |
-          composer install --prefer-dist --no-interaction --no-progress
+          composer install --prefer-dist --no-interaction --no-progress --no-security-blocking
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
