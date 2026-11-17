@@ -44,6 +44,11 @@ Cung cấp các công cụ hỗ trợ cho developer trong hệ thống DX, bao g
 - 6 lớp điều kiện fail-safe, không kích hoạt ngoài `APP_ENV=local`
 - **Xem chi tiết:** [§Auto-login nội bộ (dev)](#auto-login-nội-bộ-dev)
 
+### 6. Route chẩn đoán chỉ mở khi debug
+- Middleware `DebugOnly` chặn route debug (`/check-proxy`, `test/*`) trên production
+- Chỉ mở khi `APP_DEBUG=true` **và** `APP_ENV != production`; bị chặn → trả 404
+- **Xem chi tiết:** [§Route chẩn đoán chỉ mở khi debug](#route-chẩn-đoán-chỉ-mở-khi-debug)
+
 ## Cài đặt / Sử dụng
 
 ```bash
@@ -127,6 +132,51 @@ luôn ép; trong local đọc `DX_FORCE_HTTPS` (mặc định `true`).
 Biến cũ `DX_CORP_AUTO_LOGIN_HTTPS` vẫn được đọc làm fallback để không phá cấu hình
 sẵn có, nhưng tên đó **gây nhầm** với `CorpAutoLogin` nên đã đổi thành
 `DX_FORCE_HTTPS`.
+
+### Route chẩn đoán chỉ mở khi debug
+
+`Diepxuan\Support\Http\Middleware\DebugOnly` bảo vệ các route **chẩn đoán nội bộ**
+khỏi bị truy cập trên production. Đây không phải trang cho người dùng cuối; nếu để
+public, chúng làm lộ thông tin hạ tầng (`app_url`, scheme, header proxy, cấu hình
+server).
+
+**Đăng ký:** middleware này **không** global; gắn riêng cho route debug cần bảo vệ:
+
+```php
+use Diepxuan\Support\Http\Middleware\DebugOnly;
+
+Route::get('/check-proxy', fn () => [...])
+    ->middleware([DebugOnly::class]);
+```
+
+**Hai điều kiện phải đồng thời đúng:**
+
+| Điều kiện | Ý nghĩa |
+|---|---|
+| `APP_DEBUG=true` | Đọc qua `config('app.debug')` — tôn trọng config cache khi deploy |
+| `APP_ENV != production` | Chặn cả trường hợp bật `APP_DEBUG=true` nhầm trên production |
+
+**Hành vi khi bị chặn:** trả **404** (không phải 403) — route coi như *không tồn tại*,
+để không tiết lộ endpoint chẩn đoán đang hiện diện.
+
+**Ghi log:** nếu `APP_DEBUG=true` nhưng vẫn bị chặn (do `APP_ENV=production`),
+middleware ghi `Log::warning('Debug-only route bị chặn vì môi trường production.')`
+kèm host/path để phát hiện cấu hình mâu thuẫn.
+
+**Route đang được bảo vệ** (`diepxuan/laravel-catalog/routes/web.php`):
+
+- `/check-proxy` — chẩn đoán scheme/proxy
+- `test/utf8` — kiểm tra hiển thị UTF-8
+
+**Bật debug trong `.env` dev:**
+
+```dotenv
+APP_ENV=local
+APP_DEBUG=true
+```
+
+> Khi `APP_DEBUG=false` (kể cả ở local), các route này cũng trả 404. Đây là chủ ý:
+> route chẩn đoán chỉ dùng khi đang debug.
 
 ### Sử dụng Collection
 
