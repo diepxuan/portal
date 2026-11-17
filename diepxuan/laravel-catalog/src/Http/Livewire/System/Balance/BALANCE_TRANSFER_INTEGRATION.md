@@ -85,15 +85,16 @@
 ## 5. Kiểm tra
 
 ### 5.1. Kiểm tra class tồn tại
+
+Wrapper SP nằm trong `diepxuan/laravel-simba/src/StoredProcedures/`:
+
 ```bash
-php artisan tinker --execute="echo class_exists('Diepxuan\Simba\StoredProcedures\AsGLChuyenSdTk') ? 'OK' : 'NOT FOUND';"
+ls -l diepxuan/laravel-simba/src/StoredProcedures/AsGLChuyenSdTk.php
+php -l diepxuan/laravel-simba/src/StoredProcedures/AsGLChuyenSdTk.php
 ```
 
-> **Lưu ý cho agent/CI:** cần `Microsoft ODBC Driver 18 for SQL Server`; máy agent
-> hiện tại không có nên lệnh này fail. Cách thay thế không cần DB: kiểm tra file
-> wrapper tồn tại bằng `ls diepxuan/laravel-simba/src/StoredProcedures/AsGLChuyenSdTk.php`
-> và verify luồng qua browser tại `http://portal.diepxuan.corp/simba`.
-> Xem `docs/DEVELOPMENT.md` mục 4.4.
+Không dùng `artisan tinker` cho việc này: máy dev không kết nối trực tiếp DB nên
+mọi lệnh tinker chạm model/SP đều không chạy được (xem `docs/DEVELOPMENT.md` mục 4.1).
 
 ### 5.2. Kiểm tra route
 ```bash

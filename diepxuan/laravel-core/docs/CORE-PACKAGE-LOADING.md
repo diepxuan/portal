@@ -132,17 +132,22 @@ php -r "require 'vendor/autoload.php'; use Diepxuan\Core\Models\Package; print_r
 ```
 
 ### Test 2: Config loading
+Đọc trực tiếp file config của package (không cần `tinker`, không cần DB):
+
 ```bash
-php artisan tinker
->>> config('catalog.namespace') // Should return 'Diepxuan\Catalog'
->>> config('support.namespace') // Should return 'Diepxuan\Support'
+# Namespace khai bao trong config cua tung package
+cat diepxuan/laravel-catalog/config/catalog.php
+cat diepxuan/laravel-support/config/support.php
 ```
 
-> **Lưu ý cho agent/CI:** `artisan tinker` cần DB khả dụng và máy phải có
-> `Microsoft ODBC Driver 18 for SQL Server`. Trên máy agent hiện tại lệnh này
-> **không chạy được** — kiểm tra config bằng cách đọc `config/*.php` trực tiếp,
-> hoặc verify qua browser trên `http://portal.diepxuan.corp/simba`.
-> Xem `docs/DEVELOPMENT.md` mục 4.4.
+Hoặc merge config qua `php -r` (không chạm DB):
+
+```bash
+php -r "require 'vendor/autoload.php'; \$app = require 'bootstrap/app.php'; \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap(); echo config('catalog.namespace');"
+```
+
+> Máy dev không kết nối trực tiếp DB nên **không dùng `php artisan tinker`** để kiểm
+> tra. Xem `docs/DEVELOPMENT.md` mục 4.1.
 
 ### Test 3: Command registration
 ```bash

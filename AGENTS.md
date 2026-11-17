@@ -102,7 +102,7 @@ Khi nhận task, phải đi hết vòng đời:
 - Definition of Done: diff sạch, validation pass, PR/CI status rõ ràng
 - Khi gặp lỗi: dừng, phân tích nguyên nhân, không vá mù
 - Khi verify UI: dùng domain `http://portal.diepxuan.corp` + prefix `/simba`, KHÔNG suy từ routes/web.php
-- **KHÔNG dùng DB từ shell:** máy này không có `Microsoft ODBC Driver 18 for SQL Server` nên `sqlsrv` không kết nối được ngoài web server. Không chạy `artisan tinker`/`db:*`/`migrate*`/`sqlcmd` để đọc-ghi dữ liệu. Verify dữ liệu và luồng nghiệp vụ bằng **browser thật** trên `http://portal.diepxuan.corp/simba`; `phpunit` chỉ cho unit test thuần logic. Chi tiết: `TOOLS.md` §"Môi trường thực thi".
+- **Máy dev không kết nối trực tiếp DB:** đây là cách môi trường được thiết kế, không phải thiếu driver cần cài. Mọi thao tác DB từ shell (`artisan tinker`/`db:*`/`migrate*`, `sqlcmd`, script gọi SP) không thuộc phạm vi sử dụng. Làm việc với dữ liệu qua **browser thật** trên `http://portal.diepxuan.corp/simba` (web server có kết nối DB); `phpunit` chỉ cho unit test thuần logic. Chi tiết: `TOOLS.md` §"Môi trường thực thi".
 
 ---
 
