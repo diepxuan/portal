@@ -39,6 +39,11 @@ Cung cấp các công cụ hỗ trợ cho developer trong hệ thống DX, bao g
 ### 4. Charset Support
 - Hỗ trợ xử lý charset thông qua dependency php-charset
 
+### 5. Auto-login nội bộ (dev)
+- Middleware `CorpAutoLogin` tự đăng nhập trên môi trường dev nội bộ
+- 6 lớp điều kiện fail-safe, không kích hoạt ngoài `APP_ENV=local`
+- **Xem chi tiết:** [§Auto-login nội bộ (dev)](#auto-login-nội-bộ-dev)
+
 ## Cài đặt / Sử dụng
 
 ```bash
@@ -58,6 +63,70 @@ protected $commands = [
     \Diepxuan\Support\Commands\ServeDevLogs::class,
 ];
 ```
+
+### Auto-login nội bộ (dev)
+
+`Diepxuan\Support\Http\Middleware\CorpAutoLogin` tự đăng nhập khi truy cập Portal
+trên môi trường dev nội bộ, tránh phải login tay mỗi lần reset DB.
+
+**Đăng ký:** middleware này **không** global; áp trong route group của package dùng
+nó (hiện tại `diepxuan/laravel-catalog/routes/web.php`):
+
+```php
+use Diepxuan\Support\Http\Middleware\CorpAutoLogin;
+
+Route::middleware([CorpAutoLogin::class])->group(function (): void {
+    // routes...
+});
+```
+
+**Biến môi trường (.env):**
+
+| Biến | Mặc định | Mô tả |
+|---|---|---|
+| `DX_CORP_AUTO_LOGIN_ENABLED` | `false` | Bật/tắt auto-login (`true` mới dùng) |
+| `DX_CORP_AUTO_LOGIN_EMAIL` | `''` | Email user đăng nhập tự động. Rỗng → tắt |
+| `DX_CORP_AUTO_LOGIN_HOST_SUFFIX` | `.diepxuan.corp` | Chỉ auto-login khi host kết thúc bằng suffix này |
+| `DX_CORP_AUTO_LOGIN_SERVER_ADDR` | `10.0.0.122` | Danh sách IP server được phép, phân tách bằng dấu phẩy |
+
+Ví dụ cấu hình dev:
+
+```dotenv
+DX_CORP_AUTO_LOGIN_ENABLED=true
+DX_CORP_AUTO_LOGIN_EMAIL=dev@diepxuan.corp
+DX_CORP_AUTO_LOGIN_HOST_SUFFIX=.diepxuan.corp
+DX_CORP_AUTO_LOGIN_SERVER_ADDR=10.0.0.122
+```
+
+**Sáu điều kiện phải đồng thời đúng** (bất kỳ điều kiện nào sai → bỏ qua,
+chuyển về trang login thường):
+
+1. `APP_ENV=local`
+2. `DX_CORP_AUTO_LOGIN_ENABLED=true`
+3. Request hiện tại là guest (chưa đăng nhập)
+4. `DX_CORP_AUTO_LOGIN_EMAIL` có giá trị
+5. Host khớp `DX_CORP_AUTO_LOGIN_HOST_SUFFIX`
+6. Địa chỉ server khớp `DX_CORP_AUTO_LOGIN_SERVER_ADDR`
+
+Thiết kế fail-safe: ngoài môi trường `local` middleware **không bao giờ** auto-login,
+nên không có rủi ro kích hoạt nhầm trên production.
+
+**Ghi log:**
+
+- Đăng nhập thành công → `Log::info('Corp auto-login authenticated request.')`
+- Không tìm thấy user theo email → `Log::warning(...)` kèm gợi ý kiểm tra email
+- Bỏ qua auto-login (khi env local + enabled) → `Log::debug()` ghi đủ 6 điều kiện
+
+**Lưu ý:** `Auth::login($user, true)` bật remember-me, giữ session qua nhiều request.
+
+### Ép HTTPS (`DX_FORCE_HTTPS`)
+
+`SupportServiceProvider` ép scheme `https` cho URL generate. Ngoài môi trường local
+luôn ép; trong local đọc `DX_FORCE_HTTPS` (mặc định `true`).
+
+Biến cũ `DX_CORP_AUTO_LOGIN_HTTPS` vẫn được đọc làm fallback để không phá cấu hình
+sẵn có, nhưng tên đó **gây nhầm** với `CorpAutoLogin` nên đã đổi thành
+`DX_FORCE_HTTPS`.
 
 ### Sử dụng Collection
 

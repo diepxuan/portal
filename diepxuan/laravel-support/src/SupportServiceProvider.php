@@ -42,12 +42,22 @@ class SupportServiceProvider extends ServiceProvider
         ]);
     }
 
+    /**
+     * Có ép scheme https cho URL generate không.
+     *
+     * Ngoài môi trường local luôn ép https. Trong local, đọc `DX_FORCE_HTTPS`
+     * (mặc định true). Biến cũ `DX_CORP_AUTO_LOGIN_HTTPS` vẫn được đọc để
+     * không phá cấu hình hiện có, nhưng tên đó gây nhầm với CorpAutoLogin nên
+     * đã được đổi tên.
+     */
     private function shouldForceHttps(): bool
     {
         if (!app()->environment('local')) {
             return true;
         }
 
-        return filter_var(env('DX_CORP_AUTO_LOGIN_HTTPS', true), FILTER_VALIDATE_BOOL);
+        $default = env('DX_CORP_AUTO_LOGIN_HTTPS'); // legacy fallback
+
+        return filter_var(env('DX_FORCE_HTTPS', $default ?? true), FILTER_VALIDATE_BOOL);
     }
 }
