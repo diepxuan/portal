@@ -37,12 +37,13 @@ class ArdmkhForm extends BaseForm
     {
         try {
             $result = AsARGetDMKH::getCustomers(search: $maKh);
-            if ($result->isEmpty()) {
+            // asARGetDMKH là prefix search -> phải lọc khớp chính xác mã.
+            $row = $this->firstExactMatch($result, $maKh);
+
+            if (null === $row) {
                 $this->dispatch('error', message: 'Không tìm thấy khách hàng.');
                 return;
             }
-
-            $row = $result->first();
             $_ = fn (string $lower, string $upper, mixed $default = null): mixed =>
                 $this->field($row, $lower, $upper, $default);
 

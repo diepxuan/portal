@@ -73,12 +73,12 @@ class ArdmkhForm extends Component
                 'pModuleId' => 'AP',
             ]);
 
-            if ($result->isEmpty()) {
+            $row = $this->firstExactMatch($result, $maKh);
+
+            if (null === $row) {
                 $this->dispatch('error', message: 'Không tìm thấy nhà cung cấp.');
                 return;
             }
-
-            $row = $result->first();
             $this->ma_kh       = $this->field($row, 'ma_kh', 'MA_KH', $maKh);
             $this->ten_kh      = $this->field($row, 'ten_kh', 'TEN_KH', '');
             $this->dia_chi     = $this->field($row, 'dia_chi', 'DIA_CHI', '');
@@ -157,6 +157,46 @@ class ArdmkhForm extends Component
         }
 
         return $row->{$lower} ?? $row->{$upper} ?? $default;
+    }
+
+    /**
+     * Tìm đúng bản ghi theo mã đối tượng trong kết quả `asARGetDMKH`.
+     *
+     * `asARGetDMKH` nhận `pMa_kh` là **prefix search** (xem
+     * `simba-docs/procedures/AR/procedures.md`, mục `asARGetDMKH`), nên kết quả
+     * có thể chứa nhiều mã cùng tiền tố: tra `K1` sẽ trả về cả `K1 HUYEN`.
+     * Nếu lấy `first()` ngay thì form sửa mở NHẦM đối tượng và có thể ghi đè
+     * dữ liệu của bản ghi khác.
+     *
+     * Hàm này lọc lại theo mã khớp chính xác (không phân biệt hoa/thường,
+     * bỏ khoảng trắng thừa). Không sửa SP.
+     *
+     * Trả `null` khi không có mã nào khớp tuyệt đối — caller phải báo
+     * "không tìm thấy" thay vì nạp bản ghi khác. Trước đây dùng `first()` nên
+     * mã không tồn tại (vd `K1` khi chỉ có `K1 HUYEN`) vẫn mở ra bản ghi khác
+     * và có thể ghi đè dữ liệu sai đối tượng.
+     *
+     * @param iterable<int, mixed> $rows
+     *
+     * @return null|array<string, mixed>|object
+     */
+    protected function firstExactMatch(iterable $rows, string $maKh): array|object|null
+    {
+        $target = mb_strtoupper(trim($maKh));
+
+        if ('' === $target) {
+            return null;
+        }
+
+        foreach ($rows as $row) {
+            $ma = mb_strtoupper(trim((string) $this->field($row, 'ma_kh', 'MA_KH', '')));
+
+            if ($ma === $target) {
+                return $row;
+            }
+        }
+
+        return null;
     }
 
     protected function persist(string $procedureClass): void
