@@ -1,0 +1,36 @@
+{
+  "name": "diepxuan/laravel-taskboard",
+  "description": "Task board (Kanban) reading task docs from docs/tasks",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tran Ngoc Duc",
+      "email": "ductn@diepxuan.com"
+    }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Diepxuan\\TaskBoard\\Providers\\TaskBoardServiceProvider"
+      ],
+      "aliases": {}
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "diepxuan/laravel-core": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Diepxuan\\TaskBoard\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Diepxuan\\TaskBoard\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

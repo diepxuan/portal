@@ -1,11 +1,13 @@
 ---
-ID: 11
-Title: "admin dashboard"
+ID: P003
+Title: "Admin dashboard"
 Status: OPEN
 Labels: []
 ---
 
-# admin dashboard
+**Loại:** Portal task
+
+# Portal Task P003: Admin dashboard
 
 ## Mo ta
 

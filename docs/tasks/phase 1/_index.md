@@ -1,8 +1,20 @@
-# Phase 1 Tasks
+# Phase 1 — Phát triển thêm chức năng cho Portal
 
 > Tự động sinh bởi `scripts/gen-tasks-index.php`. **Không sửa tay** — sửa script rồi chạy lại.
 
-Các task đã xong phase hiện tại và được chuyển sang phase 1 để tiếp tục hoàn thiện chức năng nghiệp vụ và UI.
+**Đây là phase 1** — giai đoạn phát triển thêm và hoàn thiện chức năng **cho Portal**
+sau khi đã port xong từ SimbaERP .NET.
+
+| Phase | Ý nghĩa | Thư mục |
+|---|---|---|
+| **Phase hiện tại (port)** | Chuyển đổi chức năng từ SimbaERP .NET sang PHP Laravel | `docs/tasks/*.md` |
+| **Phase 1 (mở rộng)** | Phát triển thêm chức năng, hoàn thiện UI/UX, tối ưu cho Portal | `docs/tasks/phase 1/*.md` |
+
+Task trong phase 1 xuất phát từ task đã xong ở phase port, sau đó tiếp tục được phát
+triển thêm: bổ sung tính năng, chuẩn hóa UI theo `docs/DESIGN.md`, tối ưu hiệu năng,
+sửa lỗi phát sinh trong quá trình vận hành Portal.
+
+**Quy ước:** ID giữ nguyên từ task gốc; mỗi task chỉ tồn tại **một bản** trong phase 1.
 
 ## Tổng quan
 
