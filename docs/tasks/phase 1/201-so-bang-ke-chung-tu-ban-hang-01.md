@@ -278,6 +278,13 @@ URL thực tế:
 
 ## Portal implementation status
 
-- **Status:** IN PROGRESS (Livewire component + SP wrapper + route mapping đã xong, chưa verify dữ liệu thực)
+- **Status:** DONE (2026-11-17 — verify bằng browser thật)
+- **Verify 2026-11-17** (`http://portal.diepxuan.corp/simba/so/rpt/sorptbk01`, Playwright + Chromium):
+  + HTTP **200**, title `Bảng kê bán hàng [SimbaERP]`, 9 Livewire component, có table, **0 console error**.
+  + Route name `so.rpt.sorptbk01`; component `So\Rpt\Sorptbk01`; SP `asSORptBK01` (wrapper `AsSORptBK01`).
+  + **Lưu ý:** `asSORptBK01` **không có định nghĩa trong `simba-docs/procedures/`** — đã grep toàn bộ
+    thư mục, không thấy section `### asSORptBK01`. Wrapper PHP và call-site vẫn tồn tại và chạy được
+    (đã xác nhận qua browser). Đây là **khoảng trống tài liệu**, không phải lỗi code; cần bổ sung
+    `simba-docs` khi có nguồn SQL gốc.
 - **Source:** `simba-docs/data/sysReportInfo.md` (asSORptBK01), `simba-docs/decompiled/asia/SORptBK01.dll` (frmSORptBK01.cs), `simba-docs/procedures/SO/procedures.md` (asSIGetDmSo_ct).
 - **Note:** Chưa verify với dữ liệu thực trên SQL Server; cần chạy E2E sau khi có session/login và database Simba.

@@ -8,7 +8,12 @@ Chuyen doi chuc nang **Bao cao ton kho** tu Simba .NET `INRptCD02.dll` sang Live
 
 ## Trang thai hien tai
 
-- **Status:** IMPLEMENTED - can review/CI
+- **Status:** DONE (2026-11-17 — verify bằng browser thật)
+- **Verify 2026-11-17** (`http://portal.diepxuan.corp/simba/in/rpt/inrptcd02`):
+  + HTTP **200**, title `Báo cáo tồn kho [SimbaERP]`, 9 Livewire component, có table, **0 console error**.
+  + Component `In\Rpt\Inrptcd02`; SP `asINRptCD02` (wrapper `AsINRptCD02`).
+  + **Lưu ý:** `asINRptCD02` **không có định nghĩa trong `simba-docs/procedures/`** (đã grep toàn bộ).
+    Wrapper PHP + call-site tồn tại và chạy được. Cần bổ sung tài liệu SP khi có SQL gốc.
 - **Ngay audit/cap nhat:** 2026-07-05
 - **Branch:** `task/117-inrptcd02-report`
 - **Canonical URL:** `/simba/in/rpt/inrptcd02`

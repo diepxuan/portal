@@ -11,6 +11,12 @@ Hoàn thiện danh mục nhà cung cấp dùng chung bảng Simba `ARDMKH` / for
 ## Trạng thái hiện tại
 
 - **Status:** DONE — code merged qua các PR #214, #230, #255
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/po/dict/ardmkh` → HTTP **200**, title `Nhà cung cấp [SimbaERP]`, 5 Livewire.
+  + `/simba/po/dict/ardmkh/create` → HTTP **200**, 11 field `wire:model`, có nút Lưu.
+  + **Lỗi JS (P2):** `SyntaxError: Unexpected string` từ Alpine parse `x-data` menu sidebar —
+    cùng lỗi trên cả 3 màn ARDMKH. Không chặn chức năng (Alpine vẫn init, dữ liệu vẫn render).
+  + **Bug dùng chung:** `loadDoiTuong()` khớp tiền tố thay vì khớp chính xác mã — xem task 375.
 - **Ngày tạo:** 2026-07-28
 - **Người tạo:** Bot (Portal Agent)
 - **Tách từ:** task 356 (gộp KH + NCC + NV ARDMKH) → tách thành 373 / 374 / 375

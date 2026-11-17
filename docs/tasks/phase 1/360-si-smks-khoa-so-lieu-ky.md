@@ -9,6 +9,9 @@ Ghi nhận kết quả chuyển đổi module **Khóa số liệu kỳ (SMKS)** 
 ## Trạng thái
 
 - **Status:** ✅ DONE — đã merge vào main
+- **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
+  + `/simba/si/vch/smks` → HTTP **200**, title `Khoá số liệu [SimbaERP]`, 5 Livewire, **0 console error**.
+  + `ngay_ks` đọc được = `2026-08-30`.
 - **Route:** `/simba/si/vch/smks` (route name: `si.vch.smks`)
 - **Component:** `Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks`
 - **SP Wrapper:** `Diepxuan\Simba\StoredProcedures\AssiUpd_ks` (SP `assiUpd_ks`)
