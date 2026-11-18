@@ -1,5 +1,7 @@
 # Task 063: PODMCP
 
+- **Status:** ✅ DONE — verify browser 2026-11-18 (đã fix lỗi 500 Collection)
+
 ## Nhom: PO (Purchase Order - Don hang mua)
 
 ## Muc tieu
@@ -269,6 +271,25 @@ Route::prefix('catalog/po/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** ✅ DONE — verify browser 2026-11-18 (đã fix lỗi 500 Collection)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Fix lỗi 500 — sai kiểu trả về Collection (2026-11-18)
+
+**Triệu chứng:** `/simba/po/dict/podmcp` trả HTTP 500:
+`PoDmCpIndex::normalizeRows(): Return value must be of type
+Diepxuan\Support\Collection, Illuminate\Support\Collection returned`
+
+**Nguyên nhân:** file import `Diepxuan\Support\Collection` (subclass của
+`Illuminate\Support\Collection`, chỉ thêm `toMarkdownTable()`), nhưng
+`collect($results)` và kết quả query builder trả về class **cha**
+`Illuminate\Support\Collection` → PHP TypeError vì khai báo kiểu hẹp hơn.
+
+**Fix:** đổi import trong `Muahang\PoDmCpIndex` sang
+`Illuminate\Support\Collection` — component này không dùng
+`toMarkdownTable()` nên không cần subclass.
+
+**Verify browser (Playwright + Chromium 147):**
+- `/simba/po/dict/podmcp` → HTTP 200, title "Chi phí mua hàng [SimbaERP]",
+  table render **4 rows**, **0 page error**.
