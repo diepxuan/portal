@@ -12,6 +12,84 @@ use Tests\TestCase;
 
 final class ArdmkhFormTest extends TestCase
 {
+    /**
+     * `asARGetDMKH` nhận `pMa_kh` là prefix search (simba-docs/procedures/AR),
+     * nên kết quả có thể chứa nhiều mã cùng tiền tố. Helper phải lọc khớp
+     * CHÍNH XÁC, không lấy phần tử đầu tiên.
+     */
+    public function testFirstExactMatchReturnsExactCodeNotPrefixMatch(): void
+    {
+        $form = new ArdmkhForm();
+        $method = new \ReflectionMethod($form, 'firstExactMatch');
+
+        // Kết quả SP trả về thứ tự: K1 HUYEN trước, K1 sau (mô phỏng prefix search).
+        $rows = [
+            ['ma_kh' => 'K1 HUYEN', 'ten_kh' => 'nhan vien ban hang'],
+            ['ma_kh' => 'K1', 'ten_kh' => 'Kho 1 that'],
+        ];
+
+        $row = $method->invoke($form, $rows, 'K1');
+
+        self::assertIsArray($row);
+        self::assertSame('K1', $row['ma_kh'], 'Phai chon dong co ma khop chinh xac, khong phai dong dau tien.');
+        self::assertSame('Kho 1 that', $row['ten_kh']);
+    }
+
+    public function testFirstExactMatchReturnsNullWhenOnlyPrefixMatchesExist(): void
+    {
+        $form = new ArdmkhForm();
+        $method = new \ReflectionMethod($form, 'firstExactMatch');
+
+        // Du lieu that cua CA: khong co ma 'K1', chi co 'K1 HUYEN'.
+        $rows = [
+            ['ma_kh' => 'K1 HUYEN', 'ten_kh' => 'nhan vien ban hang'],
+            ['ma_kh' => 'KHO1', 'ten_kh' => 'Kho 1'],
+        ];
+
+        self::assertNull(
+            $method->invoke($form, $rows, 'K1'),
+            'Ma khong ton tai phai tra null de caller bao loi, KHONG duoc nap ban ghi khac.'
+        );
+    }
+
+    public function testFirstExactMatchIsCaseInsensitiveAndTrimsSpaces(): void
+    {
+        $form = new ArdmkhForm();
+        $method = new \ReflectionMethod($form, 'firstExactMatch');
+
+        $rows = [['ma_kh' => 'congty', 'ten_kh' => 'Cong ty']];
+
+        $row = $method->invoke($form, $rows, '  CONGTY  ');
+
+        self::assertIsArray($row);
+        self::assertSame('congty', $row['ma_kh']);
+    }
+
+    public function testFirstExactMatchHandlesObjectRows(): void
+    {
+        $form = new ArdmkhForm();
+        $method = new \ReflectionMethod($form, 'firstExactMatch');
+
+        $rows = [
+            (object) ['ma_kh' => 'K1 HUYEN', 'ten_kh' => 'prefix'],
+            (object) ['ma_kh' => 'K1', 'ten_kh' => 'exact'],
+        ];
+
+        $row = $method->invoke($form, $rows, 'K1');
+
+        self::assertIsObject($row);
+        self::assertSame('K1', $row->ma_kh);
+    }
+
+    public function testFirstExactMatchReturnsNullForEmptyCode(): void
+    {
+        $form = new ArdmkhForm();
+        $method = new \ReflectionMethod($form, 'firstExactMatch');
+
+        self::assertNull($method->invoke($form, [['ma_kh' => 'K1']], ''));
+        self::assertNull($method->invoke($form, [['ma_kh' => 'K1']], '   '));
+    }
+
     public function testFieldHelperIsProtectedSoSubclassesCanLoadDoiTuong(): void
     {
         foreach ([ArdmkhForm::class, SoArdmkhForm::class, CaArdmkhForm::class] as $class) {

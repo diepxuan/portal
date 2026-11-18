@@ -162,6 +162,48 @@ Nhiều SP xóa **không có** tham số `pNgay_ks` nên SQL không tự chặn:
 Livewire cho cả `submit()` lẫn `delete*()`. Đã áp dụng: `Sovchso3Edit`,
 `Povchpo3Edit`, `Phieubaono`, `Sorptbk01::deleteVoucher()`.
 
+## 9. Cờ loại đối tượng `iskh` / `isncc` / `isnv` (ARDMKH)
+
+### Quy tắc
+
+- Một đối tượng ARDMKH có thể **đồng thời** là khách hàng, nhà cung cấp và nhân viên —
+  ba cờ độc lập, không loại trừ nhau.
+- `iskh = 1` → là khách hàng (SO/AR dùng).
+- `isncc = 1` → là nhà cung cấp (PO/AP dùng).
+- `isnv = 1` → là nhân viên (CA dùng).
+- Cả ba cột là `NOT NULL`, default `1` theo `simba-docs/tables/ArDmKh.md`.
+- Việc lọc theo module do **tham số `pModuleId` của `asARGetDMKH`** quyết định:
+  `'AR'` = khách hàng, `'AP'` = nhà cung cấp, `'CA'` = nhân viên.
+
+### Bắt buộc khi lưu (save/persist)
+
+- **KHÔNG hardcode** `pIskh`/`pIsncc`/`pIsnv` trong payload SP. Phải lấy từ checkbox
+  người dùng chọn: `$this->isKh ? 1 : 0`, v.v.
+- Lý do: hardcode làm **mất cờ** của đối tượng. Ví dụ đã xảy ra: `2VANQT` vừa là
+  khách hàng vừa là nhà cung cấp; form PO hardcode `pIskh => 0, pIsncc => 1` nên mỗi
+  lần bấm Lưu đều **xoá cờ khách hàng**, biến đối tượng thành chỉ còn nhà cung cấp.
+- Form phải hiển thị đủ 3 checkbox `isKh` / `isNcc` / `isNv` cho người dùng quyết định.
+  Đã áp dụng cho `po/dict/ardmkh-form`, `so/dict/ardmkh-form`, `ca/dict/ardmkh-form`.
+
+### Bắt buộc: gửi đủ cột NOT NULL khi save
+
+`ArDmKh` có **35 cột NOT NULL** (xem `simba-docs/tables/ArDmKh.md`). Nếu payload SP thiếu
+tham số, SP nhận `NULL` và SQL Server báo:
+
+```
+Cannot insert the value NULL into column '<ten_cot>', table 'ArDmKh'; column does not allow nulls. UPDATE fails.
+```
+
+Vì vậy mọi form ARDMKH **phải** gửi đủ các cột sau (đã áp dụng PO/SO/CA):
+
+- Chuỗi (default `''`): `pHome_page`, `pMa_ngh`, `pTen_nh`, `pCn_nh`, `pSo_tk_nh`,
+  `pTinh_tp_nh`, `pMa_tt`, `pMa_httt`, `pGhi_chu`, cùng các cột đã có.
+- Số (default `0`): `pGh_no`, `pHan_ck`, `pTl_ck`, `pHan_tt`, `pLs_qh`.
+- Bit (default `0`/`1`): `pTinh_dt_nb`, `pIskh`, `pIsncc`, `pIsnv`, `pKsd`.
+
+Helper dùng chung trong `Po\Dict\ArdmkhForm`: `stringValue()` (null → `''`) và
+`numberValue()` (null/`''` → `0`). Đây chính là quy tắc §3 áp dụng cho đầy đủ payload.
+
 ## Liên quan
 
 - `docs/README.md` — documentation index

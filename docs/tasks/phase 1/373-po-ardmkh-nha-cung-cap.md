@@ -11,6 +11,20 @@ Hoàn thiện danh mục nhà cung cấp dùng chung bảng Simba `ARDMKH` / for
 ## Trạng thái hiện tại
 
 - **Status:** DONE — code merged qua các PR #214, #230, #255
+- **Fix 2026-11-17 (PR #296) — cờ loại đối tượng:** form nhà cung cấp trước đây **hardcode**
+  `pIskh`/`pIsncc`/`pIsnv` trong payload SP, nên mỗi lần bấm Lưu là **xoá cờ** của các loại
+  khác. Ví dụ thật: đối tượng `2VANQT` vừa là khách hàng vừa là nhà cung cấp; form PO gửi
+  `pIskh => 0, pIsncc => 1` nên Lưu xong `2VANQT` chỉ còn là nhà cung cấp.
+  + Nay form có đủ 3 checkbox **Là khách hàng / Là nhà cung cấp / Là nhân viên**, payload lấy
+    theo lựa chọn thay vì hardcode.
+  + Gửi đủ **35 cột NOT NULL** của `ArDmKh` (`pHome_page`, `pMa_ngh`, `pTen_nh`, `pCn_nh`,
+    `pSo_tk_nh`, `pTinh_tp_nh`, `pMa_tt`, `pMa_httt`, `pGh_no`, `pHan_ck`, `pTl_ck`, `pHan_tt`,
+    `pLs_qh`, `pTinh_dt_nb`) — thiếu tham số thì SP nhận `NULL` và SQL báo
+    `Cannot insert the value NULL into column ...; UPDATE fails`.
+  + Verify browser thật: bỏ tick "Là nhà cung cấp" của `2VANQT` trên form PO rồi Lưu →
+    `success: "Đã lưu nhà cung cấp 2VANQT"`; đọc lại: SO `isKh=true, isNcc=false`;
+    PO **không còn** `2VANQT`; CA không có. Đúng yêu cầu "chỉ là khách hàng".
+  + Quy tắc đã ghi vào `docs/PROJECT_CONVENTIONS.md` §9.
 - **Verify 2026-11-17** (Playwright + Chromium, browser thật — không dùng CLI/DB):
   + `/simba/po/dict/ardmkh` → HTTP **200**, title `Nhà cung cấp [SimbaERP]`, 5 Livewire.
   + `/simba/po/dict/ardmkh/create` → HTTP **200**, 11 field `wire:model`, có nút Lưu.
