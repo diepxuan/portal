@@ -482,6 +482,13 @@ Route::prefix('catalog/gl/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
+- **Status:** ✅ DONE — verify browser 2026-11-18
 - **Route:** `gl.task.146` hoặc GL report dynamic registry nếu có metadata.
 - **Note:** Shell/read-only; process/write không execute khi chưa audit payload.
+
+## Verify lần cuối (2026-11-18)
+
+- **Route:** `/simba/gl/dict/gldmtk` (route name trong `routes/web.php`: `_simba-source` + prefix `/simba`)
+- **Kết quả browser (Playwright + Chromium 147 headless):** HTTP 200, table render, 0 page error — title "Tài khoản [SimbaERP]"
+- **Không có page error.**
+- **Trạng thái:** DONE — đủ điều kiện chuyển sang phase 1 (phát triển thêm cho Portal).

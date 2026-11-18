@@ -13,17 +13,17 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 5 | 0 | 5 | 0 |
-| AR — Công nợ phải thu | 16 | 0 | 16 | 0 |
+| AR — Công nợ phải thu | 15 | 0 | 15 | 0 |
 | CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
-| GL — Sổ cái tổng hợp | 104 | 0 | 104 | 0 |
-| IN — Tồn kho | 30 | 0 | 30 | 0 |
+| GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
+| IN — Tồn kho | 28 | 0 | 28 | 0 |
 | PO — Đơn hàng mua | 18 | 0 | 18 | 0 |
 | SI — System Integration | 31 | 0 | 31 | 0 |
 | SO — Đơn hàng bán | 44 | 0 | 44 | 0 |
 | System — Framework & cross-link | 3 | 0 | 3 | 0 |
-| **Tổng** | **322** | | | |
+| **Tổng** | **318** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -39,7 +39,6 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 001 | `001-ar-danh-muc-khach-hang.md` | ARDMKH.dll | PENDING |
 | 002 | `002-ar-danh-muc-nhom-khach-hang.md` | ARDMNHKH.dll | PENDING |
 | 003 | `003-ar-danh-muc-phan-loai-khach-hang.md` | ARDMPLKH.dll | PENDING |
 | 004 | `004-ar-bao-cao-cong-no-khach-hang.md` | ARCDKH.dll | PENDING |
@@ -155,7 +154,6 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 143 | `143-GL-bieumau-BCTC-MVI211.md` | GLMAUBCTCTMVI211.dll | PENDING |
 | 144 | `144-GL-baocao-tonghop-01.md` | GLRptTH01.dll | PENDING |
 | 145 | `145-GL-bieumau-BCTC-MV21.md` | GLMAUBCTCTMV21.dll | PENDING |
-| 146 | `146-GL-danhmuc-taikhoan.md` | GLDMTK.dll | PENDING |
 | 147 | `147-GL-sodu-dauky-taikhoan.md` | GLCDTK.dll | PENDING |
 | 148 | `148-GL-bieumau-BCTC-MV22c.md` | GLMAUBCTCTMV22c.dll | PENDING |
 | 149 | `149-GL-baocao-BCT03.md` | GLRptBCT03.dll | PENDING |
@@ -269,10 +267,8 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 111 | `111-IN-tonghop-hangxuat-kho.md` | INRptTHX01.dll | PENDING |
 | 112 | `112-IN-danhmuc-phanloai-vattu.md` | INDMPLVT.dll | PENDING |
 | 113 | `113-IN-tinh-gia-trungbinh-thang.md` | INCalGiaTB.dll | PENDING |
-| 114 | `114-IN-danhmuc-vattu.md` | INDMVT.dll | PENDING |
 | 115 | `115-IN-nhap-so-ton-dauky.md` | INCDVT.dll | PENDING |
 | 116 | `116-IN-baocao-f5-chidao-01.md` | INRptF5CD01.dll | PENDING |
-| 225 | `225-in-danh-muc-nhom-vat-tu.md` | INDMNHVT.dll | PENDING |
 | 226 | `226-in-phieu-xuat-kho.md` | INVchIN2.dll | PENDING |
 | 227 | `227-in-phieu-chuyen-kho.md` | INVchIN3.dll | PENDING |
 | 228 | `228-in-phieu-xuat-cong-cu-dung-cu.md` | INVchIN5.dll | PENDING |

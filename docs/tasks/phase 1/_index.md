@@ -21,14 +21,15 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
-| AR — Công nợ phải thu | 1 | 1 | 0 | 0 |
+| AR — Công nợ phải thu | 2 | 2 | 0 | 0 |
 | CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 |
-| IN — Tồn kho | 1 | 1 | 0 | 0 |
+| GL — Sổ cái tổng hợp | 1 | 1 | 0 | 0 |
+| IN — Tồn kho | 3 | 3 | 0 | 0 |
 | PO — Đơn hàng mua | 2 | 2 | 0 | 0 |
 | SI — System Integration | 2 | 2 | 0 | 0 |
 | SO — Đơn hàng bán | 3 | 3 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **12** | | | |
+| **Tổng** | **16** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -40,6 +41,7 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 
 | ID | File | DLL | Status |
 |---|---|---|---|
+| 001 | `001-ar-danh-muc-khach-hang.md` | ARDMKH.dll | DONE |
 | 008 | `008-ar-bao-cao-cong-no-tk-kh.md` | ARRptBCCN01.dll, ARRptBCCN01a.dll | DONE |
 
 ## CA — Tiền mặt & Ngân hàng
@@ -48,11 +50,19 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 |---|---|---|---|
 | 375 | `375-ca-ardmkh-nhan-vien.md` |  | DONE |
 
+## GL — Sổ cái tổng hợp
+
+| ID | File | DLL | Status |
+|---|---|---|---|
+| 146 | `146-GL-danhmuc-taikhoan.md` | GLDMTK.dll | DONE |
+
 ## IN — Tồn kho
 
 | ID | File | DLL | Status |
 |---|---|---|---|
+| 114 | `114-IN-danhmuc-vattu.md` | INDMVT.dll | DONE |
 | 117 | `117-IN-baocao-tonkho-02.md` | INRptCD02.dll | DONE |
+| 225 | `225-in-danh-muc-nhom-vat-tu.md` | INDMNHVT.dll | DONE |
 
 ## PO — Đơn hàng mua
 
