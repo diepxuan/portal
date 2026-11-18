@@ -131,6 +131,102 @@ final class ArdmkhFormTest extends TestCase
         $method->invoke($form, collect([(object) ['pRet' => 1]]));
     }
 
+    /**
+     * Đối tượng không mang cờ nào sẽ không hiện ở màn danh mục nào (mỗi màn lọc
+     * theo module qua asARGetDMKH pModuleId). Vì vậy khi bỏ hết ba lựa chọn,
+     * save() phải mặc định chọn khách hàng.
+     */
+    public function testEnsureAtLeastOneTypeDefaultsToCustomerWhenNoneSelected(): void
+    {
+        $form = new ArdmkhForm();
+        $form->isKh  = false;
+        $form->isNcc = false;
+        $form->isNv  = false;
+
+        $this->invokeEnsureAtLeastOneType($form);
+
+        self::assertTrue($form->isKh, 'Bỏ hết ba cờ thì phải mặc định là khách hàng.');
+        self::assertFalse($form->isNcc);
+        self::assertFalse($form->isNv);
+    }
+
+    public function testEnsureAtLeastOneTypeKeepsCustomerOnly(): void
+    {
+        $form = new ArdmkhForm();
+        $form->isKh  = true;
+        $form->isNcc = false;
+        $form->isNv  = false;
+
+        $this->invokeEnsureAtLeastOneType($form);
+
+        self::assertTrue($form->isKh);
+        self::assertFalse($form->isNcc);
+        self::assertFalse($form->isNv);
+    }
+
+    public function testEnsureAtLeastOneTypeKeepsSupplierOnly(): void
+    {
+        $form = new ArdmkhForm();
+        $form->isKh  = false;
+        $form->isNcc = true;
+        $form->isNv  = false;
+
+        $this->invokeEnsureAtLeastOneType($form);
+
+        self::assertFalse($form->isKh, 'Đã chọn NCC thì không tự thêm cờ khách hàng.');
+        self::assertTrue($form->isNcc);
+        self::assertFalse($form->isNv);
+    }
+
+    public function testEnsureAtLeastOneTypeKeepsEmployeeOnly(): void
+    {
+        $form = new ArdmkhForm();
+        $form->isKh  = false;
+        $form->isNcc = false;
+        $form->isNv  = true;
+
+        $this->invokeEnsureAtLeastOneType($form);
+
+        self::assertFalse($form->isKh);
+        self::assertFalse($form->isNcc);
+        self::assertTrue($form->isNv);
+    }
+
+    public function testEnsureAtLeastOneTypeKeepsMultipleSelections(): void
+    {
+        $form = new ArdmkhForm();
+        $form->isKh  = true;
+        $form->isNcc = true;
+        $form->isNv  = false;
+
+        $this->invokeEnsureAtLeastOneType($form);
+
+        self::assertTrue($form->isKh);
+        self::assertTrue($form->isNcc);
+        self::assertFalse($form->isNv);
+    }
+
+    /**
+     * Cả 3 form (PO/SO/CA) đều phải áp dụng quy tắc mặc định khách hàng,
+     * vì logic nằm ở base class Po\Dict\ArdmkhForm::save().
+     */
+    public function testAllThreeFormsInheritDefaultCustomerRule(): void
+    {
+        foreach ([ArdmkhForm::class, SoArdmkhForm::class, CaArdmkhForm::class] as $class) {
+            $form = new $class();
+            $form->isKh  = false;
+            $form->isNcc = false;
+            $form->isNv  = false;
+
+            $this->invokeEnsureAtLeastOneType($form);
+
+            self::assertTrue(
+                $form->isKh,
+                "{$class} phải mặc định isKh = true khi bỏ hết ba cờ."
+            );
+        }
+    }
+
     public function testSorptbk01ReportRowsAreNotPublicLivewireState(): void
     {
         // Rows/cot bao cao khong duoc nam trong snapshot Livewire (nguyen
@@ -553,5 +649,15 @@ final class ArdmkhFormTest extends TestCase
         $reflection = new \ReflectionMethod($target::class, $method);
 
         return $reflection->invokeArgs($target, $args);
+    }
+
+    /**
+     * Gọi protected ensureAtLeastOneType() để test riêng logic mặc định.
+     */
+    private function invokeEnsureAtLeastOneType(object $form): void
+    {
+        $method = new \ReflectionMethod($form, 'ensureAtLeastOneType');
+        $method->setAccessible(true);
+        $method->invoke($form);
     }
 }
