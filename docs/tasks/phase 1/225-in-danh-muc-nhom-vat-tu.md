@@ -330,6 +330,13 @@ Route::prefix('catalog/in/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** ✅ DONE — verify browser 2026-11-18
 - **Route:** `in.dmnhvt`
 - **Note:** Shell hoặc route hiện hữu; side-effect blocked nếu chưa audit payload.
+
+## Verify lần cuối (2026-11-18)
+
+- **Route:** `/simba/in/dict/indmnhvt` (route name trong `routes/web.php`: `_simba-source` + prefix `/simba`)
+- **Kết quả browser (Playwright + Chromium 147 headless):** HTTP 200, table render, 0 page error — title "Nhóm hàng hóa, vật tư [SimbaERP]"
+- **Không có page error.**
+- **Trạng thái:** DONE — đủ điều kiện chuyển sang phase 1 (phát triển thêm cho Portal).

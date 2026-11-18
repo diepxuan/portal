@@ -1,5 +1,7 @@
 # Task 001: ARDMKH
 
+- **Status:** ✅ DONE — verify browser 2026-11-18
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -467,3 +469,10 @@ Route::prefix('catalog/ar/danhmuc')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Verify lần cuối (2026-11-18)
+
+- **Route:** `/simba/so/dict/ardmkh` (route name trong `routes/web.php`: `_simba-source` + prefix `/simba`)
+- **Kết quả browser (Playwright + Chromium 147 headless):** HTTP 200, table render, 0 page error — title "Khách hàng [SimbaERP]"
+- **Không có page error.**
+- **Trạng thái:** DONE — đủ điều kiện chuyển sang phase 1 (phát triển thêm cho Portal).

@@ -158,7 +158,7 @@ Route::prefix('catalog/in/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** IMPLEMENTED locally (CRUD UI + doi ma + BOM sync), pending commit/PR because current sandbox cannot write `.git`.
+- **Status:** ✅ DONE — verify browser 2026-11-18
 - **Route:** `in.dict.indmvt`
 - **URL:** `/_simba-source/in/dict/indmvt` -> `/simba/in/dict/indmvt`
 - **Component:** `Diepxuan\Catalog\Http\Livewire\In\Dict\IndmvtPage`
@@ -312,3 +312,10 @@ Giao tiếp giữa các component (Livewire events):
 - Sau khi `save()` thành công, `IndmvtList.refreshRow()` chỉ load 1 dòng qua `asINGetDMVT` với `pMa_vt = $maVt` thay vì toàn bộ danh sách → tiết kiệm ~1.5s.
 - Sau khi `renameItem()` thành công, chỉ cập nhật 1 key trong `rows[]` thay vì gọi `refreshData()`.
 - Tổng thời gian Lưu giảm từ ~10s (5 SP refresh) xuống ~1s (chỉ refresh 1 dòng).
+
+## Verify lần cuối (2026-11-18)
+
+- **Route:** `/simba/in/dict/indmvt` (route name trong `routes/web.php`: `_simba-source` + prefix `/simba`)
+- **Kết quả browser (Playwright + Chromium 147 headless):** HTTP 200, table render, 0 page error — title "Hàng hóa, vật tư [SimbaERP]"
+- **Không có page error.**
+- **Trạng thái:** DONE — đủ điều kiện chuyển sang phase 1 (phát triển thêm cho Portal).
