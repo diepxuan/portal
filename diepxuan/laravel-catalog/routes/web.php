@@ -16,6 +16,7 @@ use Diepxuan\Catalog\Http\Controllers\SystemController;
 use Diepxuan\Catalog\Http\Controllers\SystemUserController;
 use Diepxuan\Catalog\Http\Controllers\SystemWebsiteController;
 use Diepxuan\Catalog\Http\Livewire\AR\Danhmuc\Phanloaikhachhang;
+use Diepxuan\Catalog\Http\Livewire\AR\Danhmuc\PhanloaikhachhangEdit;
 use Diepxuan\Catalog\Http\Livewire\Banhang\Hoadonbanhang;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\Ardmkh as SoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
@@ -281,6 +282,8 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ['uri' => 'so/dict/ardmkh/create', 'name' => 'so.dict.ardmkh.create', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
             ['uri' => 'so/dict/ardmkh/{id}/edit', 'name' => 'so.dict.ardmkh.edit', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
             ['uri' => 'so/dict/ardmplkh', 'name' => 'so.dict.ardmplkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => Phanloaikhachhang::class],
+            ['uri' => 'so/dict/ardmplkh/create', 'name' => 'so.dict.ardmplkh.create', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => PhanloaikhachhangEdit::class],
+            ['uri' => 'so/dict/ardmplkh/{maPlkh}/edit', 'name' => 'so.dict.ardmplkh.edit', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => PhanloaikhachhangEdit::class],
             // ['uri' => 'so/dict/sidmbp', 'name' => 'so.dict.sidmbp', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmbp', 'component' => SimbaPage::class],
             // ['uri' => 'so/dict/sidmhd', 'name' => 'so.dict.sidmhd', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmhd', 'component' => SimbaPage::class],
             // ['uri' => 'so/dict/sidmnhhd', 'name' => 'so.dict.sidmnhhd', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmnhhd', 'component' => SimbaPage::class],

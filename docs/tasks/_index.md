@@ -13,17 +13,17 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 5 | 0 | 5 | 0 |
-| AR — Công nợ phải thu | 15 | 0 | 15 | 0 |
+| AR — Công nợ phải thu | 14 | 0 | 14 | 0 |
 | CA — Tiền mặt & Ngân hàng | 13 | 0 | 13 | 0 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 |
 | GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
 | IN — Tồn kho | 28 | 0 | 28 | 0 |
-| PO — Đơn hàng mua | 18 | 0 | 18 | 0 |
+| PO — Đơn hàng mua | 17 | 0 | 17 | 0 |
 | SI — System Integration | 31 | 0 | 31 | 0 |
 | SO — Đơn hàng bán | 44 | 0 | 44 | 0 |
 | System — Framework & cross-link | 3 | 0 | 3 | 0 |
-| **Tổng** | **318** | | | |
+| **Tổng** | **316** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -40,7 +40,6 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 002 | `002-ar-danh-muc-nhom-khach-hang.md` | ARDMNHKH.dll | PENDING |
-| 003 | `003-ar-danh-muc-phan-loai-khach-hang.md` | ARDMPLKH.dll | PENDING |
 | 004 | `004-ar-bao-cao-cong-no-khach-hang.md` | ARCDKH.dll | PENDING |
 | 005 | `005-ar-dieu-khoan-thanh-toan.md` | ARTT.dll | PENDING |
 | 006 | `006-ar-phan-bo-thanh-toan.md` | ARPost2TT.dll | PENDING |
@@ -286,7 +285,6 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 063 | `063-PO-danhmuc-chuongtrinh-muahang.md` | PODMCP.dll | PENDING |
 | 064 | `064-PO-danhmuc-dieukhoan-thanhtoan.md` | PODMDKTT.dll | PENDING |
 | 065 | `065-PO-phieu-tra-lai-hang-mua.md` | POVchPO1.dll | PENDING |
 | 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | PENDING |

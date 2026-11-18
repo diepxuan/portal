@@ -21,15 +21,15 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 | Module | Files | DONE | PENDING | Khác |
 |---|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
-| AR — Công nợ phải thu | 2 | 2 | 0 | 0 |
+| AR — Công nợ phải thu | 3 | 3 | 0 | 0 |
 | CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 |
 | GL — Sổ cái tổng hợp | 1 | 1 | 0 | 0 |
 | IN — Tồn kho | 3 | 3 | 0 | 0 |
-| PO — Đơn hàng mua | 2 | 2 | 0 | 0 |
+| PO — Đơn hàng mua | 3 | 3 | 0 | 0 |
 | SI — System Integration | 2 | 2 | 0 | 0 |
 | SO — Đơn hàng bán | 3 | 3 | 0 | 0 |
 | System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **16** | | | |
+| **Tổng** | **18** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -42,6 +42,7 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 | ID | File | DLL | Status |
 |---|---|---|---|
 | 001 | `001-ar-danh-muc-khach-hang.md` | ARDMKH.dll | DONE |
+| 003 | `003-ar-danh-muc-phan-loai-khach-hang.md` | ARDMPLKH.dll | DONE |
 | 008 | `008-ar-bao-cao-cong-no-tk-kh.md` | ARRptBCCN01.dll, ARRptBCCN01a.dll | DONE |
 
 ## CA — Tiền mặt & Ngân hàng
@@ -68,6 +69,7 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 
 | ID | File | DLL | Status |
 |---|---|---|---|
+| 063 | `063-PO-danhmuc-chuongtrinh-muahang.md` | PODMCP.dll | DONE |
 | 069 | `069-po-hoadon-mua-hang.md` | `POVchPO3.dll` (form `frmPOVchPO3`, namespace `AsiaErp.UserInterface`) | DONE |
 | 373 | `373-po-ardmkh-nha-cung-cap.md` |  | DONE |
 

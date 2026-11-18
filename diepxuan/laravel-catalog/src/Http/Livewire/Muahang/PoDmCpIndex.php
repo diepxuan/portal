@@ -15,7 +15,7 @@ namespace Diepxuan\Catalog\Http\Livewire\Muahang;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsPOGetDMCP;
-use Diepxuan\Support\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;

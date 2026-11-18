@@ -1,5 +1,7 @@
 # Task 003: ARDMPLKH
 
+- **Status:** ✅ DONE — verify browser 2026-11-18 (đã fix lỗi 500 route)
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -423,3 +425,23 @@ Route::prefix('catalog/ar/danhmuc')
 ## Audit Status
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
+
+## Fix lỗi 500 — route create/edit thiếu (2026-11-18)
+
+**Triệu chứng:** `/simba/so/dict/ardmplkh` trả HTTP 500:
+`Route [so.dict.ardmplkh.create] not defined.`
+(View `ar/danhmuc/phanloaikhachhang.blade.php` gọi `route('so.dict.ardmplkh.create')`
+và `route('so.dict.ardmplkh.edit', ...)` nhưng chỉ có route list.)
+
+**Nguyên nhân:** component `AR\Danhmuc\PhanloaikhachhangEdit` đã tồn tại đầy đủ
+(`mount(?string $maPlkh)`, `loadItem()`, `save()`) nhưng **chưa được đăng ký route**.
+
+**Fix:** `diepxuan/laravel-catalog/routes/web.php`
+- Thêm use `PhanloaikhachhangEdit`
+- Thêm `so.dict.ardmplkh.create` → `so/dict/ardmplkh/create`
+- Thêm `so.dict.ardmplkh.edit` → `so/dict/ardmplkh/{maPlkh}/edit`
+  (tham số `{maPlkh}` khớp `mount(?string $maPlkh)`)
+
+**Verify browser (Playwright + Chromium 147):**
+- `/simba/so/dict/ardmplkh` → HTTP 200, table render, **0 page error**
+- `/simba/so/dict/ardmplkh/create` → HTTP 200, form "Thêm phân loại khách hàng", **0 page error**
