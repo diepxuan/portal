@@ -19,7 +19,7 @@ $componentMap = [
     'ca.vch.cavchca5' => 'Diepxuan\\Catalog\\Http\\Livewire\\Cash\\Nganhang\\Baono',
     'so.vch.sovchso1' => 'Diepxuan\\Catalog\\Http\\Livewire\\Banhang\\Hoadonbanhang',
     'po.dict.ardmkh' => 'Diepxuan\\Catalog\\Http\\Livewire\\Muahang\\Cungcap',
-    'po.dict.podmcp' => 'Diepxuan\\Catalog\\Http\\Livewire\\Muahang\\PoDmCpIndex',
+    'po.dict.podmcp' => 'Diepxuan\\Catalog\\Http\\Livewire\\Po\\Dict\\Podmcp',
     'co.dict.bomdm' => 'Diepxuan\\Catalog\\Http\\Livewire\\Co\\Danhmuc\\Dmbom',
     'co.dict.bomdmct' => 'Diepxuan\\Catalog\\Http\\Livewire\\Co\\Danhmuc\\Dinhmucchitiet',
 ];

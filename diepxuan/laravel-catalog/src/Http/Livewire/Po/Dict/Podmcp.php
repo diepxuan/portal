@@ -11,11 +11,11 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 00:28:04
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Muahang;
+namespace Diepxuan\Catalog\Http\Livewire\Po\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsPOGetDMCP;
-use Diepxuan\Support\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -23,7 +23,7 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class PoDmCpIndex extends Component
+class Podmcp extends Component
 {
     use WithPagination;
 
@@ -42,7 +42,7 @@ class PoDmCpIndex extends Component
 
     public function render(): View
     {
-        return view('catalog::muahang.po-dmcp-index', [
+        return view('catalog::po.dict.podmcp', [
             'items' => $this->getItemsPaginated(),
         ])->layout('catalog::layouts.app');
     }
