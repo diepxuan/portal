@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:06
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\AR\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\So\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMPLKH;
@@ -94,7 +94,7 @@ class PhanloaikhachhangEdit extends Component
 
     public function render(): View
     {
-        return view('catalog::ar.danhmuc.phanloaikhachhang-edit', ['mode' => $this->pMode])
+        return view('catalog::so.dict.ardmplkh-edit', ['mode' => $this->pMode])
             ->layout('catalog::layouts.app')
         ;
     }

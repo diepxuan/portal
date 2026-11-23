@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2025-07-05 19:34:16
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Banhang;
+namespace Diepxuan\Catalog\Http\Livewire\So\Vch;
 
 use Diepxuan\Catalog\Models\Simba\SoPh3;
 use Illuminate\View\View;
@@ -53,7 +53,7 @@ class Hoadonbanhang extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/banhang/hoadonbanhang.blade.php
-        return view('catalog::banhang.hoadonbanhang', [
+        return view('catalog::so.vch.sovchso1', [
             'soPhs' => $this->soPhs,
             // 'soCts' => $this->soCts,
             // 'soPhCt' => $this->soPh,

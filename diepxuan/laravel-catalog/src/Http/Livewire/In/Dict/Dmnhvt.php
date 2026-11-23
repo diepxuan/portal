@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2025-08-02 22:14:07
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\In;
+namespace Diepxuan\Catalog\Http\Livewire\In\Dict;
 
 use Diepxuan\Simba\StoredProcedures\AsINGetDMNHVT;
 use Diepxuan\Support\Collection;
@@ -56,7 +56,7 @@ class Dmnhvt extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/in/dmnhvt.blade.php
-        return view('catalog::in.dmnhvt', [
+        return view('catalog::in.dict.indmnhvt', [
             'inDmNhvts' => $this->inDmNhvts,
         ]);
     }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2025-08-02 22:13:45
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\In;
+namespace Diepxuan\Catalog\Http\Livewire\In\Dict;
 
 use Diepxuan\Simba\StoredProcedures\AsINGetDMKHO;
 use Diepxuan\Support\Collection;
@@ -50,7 +50,7 @@ class Dmkho extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/in/dmkho.blade.php
-        return view('catalog::in.dmkho', [
+        return view('catalog::in.dict.indmkho', [
             'inDmKhos' => $this->inDmKhos,
         ]);
     }

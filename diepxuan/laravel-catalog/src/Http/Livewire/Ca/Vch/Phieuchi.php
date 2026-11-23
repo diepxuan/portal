@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2025-06-20 14:44:55
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Tienmat;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Vch;
 
 use Diepxuan\Catalog\Models\Simba\GlCt;
 use Illuminate\View\View;
@@ -51,7 +51,7 @@ class Phieuchi extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuchi.blade.php
-        return view('catalog::cash.tienmat.phieuchi', [
+        return view('catalog::ca.vch.cavchca2', [
             'glCts' => $this->glCts,
         ])->layout('catalog::layouts.app');
     }

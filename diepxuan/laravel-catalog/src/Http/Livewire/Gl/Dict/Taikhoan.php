@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2025-05-28 12:51:49
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Gl;
+namespace Diepxuan\Catalog\Http\Livewire\Gl\Dict;
 
 use Diepxuan\Catalog\Models\Simba\GlDmTk;
 use Illuminate\View\View;
@@ -40,6 +40,6 @@ class Taikhoan extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/gl/taikhoan.blade.php
-        return view('catalog::gl.taikhoan')->layout('catalog::layouts.app');
+        return view('catalog::gl.dict.gldmtk')->layout('catalog::layouts.app');
     }
 }

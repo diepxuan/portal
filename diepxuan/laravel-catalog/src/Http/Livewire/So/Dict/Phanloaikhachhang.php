@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:06
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\AR\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\So\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARDelDMPLKH;
@@ -61,7 +61,7 @@ class Phanloaikhachhang extends Component
 
     public function render(): View
     {
-        return view('catalog::ar.danhmuc.phanloaikhachhang', [
+        return view('catalog::so.dict.ardmplkh', [
             'items' => $this->getItemsPaginated(),
         ])->layout('catalog::layouts.app');
     }
