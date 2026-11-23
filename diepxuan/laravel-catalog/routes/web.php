@@ -32,7 +32,7 @@ use Diepxuan\Catalog\Http\Livewire\In\Dict\IndmvtPage;
 use Diepxuan\Catalog\Http\Livewire\In\Dmkho;
 use Diepxuan\Catalog\Http\Livewire\In\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Rpt\Inrptcd02;
-use Diepxuan\Catalog\Http\Livewire\Muahang\PoDmCpIndex;
+use Diepxuan\Catalog\Http\Livewire\Po\Dict\Podmcp;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as PoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks;
@@ -241,7 +241,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ['uri' => 'po/dict/ardmkh/create', 'name' => 'po.dict.ardmkh.create', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
             ['uri' => 'po/dict/ardmkh/{id}/edit', 'name' => 'po.dict.ardmkh.edit', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => ArdmkhForm::class],
             // ['uri' => 'po/dict/ardmplkh', 'name' => 'po.dict.ardmplkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => SimbaPage::class],
-            ['uri' => 'po/dict/podmcp', 'name' => 'po.dict.podmcp', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmcp', 'component' => PoDmCpIndex::class],
+            ['uri' => 'po/dict/podmcp', 'name' => 'po.dict.podmcp', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmcp', 'component' => Podmcp::class],
             // ['uri' => 'po/dict/podmgiamua', 'name' => 'po.dict.podmgiamua', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmgiamua', 'component' => SimbaPage::class],
             // ['uri' => 'po/dict/podmhttt', 'name' => 'po.dict.podmhttt', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmhttt', 'component' => SimbaPage::class],
             // ['uri' => 'po/dict/sidmbp', 'name' => 'po.dict.sidmbp', 'module' => 'po', 'kind' => 'dict', 'slug' => 'sidmbp', 'component' => SimbaPage::class],

@@ -10,14 +10,93 @@ Tài liệu quy ước dự án bắt buộc để các session sau không lặp
 - Checkbox `KSD` checked = khóa sử dụng.
 - Không hiểu `ksd = 1` là active, không hỏi lại.
 
-## 2. Canonical ARDMKH / Dictionary
+## 2. Namespace PHP ↔ Route ↔ View — QUY TẮC TỔNG QUÁT
 
-- Component danh mục dictionary chính đặt theo `{Module}\Dict\{Slug}`.
-- View đặt theo `{module}/dict/{slug}.blade.php`.
-- Route name theo `{module}.dict.{slug}`.
-- Không dùng tên nghiệp vụ cũ cho route dictionary: `Banhang\Khachhang` đã được thay bằng `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` đã được thay bằng `Ca\Dict\Ardmkh*` (2026-08-03).
+> **Đây là quy tắc gốc, áp dụng cho MỌI màn hình**, không riêng ARDMKH.
+> Route name là nguồn sự thật; namespace PHP và đường dẫn view phải suy ra từ đó.
 
-### Ví dụ đúng
+### 2.1. Route name sinh từ sysMenu (nguồn sự thật)
+
+Theo [`docs/project/simba-router-menu-matrix.md`](project/simba-router-menu-matrix.md) và
+`SimbaMenuRouteMetadata::baseRouteName()`:
+
+```
+route name = {module}.{kind}.{slug}
+
+  module = strtolower(sysMenu.moduleid)        → so, po, ca, ar, ap, gl, in, fa, co, si
+  kind   = dict | vch | rpt | proc             (xem bảng dưới)
+  slug   = slug(sysMenu.dllName ?: code_name)  → ardmkh, povchpo3, sorptbk01...
+```
+
+| `source_type` | `kind` | Ý nghĩa |
+|---|---|---|
+| `TYPE_DICTIONARY` | `dict` | Danh mục / tham số |
+| `TYPE_VOUCHER` | `vch` | Chứng từ |
+| `TYPE_REPORT` | `rpt` | Báo cáo |
+| khác | `proc` | Xử lý / tiện ích |
+
+Khi nhiều menu trùng `(module, kind, slug)`, `SimbaMenuRouteMetadata` nối thêm hậu tố
+`menuIdSuffix(menuid)` (chỉ ký tự alphanumeric), vd `po.rpt.arrptbccn01103011`.
+
+### 2.2. Suy namespace PHP + view từ route name
+
+Cho route `${module}.${kind}.${slug}`:
+
+| Thành phần | Công thức | Ví dụ (`po.vch.povchpo3`) |
+|---|---|---|
+| Namespace component | `Diepxuan\Catalog\Http\Livewire\{Module}\{Kind}\{PascalSlug}` | `...\Po\Vch\Povchpo3` |
+| Form (create/edit) | thêm hậu tố `Form` | `...\Po\Vch\Povchpo3Form` |
+| View | `{module}/{kind}/{slug}.blade.php` | `po/vch/povchpo3.blade.php` |
+| View form | `{module}/{kind}/{slug}-form.blade.php` | `po/vch/povchpo3-form.blade.php` |
+
+Trong đó `{Module}` và `{Kind}` viết **PascalCase**, `{PascalSlug}` là slug viết PascalCase
+(`povchpo3` → `Povchpo3`, `ardmkh` → `Ardmkh`).
+
+### 2.3. Cấm dùng namespace thư mục nghiệp vụ cũ
+
+Các thư mục dưới đây là **di sản, không được dùng cho code mới**:
+
+| Cấm | Dùng thay thế |
+|---|---|
+| `Muahang\*` | `Po\{Kind}\*` |
+| `Banhang\*` | `So\{Kind}\*` |
+| `Cash\Danhmuc\*` | `Ca\Dict\*` |
+| `Danhmuc\*` (không module) | `{Module}\Dict\*` |
+
+Đã migrate: `Banhang\Khachhang` → `So\Dict\Ardmkh`; `Cash\Danhmuc\Nhanvien*` →
+`Ca\Dict\Ardmkh*` (2026-08-03).
+
+### 2.4. Kiểm chứng — bắt buộc trước khi báo DONE
+
+```bash
+# 1. Route có thật không (KHÔNG tin tài liệu task ghi tay)
+php artisan route:list --name={module}.{kind}.{slug}
+
+# 2. Namespace có khớp quy tắc không
+grep -rn "namespace Diepxuan.Catalog.Http.Livewire" diepxuan/laravel-catalog/src/Http/Livewire/{Module}/{Kind}/
+
+# 3. Kiểm tra toàn bộ route của 1 module
+php artisan route:list --path={module}
+```
+
+Mọi route/namespace ghi trong task doc **phải** khớp output của `route:list`. Tài liệu task
+có thể đã lỗi thời — **`route:list` là nguồn sự thật cuối cùng**.
+
+### 2.5. Ví dụ đúng (toàn bộ loại)
+
+| Loại | Route | Namespace component | View |
+|---|---|---|---|
+| Dict | `so.dict.ardmkh` | `So\Dict\Ardmkh` | `so/dict/ardmkh.blade.php` |
+| Dict form | `so.dict.ardmkh.create` | `So\Dict\ArdmkhForm` | `so/dict/ardmkh-form.blade.php` |
+| Dict | `po.dict.podmcp` | `Po\Dict\Podmcp` | `po/dict/podmcp.blade.php` |
+| Voucher | `po.vch.povchpo3` | `Po\Vch\Povchpo3` | `po/vch/povchpo3.blade.php` |
+| Voucher + form | `so.vch.sovchso3` / `.create` | `So\Vch\Sovchso3` / `Sovchso3Edit` | `so/vch/sovchso3.blade.php` / `-edit.blade.php` |
+| Report | `so.rpt.sorptbk01` | `So\Rpt\Sorptbk01` | `so/rpt/sorptbk01.blade.php` |
+| Process | `si.vch.smks` | `Si\Vch\Smks` | `si/vch/smks.blade.php` |
+
+### 2.6. ARDMKH — đặc tả riêng (canonical)
+
+#### Ví dụ ARDMKH
 
 | Module | Component | Blade view | Route |
 |--------|-----------|------------|-------|
