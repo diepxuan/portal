@@ -22,7 +22,14 @@ use Diepxuan\Catalog\Http\Livewire\So\Dict\Ardmkh as SoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\So\Dict\ArdmkhForm as SoArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Ca\Dict\Ardmkh as CaArdmkh;
 use Diepxuan\Catalog\Http\Livewire\Ca\Dict\ArdmkhForm as CaArdmkhForm;
+use Diepxuan\Catalog\Http\Livewire\Ca\Dict\Kheuoc;
+use Diepxuan\Catalog\Http\Livewire\Ca\Dict\KheuocEdit;
+use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Chi as CaRptChi;
+use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Nganhang as CaRptNganhang;
+use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Thu as CaRptThu;
+use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Tienmat as CaRptTienmat;
 use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Baoco;
+use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Baono;
 use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Phieuchi;
 use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Phieuthu;
 use Diepxuan\Catalog\Http\Livewire\Gl\Dict\Taikhoan;
@@ -87,6 +94,8 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ['uri' => 'ca/dict/ardmkh', 'name' => 'ca.dict.ardmkh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkh::class],
             ['uri' => 'ca/dict/ardmkh/create', 'name' => 'ca.dict.ardmkh.create', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
             ['uri' => 'ca/dict/ardmkh/{id}/edit', 'name' => 'ca.dict.ardmkh.edit', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
+            // ['uri' => 'ca/dict/cadmku', ...] — KHÔNG NỐI ĐƯỢC: menu 04.90.02 (CADMKU) có active=0 trong sysMenu
+            // Component đã chuẩn hóa namespace (Ca\Dict\Kheuoc) và sẵn sàng; cần bật menu trong sysMenu trước.
             // ['uri' => 'ca/dict/sidmngh', 'name' => 'ca.dict.sidmngh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmngh', 'component' => SimbaPage::class],
             // ['uri' => 'ca/dict/sidmnt', 'name' => 'ca.dict.sidmnt', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmnt', 'component' => SimbaPage::class],
             // ['uri' => 'ca/dict/sidmtgnt', 'name' => 'ca.dict.sidmtgnt', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmtgnt', 'component' => SimbaPage::class],
@@ -97,8 +106,12 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'ca/rpt/glrptnkc03', 'name' => 'ca.rpt.glrptnkc03', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'glrptnkc03', 'component' => SimbaPage::class],
             ['uri' => 'ca/vch/cavchca1', 'name' => 'ca.vch.cavchca1', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca1', 'component' => Phieuthu::class],
             ['uri' => 'ca/vch/cavchca2', 'name' => 'ca.vch.cavchca2', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca2', 'component' => Phieuchi::class],
-            // ['uri' => 'ca/vch/cavchca3', 'name' => 'ca.vch.cavchca3', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca3', 'component' => SimbaPage::class],
-            ['uri' => 'ca/vch/cavchca4', 'name' => 'ca.vch.cavchca4', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca4', 'component' => Baoco::class],
+            ['uri' => 'ca/vch/cavchca3', 'name' => 'ca.vch.cavchca3', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca3', 'component' => Baoco::class],
+            ['uri' => 'ca/vch/cavchca4', 'name' => 'ca.vch.cavchca4', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca4', 'component' => Baono::class],
+            ['uri' => 'ca/rpt/carpttmnh01', 'name' => 'ca.rpt.carpttmnh01', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'carpttmnh01', 'component' => CaRptTienmat::class],
+            // ['uri' => 'ca/rpt/carpttmnh02', ...] — TẠM HOÃN: AsCARptTMNH02 gọi SP thiếu tham số @pNgay1 (bug package simba, xem docs/PROJECT_CONVENTIONS.md)
+            ['uri' => 'ca/rpt/carpttmnh06', 'name' => 'ca.rpt.carpttmnh06', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'carpttmnh06', 'component' => CaRptThu::class],
+            // ['uri' => 'ca/rpt/carpttmnh03', ...] — KHÔNG NỐI ĐƯỢC: menu 04.20.20 (CARptTMNH03) có active=0 trong sysMenu, SimbaMenuRouteMetadata không sinh route
             // ['uri' => 'co/dict/codmbom', 'name' => 'co.dict.codmbom', 'module' => 'co', 'kind' => 'dict', 'slug' => 'codmbom', 'component' => SimbaPage::class],
             // ['uri' => 'co/dict/codmnhspct', 'name' => 'co.dict.codmnhspct', 'module' => 'co', 'kind' => 'dict', 'slug' => 'codmnhspct', 'component' => SimbaPage::class],
             // ['uri' => 'co/dict/codmpb', 'name' => 'co.dict.codmpb', 'module' => 'co', 'kind' => 'dict', 'slug' => 'codmpb', 'component' => SimbaPage::class],

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-04-12 16:59:24
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Vch;
 
 use Diepxuan\Catalog\Models\Simba\GlCt;
 use Diepxuan\Simba\StoredProcedures\AsCADelPH2;
@@ -123,7 +123,7 @@ class Baono extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/cash/nganhang/baono.blade.php
-        return view('catalog::cash.nganhang.baono', [
+        return view('catalog::ca.vch.cavchca4', [
             'glCts' => $this->glCts,
         ])->layout('catalog::layouts.app');
     }

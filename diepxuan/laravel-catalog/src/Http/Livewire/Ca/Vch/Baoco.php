@@ -51,7 +51,7 @@ class Baoco extends Component
     public function render()
     {
         // diepxuan/laravel-catalog/resources/views/cash/nganhang/baoco.blade.php
-        return view('catalog::ca.vch.cavchca4', [
+        return view('catalog::ca.vch.cavchca3', [
             'glCts' => $this->glCts,
         ])->layout('catalog::layouts.app');
     }

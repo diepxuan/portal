@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:07
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsCAGetDMKU;
@@ -105,7 +105,7 @@ class KheuocEdit extends Component
 
     public function render(): View
     {
-        return view('catalog::cash.danhmuc.kheuoc-edit', ['mode' => $this->pMode])->layout('catalog::layouts.app');
+        return view('catalog::ca.dict.cadmku-edit', ['mode' => $this->pMode])->layout('catalog::layouts.app');
     }
 
     protected function rules(): array

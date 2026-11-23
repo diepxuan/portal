@@ -8,27 +8,29 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2026-05-16 00:27:58
+ * @lastupdate 2026-05-16 00:27:57
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Baocao;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Rpt;
 
 use Diepxuan\Catalog\Models\Simba\GlCt;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Thu extends Component
+class Nganhang extends Component
 {
-    public $pTk_List = '111,112';
-    public $pTkdu_List;
-    public $pMa_Nt;
-    public $pMa_Bp;
+    public $pTk    = '112';
+    public $pMa_Nt = 'VND';
     protected $glCts;
 
     public function mount(): void
     {
         $this->pMa_Nt = \CatalogService::ma_Nt();
         $this->resultRender();
+
+        // \Debugbar::info(
+        //     $this->glCts
+        // );
     }
 
     public function updated($property): void
@@ -48,22 +50,20 @@ class Thu extends Component
      */
     public function render()
     {
-        // diepxuan/laravel-catalog/resources/views/cash/baocao/thu.blade.php
-        return view('catalog::cash.baocao.thu', [
+        // diepxuan/laravel-catalog/resources/views/cash/baocao/nganhang.blade.php
+        return view('catalog::ca.rpt.carpttmnh02', [
             'glCts' => $this->glCts,
         ])->layout('catalog::layouts.app');
     }
 
     protected function resultRender(): void
     {
-        $this->glCts = GlCt::getGLRptNKC03([
-            'pMa_Cty'    => \CatalogService::company()->id,
-            'pNgay_Ct1'  => \CatalogService::timerFrom(),
-            'pNgay_Ct2'  => \CatalogService::timerTo(),
-            'pTk_List'   => $this->pTk_List,
-            'pTkdu_List' => $this->pTkdu_List,
-            'pMa_Nt'     => $this->pMa_Nt,
-            'pMa_Bp'     => $this->pMa_Bp,
+        $this->glCts = GlCt::getCARptTMNH02([
+            'pMa_Cty'   => \CatalogService::company()->id,
+            'pNgay_Ct1' => \CatalogService::timerFrom(),
+            'pNgay_Ct2' => \CatalogService::timerTo(),
+            'pTk'       => $this->pTk,
+            'pMa_Nt'    => $this->pMa_Nt,
         ]);
     }
 }

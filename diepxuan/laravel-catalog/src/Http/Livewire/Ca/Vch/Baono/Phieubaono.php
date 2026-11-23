@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-04-15 23:57:08
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Nganhang\Baono;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Vch\Baono;
 
 use Diepxuan\Catalog\Models\Simba\ArDmKh;
 use Diepxuan\Catalog\Models\Simba\CaCt2;
@@ -805,8 +805,8 @@ class Phieubaono extends Component
 
     public function render()
     {
-        // diepxuan/laravel-catalog/resources/views/cash/nganhang/baono/phieubaono.blade.php
-        return view('catalog::cash.nganhang.baono.phieubaono', [
+        // diepxuan/laravel-catalog/resources/views/ca/vch/baono/phieubaono.blade.php
+        return view('catalog::ca.vch.baono.phieubaono', [
             'arDmKhs' => ArDmKh::all(),
         ]);
     }

@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:07
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Cash\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Ca\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsCADelDMKU;
@@ -57,7 +57,7 @@ class Kheuoc extends Component
 
     public function render(): View
     {
-        return view('catalog::cash.danhmuc.kheuoc', [
+        return view('catalog::ca.dict.cadmku', [
             'items' => $this->getItemsPaginated(),
         ])->layout('catalog::layouts.app');
     }
