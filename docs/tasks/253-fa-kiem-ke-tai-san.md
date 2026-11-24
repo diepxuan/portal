@@ -182,5 +182,5 @@ Route::get('/catalog/fa/kiemke/kiemke-taisan', [KiemkeTaisan::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** SHELL_ONLY — route `gl.task.253` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `gl.task.253`

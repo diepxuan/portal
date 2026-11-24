@@ -103,6 +103,6 @@ class BaocaoTienmatNganhang extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (CA report route shells)
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
 - **Routes:** ca.tienmat.quy, ca.nganhang.quy, ca.thu, ca.chi, ca.rpt.tmnh06, ca.rpt.bk01, ca.rpt.tmnh01a
 - **Note:** Các menu CA inactive trong sysMenu chưa mở route execute.

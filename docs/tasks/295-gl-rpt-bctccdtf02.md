@@ -84,5 +84,5 @@ class CCDTF02ReportService
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
+- **Status:** SHELL_ONLY — route `gl.task.295` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `gl.task.295`

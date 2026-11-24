@@ -387,6 +387,6 @@ Route::prefix('catalog/in')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `in.vch.in6` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `in.vch.in6`
 - **Note:** Route đã có hoặc shell metadata; write/transfer execute chỉ mở khi payload/side effect được audit.

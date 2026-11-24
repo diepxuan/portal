@@ -207,6 +207,6 @@ Route::prefix('catalog/in/transfers')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `system.balance.inventory-transfer` ton tai nhung la `SimbaPage` shell (chua co Livewire component). Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `system.balance.inventory-transfer`
 - **Note:** Route đã có hoặc shell metadata; write/transfer execute chỉ mở khi payload/side effect được audit.

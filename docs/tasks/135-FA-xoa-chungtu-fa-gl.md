@@ -147,6 +147,6 @@ Route::get('/xoa-but-toan-ts-gl', [Xoabuttoantsgl::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell coverage)
+- **Status:** SHELL_ONLY — route `fa.transfer.delts2gl` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.transfer.delts2gl`
 - **Note:** Không execute side-effect khi chưa audit payload.

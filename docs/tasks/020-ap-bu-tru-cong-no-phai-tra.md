@@ -7,6 +7,7 @@ Chuyen doi chuc nang nhap chung tu bu tru cong no phai tra tu .NET sang PHP Lara
 
 ## Chi tiet
 - **DLL:** ApVchAP4.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Nhap chung tu bu tru cong no phai tra - bu tru cong no giua cac tai khoan
 - **Loai:** Voucher
 - **Assembly Title:** Bù trừ công nợ phải trả

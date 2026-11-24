@@ -7,6 +7,7 @@ Chuyen doi chuc nang bao cao phan tich cong no theo han ky (aging report) tu .NE
 
 ## Chi tiet
 - **DLL:** ARRptBCCN06.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Phan tich cong no theo cac khoang thoi gian (han ky) de danh gia chat luong cong no va ke hoach thu hoi
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise

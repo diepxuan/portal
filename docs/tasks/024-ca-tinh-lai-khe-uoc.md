@@ -105,6 +105,6 @@ class Tinhlaikheuoc extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (task shell route)
+- **Status:** SHELL_ONLY — route `task.shell.024` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `task.shell.024`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

@@ -291,6 +291,6 @@ Route::prefix('catalog/in/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `in.dict.plvt` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `in.dict.plvt`
 - **Note:** Route đã có hoặc shell metadata; write/transfer execute chỉ mở khi payload/side effect được audit.

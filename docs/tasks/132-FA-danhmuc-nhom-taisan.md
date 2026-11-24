@@ -114,6 +114,6 @@ Route::prefix('catalog/fa/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell coverage)
+- **Status:** SHELL_ONLY — route `fa.dict.nhts shell` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.dict.nhts shell`
 - **Note:** Không execute side-effect khi chưa audit payload.

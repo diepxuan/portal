@@ -78,5 +78,5 @@ class BaocaophantichTsod01 extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `task.341` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `task.341`

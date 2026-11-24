@@ -192,6 +192,6 @@ Route::get('/catalog/in/calculator/tinh-gia-fifo', [TinhGiaFIFO::class, 'render'
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `in.vch.in5` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `in.vch.in5`
 - **Note:** Shell/voucher; write blocked until payload audit.

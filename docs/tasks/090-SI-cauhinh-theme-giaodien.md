@@ -417,6 +417,6 @@ Route::prefix('catalog/si')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell)
+- **Status:** SHELL_ONLY — route `si.config.theme` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `si.config.theme`
 - **Note:** Shell metadata only; execute/write blocked until source wrapper/payload is audited.

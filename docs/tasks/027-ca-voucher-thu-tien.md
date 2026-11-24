@@ -1,5 +1,7 @@
 # Task 027: CA - Voucher thu tien
 
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
+
 ## Thong tin co ban
 
 | Thuoc tinh | Gia tri |

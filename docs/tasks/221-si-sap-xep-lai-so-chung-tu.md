@@ -146,6 +146,6 @@ Route::prefix('catalog/si')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `si.tool.sortno` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `si.tool.sortno`
 - **Note:** Shell hoặc route hiện hữu; side-effect blocked nếu chưa audit payload.

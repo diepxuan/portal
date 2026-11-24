@@ -240,6 +240,6 @@ Route::prefix('catalog/si/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell)
+- **Status:** SHELL_ONLY — route `si.dict.tygia` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `si.dict.tygia`
 - **Note:** Shell metadata only; execute/write blocked until source wrapper/payload is audited.

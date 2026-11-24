@@ -107,6 +107,6 @@ Chuyen doi chuc nang dinh gia lai tai san co dinh tu .NET sang PHP Laravel.
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** SHELL_ONLY — route `fa.vch.dgts` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.vch.dgts`
 - **Note:** Calculation/transfer/voucher shell chưa execute side-effect khi chưa audit payload.

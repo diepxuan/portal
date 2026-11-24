@@ -179,6 +179,6 @@ class CongcuEdit extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `fa.dict.ccdc` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.dict.ccdc`
 - **Note:** Shell/voucher; write blocked until payload audit.

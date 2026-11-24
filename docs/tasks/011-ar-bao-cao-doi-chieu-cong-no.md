@@ -7,6 +7,7 @@ Chuyen doi chuc nang in giay doi chieu cong no gui khach hang xac nhan tu .NET s
 
 ## Chi tiet
 - **DLL:** ARRptBCCN05.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** In giay doi chieu cong no gui khach hang xac nhan - theo doi cong no giua so sach cong ty va xac nhan cua khach hang
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise

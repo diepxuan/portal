@@ -261,6 +261,17 @@ class TaskRepository
             return self::COLUMN_OTHER;
         }
 
+        // SHELL_ONLY = có route anchor/metadata shell nhưng CHƯA có màn hình CRUD.
+        // Không được xếp vào Hoàn thành dù chuỗi có thể chứa "DONE".
+        // Bắt cả các biến thể cũ: "DONE (route shell)", "DONE (route/shell exists)",
+        // "DONE (task shell route)", "DONE (read-only report)".
+        if (str_contains($s, 'SHELL_ONLY') || str_contains($s, 'SHELL ONLY')
+            || str_contains($s, 'ROUTE SHELL') || str_contains($s, 'ROUTE/SHELL')
+            || str_contains($s, 'TASK SHELL') || str_contains($s, 'SHELL EXISTS')
+            || str_contains($s, 'READ-ONLY REPORT')) {
+            return self::COLUMN_PENDING;
+        }
+
         if (str_contains($s, 'IN PROGRESS') || str_contains($s, 'IN-PROGRESS') || str_contains($s, 'IMPLEMENTED')
             || str_contains($s, 'CẦN MAP') || str_contains($s, '🔄')) {
             return self::COLUMN_IN_PROGRESS;
