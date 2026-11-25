@@ -50,11 +50,8 @@ class AsINRptTHX01
             'pPSDC' => $paramObj->pPSDC ?? null,
             'pMa_NT' => $paramObj->pMa_NT ?? null,
             'pTk_Du' => $paramObj->pTk_Du ?? null,
-            'pMa_phi' => $paramObj->pMa_phi ?? null,
             'pNgoai_te' => $paramObj->pNgoai_te ?? null,
-            'pMa_spct' => $paramObj->pMa_spct ?? null,
-            'pDVT' => $paramObj->pDVT ?? null,
-            'pMa_kho' => $paramObj->pMa_kho ?? null
+            'pDVT' => $paramObj->pDVT ?? null
         ], $connection);
     }
 
