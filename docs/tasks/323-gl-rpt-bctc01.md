@@ -149,5 +149,28 @@ Route::get('/catalog/gl/baocao/bctc01', [Bctc01::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctc01` + route `gl.rpt.glrptbctc01`, verify browser 2026-11-25: **0 dòng** (cần pMau/pQd_cdkt đúng)
 - **Route:** `gl.task.323`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctc01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbctc01.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptbctc01`
+- **SP:** `asGLRptBCTC01` — 7 tham số, wrapper sạch
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctc01` render thật |
+| 2026 / 2024 | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — cần tham số mẫu báo cáo
+
+Báo cáo cần `pMau` (mẫu báo cáo) và `pTk`/`pBac_tk`/`pTk_sc` có giá trị cụ thể
+đúng cấu hình. Để trống → SP trả rỗng.
+
+**Cần:** người dùng quen SimbaERP xác nhận giá trị đúng.
