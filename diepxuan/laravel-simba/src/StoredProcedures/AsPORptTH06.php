@@ -48,10 +48,7 @@ class AsPORptTH06
             'pMa_TKVT' => $paramObj->pMa_TKVT ?? null,
             'pMa_NT' => $paramObj->pMa_NT ?? null,
             'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'pMa_Hd' => $paramObj->pMa_Hd ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

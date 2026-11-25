@@ -48,9 +48,7 @@ class AsPORptBK06
             'pMa_plkh2' => $paramObj->pMa_plkh2 ?? null,
             'pMa_plkh3' => $paramObj->pMa_plkh3 ?? null,
             'pNhom_theo' => $paramObj->pNhom_theo ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pMa_Hd' => $paramObj->pMa_Hd ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

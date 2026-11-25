@@ -51,8 +51,7 @@ class AsINRptF5CT01
             'pTk_vt' => $paramObj->pTk_vt ?? null,
             'pMa_spct' => $paramObj->pMa_spct ?? null,
             'pLoai_gd' => $paramObj->pLoai_gd ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 
