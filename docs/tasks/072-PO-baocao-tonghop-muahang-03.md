@@ -342,6 +342,47 @@ Route::prefix('catalog/po/report')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Po\Rpt\Porptth03` + route `po.rpt.porptth03`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Po\Rpt\Porptth03` (kế thừa `Rpt\AbstractReport`)
+- **View:** `po/rpt/porptth03.blade.php` + filter tương ứng
+- **Route:** `po.rpt.porptth03`
+- **SP:** `asPORptTH03` — **13 tham số** (sau khi loại bỏ)
+
+### 🐛 Bug wrapper — 2 tầng lỗi
+
+**Tầng 1: thừa system params** — `pSysMsg1`, `ParamDefines` + biến thể trùng tên.
+
+**Tầng 2: FORM GỐC gửi tham số SP KHÔNG NHẬN** — 9 tham số ma:
+
+`pMa_ncc`, `pMa_nh_ncc`, `pPl_ncc2`, `pPl_ncc3`, `pMa_vtri`, `pMa_loai`,
+`pMaLo`, `pMaPhi`, `pMA_DKTT`, `pCT1`, `pCT2`
+
+→ Mỗi lần SP báo `@pX is not a parameter`, bỏ đúng `pX`, lặp lại.
+
+**Kết quả: 13 tham số đúng** — SP không còn lỗi.
+
+### 🔑 Phương pháp hiệu quả: vòng lặp tự động
+
+```
+submit → đọc log → lấy "@pX is not a parameter" → bỏ pX → lặp
+```
+
+Sau ~9 vòng là ra bộ tham số đúng. **Nhanh hơn nhiều so với đoán.**
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::po.rpt.porptth03` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — module PO không có dữ liệu
+
+Nhất quán với các task PO khác. **Không phải bug code.**
