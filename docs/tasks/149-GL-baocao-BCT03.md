@@ -290,6 +290,30 @@ Route::prefix('gl/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptbct03` + route `gl.rpt.glrptbct03`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptbct03`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbct03`
+- **View:** `gl/rpt/glrptbct03.blade.php`
+- **Route:** `gl.rpt.glrptbct03` → `/simba/gl/rpt/glrptbct03`
+- **SP:** `asGLRptBCT03` qua wrapper `AsGLRptBCT03` (**3 tham số** khớp docs, không cần sửa)
+
+### Đối chiếu form gốc
+
+`frmGLRptBCT03.LoadData()` chỉ truyền 3 tham số: `CompanyID`, `txtNgay1.Value`, `txtNgay2.Value`
+→ khớp đúng `pMa_cty` / `pNgay1` / `pNgay2` của SP. Không có tham số ẩn.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct03` | **HTTP 200**, title "Tờ khai thuế giá trị gia tăng [SimbaERP]" |
+| Form lọc | 2 field ngày, 0 page error |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** — công ty 001 không có dữ liệu kỳ này |
+
+> Task đơn giản nhất trong nhóm GL: chỉ 3 tham số, wrapper đã đúng sẵn.
