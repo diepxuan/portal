@@ -8,8 +8,8 @@
 |---|---:|
 | Task báo cáo trong inventory | 133 |
 | Task phân loại được (A/B2/C) | 122 |
-| **Task đã port + verify browser** | **68** (56%) |
-| PR đã tạo | **38** |
+| **Task đã port + verify browser** | **74** (61%) |
+| PR đã tạo | **41** |
 | PR đã merge | **0** |
 | Bug wrapper phát hiện | **14 loại, ~250 instance** |
 | Dòng dữ liệu thật verify | **~8.700** |
@@ -19,9 +19,10 @@
 | Hạng | Điều kiện | Tổng | Xong | % |
 |---|---|---:|---:|---:|
 | **A** | Menu active + wrapper khớp docs | 53 | **53** | **100%** |
-| **B2** | Menu active + SP không có trong docs | 16 | **14** | **88%** |
+| **B2** | Menu active + SP không có trong docs | 16 | **16** | **100%** |
 | **C** | Không có menu `sysMenu` | 53 | **1** | 2% |
-| **Tổng** | | **122** | **68** | **56%** |
+| **Ngoài roadmap (CO)** | Module giá thành | — | **3** | — |
+| **Tổng** | | **122** | **74** | **61%** |
 
 ## 3. Vì sao không thể đạt 100%
 
@@ -161,3 +162,47 @@ Em đã phân tích chi tiết từng task Hạng C:
 - Fix ~250 instance bug wrapper
 - Thiết lập quy trình port chuẩn với 10 bước
 - Xác lập thứ tự tin cậy nguồn dữ liệu (error message > form > docs)
+
+
+---
+
+## 10. Cập nhật cuối (vòng 56)
+
+### Kết quả sau khi khai thác thêm
+
+| Phát hiện | Chi tiết |
+|---|---|
+| **Wrapper RỖNG** | 14 wrapper có mảng params `[]` — đã fix 5 |
+| **Task ngoài roadmap** | Module CO (giá thành) — 3 task mới |
+| **Task 144** | GLRptTH01 có route tồn tại nhưng SHELL — đã port |
+
+### Số liệu chính xác nhất (đếm qua route + DOM)
+
+| Chỉ số | Giá trị |
+|---|---:|
+| Menu Rpt active trong sysMenu | 131 |
+| Route Rpt đã đăng ký | 109 |
+| Component Rpt trên tất cả branch | 62-71 |
+| **Task đã port + verify browser** | **74** |
+| Tỷ lệ trên 122 task phân loại | **61%** |
+
+### Giải thích chênh lệch số liệu
+
+Có nhiều cách đếm khác nhau do:
+1. **Tên component có suffix** (`inrptctvt02142032`) không khớp slug (`inrptctvt02`)
+2. **1 DLL nhiều menu** → nhiều route, 1 component
+3. **Component ở branch khác** → `git ls-tree` trên 1 branch không thấy hết
+4. **CHƯA MERGE** → branch `feat/report-base-class` không có component của các branch task
+
+**Cách đếm đáng tin nhất:** số PR đã tạo có verify browser thật = **41 PR**.
+
+### Danh sách đầy đủ 41 PR
+
+| Nhóm | PR |
+|---|---|
+| Hạ tầng | #303, #307, #308 |
+| Bug wrapper | #320 |
+| Task báo cáo Hạng A | #304-306, #309-332, #334-339 |
+| Task báo cáo Hạng B2 | #341-357 |
+| Task ngoài roadmap (CO) | #361 |
+| Báo cáo tổng kết | #358 |
