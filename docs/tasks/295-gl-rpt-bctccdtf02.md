@@ -84,5 +84,34 @@ class CCDTF02ReportService
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
-- **Route:** `gl.task.295`
+- **Status:** DONE — component `Gl\Rpt\Glrptbctccdtf02` + route `gl.rpt.glrptbctccdtf02`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptbctccdtf02`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtf02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbctccdtf02.blade.php` + filter `gl/rpt/filters/glrptbctccdtf02.blade.php`
+- **Route:** `gl.rpt.glrptbctccdtf02` (auto-registration)
+- **SP:** `asGLRptBCTCCDTF02` qua wrapper `AsGLRptBCTCCDTF02` (**5 tham số** khớp docs)
+- **Menu:** `02.55.05` — "Chi tiết nguồn vốn đầu tư"
+
+### Đối chiếu form gốc `frmGLRptBCTCCDTF02.LoadData()`
+
+| Tham số SP | Nguồn từ form gốc |
+|---|---|
+| `pMa_cty` | `CompanyInformations.CompanyID` |
+| `Ngay_ct1` / `Ngay_ct2` | `txtNgay1/2.Value` |
+| `pTk` | `txtTk.Text` |
+| `pMa_spct` | `txtMa_SPCT.Text` |
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbctccdtf02` | **HTTP 200**, title "Chi tiết nguồn vốn đầu tư [SimbaERP]" |
+| Số field lọc | **4** |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** |
+| Page error | **0** |
+
+> Component **57 dòng** nhờ `AbstractReport`.
