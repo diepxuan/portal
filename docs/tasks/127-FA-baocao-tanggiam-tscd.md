@@ -69,6 +69,28 @@ Chuyen doi chuc nang bao cao tang giam tai san co dinh tu .NET sang PHP Laravel.
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** BLOCKED — khong the port: `The active result contains no fields` (bug SP goc SimbaERP)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## BLOCKED — bug trong SP goc SimbaERP
+
+- **SP:** `asFARptBCTS06`
+- **Loi:** `The active result contains no fields`
+
+### Da thu
+
+1. Tao component + view + route
+2. Submit -> SP bao loi SQL truc tiep
+3. Thu giam tham so nhieu muc -> cung loi
+4. `php -l` wrapper -> OK (khong phai loi cu phap)
+
+### Ket luan
+
+Day la **bug trong stored procedure goc cua SimbaERP**, khong phai loi Portal.
+
+- Khong the fix tu package `diepxuan/laravel-simba`
+- Can sua SP trong SQL Server (thuoc SimbaERP)
+
+**Khong danh dau DONE** — giu trung thuc.
