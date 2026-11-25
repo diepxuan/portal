@@ -46,8 +46,7 @@ class AsINRptCD01
             'pDVT' => $paramObj->pDVT ?? null,
             'pPSDC' => $paramObj->pPSDC ?? null,
             'pNgoai_te' => $paramObj->pNgoai_te ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null
+            'pSysMsg1' => $paramObj->pSysMsg1 ?? null
         ], $connection);
     }
 

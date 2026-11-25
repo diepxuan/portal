@@ -54,9 +54,7 @@ class AsSORptF5BCPT03
             'pHang_ban' => $paramObj->pHang_ban ?? null,
             'pTra_lai' => $paramObj->pTra_lai ?? null,
             'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pKhuyen_mai' => $paramObj->pKhuyen_mai ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

@@ -47,8 +47,7 @@ class AsINRptF5CD05_kho
             'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
             'pSysMsg2' => $paramObj->pSysMsg2 ?? null,
             'pSysMsg3' => $paramObj->pSysMsg3 ?? null,
-            'pSysMsg4' => $paramObj->pSysMsg4 ?? null,
-            'pma_kho' => $paramObj->pma_kho ?? null
+            'pSysMsg4' => $paramObj->pSysMsg4 ?? null
         ], $connection);
     }
 

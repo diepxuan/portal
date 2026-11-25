@@ -54,9 +54,7 @@ class AsSORptBK05
             'pMa_plvt1' => $paramObj->pMa_plvt1 ?? null,
             'pMa_plvt2' => $paramObj->pMa_plvt2 ?? null,
             'pMa_plvt3' => $paramObj->pMa_plvt3 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pTk_vt' => $paramObj->pTk_vt ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

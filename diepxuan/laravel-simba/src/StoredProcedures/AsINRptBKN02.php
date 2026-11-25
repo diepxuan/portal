@@ -48,12 +48,7 @@ class AsINRptBKN02
             'pTK_VT' => $paramObj->pTK_VT ?? null,
             'pTk_Du' => $paramObj->pTk_Du ?? null,
             'pDVT' => $paramObj->pDVT ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'pMa_hd' => $paramObj->pMa_hd ?? null,
-            'pTk_vt' => $paramObj->pTk_vt ?? null,
-            'pTk_du' => $paramObj->pTk_du ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 
