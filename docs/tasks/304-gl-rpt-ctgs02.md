@@ -166,6 +166,56 @@ Route::post('/catalog/gl/baocao/ctgs02/update-tag', ...)
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptctgs02` + route `gl.rpt.glrptctgs02`, verify browser 2026-11-25: render thật, **0 dòng** (công ty 001 dùng Nhật ký chung, không dùng CTGS)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptctgs02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptctgs02.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptctgs02`
+
+### 🐛 Bug wrapper `AsGLRptCTGS02` — phát hiện tài liệu SAI
+
+Em thử lần lượt 3 bộ tham số, mỗi lần đọc error message của SP:
+
+| Thử | Số params | SP báo |
+|---|---:|---|
+| 1 | 6 (wrapper gốc + `pCtu2`) | `has too many arguments specified` |
+| 2 | 5 (theo `procedures.md`, gồm `pMa_Nt`) | `@pMa_Nt is not a parameter for procedure asGLRptCTGS02` |
+| 3 | **4** (`pMa_cty`, `pNgay_ct1`, `pNgay_ct2`, `pCtu1`) | ✅ **OK** |
+
+**Kết luận: `procedures.md` SAI** — ghi có `pMa_Nt` nhưng SP thật **không có**.
+
+**4 tham số đúng:** `pMa_cty`, `pNgay_ct1`, `pNgay_ct2`, `pCtu1`
+
+> Đây là trường hợp **đầu tiên** docs ghi tham số SP không tồn tại. Trước đó
+> docs chỉ thiếu hoặc sai tên.
+
+### Verify browser thật
+
+| Kỳ test | Số dòng | errorMessage |
+|---|---:|---|
+| 2026 | 0 | **null** ✅ |
+| 2024 | 0 | **null** ✅ |
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptctgs02` render thật |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — nhất quán với hình thức kế toán
+
+Cùng lý do với task 303, 327: công ty 001 dùng **Nhật ký chung**, không dùng
+**Chứng từ ghi sổ**.
+
+| Báo cáo | Số dòng |
+|---|---:|
+| `GLRptNKC02` (Nhật ký chung) | **109** ✅ |
+| `GLRptCTGS01` | 0 |
+| `GLRptCTGS02` | 0 |
+| `GLRptBK01` | 1 (header) |
+
+**Không phải bug code.**
