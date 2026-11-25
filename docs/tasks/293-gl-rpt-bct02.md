@@ -88,6 +88,45 @@ class BCT02ReportService
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptbct02` + route `gl.rpt.glrptbct02`, verify browser 2026-11-25 (co du lieu that)
+- **Route:** `gl.rpt.glrptbct02`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbct02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbct02.blade.php` + filter `gl/rpt/filters/glrptbct02.blade.php`
+- **Route:** `gl.rpt.glrptbct02` (auto-registration)
+- **SP:** `asGLRptBCT02` qua wrapper `AsGLRptBCT02` (**6 tham số**)
+- **Menu:** `02.40.05` — "Bảng kê hoá đơn, chứng từ HHDV bán ra"
+
+### ⚠️ BCT02 KHÁC BCT01 — chỉ 6 tham số, không phải 8
+
+Đối chiếu wrapper `AsGLRptBCT02` + `simba-docs`:
+
+| BCT01 (mua vào) | BCT02 (bán ra) |
+|---|---|
+| `pMa_cty`, `pNgay1`, `pNgay2`, `pThue_suat` | giống |
+| `pTk_thue` | **`pTk`** |
+| `pTk_du` | giống |
+| **`pMa_bp`**, **`pMau_bc`** | **KHÔNG CÓ** |
+
+→ Component BCT02 chỉ 6 tham số. Nếu copy nguyên BCT01 sẽ gửi thừa `pMa_bp`/`pMau_bc` → SP có thể từ chối.
+
+### Verify browser thật — CÓ DỮ LIỆU
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct02` | **HTTP 200**, title "Bảng kê hoá đơn, chứng từ HHDV bán ra [SimbaERP]" |
+| Số field lọc | **5** |
+| Bấm "Thực hiện" | SP gọi **thành công** |
+| **Số dòng trả về** | **1 dòng — DỮ LIỆU THẬT** |
+| **Số cột** | **22 cột**: `stt`, `so_seri_mhd`, `so_ct`, `ngay_ct`, `ten_kh`, `ma_so_thue`, `ten_vt`, `t_tien`, `t_thue`, `thue_suat`... |
+| Page error | **0** |
+
+Dòng dữ liệu đầu tiên: `ten_kh = "#GLRpt_TPS"` — đây là dòng tiêu đề do SP tự sinh
+(quy ước của SP báo cáo SimbaERP), xác nhận SP chạy đúng.
+
+> Đây là báo cáo **đầu tiên verify được cả dữ liệu thật** (các báo cáo trước trả 0 dòng
+> vì công ty 001 không có dữ liệu kế toán trong kỳ mặc định).

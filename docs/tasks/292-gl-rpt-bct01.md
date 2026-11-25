@@ -98,6 +98,8 @@ class BCT01ReportService
 - **View:** `gl/rpt/glrptbct01.blade.php` + filter `gl/rpt/filters/glrptbct01.blade.php`
 - **Route:** `gl.rpt.glrptbct01` (auto-registration)
 - **SP:** `asGLRptBCT01` qua wrapper `AsGLRptBCT01` (**8 tham số** khớp docs)
+
+> **Lưu ý:** BCT02 (task 293) chỉ có **6 tham số** — không có `pMa_bp`/`pMau_bc`. Không copy nguyên.
 - **Menu:** `02.40.02` — "Bảng kê hoá đơn, chứng từ HHDV mua vào"
 
 ### Đối chiếu form gốc `frmGLRptBCT01.LoadData()`
