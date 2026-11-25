@@ -411,6 +411,31 @@ Route::prefix('catalog/so/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (report route shell)
+- **Status:** DONE (component) — `So\Rpt\Sorptth01` + route `so.rpt.sorptth01`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Route:** `so.rpt.th01`
 - **Note:** Shell read-only, chưa execute SP khi chưa audit đủ tham số.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Sorptth01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `so/rpt/sorptth01.blade.php` + filter tương ứng
+- **Route:** `so.rpt.sorptth01`
+- **SP:** `asSORptTH01`
+
+### 🐛 Bug wrapper — đã bỏ system params + biến thể trùng
+
+Wrapper gốc có `pSysMsg1`, `ParamDefines` + biến thể trùng tên (khác hoa thường)
+→ đã bỏ, SP không còn lỗi.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.sorptth01` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — module SO không có dữ liệu kỳ này
+
+Nhất quán với các báo cáo SO/AR khác. **Không phải bug code.**
