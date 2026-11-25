@@ -382,6 +382,56 @@ Route::prefix('catalog/po/report')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Po\Rpt\Porptbcpt03` + route `po.rpt.porptbcpt03`, verify browser 2026-11-25: **0 dòng** (module PO không có dữ liệu)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Po\Rpt\Porptbcpt03` (kế thừa `Rpt\AbstractReport`)
+- **View:** `po/rpt/porptbcpt03.blade.php` + filter tương ứng
+- **Route:** `po.rpt.porptbcpt03`
+
+### 🐛 Bug wrapper `AsPORptBCPT03` — 2 lỗi liên tiếp
+
+**Lỗi 1 — thừa 6 tham số:**
+
+| Nguồn | Số params |
+|---|---:|
+| Wrapper cũ | **32** |
+| Form gốc `frmPORptBCPT03.LoadData()` | **26** |
+| Sau fix | 26 |
+
+Thừa: `pMa_tt` (trùng `pMa_HTTT`), `pSysMsg1`, `pMa_httt`, `pMa_nt` (trùng `pMa_Nt`), `pStrTL`, `ParamDefines`, `pMa_Cty` (trùng `pMa_cty`).
+
+**Lỗi 2 — docs ghi tham số KHÔNG TỒN TẠI:**
+
+Sau khi fix còn 26 params theo form, SP báo:
+```
+@pMa_DKTT is not a parameter for procedure asPORptBCPT03
+```
+
+Form gốc **có** `txtMa_DKTT` nhưng SP thật **không có**.
+
+→ Bỏ `pMa_DKTT` → **25 tham số**, SP chạy OK.
+
+> Đây là **trường hợp thứ 3** phát hiện tham số không tồn tại
+> (sau task 304/CTGS02 và task 337/NKC07).
+>
+> **Bài học mới:** form gốc cũng có thể gửi tham số SP không nhận
+> (có thể form .NET có field nhưng SP đã bỏ).
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::po.rpt.porptbcpt03` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — module PO không có dữ liệu
+
+Nhất quán với task 066 (PORptTH02) — công ty 001 không phát sinh mua hàng.
+
+**Không phải bug code.**
