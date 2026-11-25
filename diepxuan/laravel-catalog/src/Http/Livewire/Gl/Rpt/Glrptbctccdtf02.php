@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\Gl\Rpt;
 
 use Diepxuan\Catalog\Http\Livewire\Rpt\AbstractReport;
-use Diepxuan\Simba\StoredProcedures\AsGLRptBCTCCDTF02;
+use Diepxuan\Simba\StoredProcedures\AsGLRptBCTCCDTf02;
 use Illuminate\Contracts\View\View;
 
 /**
@@ -27,7 +27,7 @@ class Glrptbctccdtf02 extends AbstractReport
 
     protected function spClass(): string
     {
-        return AsGLRptBCTCCDTF02::class;
+        return AsGLRptBCTCCDTf02::class;
     }
 
     /**
