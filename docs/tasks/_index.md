@@ -20,10 +20,10 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | GL — Sổ cái tổng hợp | 103 | 0 | 102 | 1 | 0 |
 | IN — Tồn kho | 28 | 0 | 28 | 0 | 0 |
 | PO — Đơn hàng mua | 17 | 0 | 17 | 0 | 0 |
-| SI — System Integration | 31 | 0 | 25 | 4 | 2 |
+| SI — System Integration | 32 | 0 | 25 | 4 | 3 |
 | SO — Đơn hàng bán | 44 | 1 | 42 | 1 | 0 |
 | System — Framework & cross-link | 3 | 2 | 0 | 0 | 1 |
-| **Tổng** | **316** | **4** | **302** | **6** | **4** |
+| **Tổng** | **317** | **4** | **302** | **6** | **5** |
 
 > **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.
 
@@ -340,6 +340,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
 | 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | DOC_ONLY |
 | 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | DOC_ONLY |
+| 383 | `383-audit-route-component-sai.md` |  | PARTIAL — phát hiện 2 trường hợp sai, đã fix 1 |
 
 ## SO — Đơn hàng bán
 
