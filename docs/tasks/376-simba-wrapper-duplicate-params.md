@@ -1,4 +1,4 @@
-# Task 376: Bug wrapper SP — tham số trùng tên + thiếu tham số
+# Task 376: Bug wrapper SP — 3 loại (trùng / thiếu / thừa)
 
 ## Nhom: SI (System Integration)
 
@@ -252,3 +252,51 @@ Nhiều wrapper trước đó gửi **mảng rỗng hoàn toàn** (`AsCAGetCT1` 
 | `in/rpt/inrptcd02` | HTTP 200 ✅ |
 | `ca/vch/cavchca1` | HTTP 200 ✅ |
 | Không regression | ✅ |
+
+
+---
+
+## LOẠI 3 — Wrapper gửi tham số SP **KHÔNG TỒN TẠI** (còn 50)
+
+Phát hiện qua task 231 (`AsINRptCD01`). Wrapper gửi tham số mà SP **không hề có**:
+
+```
+SQLSTATE[42000]: @pSysMsg1 is not a parameter for procedure asINRptCD01
+```
+
+### Mức độ nguy hiểm: CAO NHẤT trong 3 loại
+
+SP **luôn lỗi** khi gọi, nhưng triệu chứng dễ nhầm: màn hình trả "0 dòng" hoặc
+"Không tải được dữ liệu" → người dùng tưởng **không có dữ liệu**, không biết là bug.
+
+### Danh sách (50 wrapper)
+
+| # | Wrapper | Tham số thừa |
+|---:|---|---|
+| 1 | `AsINRptTHX01` | `pma_kho` |
+| 2 | `AsGLRptCTGS02` | `pctu2` |
+| 3 | `AsGLRptCTGS05` | `pma_ku` |
+| 4 | `AsGLRptF5TH01` | `pma_lo` |
+| 5 | `AsSORptBCPT022` | `psl_cl`, `pstt`, `pstt_rec`, `pstt_rec0` |
+| 6 | `AsSOPostTraTruoc_arTt` | `pnamtc`, `pngay_ct`, `pngay_ks`, `pthangtc` |
+| 7 | `AsARGetCDKH` | `ploai` |
+| 8 | `AsSORptBCPT03` | `p641`, `p642`, `ptong_dt` |
+| 9 | `AsPORptBCPT012` | `psl_cl`, `pstt`, `pstt_rec0_dh`, `pstt_rec_dh` |
+| 10 | `AsGLRptNKC031` | `pma_nt` |
+| 11 | `AsGLRptCR01` | `ngay_ct1`, `ngay_ct2`, `pma_nt` |
+| 12 | `AsGLRptBK02` | `pma_nt` |
+| 13 | `AsAPReCalAP34Relate` | `pstt_rec` |
+| 14 | `AsINRptF5CD05_kho` | `pngay1`, `pngay2`, `pnxt` |
+| 15 | `AsSOGetPH6` | `pma_ct` |
+| 16 | `AsARRptF5BCCN04` | `ma`, `ma_cty`, `ma_kh`, `ma_loai` |
+| 17 | `AsPORptF5TH02` | `pky` |
+| 18 | `AsSORptTH07` | `p2`, `par` |
+| 19 | `AsGLRptBCTCCR04` | `pma_nt` |
+| 20 | `AsINRptCTVT02` | `pma_nt0` |
+| … | (còn 30 wrapper) | |
+
+### Đã fix
+
+| Wrapper | Thừa | Thiếu |
+|---|---|---|
+| `AsINRptCD01` | `pSysMsg1`, `pMa_Cty` | `group1`, `group2`, `group3` |
