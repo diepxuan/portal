@@ -354,6 +354,48 @@ Route::prefix('catalog/po/report')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Po\Rpt\Porptth02` + route `po.rpt.porptth02`, verify browser 2026-11-25: render thật, **0 dòng** (công ty 001 không có dữ liệu mua hàng)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Po\Rpt\Porptth02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `po/rpt/porptth02.blade.php` + filter tương ứng
+- **Route:** `po.rpt.porptth02`
+- **Menu:** báo cáo tổng hợp mua hàng
+
+### 🐛 Bug wrapper `AsPORptTH02` — đã sửa
+
+| Nguồn | Số tham số |
+|---|---:|
+| Wrapper **cũ** | 12 |
+| Form gốc `frmPORptTH02.LoadData()` | **8** |
+| Wrapper **sau fix** | **8** |
+
+Wrapper cũ thừa 4 tham số: `par`, `par1`, `pSoLoai`, `pSoQuy`
+→ SP báo `has too many arguments specified`.
+
+**8 tham số đúng** (theo form gốc): `pma_cty`, `pLoai`, `pMa_ct`, `pThang`,
+`pNam`, `pSo_ky`, `pMa_nt`, `pIs_nt`
+
+### Verify browser thật
+
+| Kỳ test | Số dòng | errorMessage |
+|---|---:|---|
+| 2026 tháng 1 | 0 | null |
+| 2024 tháng 1 | 0 | null |
+| 2020 tháng 1 | 0 | null |
+| 2015 tháng 1 | 0 | null |
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::po.rpt.porptth02` render thật |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu
+
+Công ty 001 không có dữ liệu mua hàng (PO) ở mọi kỳ đã thử.
+
+**Không phải bug code** — wrapper đã fix đúng, submit không lỗi.
