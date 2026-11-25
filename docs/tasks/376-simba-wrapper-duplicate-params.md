@@ -2,7 +2,7 @@
 
 ## Nhom: SI (System Integration)
 
-- **Status:** PARTIAL — đã fix 143 wrapper TRÙNG TÊN (PR riêng); còn 28 wrapper THIẾU tham số
+- **Status:** DONE (phần chính) — đã fix **143 trùng tên + 28 thiếu tham số**; còn **2 file lỗi cú pháp** đã có sẵn trên `main`
 - **Loai:** Bug fix (không phải báo cáo)
 - **Nguồn phát hiện:** task 107 (INRptBK01) khi verify browser đổi năm
 
@@ -210,3 +210,45 @@ Wrapper gửi thiếu tham số → SP dùng **default** (sai kỳ/sai công ty)
 `expects parameter @x, which was not supplied`.
 
 **Nguy hiểm:** có thể trả **số liệu sai mà KHÔNG báo lỗi** — người dùng không biết.
+
+
+---
+
+## KẾT QUẢ CUỐI (sau khi fix)
+
+| Loại | Trước | Sau |
+|---|---:|---:|
+| Wrapper tham số **TRÙNG** | 146 | **3** (trong 2 file lỗi cú pháp) |
+| Wrapper **THIẾU** tham số | 28 | **0** |
+| Wrapper **ĐÚNG** | ~666 | **856** |
+| File lỗi cú pháp (`php -l` fail) | 8 | **2** |
+
+### Đã fix
+
+**Loại 1 — trùng tên (143 wrapper):** bỏ dòng trùng phía sau mỗi nhóm.
+Ví dụ `AsGLInsMAUBCTCTmVI15c` 64 → 23 param.
+
+**Loại 2 — thiếu tham số (28 wrapper):** sinh lại body đầy đủ theo `procedures.md`.
+Nhiều wrapper trước đó gửi **mảng rỗng hoàn toàn** (`AsCAGetCT1` 0/3p, `AsCAGetPH1` 0/4p...).
+
+**Loại 3 — lỗi cú pháp (6 file):** đổi tên biến bắt đầu bằng số (`$2` → `$p2`,
+`$641` → `$p641`), sửa quote lỗi (`''CR' '` → `'CR'`), sửa docblock đóng comment sớm.
+
+### Còn lại (2 file, KHÔNG thuộc PR này)
+
+| File | Vấn đề |
+|---|---|
+| `AsGLRptBCTCTMCal.php` | Nhiều quote lỗi lồng nhau (`'N'999' '`), cần đọc kỹ |
+| `AsGLRptBCTCTMVI02c.php` | Tương tự |
+
+> Cả 2 file đã lỗi trên `main` từ trước, không phải do các PR này. Cần task riêng.
+
+### Verify
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `php -l` toàn bộ `As*.php` | **2 file lỗi** (từ 8) — đều là bug có sẵn |
+| `gl/rpt/glrptbct03` | HTTP 200 ✅ |
+| `in/rpt/inrptcd02` | HTTP 200 ✅ |
+| `ca/vch/cavchca1` | HTTP 200 ✅ |
+| Không regression | ✅ |
