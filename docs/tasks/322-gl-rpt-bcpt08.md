@@ -155,5 +155,25 @@ Route::get('/catalog/gl/baocao/bcpt08', [Bcpt08::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbcpt08` + route `gl.rpt.glrptbcpt08`, verify browser 2026-11-25: **0 dòng**
 - **Route:** `gl.task.322`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbcpt08` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt08.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptbcpt08`
+- **SP:** `asGLRptBCPT08` — wrapper sạch
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbcpt08` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu kỳ này
+
+**Không phải bug code** — wrapper sạch, component render thật, submit không lỗi.

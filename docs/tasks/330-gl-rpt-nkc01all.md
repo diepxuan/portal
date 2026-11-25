@@ -149,5 +149,25 @@ Route::get('/catalog/gl/baocao/nkc01all', [Nkc01all::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptnkc01all` + route `gl.rpt.glrptnkc01all`, verify browser 2026-11-25: **0 dòng**
 - **Route:** `gl.task.330`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptnkc01all` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptnkc01all.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptnkc01all`
+- **SP:** `asGLRptNKC01All` — wrapper sạch
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptnkc01all` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu kỳ này
+
+**Không phải bug code** — wrapper sạch, component render thật, submit không lỗi.

@@ -154,6 +154,22 @@ Route::get('/catalog/gl/baocao/ctgs05', [Ctgs05::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptctgs05` + route `gl.rpt.glrptctgs05`, verify browser 2026-11-25: **1 dòng / 29 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptctgs05` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptctgs05.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptctgs05`
+- **SP:** `asGLRptCTGS05` — wrapper sạch
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptctgs05` render thật |
+| Dữ liệu | **1 dòng / 29 cột** |
+| Page error | **0** |
