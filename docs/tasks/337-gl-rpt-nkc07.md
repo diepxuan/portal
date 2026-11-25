@@ -149,5 +149,33 @@ Route::get('/catalog/gl/socai/nkc07', [Nkc07::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptnkc07` + route `gl.rpt.glrptnkc07`, verify browser 2026-11-25: **3 dòng / 14 cột**
 - **Route:** `gl.task.337`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptnkc07` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptnkc07.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptnkc07`
+
+### 🐛 Bug wrapper `AsGLRptNKC07` — đã sửa
+
+Wrapper cũ gửi **6 tham số** nhưng SP chỉ nhận **5**:
+
+| Bỏ | Giữ |
+|---|---|
+| `pNhom_tk` | `pMa_Cty`, `Ngay_ct1`, `Ngay_ct2`, `pTk`, `pMa_nt` |
+
+→ SP báo `has too many arguments specified`.
+
+> `procedures.md` **có** `pNhom_tk`, nhưng SP thật **không có**.
+> Đây là trường hợp thứ 2 docs ghi tham số không tồn tại.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptnkc07` render thật |
+| Dữ liệu | **3 dòng / 14 cột** |
+| Page error | **0** |
