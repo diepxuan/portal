@@ -173,7 +173,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'fa/vch/fathoikhts', 'name' => 'fa.vch.fathoikhts', 'module' => 'fa', 'kind' => 'vch', 'slug' => 'fathoikhts', 'component' => SimbaPage::class],
             // ['uri' => 'gl/dict/gldmkc', 'name' => 'gl.dict.gldmkc', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'gldmkc', 'component' => SimbaPage::class],
             ['uri' => 'gl/dict/gldmtk', 'name' => 'gl.dict.gldmtk', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'gldmtk', 'component' => Taikhoan::class],
-            ['uri' => 'gl/rpt/glrptbctccdtb02', 'name' => 'gl.rpt.glrptbctccdtb02', 'module' => 'gl', 'kind' => 'rpt', 'slug' => 'glrptbctccdtb02', 'component' => Glrptbctccdtb02::class],
             // ['uri' => 'gl/dict/sidmbp', 'name' => 'gl.dict.sidmbp', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'sidmbp', 'component' => SimbaPage::class],
             // ['uri' => 'gl/dict/sidmphi', 'name' => 'gl.dict.sidmphi', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'sidmphi', 'component' => SimbaPage::class],
             // ['uri' => 'gl/proc/glcdtk', 'name' => 'gl.proc.glcdtk', 'module' => 'gl', 'kind' => 'proc', 'slug' => 'glcdtk', 'component' => SimbaPage::class],
