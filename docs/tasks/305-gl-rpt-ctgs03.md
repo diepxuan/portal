@@ -162,6 +162,49 @@ Route::get('/catalog/gl/baocao/ctgs03', [Ctgs03::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptctgs03` + route `gl.rpt.glrptctgs03`, verify browser 2026-11-25 (**31 dòng dữ liệu thật, 13 cột**)
+- **Route:** `gl.rpt.glrptctgs03`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptctgs03` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptctgs03.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptctgs03` — 1 menu duy nhất, không suffix
+- **SP:** `asGLRptCTGS03` — **5 tham số**
+- **Menu:** `02.20.14` — "Sổ cái chứng từ ghi sổ"
+
+### Đối chiếu 3 nguồn — KHỚP HOÀN TOÀN
+
+| Nguồn | Tham số |
+|---|---|
+| Form gốc `frmGLRptCTGS03.LoadData()` | CompanyID, Tk, Ngay1, Ngay2, Ma_Nt (**5**) |
+| `procedures.md` | pMa_Cty, pTk, pNgay_ct1, pNgay_ct2, pMa_Nt (**5**) |
+| Wrapper `AsGLRptCTGS03` | pMa_Cty, pTk, pNgay_ct1, pNgay_ct2, pMa_Nt (**5**) |
+
+Lần này cả 3 nguồn khớp — không cần sửa wrapper.
+
+### Lưu ý về tên tham số
+
+Wrapper dùng `pNgay_ct1`/`pNgay_ct2` (không phải `pNgay1`/`pNgay2`).
+Component map từ property `pNgay1`/`pNgay2` sang đúng tên tham số SP.
+
+### Verify browser thật — 31 dòng, 13 cột
+
+| Tài khoản test | Số dòng | Số cột |
+|---|---:|---:|
+| 112, 131, 331, 511, 632, 642 | **31** | **13** |
+| (rỗng) | **31** | 13 |
+| 111 | 0 | — |
+
+**13 cột:** `fSort`, `ngay_lo`, `so_lo`, `dien_giai`, `Tk_du`, ...
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptctgs03` render thật |
+| Sub-component | `input-taikhoan` |
+| Tab + nút Thực hiện | có |
+| Page error | **0** |
+
+> Đây là báo cáo GL thứ 2 có dữ liệu thật (sau task 293).
