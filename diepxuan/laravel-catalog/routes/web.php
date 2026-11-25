@@ -327,7 +327,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'so/rpt/sorptth02', 'name' => 'so.rpt.sorptth02', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptth02', 'component' => SimbaPage::class],
             // ['uri' => 'so/vch/arvchar4', 'name' => 'so.vch.arvchar4', 'module' => 'so', 'kind' => 'vch', 'slug' => 'arvchar4', 'component' => SimbaPage::class],
             // ['uri' => 'so/vch/sotaout', 'name' => 'so.vch.sotaout', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sotaout', 'component' => SimbaPage::class],
-            ['uri' => 'so/vch/sovchso1', 'name' => 'so.vch.sovchso1', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sovchso1', 'component' => Hoadonbanhang::class],
+            // ['uri' => 'so/vch/sovchso1', ...] — SAI: menu 06.10.02 (SOVchSO1) là 'Đơn đặt hàng' không phải 'Hoá đơn bán hàng'; chưa có component riêng -> SimbaPage shell
             ['uri' => 'so/vch/sovchso3', 'name' => 'so.vch.sovchso3', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sovchso3', 'component' => Sovchso3::class],
             ['uri' => 'so/vch/sovchso3/create', 'name' => 'so.vch.sovchso3.create', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sovchso3', 'component' => Sovchso3Edit::class],
             ['uri' => 'so/vch/sovchso3/{id}/edit', 'name' => 'so.vch.sovchso3.edit', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sovchso3', 'component' => Sovchso3Edit::class],
