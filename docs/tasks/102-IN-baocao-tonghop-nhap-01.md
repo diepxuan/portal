@@ -216,6 +216,57 @@ Route::prefix('catalog/in/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `In\Rpt\Inrptthn01` + route `in.rpt.inrptthn01`, verify browser 2026-11-25 (**1163 dòng dữ liệu thật**)
+- **Route:** `in.rpt.inrptthn01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptthn01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptthn01.blade.php` + filter tương ứng
+- **Route:** `in.rpt.inrptthn01` — **KHÔNG có suffix** (xem ghi chú bên dưới)
+- **SP:** `asINRptTHN01` — 27 tham số
+- **Menu:** `14.20.17` — "Tổng hợp hàng nhập"
+
+### ⚠️ Bài học: `sysMenu.md` KHÔNG khớp DB thật về số menu cùng DLL
+
+`simba-docs/data/sysMenu.md` ghi **3 menu** cùng DLL `INRptTHN01` (14.20.17, 18.20.17, 20.30.11)
+→ suy ra route phải có suffix `142017`.
+
+Nhưng **DB `sysMenu` thật chỉ có 1 menu active** → route **KHÔNG suffix**: `in.rpt.inrptthn01`.
+
+**Cách đúng để biết route thật:** đọc link từ menu trái trên Portal (dữ liệu từ DB),
+**không suy từ file md**.
+
+### 🐛 Bug wrapper `AsINRptTHN01` — đã sửa
+
+Wrapper gửi **6 tham số không tồn tại**:
+
+| Tham số thừa | Loại |
+|---|---|
+| `pSysMsg1` | Tham số thông báo .NET |
+| `pMa_nt` | Trùng `pMa_NT` (khác hoa thường) |
+| `pMa_hd` | Trùng `pMa_Hd` |
+| `ParamDefines` | Cấu hình .NET |
+| `pGroup`, `pDetail` | Không có trong docs |
+
+→ SP báo: `Procedure or function asINRptTHN01 has too many arguments specified`
+
+**Fix:** bỏ 6 tham số, giữ đúng 27 theo `procedures.md`.
+
+### 🎉 Verify browser thật — dữ liệu thật
+
+| Kỳ test | Số dòng | Số cột |
+|---|---:|---:|
+| **2026-01-01 → 2026-12-31** | **556** | **14** |
+| 2020-01-01 → 2020-12-31 | **1.163** | 14 |
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | ✅ `catalog::in.rpt.inrptthn01` render thật |
+| Sub-component | ✅ `input-khachhang`, `input-indmvt`, `input-indmkho` |
+| Tab + nút Thực hiện | ✅ có |
+| Page error | **0** |
+
+> Component 27 tham số nhưng chỉ **~120 dòng** nhờ `AbstractReport`.
