@@ -60,8 +60,7 @@ class AsSORptBK02
             'pMa_plvt2' => $paramObj->pMa_plvt2 ?? null,
             'pMa_plvt3' => $paramObj->pMa_plvt3 ?? null,
             'pGroupType' => $paramObj->pGroupType ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

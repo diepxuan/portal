@@ -58,11 +58,8 @@ class AsPORptBCPT03
             'pGroup' => $paramObj->pGroup ?? null,
             'pDetail' => $paramObj->pDetail ?? null,
             'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pMa_httt' => $paramObj->pMa_httt ?? null,
-            'pMa_nt' => $paramObj->pMa_nt ?? null,
             'pStrTL' => $paramObj->pStrTL ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

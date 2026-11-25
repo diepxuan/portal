@@ -55,8 +55,6 @@ class AsINRptTHX01
             'pMa_spct' => $paramObj->pMa_spct ?? null,
             'pDVT' => $paramObj->pDVT ?? null,
             'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'pMa_hd' => $paramObj->pMa_hd ?? null,
             'ParamDefines' => $paramObj->ParamDefines ?? null,
             'pMa_kho' => $paramObj->pMa_kho ?? null
         ], $connection);

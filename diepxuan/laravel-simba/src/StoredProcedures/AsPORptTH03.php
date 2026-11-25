@@ -60,12 +60,7 @@ class AsPORptTH03
             'pSoct1' => $paramObj->pSoct1 ?? null,
             'pSoct2' => $paramObj->pSoct2 ?? null,
             'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pma_cty' => $paramObj->pma_cty ?? null,
-            'pMa_phi' => $paramObj->pMa_phi ?? null,
-            'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pMa_Hd' => $paramObj->pMa_Hd ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 

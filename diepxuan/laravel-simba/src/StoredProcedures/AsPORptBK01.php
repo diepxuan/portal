@@ -60,10 +60,7 @@ class AsPORptBK01
             'pMa_plvt3' => $paramObj->pMa_plvt3 ?? null,
             'pMa_nhhd' => $paramObj->pMa_nhhd ?? null,
             'pMa_Phi' => $paramObj->pMa_Phi ?? null,
-            'pMa_phi' => $paramObj->pMa_phi ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
-            'pMa_Cty' => $paramObj->pMa_Cty ?? null,
-            'pMa_Hd' => $paramObj->pMa_Hd ?? null
+            'ParamDefines' => $paramObj->ParamDefines ?? null
         ], $connection);
     }
 
