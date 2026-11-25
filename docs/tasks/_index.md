@@ -13,17 +13,17 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | Module | Files | DONE | SHELL_ONLY | PENDING | Khác |
 |---|---:|---:|---:|---:|---:|
 | AP — Công nợ phải trả | 5 | 1 | 4 | 0 | 0 |
-| AR — Công nợ phải thu | 14 | 0 | 14 | 0 | 0 |
-| CA — Tiền mặt & Ngân hàng | 13 | 0 | 12 | 0 | 1 |
+| AR — Công nợ phải thu | 14 | 3 | 11 | 0 | 0 |
+| CA — Tiền mặt & Ngân hàng | 16 | 3 | 12 | 0 | 1 |
 | CO — Sản xuất | 19 | 0 | 19 | 0 | 0 |
 | FA — Tài sản cố định | 39 | 0 | 39 | 0 | 0 |
-| GL — Sổ cái tổng hợp | 103 | 0 | 102 | 1 | 0 |
-| IN — Tồn kho | 28 | 0 | 28 | 0 | 0 |
-| PO — Đơn hàng mua | 17 | 0 | 17 | 0 | 0 |
-| SI — System Integration | 32 | 0 | 25 | 4 | 3 |
-| SO — Đơn hàng bán | 44 | 1 | 42 | 1 | 0 |
+| GL — Sổ cái tổng hợp | 104 | 13 | 90 | 1 | 0 |
+| IN — Tồn kho | 30 | 3 | 27 | 0 | 0 |
+| PO — Đơn hàng mua | 17 | 7 | 10 | 0 | 0 |
+| SI — System Integration | 33 | 0 | 25 | 4 | 4 |
+| SO — Đơn hàng bán | 44 | 6 | 37 | 1 | 0 |
 | System — Framework & cross-link | 3 | 2 | 0 | 0 | 1 |
-| **Tổng** | **317** | **4** | **302** | **6** | **5** |
+| **Tổng** | **324** | **38** | **274** | **6** | **6** |
 
 > **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.
 
@@ -47,10 +47,10 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 006 | `006-ar-phan-bo-thanh-toan.md` | ARPost2TT.dll | SHELL_ONLY |
 | 007 | `007-ar-tinh-lai-so-du-khach-hang.md` | ARRecalCustBalance.dll | SHELL_ONLY |
 | 009 | `009-ar-bao-cao-cong-no-phan-loai.md` | ARRptBCCN02.dll, ARRptBCCN03.dll | SHELL_ONLY |
-| 010 | `010-ar-bao-cao-cong-no-nhom-chi-tiet.md` | ARRptBCCN04.dll | SHELL_ONLY |
-| 011 | `011-ar-bao-cao-doi-chieu-cong-no.md` | ARRptBCCN05.dll | SHELL_ONLY |
+| 010 | `010-ar-bao-cao-cong-no-nhom-chi-tiet.md` | ARRptBCCN04.dll | DONE |
+| 011 | `011-ar-bao-cao-doi-chieu-cong-no.md` | ARRptBCCN05.dll | DONE |
 | 012 | `012-ar-bao-cao-cong-no-han-ky.md` | ARRptBCCN06.dll | SHELL_ONLY |
-| 013 | `013-ar-bang-ke-chung-tu-ban-hang.md` | ARRptBK01.dll | SHELL_ONLY |
+| 013 | `013-ar-bang-ke-chung-tu-ban-hang.md` | ARRptBK01.dll | DONE |
 | 014 | `014-ar-bang-ke-cong-no-han.md` | ARRptBK02.dll | SHELL_ONLY |
 | 015 | `015-ar-bang-ke-chung-tu-thanh-toan.md` | ARRptBK03.dll | SHELL_ONLY |
 | 016 | `016-ar-chung-tu-hach-toan-cong-no.md` | ARVchAR4.dll | SHELL_ONLY |
@@ -73,6 +73,9 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 031 | `031-ca-voucher-khe-uoc-vay.md` | CAVchCA5.dll | SHELL_ONLY |
 | 032-038 | `032-038-ca-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | SHELL_ONLY |
 | 159-165 | `159-165-ca-rpt-tmnh-bao-cao-tien-mat-ngan-hang.md` | CARptTMNH01.dll - CARptTMNH07.dll | SHELL_ONLY |
+| 332 | `332-ca-rpt-tmnh06.md` | CARptTMNH06.dll | DONE |
+| 335 | `335-ca-rpt-nkc03-042008.md` | GlRptNkc03.dll | DONE |
+| 336 | `336-ca-rpt-nkc03-042011.md` | GlRptNkc03.dll | DONE |
 
 ## CO — Sản xuất
 
@@ -214,7 +217,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 301 | `301-gl-rpt-bctccr04.md` | GLRptBCTCCR04.dll | SHELL_ONLY |
 | 302 | `302-gl-rpt-bk02.md` | GLRptBk02.dll | SHELL_ONLY |
 | 303 | `303-gl-rpt-ctgs01.md` | GLRptCTGS01.dll | SHELL_ONLY |
-| 304 | `304-gl-rpt-ctgs02.md` | GLRptCTGS02.dll | SHELL_ONLY |
+| 304 | `304-gl-rpt-ctgs02.md` | GLRptCTGS02.dll | DONE |
 | 305 | `305-gl-rpt-ctgs03.md` | GLRptCTGS03.dll | SHELL_ONLY |
 | 306 | `306-gl-rpt-ctgs05.md` | GLRptCTGS05.dll | SHELL_ONLY |
 | 307 | `307-gl-rpt-f5bcpt08.md` | GLRptF5BCPT08.dll | SHELL_ONLY |
@@ -232,22 +235,23 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 319 | `319-gl-rpt-bct04.md` | GlRptBCT04.dll | SHELL_ONLY |
 | 320 | `320-gl-rpt-bct05.md` | GlRptBCT05.dll | SHELL_ONLY |
 | 321 | `321-gl-rpt-bct06.md` | GlRptBCT06.dll | SHELL_ONLY |
-| 322 | `322-gl-rpt-bcpt08.md` | GlRptBcpt08.dll | SHELL_ONLY |
-| 323 | `323-gl-rpt-bctc01.md` | GlRptBctc01.dll | SHELL_ONLY |
-| 324 | `324-gl-rpt-bctc02.md` | GlRptBctc02.dll | SHELL_ONLY |
-| 325 | `325-gl-rpt-bctc03.md` | GlRptBctc03.dll | SHELL_ONLY |
-| 326 | `326-gl-rpt-bctc04.md` | GlRptBctc04.dll | SHELL_ONLY |
-| 327 | `327-gl-rpt-bk01.md` | GlRptBk01.dll | SHELL_ONLY |
+| 322 | `322-gl-rpt-bcpt08.md` | GlRptBcpt08.dll | DONE |
+| 323 | `323-gl-rpt-bctc01.md` | GlRptBctc01.dll | DONE |
+| 324 | `324-gl-rpt-bctc02.md` | GlRptBctc02.dll | DONE |
+| 325 | `325-gl-rpt-bctc03.md` | GlRptBctc03.dll | DONE |
+| 326 | `326-gl-rpt-bctc04.md` | GlRptBctc04.dll | DONE |
+| 327 | `327-gl-rpt-bk01.md` | GLRptBK01.dll | DONE |
 | 328 | `328-gl-rpt-f5bctc03.md` | GlRptF5Bctc03.dll | SHELL_ONLY |
 | 329 | `329-gl-rpt-f5bctc04.md` | GlRptF5Bctc04.dll | SHELL_ONLY |
 | 330 | `330-gl-rpt-nkc01all.md` | GlRptNKC01All.dll | SHELL_ONLY |
 | 331 | `331-gl-rpt-nkc01.md` | GlRptNkc01.dll | SHELL_ONLY |
 | 332 | `332-gl-rpt-nkc02.md` | GlRptNkc02.dll | SHELL_ONLY |
-| 333 | `333-gl-rpt-nkc03.md` | GlRptNkc03.dll | SHELL_ONLY |
-| 334 | `334-gl-rpt-nkc04.md` | GlRptNkc04.dll | SHELL_ONLY |
-| 335 | `335-gl-rpt-nkc05.md` | GlRptNkc05.dll | SHELL_ONLY |
-| 336 | `336-gl-rpt-nkc06.md` | GlRptNkc06.dll | SHELL_ONLY |
-| 337 | `337-gl-rpt-nkc07.md` | GlRptNkc07.dll | SHELL_ONLY |
+| 333 | `333-gl-rpt-nkc03.md` | GlRptNkc03.dll | DONE |
+| 334 | `334-gl-rpt-nkc03-022511.md` | GlRptNkc03.dll | DONE |
+| 334 | `334-gl-rpt-nkc04.md` | GlRptNkc04.dll | DONE |
+| 335 | `335-gl-rpt-nkc05.md` | GlRptNkc05.dll | DONE |
+| 336 | `336-gl-rpt-nkc06.md` | GlRptNkc06.dll | DONE |
+| 337 | `337-gl-rpt-nkc07.md` | GlRptNkc07.dll | DONE |
 | 366 | `366-gl-balance-so-du-ban-dau.md` |  | PENDING |
 
 ## IN — Tồn kho
@@ -274,10 +278,12 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 227 | `227-in-phieu-chuyen-kho.md` | INVchIN3.dll | SHELL_ONLY |
 | 228 | `228-in-phieu-xuat-cong-cu-dung-cu.md` | INVchIN5.dll | SHELL_ONLY |
 | 229 | `229-in-bang-ke-phieu-nhap.md` | INRptBKN04.dll | SHELL_ONLY |
-| 230 | `230-in-bang-ke-phieu-xuat.md` | INRptBKX04.dll | SHELL_ONLY |
+| 230 | `230-in-bang-ke-phieu-xuat.md` | INRptBKX04.dll | DONE |
 | 231 | `231-in-bao-cao-cong-no-vat-tu.md` | INRptCD01.dll | SHELL_ONLY |
 | 232 | `232-in-the-kho-so-chi-tiet-vat-tu.md` | INRptCTVT02.dll | SHELL_ONLY |
+| 233 | `233-IN-baocao-tonghop-hang-nhap-02.md` | INRptTHN02.dll | DONE |
 | 233 | `233-in-tong-hop-hang-nhap-kho.md` | INRptTHN02.dll | SHELL_ONLY |
+| 234 | `234-IN-baocao-tonghop-hang-xuat-02.md` | INRptTHX02.dll | DONE |
 | 234 | `234-in-tong-hop-hang-xuat-kho.md` | INRptTHX02.dll | SHELL_ONLY |
 | 235 | `235-in-tinh-gia-nhap-truoc-xuat-truoc.md` | INCalGiaNTXT.dll | SHELL_ONLY |
 | 354 | `354-IN-hang-ton-kho.md` |  | SHELL_ONLY |
@@ -289,17 +295,17 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 |---|---|---|---|
 | 064 | `064-PO-danhmuc-dieukhoan-thanhtoan.md` | PODMDKTT.dll | SHELL_ONLY |
 | 065 | `065-PO-phieu-tra-lai-hang-mua.md` | POVchPO1.dll | SHELL_ONLY |
-| 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | SHELL_ONLY |
-| 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | SHELL_ONLY |
+| 066 | `066-PO-baocao-tonghop-muahang-02.md` | PORptTH02.dll | DONE |
+| 067 | `067-PO-baocao-muahang-hai-chitieu.md` | PORptBCPT03.dll | DONE |
 | 068 | `068-PO-danhmuc-hinhthuc-thanhtoan.md` | PODMHTTT.dll | SHELL_ONLY |
 | 070 | `070-PO-chungtu-nhan-hang-mua.md` | POVchPO4.dll | SHELL_ONLY |
-| 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | SHELL_ONLY |
-| 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | SHELL_ONLY |
-| 073 | `073-PO-bangke-chungtu-muahang-02.md` | PORptBK02.dll | SHELL_ONLY |
+| 071 | `071-PO-bangke-chungtu-muahang.md` | PORptBK01.dll | DONE |
+| 072 | `072-PO-baocao-tonghop-muahang-03.md` | PORptTH03.dll | DONE |
+| 073 | `073-PO-bangke-chungtu-muahang-02.md` | PORptBK02.dll | DONE |
 | 074 | `074-PO-phieu-thanhtoan-muahang.md` | POVchPO5.dll | SHELL_ONLY |
 | 075 | `075-PO-tien-ich-muahang.md` | POUtilities.dll | SHELL_ONLY |
-| 076 | `076-PO-baocao-tonghop-muahang-01.md` | PORptTH01.dll | SHELL_ONLY |
-| 077 | `077-PO-bangke-chungtu-muahang-03.md` | PORptBK03.dll | SHELL_ONLY |
+| 076 | `076-PO-baocao-tonghop-muahang-01.md` | PORptTH01.dll | DONE |
+| 077 | `077-PO-bangke-chungtu-muahang-03.md` | PORptBK03.dll | DONE |
 | 078 | `078-PO-baocao-f5-tonghop-muahang.md` | PORptF5TH0.dll | SHELL_ONLY |
 | 079 | `079-PO-bangke-thue-dauvao.md` | POTAIN.dll | SHELL_ONLY |
 | 080 | `080-PO-don-dat-hang-mua.md` | POVchPO7.dll | SHELL_ONLY |
@@ -340,6 +346,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
 | 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | DOC_ONLY |
 | 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | DOC_ONLY |
+| 376 | `376-simba-wrapper-duplicate-params.md` |  | PARTIAL — đã fix 143 wrapper TRÙNG TÊN (PR riêng); còn 28 wrapper THIẾU tham số |
 | 383 | `383-audit-route-component-sai.md` |  | PARTIAL — phát hiện 2 trường hợp sai, đã fix 1 |
 
 ## SO — Đơn hàng bán
@@ -355,16 +362,16 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 045 | `045-SO-baocao-loi-nhuan.md` | SORptLaiLo.dll | SHELL_ONLY |
 | 046 | `046-SO-tien-ich-ban-hang.md` | SOUtilities.dll | SHELL_ONLY |
 | 047 | `047-SO-dondathang-diembanhang.md` | SOND51adhd.dll | SHELL_ONLY |
-| 048 | `048-SO-baocao-tonghop-banhang.md` | SORptTH01.dll | SHELL_ONLY |
+| 048 | `048-SO-baocao-tonghop-banhang.md` | SORptTH01.dll | DONE |
 | 050 | `050-SO-dondathang-phuongthuc-hung.md` | SOND51phhd.dll | SHELL_ONLY |
 | 052 | `052-SO-danhmuc-trungtam-dinhkhoan.md` | SODMTD.dll | SHELL_ONLY |
 | 053 | `053-SO-danhmuc-giaban.md` | SODMGIABAN.dll | SHELL_ONLY |
-| 054 | `054-SO-baocao-phantich-banhang-03.md` | SORptBCPT03.dll | SHELL_ONLY |
+| 054 | `054-SO-baocao-phantich-banhang-03.md` | SORptBCPT03.dll | DONE |
 | 055 | `055-SO-danhmuc-phuongtien-vantai.md` | SODMPTVT.dll | SHELL_ONLY |
 | 056 | `056-SO-dondathang-mathang.md` | SOND51mathd.dll | SHELL_ONLY |
-| 057 | `057-SO-baocao-phantich-banhang-04.md` | SORptBCPT04.dll | SHELL_ONLY |
+| 057 | `057-SO-baocao-phantich-banhang-04.md` | SORptBCPT04.dll | DONE |
 | 058 | `058-SO-danhmuc-hanghoa-khuyenmai.md` | SODMHHKM.dll | SHELL_ONLY |
-| 059 | `059-SO-bangke-chungtu-banhang.md` | SORptBK02.dll | SHELL_ONLY |
+| 059 | `059-SO-bangke-chungtu-banhang.md` | SORptBK02.dll | DONE |
 | 060 | `060-SO-dondathang-bomauhoadon.md` | SOND51bmhd.dll | SHELL_ONLY |
 | 061 | `061-SO-xuatdulieu-banhang.md` | SOTaOut.dll | SHELL_ONLY |
 | 062 | `062-SO-danhmuc-khuyenmai.md` | SODMTKM.dll | SHELL_ONLY |
@@ -373,7 +380,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 200 | `200-so-hoa-don-ban-dich-vu.md` | SOVchSO5.dll | SHELL_ONLY |
 | 202 | `202-so-bao-cao-phan-tich-f5-06.md` | SORptF5BCPT06.dll | SHELL_ONLY |
 | 203 | `203-so-bao-cao-tong-hop-f5.md` | SORptF5TH0.dll | SHELL_ONLY |
-| 204 | `204-so-bao-cao-tong-hop-ban-hang-02.md` | SORptTH02.dll | SHELL_ONLY |
+| 204 | `204-so-bao-cao-tong-hop-ban-hang-02.md` | SORptTH02.dll | DONE |
 | 205 | `205-so-danh-muc-chuyen-khoan.md` | SODMCK.dll | SHELL_ONLY |
 | 206 | `206-so-danh-muc-don-gia-vat-tu.md` | SODMDGVT.dll | SHELL_ONLY |
 | 207 | `207-so-danh-muc-dieu-khoan-thanh-toan.md` | SODMDKTT.dll | SHELL_ONLY |
