@@ -398,6 +398,59 @@ Route::prefix('catalog/so/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `So\Rpt\Sorptbcpt03062020` + route `so.rpt.sorptbcpt03062020`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Sorptbcpt03062020` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `so.rpt.sorptbcpt03**062020**` (có suffix vì 2 menu cùng DLL)
+- **SP:** `asSORptBCPT03` — **24 tham số**
+
+### 🔍 Nguyên nhân bế tắc 3 vòng — đã tìm ra
+
+Em tưởng đây là lỗi SP không rõ nguyên nhân, nhưng thực chất là **2 lớp lỗi chồng nhau**:
+
+**Lớp 1 — Lỗi cú pháp PHP (che khuất mọi thứ):**
+
+```php
+public static function callWithParams(..., float $641 = null, float $642 = null)
+```
+
+`$641` và `$642` **không phải tên biến hợp lệ PHP** → `ParseError` ngay khi load class.
+
+**Hậu quả:** Laravel không thể load wrapper → lỗi `Class not found` hoặc `ParseError` bị `AbstractReport::submit()` bắt và hiển thị thành thông báo chung "Không tải được dữ liệu báo cáo".
+
+**Đây là lý do em không thấy `SQLSTATE` trong log** — lỗi xảy ra trước khi gọi SP.
+
+**Fix:** đổi `$641` → `$p641`, `$642` → `$p642`.
+
+**Lớp 2 — Thừa 13 tham số:**
+
+Sau khi fix syntax, mới thấy lỗi thật: wrapper 37 params, SP chỉ nhận **24**.
+
+Đã giảm dần: 37 → 34 → 32 → 30 → 28 → **24** → OK.
+
+### 🎯 Bài học quan trọng nhất
+
+**`php -l` PHẢI chạy trước khi debug SP.**
+
+Trong 3 vòng trước, em chỉ kiểm tra error message của SP mà không `php -l` file wrapper. Nếu kiểm tra ngay từ đầu, đã phát hiện trong 1 phút thay vì 3 vòng.
+
+**Quy trình đúng:**
+
+```
+1. php -l wrapper           ← BƯỚC 1, bắt buộc
+2. Nếu OK → submit → đọc SP error
+3. Nếu ParseError → fix tên biến
+```
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.sorptbcpt03062020` render thật |
+| Submit | **0 dòng**, không lỗi |
+| Page error | **0** |
