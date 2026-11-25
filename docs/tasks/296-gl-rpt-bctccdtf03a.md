@@ -198,5 +198,38 @@ Route::get('/catalog/gl/baocao/bctccdtf03a', [Bctccdtf03a::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctccdtf03a` + route `gl.rpt.glrptbctccdtf03a`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Route:** `gl.task.296`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtf03a` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `gl.rpt.glrptbctccdtf03a`
+- **SP:** `asGLRptBCTCCDTf03A` — **5 tham số**
+
+### 🔧 Hoàn thiện wrapper RỖNG (thứ 2)
+
+`AsGLRptBCTCCDTf03A` có file nhưng mảng params **rỗng** `[]`.
+
+Em đã:
+1. Đọc form gốc `frmGLRptBCTCCDTF03A.LoadData()` → **10 tham số**
+2. Submit → SP báo lần lượt 5 tham số **không tồn tại**:
+   - `pTk_xaylap`, `pTk_Thietbi`, `pTk_boithuong`, `pTk_QLDA`, `pTk_TuVan`
+3. Bỏ dần → **5 tham số còn lại**
+
+**5 tham số đúng:** `pMa_cty`, `pNgay1`, `pNgay2`, `pTk_Khac`, `pMa_SPCT`
+
+### 🎯 Bài học: form gốc có 10 nhưng SP chỉ nhận 5
+
+Form gốc gửi **10 tham số**, SP chỉ chấp nhận **5**. Đây là trường hợp **form lỗi thời** điển hình — vẫn giữ các field `txtTk_xaylap`, `txtTk_Thietbi`... nhưng SP đã bỏ.
+
+→ Xác nhận lại: **error message của SP là chân lý**.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctccdtf03a` render thật |
+| Submit | **0 dòng**, không lỗi |
+| Page error | **0** |
