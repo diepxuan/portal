@@ -1,5 +1,7 @@
 # Task 009: ARRptBCCN02
 
+- **Status:** DONE (component) — `So\Rpt\Arrptbccn02` + route `so.rpt.arrptbccn02`, verify browser 2026-11-25: **1 dòng / 25 cột**
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -331,3 +333,43 @@ Route::prefix('catalog/ar/baocao')
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
 \n## Portal implementation status\n\n- **Status:** DONE (route shell/read-only report)\n- **Source:** SimbaReportRegistry / SimbaRouteRegistry, sysReportInfo-backed route anchor\n- **Note:** Report shell hiển thị metadata và chưa execute SP khi chưa đối chiếu đủ tham số/payload/side effect.\n
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Arrptbccn02` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `so.rpt.arrptbccn02`
+- **SP:** `asARRptBCCN02` — 12 tham số
+- **Menu:** `06.30.20` — "Bảng cân đối phát sinh công nợ"
+
+### 🔍 Phát hiện: Hạng C KHÔNG hoàn toàn bất khả thi
+
+Roadmap ghi task này thuộc **Hạng C** (không có menu trong `sysMenu`).
+Nhưng khi kiểm tra `simba-docs/data/sysMenu.md`:
+
+- `ARRptBCCN02` **CÓ** menu `06.30.20` với **active=1**
+- Route `so.rpt.arrptbccn02` **tồn tại** và hiển thị trong menu Portal
+
+→ **Roadmap phân loại SAI** task này.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.arrptbccn02` render thật |
+| Submit | **1 dòng, 25 cột** |
+| 25 cột | `ma_kh`, `ten_kh`, `du_no1`, `du_co1`, `du_no_nt1`, ... |
+| Page error | **0** |
+
+### 🐛 Bug wrapper đã sửa
+
+`asARRptBCCN02` gửi 14 params, thừa `pSysMsg1` + `pSysMsg2` → bỏ, còn **12**.
+
+### Còn 9 task Hạng C khả thi
+
+| Task | DLL | Menu | Route? |
+|---|---|---|---|
+| 125 | FABHCC | 20.15.05 | ? |
+| 316 | GLRptTMBCTC | 02.50.20 | ✅ `gl.rpt.glrpttmbctc` |
+| 078 | PORptF5TH0 | 10.80.05 | ? |
+| 141, 308-312 | GLRptF5* | 02.80.x | ❌ không có route |
