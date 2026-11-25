@@ -163,6 +163,32 @@ Route::get('/catalog/gl/baocao/ctgs01', [Ctgs01::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptctgs01` + route `gl.rpt.glrptctgs01`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptctgs01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptctgs01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptctgs01.blade.php` + filter `gl/rpt/filters/glrptctgs01.blade.php`
+- **Route:** `gl.rpt.glrptctgs01` (auto-registration)
+- **SP:** `asGLRptCTGS01` qua wrapper `AsGLRptCTGS01` (**3 tham số**)
+- **Menu:** `02.20.11` — "Sổ đăng ký chứng từ ghi sổ"
+
+### Đối chiếu form gốc
+
+`frmGLRptCTGS01.LoadData()` truyền 3 tham số: `CompanyID`, `txtNgay1.Value`, `txtNgay2.Value`
+→ khớp `pMa_cty` / `pNgay_ct1` / `pNgay_ct2`.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptctgs01` | **HTTP 200**, title "Sổ đăng ký chứng từ ghi sổ [SimbaERP]" |
+| Số field lọc | **2** |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** |
+| Page error | **0** |
+
+> Component **48 dòng** — đơn giản nhất trong nhóm GL.
