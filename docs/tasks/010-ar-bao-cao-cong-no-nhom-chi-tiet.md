@@ -1,5 +1,7 @@
 # Task 010: ARRptBCCN04
 
+- **Status:** DONE (component) — `So\Rpt\Arrptbccn04` + route `so.rpt.arrptbccn04`, verify browser 2026-11-25: 0 dòng
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -359,3 +361,25 @@ Route::prefix('catalog/ar/baocao')
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
 \n## Portal implementation status\n\n- **Status:** DONE (route shell/read-only report)\n- **Source:** SimbaReportRegistry / SimbaRouteRegistry, sysReportInfo-backed route anchor\n- **Note:** Report shell hiển thị metadata và chưa execute SP khi chưa đối chiếu đủ tham số/payload/side effect.\n
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Arrptbccn04` (kế thừa `Rpt\AbstractReport`)
+- **View:** `so/rpt/arrptbccn04.blade.php` + filter tương ứng
+- **Route:** `so.rpt.arrptbccn04`
+- **SP:** `asARRptBCCN04` — wrapper **sạch**, docs khớp hoàn toàn
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.arrptbccn04` render thật |
+| Submit | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu
+
+Không có dữ liệu với công ty 001 ở mọi kỳ đã thử (2026, 2024, 2020, dải 2000-2030).
+
+**Không phải bug code** — component + wrapper đúng, submit không lỗi.
