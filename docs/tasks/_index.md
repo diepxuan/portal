@@ -20,10 +20,10 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | GL — Sổ cái tổng hợp | 103 | 0 | 103 | 0 |
 | IN — Tồn kho | 28 | 0 | 28 | 0 |
 | PO — Đơn hàng mua | 17 | 0 | 17 | 0 |
-| SI — System Integration | 31 | 0 | 31 | 0 |
+| SI — System Integration | 32 | 0 | 32 | 0 |
 | SO — Đơn hàng bán | 44 | 0 | 44 | 0 |
 | System — Framework & cross-link | 3 | 0 | 3 | 0 |
-| **Tổng** | **316** | | | |
+| **Tổng** | **317** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -338,6 +338,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 365 | `365-si-website-quan-ly-website.md` |  | PENDING |
 | 368 | `368-si-optfieldinfo-danh-muc-truong-tu-do.md` | `OptFieldInfo.dll` | PENDING |
 | 369 | `369-si-optfieldsetup-khai-bao-truong-tu-do.md` | `OptFieldSetup.dll` | PENDING |
+| 376 | `376-simba-wrapper-duplicate-params.md` |  | PENDING |
 
 ## SO — Đơn hàng bán
 
