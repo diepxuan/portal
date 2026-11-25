@@ -44,7 +44,6 @@ class AsINRptCTVT02
             'pNgoai_te' => $paramObj->pNgoai_te ?? null,
             'pMau_bc' => $paramObj->pMau_bc ?? null,
             'pMa_nt' => $paramObj->pMa_nt ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
             'pMa_nt0' => $paramObj->pMa_nt0 ?? null
         ], $connection);
     }

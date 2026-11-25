@@ -58,8 +58,7 @@ class AsSORptBCPT04
             'pMa_TT' => $paramObj->pMa_TT ?? null,
             'pMa_vitri' => $paramObj->pMa_vitri ?? null,
             'pMa_lo' => $paramObj->pMa_lo ?? null,
-            'pType' => $paramObj->pType ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pType' => $paramObj->pType ?? null
         ], $connection);
     }
 

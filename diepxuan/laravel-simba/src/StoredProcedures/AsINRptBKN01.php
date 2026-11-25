@@ -47,8 +47,7 @@ class AsINRptBKN01
             'pLoai_pn' => $paramObj->pLoai_pn ?? null,
             'pMa_nx' => $paramObj->pMa_nx ?? null,
             'pTk_Du' => $paramObj->pTk_Du ?? null,
-            'pDVT' => $paramObj->pDVT ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pDVT' => $paramObj->pDVT ?? null
         ], $connection);
     }
 

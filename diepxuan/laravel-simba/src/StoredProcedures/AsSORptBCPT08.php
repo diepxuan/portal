@@ -44,8 +44,7 @@ class AsSORptBCPT08
             'pMa_Bp' => $paramObj->pMa_Bp ?? null,
             'pMa_Nvkd' => $paramObj->pMa_Nvkd ?? null,
             'pMa_Nt' => $paramObj->pMa_Nt ?? null,
-            'pGroup' => $paramObj->pGroup ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pGroup' => $paramObj->pGroup ?? null
         ], $connection);
     }
 

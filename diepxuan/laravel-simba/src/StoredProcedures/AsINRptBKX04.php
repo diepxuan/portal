@@ -51,10 +51,7 @@ class AsINRptBKX04
             'pTk_Du' => $paramObj->pTk_Du ?? null,
             'pMa_lo' => $paramObj->pMa_lo ?? null,
             'pMa_phi' => $paramObj->pMa_phi ?? null,
-            'pDVT' => $paramObj->pDVT ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pSysMsg2' => $paramObj->pSysMsg2 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pDVT' => $paramObj->pDVT ?? null
         ], $connection);
     }
 

@@ -59,8 +59,7 @@ class AsPORptBK02
             'pMa_httt' => $paramObj->pMa_httt ?? null,
             'pMa_TT' => $paramObj->pMa_TT ?? null,
             'pMa_spct' => $paramObj->pMa_spct ?? null,
-            'pMa_Phi' => $paramObj->pMa_Phi ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pMa_Phi' => $paramObj->pMa_Phi ?? null
         ], $connection);
     }
 

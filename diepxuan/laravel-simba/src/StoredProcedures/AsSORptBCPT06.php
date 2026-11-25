@@ -56,9 +56,7 @@ class AsSORptBCPT06
             'pTra_lai' => $paramObj->pTra_lai ?? null,
             'pMa_NT' => $paramObj->pMa_NT ?? null,
             'pGroup' => $paramObj->pGroup ?? null,
-            'pDetail' => $paramObj->pDetail ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pDetail' => $paramObj->pDetail ?? null
         ], $connection);
     }
 

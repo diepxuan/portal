@@ -58,8 +58,7 @@ class AsINRptTHX02
             'pMa_phi' => $paramObj->pMa_phi ?? null,
             'pNgoai_te' => $paramObj->pNgoai_te ?? null,
             'pMa_spct' => $paramObj->pMa_spct ?? null,
-            'pDVT' => $paramObj->pDVT ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null
+            'pDVT' => $paramObj->pDVT ?? null
         ], $connection);
     }
 

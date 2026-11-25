@@ -56,9 +56,7 @@ class AsPORptTH01
             'pMa_Phi' => $paramObj->pMa_Phi ?? null,
             'pMa_httt' => $paramObj->pMa_httt ?? null,
             'pMa_TT' => $paramObj->pMa_TT ?? null,
-            'pMa_spct' => $paramObj->pMa_spct ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pMa_spct' => $paramObj->pMa_spct ?? null
         ], $connection);
     }
 

@@ -53,10 +53,7 @@ class AsINRptBKN04
             'pMa_NT' => $paramObj->pMa_NT ?? null,
             'pDVT' => $paramObj->pDVT ?? null,
             'pGroupType' => $paramObj->pGroupType ?? null,
-            'pLoai_gd' => $paramObj->pLoai_gd ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'pSysMsg2' => $paramObj->pSysMsg2 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pLoai_gd' => $paramObj->pLoai_gd ?? null
         ], $connection);
     }
 
