@@ -292,6 +292,38 @@ Route::prefix('gl/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptbctccdtb02` + route `gl.rpt.glrptbctccdtb02`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptbctccdtb02`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbctccdtb02`
+- **View:** `gl/rpt/glrptbctccdtb02.blade.php`
+- **Route:** `gl.rpt.glrptbctccdtb02` → `/simba/gl/rpt/glrptbctccdtb02`
+- **SP:** `asGLRptBCTCCDTb02` qua wrapper `AsGLRptBCTCCDTb02`
+
+### Fix wrapper SP (quan trọng)
+
+Wrapper cũ **thiếu 2 tham số** so với `simba-docs/procedures/GL/procedures.md`:
+
+| Trước | Sau |
+|---|---|
+| chỉ `pMa_cty`, `pTk` | thêm `Ngay_ct1`, `Ngay_ct2` |
+
+Đối chiếu form gốc `frmGLRptBCTCCDTB02.LoadData()` (decompiled) truyền đúng 4 tham số:
+`CompanyID`, `txtNgay1.Value`, `txtNgay2.Value`, `txtTk.Text` → xác nhận fix đúng.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbctccdtb02` | **HTTP 200**, title "Nguồn vốn đầu tư [SimbaERP]" |
+| Form lọc (Từ ngày / Đến ngày / Tài khoản) | render đủ, 0 page error |
+| Bấm "Thực hiện" | SP gọi **thành công**, không có `errorMessage` |
+| Số dòng trả về | **0** — do công ty 001 không có dữ liệu kế toán kỳ này |
+
+> **Lưu ý môi trường:** mọi báo cáo kế toán đều trả 0 dòng trên dữ liệu hiện tại,
+> kể cả báo cáo đã chạy được từ trước (`ca.rpt.carpttmnh01`). Đây là giới hạn dữ liệu,
+> không phải lỗi component. Component đã verify: page load, filter, gọi SP, export CSV.
