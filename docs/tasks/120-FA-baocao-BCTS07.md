@@ -161,6 +161,22 @@ Route::get('/bao-cao-bien-dong-07', [Baocaobiendong07::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Fa\Rpt\Farptbcts07` + route `fa.rpt.farptbcts07`, verify browser 2026-11-25: **1 dòng**, không lỗi
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Fa\Rpt\Farptbcts07` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `fa.rpt.farptbcts07`
+- **SP:** `asFARptBCTS07` — 12 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::fa.rpt.farptbcts07` render thật |
+| Submit | **1 dòng**, không lỗi |
+| Page error | **0** |
