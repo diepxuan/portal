@@ -376,6 +376,33 @@ Route::prefix('gl/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptth01` + route `gl.rpt.glrptth01`, verify browser 2026-11-25: **1 dòng, 9 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptth01` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `gl.rpt.glrptth01`
+- **SP:** `asGLRptTH01` — **19 tham số**
+
+### 🐛 Bug wrapper: 24 → 19 tham số
+
+Wrapper gốc có **24 tham số**. Lần lượt SP báo:
+- `has too many arguments` (bỏ `pGroup`, `pBcNt`)
+- `@pnhom_kh is not a parameter` (bỏ `pnhom_kh`)
+- Tiếp tục bỏ `pNo_co`, `pma_nhhd` → còn **19**
+
+**19 tham số đúng:** `pma_cty`, `pngay_ct1`, `pngay_ct2`, `pma_ct`, `ptk`, `ptk_du`,
+`pma_plkh1`, `pma_plkh2`, `pma_plkh3`, `pma_kh`, `pso_ct1`, `pso_ct2`, `pma_nt`,
+`pma_hd`, `pma_phi`, `pdien_giai`, `pma_bp`, `pma_spct`, `pma_lo`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptth01` render thật |
+| Submit | **1 dòng, 9 cột** |
+| 9 cột | `bold`, `has_sysmsg`, `ma_group`, `ten_group`, `ma_nt`, ... |
+| Page error | **0** |
