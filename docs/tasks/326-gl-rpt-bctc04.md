@@ -154,5 +154,30 @@ Route::get('/catalog/gl/baocao/bctc04', [Bctc04::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctc04` + route `gl.rpt.glrptbctc04`, verify browser 2026-11-25: **0 dòng**
 - **Route:** `gl.task.326`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctc04` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbctc04.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptbctc04`
+- **Wrapper:** sạch (docs khớp hoàn toàn)
+
+### ⚠️ 0 dòng — cần tham số mẫu báo cáo
+
+Component render thật, submit không lỗi, nhưng SP trả rỗng.
+
+Báo cáo này cần `pMau` (mẫu báo cáo) và/hoặc `pQd_cdkt` (quyết định chế độ kế toán)
+có giá trị cụ thể đúng với cấu hình công ty. Em đã thử để trống — SP trả rỗng.
+
+**Cần:** người dùng quen SimbaERP xác nhận giá trị `pMau`/`pQd_cdkt` đúng.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctc04` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
