@@ -169,5 +169,21 @@ Route::get('/catalog/gl/baocao/bctccdtf03d', [Bctccdtf03d::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctccdtf03d` + route `gl.rpt.glrptbctccdtf03d`, verify browser 2026-11-25: **0 dòng**
 - **Route:** `gl.task.298`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtf03d` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `gl.rpt.glrptbctccdtf03d`
+- **SP:** `asGLRptBCTCCDTf03D` — 4 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctccdtf03d` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |

@@ -119,6 +119,22 @@ class BienDongTaisan05 extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE (component) — `Fa\Rpt\Farptbcts05` + route `fa.rpt.farptbcts05`, verify browser 2026-11-25: **1 dòng / 13 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Fa\Rpt\Farptbcts05` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `fa.rpt.farptbcts05`
+- **SP:** `asFARptBCTS05` — 6 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::fa.rpt.farptbcts05` render thật |
+| Dữ liệu | **1 dòng / 13 cột** |
+| Page error | **0** |
