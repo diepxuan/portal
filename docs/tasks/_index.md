@@ -22,8 +22,8 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | PO — Đơn hàng mua | 17 | 0 | 17 | 0 |
 | SI — System Integration | 31 | 0 | 31 | 0 |
 | SO — Đơn hàng bán | 44 | 0 | 44 | 0 |
-| System — Framework & cross-link | 3 | 0 | 3 | 0 |
-| **Tổng** | **316** | | | |
+| System — Framework & cross-link | 4 | 0 | 4 | 0 |
+| **Tổng** | **317** | | | |
 
 ## AP — Công nợ phải trả
 
@@ -392,6 +392,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 
 | ID | File | DLL | Status |
 |---|---|---|---|
+|  | `_reports-final-report.md` |  | PENDING |
 | 357 | `357-system-livewire-input-components.md` |  | PENDING |
 | 367 | `367-system-framework-libraries.md` |  | PENDING |
 | 372 | `372-fix-simba-menu-route-suffix-deterministic.md` |  | PENDING |
