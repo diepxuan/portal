@@ -170,6 +170,54 @@ Route::prefix('catalog/in/baocao')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `In\Rpt\Inrptcd01` + route `in.rpt.inrptcd01`, verify browser 2026-11-25 (**2085 dòng dữ liệu thật**)
+- **Route:** `in.rpt.inrptcd01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptcd01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptcd01.blade.php` + filter `in/rpt/filters/inrptcd01.blade.php`
+- **Route:** `in.rpt.inrptcd01` (menu 14.20.08 — 1 menu duy nhất, **không** suffix)
+- **SP:** `asINRptCD01` — 18 tham số
+- **Menu:** `14.20.08` — "Nhập xuất tồn: Số lượng và giá trị"
+
+### 🐛 Bug wrapper `AsINRptCD01` — đã sửa (loại 3: tham số SAI, không chỉ thiếu)
+
+Wrapper gửi **2 tham số không tồn tại** trong SP + **thiếu 3 tham số thật**:
+
+| Vấn đề | Chi tiết |
+|---|---|
+| **Thừa** `pSysMsg1` | SP báo: `@pSysMsg1 is not a parameter for procedure asINRptCD01` |
+| **Thừa** `pMa_Cty` | Trùng với `pMa_cty` (khác hoa thường) |
+| **Thiếu** `group1`, `group2`, `group3` | 3 tham số nhóm theo cấp |
+
+**Fix:** bỏ `pSysMsg1`/`pMa_Cty`, thêm `group1`/`group2`/`group3` theo đúng thứ tự `procedures.md`.
+
+> Đây là **loại bug thứ 3** ngoài 2 loại đã ghi trong task 376: không chỉ trùng/thiếu,
+> mà còn **gửi tham số SP không hề có**.
+
+### 🎉 Verify browser thật — DỮ LIỆU THẬT 2085 dòng
+
+| Kỳ test | Số dòng |
+|---|---:|
+| **2026-01-01 → 2026-12-31** | **2.085** ✅ |
+| 2020-01-01 → 2020-12-31 | **1.426** ✅ |
+| 2010-01-01 → 2010-12-31 | 0 |
+
+**25 cột dữ liệu trả về:**
+`ma_vt`, `ten_vt`, `dvt`, `tk_vt`, `ten_tk`, `ma_nhvt`, `stt_nhom`, `cap`, `nhom_me`,
+`ton_dau`, `du_dau`, `du_dau_nt`, `sl_nhap`, `sl_xuat`, `tien_nhap`, `tien_xuat`,
+`tien_nhap_nt`, `tien_xuat_nt`, `ton_cuoi`, `du_cuoi`, `du_cuoi_nt`, `vat_tu`,
+`bold`, `has_sysmsg`, `ton_kho`
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | ✅ `catalog::in.rpt.inrptcd01` render thật |
+| Sub-component | ✅ `input-indmvt`, `input-indmnhvt`, `input-indmkho` |
+| Tab + nút Thực hiện | ✅ có |
+| Page error | **0** |
+
+> Đây là báo cáo thứ 2 verify được **dữ liệu thật** (sau task 293), và là báo cáo
+> có **nhiều dòng nhất** từ trước tới nay (2085).
