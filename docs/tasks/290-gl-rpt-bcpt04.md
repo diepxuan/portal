@@ -84,5 +84,39 @@ class BCPT04ReportService
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
-- **Route:** `gl.task.290`
+- **Status:** DONE — component `Gl\Rpt\Glrptbcpt04` + route `gl.rpt.glrptbcpt04`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptbcpt04`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbcpt04` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt04.blade.php` + filter `gl/rpt/filters/glrptbcpt04.blade.php`
+- **Route:** `gl.rpt.glrptbcpt04` (auto-registration theo convention)
+- **SP:** `asGLRptBCPT04` qua wrapper `AsGLRptBCPT04` (**7 tham số** khớp docs)
+- **Menu:** `02.60.11` — "Kết quả hoạt động kinh doanh theo kỳ"
+
+### Đối chiếu form gốc `frmGLRptBCPT04.LoadData()`
+
+| Tham số SP | Nguồn từ form gốc |
+|---|---|
+| `pMa_Cty` | `CompanyInformations.CompanyID` |
+| `pNam` | `SystemInformations.FinancialYear` (năm tài chính) |
+| `pThang1` | `Conversions.ToInteger(cboThang1.Text)` |
+| `pThang2` | `Conversions.ToInteger(cboThang2.Text)` |
+| `pQuyThang` | `cboQuy_Thang.SelectedIndex + 1` → **1 = Theo quý, 2 = Theo tháng** |
+| `pMau` | `MyReportInfo.ma_mau` (mẫu báo cáo) |
+| `pMa_bp` | `txtMa_bp.Text` |
+
+Nhãn UI lấy từ `lbl*.Text`: "Kỳ này", "Từ tháng", "đến tháng", "Mã bộ phận".
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbcpt04` | **HTTP 200**, title "Kết quả hoạt động kinh doanh theo kỳ [SimbaERP]" |
+| Số field lọc | **5** (Năm, Từ tháng, Đến tháng, Kỳ báo cáo, Mã bộ phận) |
+| Combo "Kỳ báo cáo" | 2 option **khớp form gốc**: Theo quý / Theo tháng |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** — công ty 001 không có dữ liệu kế toán |
+
+> Component chỉ **59 dòng** nhờ kế thừa `AbstractReport` (so với ~250 dòng nếu viết độc lập).
