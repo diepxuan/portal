@@ -87,6 +87,39 @@ class BCT01ReportService
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell / dictionary coverage exists)
+- **Status:** DONE — component `Gl\Rpt\Glrptbct01` + route `gl.rpt.glrptbct01`, verify browser 2026-11-25
+- **Route:** `gl.rpt.glrptbct01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbct01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbct01.blade.php` + filter `gl/rpt/filters/glrptbct01.blade.php`
+- **Route:** `gl.rpt.glrptbct01` (auto-registration)
+- **SP:** `asGLRptBCT01` qua wrapper `AsGLRptBCT01` (**8 tham số** khớp docs)
+- **Menu:** `02.40.02` — "Bảng kê hoá đơn, chứng từ HHDV mua vào"
+
+### Đối chiếu form gốc `frmGLRptBCT01.LoadData()`
+
+| Tham số SP | Nguồn từ form gốc |
+|---|---|
+| `pMa_cty` | `CompanyInformations.CompanyID` |
+| `pNgay1` / `pNgay2` | `txtNgay1.Value` / `txtNgay2.Value` |
+| `pThue_suat` | `txtThue_suat.Value` |
+| `pTk_thue` | `txtTk.Text` ("Tài khoản thuế") |
+| `pTk_du` | `txtTk_Du.Text` ("Tài khoản đ/ư") |
+| `pMa_bp` | `txtMa_Bp.Text` ("Mã bộ phận") |
+| `pMau_bc` | `cboMau_bc.SelectedIndex` |
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct01` | **HTTP 200**, title "Bảng kê hoá đơn, chứng từ HHDV mua vào [SimbaERP]" |
+| Số field lọc | **6** |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** — công ty 001 không có dữ liệu kế toán |
+| Page error | **0** |
+
+> Component **63 dòng** nhờ `AbstractReport`.
