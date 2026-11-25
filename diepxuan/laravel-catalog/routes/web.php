@@ -335,6 +335,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'so/vch/sovchso5', 'name' => 'so.vch.sovchso5', 'module' => 'so', 'kind' => 'vch', 'slug' => 'sovchso5', 'component' => SimbaPage::class],
         ];
 
+        // Cache route da khai bao de tranh trung name khi dang ky theo convention.
+        $registeredNames = array_column($sourceRoutes, 'name');
+
         foreach ($sourceRoutes as $sourceRoute) {
             Route::get($sourceRoute['uri'], $sourceRoute['component'])
                 ->defaults('module', $sourceRoute['module'])
@@ -342,6 +345,57 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 ->defaults('slug', $sourceRoute['slug'])
                 ->name($sourceRoute['name'])
             ;
+        }
+
+        // -------------------------------------------------------------------
+        // Tu dong dang ky route cho component dat DUNG convention
+        // (PROJECT_CONVENTIONS muc 2.2):
+        //
+        //   src/Http/Livewire/{Module}/{Kind}/{PascalSlug}.php
+        //     => route {module}.{kind}.{slug}
+        //     => uri   {module}/{kind}/{slug}
+        //
+        // Muc dich: moi man bao cao / chung tu chi can THEM FILE, khong phai sua
+        // routes/web.php -> nhieu PR song song khong con conflict o file dung chung.
+        //
+        // Component da khai bao tuong minh trong $sourceRoutes (khi slug/uri khong
+        // theo convention, hoac co create/edit rieng) se duoc bo qua o day.
+        // -------------------------------------------------------------------
+        $livewireRoot = __DIR__ . '/../src/Http/Livewire';
+        $kindSegments = ['Dict' => 'dict', 'Vch' => 'vch', 'Rpt' => 'rpt', 'Proc' => 'proc'];
+
+        foreach ($kindSegments as $kindDir => $kind) {
+            foreach (glob($livewireRoot . '/*/' . $kindDir, GLOB_ONLYDIR) ?: [] as $moduleDir) {
+                $module = strtolower(basename(\dirname($moduleDir)));
+
+                foreach (glob($moduleDir . '/*.php') ?: [] as $file) {
+                    $class = basename($file, '.php');
+                    // Bo qua form/helper: chi nhan component khong co hau to dac biet.
+                    if (preg_match('/(Form|Edit|List|Page|Rename)$/', $class)) {
+                        continue;
+                    }
+
+                    $slug = strtolower($class);
+                    $routeName = "{$module}.{$kind}.{$slug}";
+
+                    if (in_array($routeName, $registeredNames, true)) {
+                        continue;
+                    }
+
+                    $fqcn = 'Diepxuan\\Catalog\\Http\\Livewire\\' . ucfirst($module) . '\\' . $kindDir . '\\' . $class;
+                    if (!class_exists($fqcn)) {
+                        continue;
+                    }
+
+                    Route::get("{$module}/{$kind}/{$slug}", $fqcn)
+                        ->defaults('module', $module)
+                        ->defaults('kind', $kind)
+                        ->defaults('slug', $slug)
+                        ->name($routeName)
+                    ;
+                    $registeredNames[] = $routeName;
+                }
+            }
         }
     });
 
