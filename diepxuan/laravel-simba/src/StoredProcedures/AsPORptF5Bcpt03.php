@@ -42,8 +42,7 @@ class AsPORptF5Bcpt03
             'pMa_Detail' => $paramObj->pMa_Detail ?? null,
             'pGroup' => $paramObj->pGroup ?? null,
             'pDetail' => $paramObj->pDetail ?? null,
-            'pTra_lai' => $paramObj->pTra_lai ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pTra_lai' => $paramObj->pTra_lai ?? null
         ], $connection);
     }
 
