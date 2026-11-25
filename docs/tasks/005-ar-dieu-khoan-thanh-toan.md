@@ -447,5 +447,5 @@ Route::prefix('catalog/ar/sodudaukhoi')
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `task.shell.005` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `task.shell.005`
+- **Route:** `so.proc.artt`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

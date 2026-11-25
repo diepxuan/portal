@@ -460,5 +460,5 @@ Route::prefix('catalog/gl/danhmuc')
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.147` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.147` hoặc GL report dynamic registry nếu có metadata.
+- **Route:** `gl.proc.glcdtk` hoặc GL report dynamic registry nếu có metadata.
 - **Note:** Shell/read-only; process/write không execute khi chưa audit payload.

@@ -250,4 +250,4 @@ class Edit extends Component
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.254` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.254`
+- **Route:** `gl.vch.glbudget`

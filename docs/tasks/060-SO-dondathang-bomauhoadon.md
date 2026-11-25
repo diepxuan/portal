@@ -412,5 +412,5 @@ Route::prefix('catalog/so/baomat')
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `task.shell.060` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `task.shell.060`
+- **Route:** `so.rpt.sond51bmhd`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

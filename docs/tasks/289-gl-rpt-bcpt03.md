@@ -85,4 +85,4 @@ class BCPT03ReportService
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.289` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.289`
+- **Route:** `gl.rpt.glrptbcpt03`

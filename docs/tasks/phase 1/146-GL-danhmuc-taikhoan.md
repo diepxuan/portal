@@ -483,7 +483,7 @@ Route::prefix('catalog/gl/danhmuc')
 ## Portal implementation status
 
 - **Status:** ✅ DONE — verify browser 2026-11-18
-- **Route:** `gl.task.146` hoặc GL report dynamic registry nếu có metadata.
+- **Route:** `gl.dict.gldmtk` hoặc GL report dynamic registry nếu có metadata.
 - **Note:** Shell/read-only; process/write không execute khi chưa audit payload.
 
 ## Verify lần cuối (2026-11-18)

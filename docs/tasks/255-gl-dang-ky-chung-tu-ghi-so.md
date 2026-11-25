@@ -181,4 +181,4 @@ resources/views/catalog/gl/chungtughiso/
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.255` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.255`
+- **Route:** `gl.rpt.gldkctgs`

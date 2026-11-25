@@ -155,4 +155,4 @@ Route::get('/catalog/gl/chuyendoi/transfer-glcdtk', [TransferGLCDTK::class, 'ren
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.317` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.317`
+- **Route:** `gl.proc.gltransferglcdtk`

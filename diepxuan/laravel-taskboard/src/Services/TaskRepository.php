@@ -487,7 +487,9 @@ class TaskRepository
                 continue;
             }
 
-            if (in_array($entry, ['README.md', '_index.md'], true)) {
+            // Bo qua file he thong: README va moi file bat dau bang '_'
+            // (_index.md, _reports-inventory.md, _modules/... ).
+            if ($entry === 'README.md' || str_starts_with($entry, '_')) {
                 continue;
             }
 

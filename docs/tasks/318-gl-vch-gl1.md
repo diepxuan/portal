@@ -191,4 +191,4 @@ Route::prefix('catalog/gl/chungtu')
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.318` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.318`
+- **Route:** `gl.vch.glvchgl1`

@@ -65,7 +65,8 @@ function parseTaskFiles(string $dir, string $status): array
         if (! is_file($path) || ! str_ends_with($entry, '.md')) {
             continue;
         }
-        if (basename($path) === 'README.md' || basename($path) === '_index.md') {
+        // Bo qua file he thong: README va moi file bat dau bang '_' (_index.md, _reports-inventory.md...)
+        if (basename($path) === 'README.md' || str_starts_with(basename($path), '_')) {
             continue;
         }
         $content = (string) file_get_contents($path);

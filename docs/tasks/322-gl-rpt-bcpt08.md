@@ -156,4 +156,4 @@ Route::get('/catalog/gl/baocao/bcpt08', [Bcpt08::class, 'render'])
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.322` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.322`
+- **Route:** `gl.rpt.glrptbcpt08`

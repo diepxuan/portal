@@ -193,4 +193,4 @@ resources/views/catalog/gl/danhmuc/
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.256` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.256`
+- **Route:** `gl.rpt.gldmctgs`

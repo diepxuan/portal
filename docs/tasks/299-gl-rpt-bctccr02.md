@@ -165,4 +165,4 @@ resources/views/catalog/gl/quanlymau/
 ## Portal implementation status
 
 - **Status:** SHELL_ONLY — route `gl.task.299` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.task.299`
+- **Route:** `gl.rpt.glrptbctccr02`
