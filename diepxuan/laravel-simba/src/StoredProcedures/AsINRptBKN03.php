@@ -49,8 +49,7 @@ class AsINRptBKN03
             'pMa_NhVT' => $paramObj->pMa_NhVT ?? null,
             'pMa_NT' => $paramObj->pMa_NT ?? null,
             'pDVT' => $paramObj->pDVT ?? null,
-            'pGroupType' => $paramObj->pGroupType ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pGroupType' => $paramObj->pGroupType ?? null
         ], $connection);
     }
 

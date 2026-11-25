@@ -49,9 +49,7 @@ class AsSORptTH05
             'pMa_plvt1' => $paramObj->pMa_plvt1 ?? null,
             'pMa_plvt2' => $paramObj->pMa_plvt2 ?? null,
             'pMa_plvt3' => $paramObj->pMa_plvt3 ?? null,
-            'pMa_NT' => $paramObj->pMa_NT ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null
+            'pMa_NT' => $paramObj->pMa_NT ?? null
         ], $connection);
     }
 

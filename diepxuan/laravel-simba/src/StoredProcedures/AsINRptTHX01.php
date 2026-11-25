@@ -54,8 +54,6 @@ class AsINRptTHX01
             'pNgoai_te' => $paramObj->pNgoai_te ?? null,
             'pMa_spct' => $paramObj->pMa_spct ?? null,
             'pDVT' => $paramObj->pDVT ?? null,
-            'pSysMsg1' => $paramObj->pSysMsg1 ?? null,
-            'ParamDefines' => $paramObj->ParamDefines ?? null,
             'pMa_kho' => $paramObj->pMa_kho ?? null
         ], $connection);
     }
