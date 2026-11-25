@@ -343,6 +343,11 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 ->defaults('module', $sourceRoute['module'])
                 ->defaults('kind', $sourceRoute['kind'])
                 ->defaults('slug', $sourceRoute['slug'])
+                // BUG FIX: SimbaMenuTargetResolver::componentForRoute() doc
+                // defaults['component'] de biet route da co Livewire component
+                // that hay chua. Thieu key nay -> SimbaPage LUON render shell
+                // metadata du component da ton tai. Xem task 105.
+                ->defaults('component', $sourceRoute['component'])
                 ->name($sourceRoute['name'])
             ;
         }
@@ -391,6 +396,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                         ->defaults('module', $module)
                         ->defaults('kind', $kind)
                         ->defaults('slug', $slug)
+                        ->defaults('component', $fqcn)
                         ->name($routeName)
                     ;
                     $registeredNames[] = $routeName;
