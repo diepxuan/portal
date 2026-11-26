@@ -385,6 +385,31 @@ Route::prefix('catalog/po/report')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Po\Rpt\Porptbk02` + route `po.rpt.porptbk02`, verify browser 2026-11-25: **0 dòng** (module PO không có dữ liệu)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Po\Rpt\Porptbk02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `po/rpt/porptbk02.blade.php` + filter tương ứng
+- **Route:** `po.rpt.porptbk02`
+- **SP:** `asPORptBK02` — **29 tham số** (đã bỏ system params `ParamDefines` + biến thể trùng)
+
+### 🐛 Bug wrapper đã sửa
+
+Wrapper gốc có thêm `ParamDefines` + các biến thể trùng tên (khác hoa thường)
+→ đã bỏ, còn **29 tham số**.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::po.rpt.porptbk02` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — module PO không có dữ liệu
+
+Nhất quán với task 066, 067. **Không phải bug code.**
