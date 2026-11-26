@@ -150,5 +150,32 @@ Route::get('/catalog/gl/baocao/bct04', [Bct04::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.319` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `Gl\Rpt\Glrptbct04` + route `gl.rpt.glrptbct04`, verify browser 2026-11-25
 - **Route:** `gl.rpt.glrptbct04`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbct04` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbct04.blade.php` + filter `gl/rpt/filters/glrptbct04.blade.php`
+- **Route:** `gl.rpt.glrptbct04` (auto-registration)
+- **SP:** `asGLRptBCT04` qua wrapper `AsGLRptBCT04`
+- **Menu:** `02.40.14` — Tờ khai thuế TNDN tạm tính
+
+### Đối chiếu SP
+
+Wrapper truyền **4 tham số**: `pMa_Cty`, `pNgay1`, `pNgay2`, `pMau`
+(khớp `simba-docs/procedures/GL/procedures.md`).
+
+> DLL `BCT04` **không có** trong `simba-docs/decompiled/`, nên tham số lấy từ
+> wrapper + procedures.md. Không đối chiếu được `LoadData()` gốc — cần lưu ý
+> khi có phản hồi sai số liệu từ người dùng.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct04` | **HTTP 200**, title "Tờ khai thuế TNDN tạm tính [SimbaERP]" |
+| Số field lọc | **3** (Từ ngày, Đến ngày, Mẫu báo cáo) |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** |
+| Page error | **0** |
