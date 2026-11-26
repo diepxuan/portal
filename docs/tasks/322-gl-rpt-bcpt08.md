@@ -155,30 +155,25 @@ Route::get('/catalog/gl/baocao/bcpt08', [Bcpt08::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (component) — `Gl\Rpt\Glrptbctc01` + route `gl.rpt.glrptbctc01`, verify browser 2026-11-25: **0 dòng**
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbcpt08` + route `gl.rpt.glrptbcpt08`, verify browser 2026-11-25: **0 dòng**
 - **Route:** `gl.task.322`
 
 
 ## Portal implementation (2026-11-25)
 
-- **Component:** `Gl\Rpt\Glrptbctc01` (kế thừa `Rpt\AbstractReport`)
-- **View:** `gl/rpt/glrptbctc01.blade.php` + filter tương ứng
-- **Route:** `gl.rpt.glrptbctc01`
-- **Wrapper:** sạch (docs khớp hoàn toàn)
-
-### ⚠️ 0 dòng — cần tham số mẫu báo cáo
-
-Component render thật, submit không lỗi, nhưng SP trả rỗng.
-
-Báo cáo này cần `pMau` (mẫu báo cáo) và/hoặc `pQd_cdkt` (quyết định chế độ kế toán)
-có giá trị cụ thể đúng với cấu hình công ty. Em đã thử để trống — SP trả rỗng.
-
-**Cần:** người dùng quen SimbaERP xác nhận giá trị `pMau`/`pQd_cdkt` đúng.
+- **Component:** `Gl\Rpt\Glrptbcpt08` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt08.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptbcpt08`
+- **SP:** `asGLRptBCPT08` — wrapper sạch
 
 ### Verify browser thật
 
 | Kiểm chứng | Kết quả |
 |---|---|
-| Livewire component | `catalog::gl.rpt.glrptbctc01` render thật |
+| Livewire component | `catalog::gl.rpt.glrptbcpt08` render thật |
 | Dữ liệu | **0 dòng** |
 | Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu kỳ này
+
+**Không phải bug code** — wrapper sạch, component render thật, submit không lỗi.
