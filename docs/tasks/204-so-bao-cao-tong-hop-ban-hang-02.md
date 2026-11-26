@@ -457,6 +457,31 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `So\Rpt\Sorptth02` + route `so.rpt.sorptth02`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Sorptth02` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `so.rpt.sorptth02`
+- **SP:** `asSORptTH02` — **8 tham số**
+
+### 🐛 2 bug trong wrapper
+
+**Bug 1 — thừa 5 tham số:** `ploai`, `par`, `p2`, `pSoLoai`, `pSoQuy`
+(thử 13p → `too many arguments`, giảm còn 8p → OK)
+
+**Bug 2 — lỗi cú pháp có sẵn:** `string $2 = null` trong `callWithParams()`
+(`$2` không phải tên biến hợp lệ PHP) → PHP Parse error
+
+→ Đã đổi thành `$p2`.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.sorptth02` render thật |
+| Submit | **0 dòng**, không lỗi |
+| Page error | **0** |

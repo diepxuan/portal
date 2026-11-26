@@ -149,5 +149,31 @@ Route::get('/catalog/gl/socai/nkc06', [Nkc06::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.336` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — `Gl\Rpt\Glrptnkc06` + route `gl.rpt.glrptnkc06`, verify browser 2026-11-25: **31 dòng, 26 cột** (2 giây)
+- **Route:** `gl.task.336`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptnkc06` (kế thừa `Rpt\AbstractReport`)
 - **Route:** `gl.rpt.glrptnkc06`
+- **SP:** `asGLRptNKC06` — 5 tham số (wrapper sạch)
+
+### ✅ Lo ngại về hiệu năng đã được giải quyết
+
+Trước đây em ghi nhận SP mất **4m47s**. Nay đo lại: chỉ **2 giây**.
+
+Có thể lần chậm trước là do:
+- Server đang xử lý request khác
+- Lần đầu chưa cache query plan
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptnkc06` render thật |
+| Submit (pTk=111, 2024) | **31 dòng, 26 cột** |
+| Thời gian | **2 giây** |
+| Page error | **0** |
+
+**26 cột:** `ma_kh`, `stt_rec`, `ma_ct`, `ngay_ct`, `ngay_lct`, ...
