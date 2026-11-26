@@ -130,6 +130,22 @@ class PhanTichTsCc10 extends Component
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Fa\Rpt\Farptbcpt10` + route `fa.rpt.farptbcpt10`, verify browser 2026-11-25: **1 dòng / 27 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Fa\Rpt\Farptbcpt10` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `fa.rpt.farptbcpt10`
+- **SP:** `asFARptBCPT10` — 9 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::fa.rpt.farptbcpt10` render thật |
+| Dữ liệu | **1 dòng / 27 cột** |
+| Page error | **0** |
