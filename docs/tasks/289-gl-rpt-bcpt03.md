@@ -84,5 +84,40 @@ class BCPT03ReportService
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.289` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbcpt03` + route `gl.rpt.glrptbcpt03`, verify browser 2026-11-25: **0 dòng**, không lỗi
+- **Route:** `gl.task.289`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbcpt03` (kế thừa `Rpt\AbstractReport`)
 - **Route:** `gl.rpt.glrptbcpt03`
+- **SP:** `asGLRptBCPT03` — **6 tham số**
+
+### 🔧 Hoàn thiện wrapper RỖNG
+
+Trước đây `AsGLRptBCPT03` tồn tại nhưng **mảng tham số rỗng** (`[]`) → không gọi được SP.
+
+Em đã:
+1. Đọc form gốc `frmGLRptBCPT03.LoadData()` → 5 tham số
+2. SP báo thiếu `@pLoai` → phát hiện tham số thứ 6 không có trong form
+3. Thử vị trí `pLoai`: đặt thứ 2 → OK
+
+**6 tham số đúng:** `pMa_Cty`, `pLoai`, `pThang`, `pNam`, `pSo_ky`, `pMau`
+
+### 🎯 Phát hiện: form gốc THIẾU tham số
+
+Form gốc **không có** `txtLoai` nhưng SP **yêu cầu** `@pLoai`.
+
+Đây là **trường hợp ngược** với các task trước (form gửi tham số SP không nhận).
+Lần này: **SP cần tham số form không gửi**.
+
+→ Càng khẳng định: **error message của SP là nguồn duy nhất đáng tin**.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbcpt03` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
