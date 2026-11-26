@@ -158,6 +158,61 @@ Route::prefix('catalog/in/baocao')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `In\Rpt\Inrptctvt02142032` + route `in.rpt.inrptctvt02142032`, verify browser 2026-11-25 (**3369 dòng dữ liệu thật**)
+- **Route:** `in.rpt.inrptctvt02142032` (suffix `142032` vì 2 menu cùng DLL)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptctvt02142032` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptctvt02142032.blade.php` + filter tương ứng
+- **Route:** `in.rpt.inrptctvt02142032` — **có suffix** `142032`
+- **SP:** `asINRptCTVT02` — 13 tham số
+- **Menu:** `14.20.32` — "Thẻ kho/Sổ chi tiết vật tư (in tất cả)"
+
+### Route có suffix — vì 2 menu cùng DLL
+
+`sysMenu` có 2 menu active cùng `INRptCTVT02`:
+
+| MenuID | Route name |
+|---|---|
+| `14.20.05` | `in.rpt.inrptctvt02**142005**` |
+| `14.20.32` | `in.rpt.inrptctvt02**142032**` |
+
+→ Component phải tên `Inrptctvt02142032`, không phải `Inrptctvt02`.
+
+### 🐛 Bug wrapper `AsINRptCTVT02` — đã sửa
+
+Wrapper gửi **2 tham số không tồn tại** trong SP:
+
+| Tham số thừa | Loại |
+|---|---|
+| `pSysMsg1` | Tham số thông báo .NET, không phải SP |
+| `pMa_nt0` | Biến thể lạ (có `pMa_nt` rồi, thêm `pMa_nt0`) |
+
+→ SP báo: `Procedure or function asINRptCTVT02 has too many arguments specified`
+
+**Fix:** bỏ 2 tham số này, giữ đúng 13 tham số theo `procedures.md`.
+
+### 🎉 Verify browser thật — 3369 dòng, 24 cột
+
+| Kỳ test | Số dòng | Số cột |
+|---|---:|---:|
+| **2026-01-01 → 2026-12-31** | **3.369** | **24** |
+| 2020-01-01 → 2020-12-31 | **1.864** | 24 |
+
+**24 cột:** `tag`, `ma_vt`, `ten_vt`, `dvt`, `ma_nhvt`, `stt_nhom`, `cap`, `nhom_me`,
+`ton_dau`, `du_dau`, `du_dau_nt`, `sl_nhap`, `sl_xuat`, `tien_nhap`, `tien_xuat`,
+`tien_nhap_nt`, `tien_xuat_nt`, `ton_cuoi`, `du_cuoi`, `du_cuoi_nt`,
+`vat_tu`, `bold`, `has_sysmsg`, `ma_nt`
+
+Dòng đầu: `ma_vt = "PRODUCT"`, `ten_vt = "Hang Hoa"` — dữ liệu thật.
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | ✅ `catalog::in.rpt.inrptctvt02142032` render thật |
+| Tab + nút Thực hiện | ✅ có |
+| Page error | **0** |
+
+> Đây là báo cáo có **nhiều dòng nhất** từ trước tới nay (3369).
