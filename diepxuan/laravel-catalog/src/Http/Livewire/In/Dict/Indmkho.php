@@ -18,7 +18,7 @@ use Diepxuan\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Dmkho extends Component
+class Indmkho extends Component
 {
     public $pMa_kho;
     public $pStruct;

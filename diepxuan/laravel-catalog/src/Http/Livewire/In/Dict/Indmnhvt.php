@@ -18,7 +18,7 @@ use Diepxuan\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Dmnhvt extends Component
+class Indmnhvt extends Component
 {
     public $pMa_nhvt;
     public $pStruct;
