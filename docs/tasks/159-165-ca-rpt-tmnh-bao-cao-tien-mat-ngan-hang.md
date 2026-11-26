@@ -293,6 +293,46 @@ Route::prefix('catalog/ca/bao-cao')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (CARptTMNH02) — `Ca\Rpt\Carpttmnh02` + route `ca.rpt.carpttmnh02`; verify browser 2026-11-25: **193 dòng, 25 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+---
+
+## CARptTMNH02 — Sổ tiền gửi ngân hàng (2026-11-25)
+
+- **Component:** `Ca\Rpt\Carpttmnh02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `ca/rpt/carpttmnh02.blade.php` + filter tương ứng
+- **Route:** `ca.rpt.carpttmnh02` — 1 menu, không suffix
+- **Menu:** `04.20.20` — "Sổ tiền gửi ngân hàng"
+
+### 🐛 Bug wrapper: SAI TÊN tham số (không chỉ thừa/thiếu)
+
+Wrapper cũ dùng tên **không tồn tại trong SP**:
+
+| Wrapper cũ | SP thật cần (docs đúng) |
+|---|---|
+| `pNgay_Ct1` | **`pNgay1`** |
+| `pNgay_ct2` | **`pNgay2`** |
+| `pMa_Nt` | **`pMaNt`** |
+
+SP báo:
+```
+SQLSTATE[42000]: Procedure or function 'asCARptTMNH02'
+expects parameter '@pNgay1', which was not supplied.
+```
+
+**Fix:** đổi tên 3 tham số theo đúng `procedures.md`.
+
+> Đây là **biến thể của bug loại 3**: không phải thừa/thừa mà là **sai tên hoàn toàn**.
+> Error message của SP là nguồn chỉ dẫn chính xác nhất.
+
+### Verify browser thật — 193 dòng, 25 cột
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::ca.rpt.carpttmnh02` render thật |
+| Submit | **193 dòng, 25 cột** |
+| 25 cột | `So_ct`, `fSort`, `bold`, `has_sysmsg`, `Ngay_ct`, ... |
+| Page error | **0** |
