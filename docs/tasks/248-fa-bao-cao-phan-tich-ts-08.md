@@ -128,6 +128,6 @@ class PhanTichTaisan08 extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `fa.rpt.bcpt08` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.rpt.bcpt08`
 - **Note:** Shell/voucher; write blocked until payload audit.

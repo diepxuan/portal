@@ -402,6 +402,6 @@ Route::prefix('catalog/in')
 
 ## Portal implementation status
 
-- **Status:** DONE (task shell route)
-- **Route:** `task.shell.115`
+- **Status:** SHELL_ONLY — route `task.shell.115` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `in.proc.incdvt`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

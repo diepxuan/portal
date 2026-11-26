@@ -411,6 +411,6 @@ Route::prefix('catalog/so/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (report route shell)
+- **Status:** SHELL_ONLY — route `so.rpt.th01` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `so.rpt.th01`
 - **Note:** Shell read-only, chưa execute SP khi chưa audit đủ tham số.

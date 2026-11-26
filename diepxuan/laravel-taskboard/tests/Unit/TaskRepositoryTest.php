@@ -98,7 +98,10 @@ final class TaskRepositoryTest extends TestCase
     {
         return [
             'done plain'          => ['DONE', TaskRepository::COLUMN_DONE],
-            'done with note'      => ['DONE (route shell)', TaskRepository::COLUMN_DONE],
+            // Route shell KHONG phai DONE: co anchor nhung chua co man hinh CRUD.
+            'route shell only'    => ['DONE (route shell)', TaskRepository::COLUMN_PENDING],
+            'explicit shell only' => ['SHELL_ONLY — route khong ton tai', TaskRepository::COLUMN_PENDING],
+            'shell only variant'  => ['SHELL ONLY (metadata)', TaskRepository::COLUMN_PENDING],
             'done emoji merged'   => ['✅ DONE — merged PR #277', TaskRepository::COLUMN_DONE],
             'merged keyword'      => ['DONE — merged PR #244', TaskRepository::COLUMN_DONE],
             'in progress'         => ['IN PROGRESS (Livewire component)', TaskRepository::COLUMN_IN_PROGRESS],

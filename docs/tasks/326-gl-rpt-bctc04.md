@@ -154,5 +154,5 @@ Route::get('/catalog/gl/baocao/bctc04', [Bctc04::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
-- **Route:** `gl.task.326`
+- **Status:** SHELL_ONLY — route `gl.task.326` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `gl.rpt.glrptbctc04`

@@ -370,6 +370,6 @@ Route::prefix('catalog/po/report')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `simba.report/po dynamic F5` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `simba.report/po dynamic F5`
 - **Note:** Shell/voucher route đã có; không execute write ngoài payload đã audit.

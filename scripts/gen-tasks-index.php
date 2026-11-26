@@ -65,7 +65,8 @@ function parseTaskFiles(string $dir, string $status): array
         if (! is_file($path) || ! str_ends_with($entry, '.md')) {
             continue;
         }
-        if (basename($path) === 'README.md' || basename($path) === '_index.md') {
+        // Bo qua file he thong: README va moi file bat dau bang '_' (_index.md, _reports-inventory.md...)
+        if (basename($path) === 'README.md' || str_starts_with(basename($path), '_')) {
             continue;
         }
         $content = (string) file_get_contents($path);
@@ -116,12 +117,30 @@ function parseTaskFiles(string $dir, string $status): array
                 $module = 'SYS';
             }
         }
+        // Status thuc te lay tu field `**Status:**` trong task doc (nguon su that).
+        // Chi fallback ve status theo phase khi task khong khai bao.
+        $actualStatus = $status;
+        if (preg_match('/^[-*]\s+\*\*Status:\*\*\s*([^\n]+)/m', $content, $sm)) {
+            $line = trim($sm[1]);
+            if (str_starts_with($line, 'SHELL_ONLY')) {
+                $actualStatus = 'SHELL_ONLY';
+            } elseif (str_contains($line, 'DONE')) {
+                $actualStatus = 'DONE';
+            } elseif (str_contains($line, 'PENDING') || str_contains($line, 'CẦN MAP')) {
+                $actualStatus = 'PENDING';
+            } elseif (str_contains($line, 'DOCUMENTATION')) {
+                $actualStatus = 'DOC_ONLY';
+            } else {
+                $actualStatus = $line;
+            }
+        }
+
         $tasks[] = [
             'id'     => $id,
             'file'   => $entry,
             'dll'    => $dll,
             'module' => $module ?: 'SYS',
-            'status' => $status,
+            'status' => $actualStatus,
             'title'  => $title,
         ];
     }
@@ -159,16 +178,22 @@ function renderIndex(string $title, array $tasks, string $note = ''): string
     if ($note !== '') {
         $out .= $note . "\n\n";
     }
+    // Dem theo status thuc te. SHELL_ONLY = co route anchor/shell nhung CHUA co
+    // man hinh CRUD -- khong duoc tinh la DONE (xem PROJECT_CONVENTIONS muc 2.4).
+    $sum = ['total' => 0, 'done' => 0, 'shell' => 0, 'pending' => 0, 'other' => 0];
     $out .= "## Tổng quan\n\n";
-    $out .= '| Module | Files | DONE | PENDING | Khác |' . "\n";
-    $out .= '|---|---:|---:|---:|---:|' . "\n";
+    $out .= '| Module | Files | DONE | SHELL_ONLY | PENDING | Khác |' . "\n";
+    $out .= '|---|---:|---:|---:|---:|---:|' . "\n";
     foreach ($byModule as $mod => $items) {
         $done    = 0;
+        $shell   = 0;
         $pending = 0;
         $other   = 0;
         foreach ($items as $t) {
-            $s = $t['status'];
-            if ($s === 'DONE' || $s === 'IMPLEMENTED' || $s === 'FIXED' || $s === 'MERGED') {
+            $s = strtoupper(trim((string) $t['status']));
+            if ($s === 'SHELL_ONLY' || str_starts_with($s, 'SHELL_ONLY')) {
+                $shell++;
+            } elseif ($s === 'DONE' || $s === 'IMPLEMENTED' || $s === 'FIXED' || $s === 'MERGED') {
                 $done++;
             } elseif ($s === 'PENDING') {
                 $pending++;
@@ -176,11 +201,16 @@ function renderIndex(string $title, array $tasks, string $note = ''): string
                 $other++;
             }
         }
+        $sum['total'] += count($items);
+        $sum['done'] += $done;
+        $sum['shell'] += $shell;
+        $sum['pending'] += $pending;
+        $sum['other'] += $other;
         $name     = $moduleNames[$mod] ?? $mod;
-        $out .= "| {$name} | " . count($items) . " | {$done} | {$pending} | {$other} |\n";
+        $out .= "| {$name} | " . count($items) . " | {$done} | {$shell} | {$pending} | {$other} |\n";
     }
-    $total = count($tasks);
-    $out .= "| **Tổng** | **{$total}** | | | |\n\n";
+    $out .= "| **Tổng** | **{$sum['total']}** | **{$sum['done']}** | **{$sum['shell']}** | **{$sum['pending']}** | **{$sum['other']}** |\n\n";
+    $out .= "> **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.\n\n";
 
     foreach ($byModule as $mod => $items) {
         $name     = $moduleNames[$mod] ?? $mod;

@@ -275,6 +275,6 @@ Route::prefix('catalog/so/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell)
+- **Status:** SHELL_ONLY — route `so.dict.mathd` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `so.dict.mathd`
 - **Note:** Shell metadata only; no SP/write until source wrapper and payload are audited.

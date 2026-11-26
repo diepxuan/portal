@@ -7,6 +7,7 @@ Chuyen doi chuc nang bang ke chung tu ban hang tu .NET sang PHP Laravel, dat ket
 
 ## Chi tiet
 - **DLL:** ARRptBK01.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Bang ke chi tiet cac chung tu ban hang, hoa don phai thu theo nhieu tieu chi loc - hien thi danh sach hoa don theo thoi gian, khach hang, vat tu
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise

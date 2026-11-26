@@ -318,6 +318,6 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `so.rpt.bkhd` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `so.rpt.bkhd`
 - **Note:** Shell hoặc route hiện hữu; side-effect blocked nếu chưa audit payload.

@@ -97,7 +97,7 @@ class Dinhmuclchitiet extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (read-only CODD1 screen)
+- **Status:** SHELL_ONLY — route `co.dinhmucchitiet` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `co.dinhmucchitiet` (`/co/danhmuc/dinh-muc-chi-tiet`)
 - **SP:** `asGetCOdd` with `pMa_cty`, `pNam`, `pThang`, `pMa_spct`, `pTk`
 - **Note:** Chỉ đọc dữ liệu, chưa mở insert/update/delete khi chưa audit rule khóa sổ và payload ghi.

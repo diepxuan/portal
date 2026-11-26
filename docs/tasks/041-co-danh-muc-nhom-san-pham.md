@@ -86,6 +86,6 @@ class NhomsanphamCongtrinh extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (dictionary route exists)
-- **Route:** `co.dmnhspct`
+- **Status:** SHELL_ONLY — route `co.dict.codmnhspct` ton tai nhung la `SimbaPage` shell (chua co Livewire component). Chua co man hinh CRUD.
+- **Route:** `co.dict.codmnhspct` (truoc ghi sai la `co.dmnhspct`)
 - **Source:** SimbaDictionaryRegistry / SimbaRouteRegistry.

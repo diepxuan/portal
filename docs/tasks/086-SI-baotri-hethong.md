@@ -392,6 +392,6 @@ Route::prefix('catalog/si')
 
 ## Portal implementation status
 
-- **Status:** DONE (route shell)
+- **Status:** SHELL_ONLY — route `si.tool.maintenance` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `si.tool.maintenance`
 - **Note:** Shell metadata only; execute/write blocked until source wrapper/payload is audited.

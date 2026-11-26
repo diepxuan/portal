@@ -338,6 +338,6 @@ Route::prefix('catalog/so/voucher')
 
 ## Portal implementation status
 
-- **Status:** DONE (task shell route)
-- **Route:** `task.shell.061`
+- **Status:** SHELL_ONLY — route `task.shell.061` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `so.vch.sotaout`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

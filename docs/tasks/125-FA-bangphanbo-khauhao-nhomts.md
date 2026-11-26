@@ -73,6 +73,6 @@ Chuyen doi chuc nang bang phan bo khau hao theo nhom tai san tu .NET sang PHP La
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** SHELL_ONLY — route `fa.rpt.bcts05` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.rpt.bcts05`
 - **Note:** Calculation/transfer/voucher shell chưa execute side-effect khi chưa audit payload.

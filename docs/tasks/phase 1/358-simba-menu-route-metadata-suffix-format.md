@@ -1,5 +1,7 @@
 # Task 358: SimbaMenuRouteMetadata — định dạng hậu tố routeName
 
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
+
 ## Trạng thái
 
 DONE - 2026-07-13 (merged PR #246).

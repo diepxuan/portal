@@ -286,6 +286,6 @@ Route::prefix('gl/reports')
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
-- **Route:** `gl.task.142` hoặc GL report dynamic registry nếu có metadata.
+- **Status:** SHELL_ONLY — route `gl.task.142` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `gl.rpt.glrptbctccdtf03b` hoặc GL report dynamic registry nếu có metadata.
 - **Note:** Shell/read-only; process/write không execute khi chưa audit payload.

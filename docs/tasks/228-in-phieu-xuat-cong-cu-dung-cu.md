@@ -382,6 +382,6 @@ Route::prefix('catalog/in/chungtu')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `in.vch.in4` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `in.vch.in4`
 - **Note:** Shell/voucher; write blocked until payload audit.

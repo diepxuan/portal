@@ -541,6 +541,6 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `banhang.so4` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `banhang.so4`
 - **Note:** Voucher/report/dictionary route shell; write execute chỉ mở khi payload audit đủ.

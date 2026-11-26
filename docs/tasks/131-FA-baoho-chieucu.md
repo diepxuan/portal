@@ -105,6 +105,6 @@ class Baohochieurcu extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** SHELL_ONLY — route `fa.vch.dgts-old` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.vch.dgts-old`
 - **Note:** Calculation/transfer/voucher shell chưa execute side-effect khi chưa audit payload.

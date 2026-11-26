@@ -334,6 +334,6 @@ Route::prefix('catalog/so/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `so.dict.ck` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `so.dict.ck`
 - **Note:** Voucher/report/dictionary route shell; write execute chỉ mở khi payload audit đủ.

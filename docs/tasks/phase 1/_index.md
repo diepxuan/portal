@@ -18,18 +18,20 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 
 ## Tổng quan
 
-| Module | Files | DONE | PENDING | Khác |
-|---|---:|---:|---:|---:|
-| AP — Công nợ phải trả | 1 | 1 | 0 | 0 |
-| AR — Công nợ phải thu | 3 | 3 | 0 | 0 |
-| CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 |
-| GL — Sổ cái tổng hợp | 1 | 1 | 0 | 0 |
-| IN — Tồn kho | 3 | 3 | 0 | 0 |
-| PO — Đơn hàng mua | 3 | 3 | 0 | 0 |
-| SI — System Integration | 2 | 2 | 0 | 0 |
-| SO — Đơn hàng bán | 3 | 3 | 0 | 0 |
-| System — Framework & cross-link | 1 | 1 | 0 | 0 |
-| **Tổng** | **18** | | | |
+| Module | Files | DONE | SHELL_ONLY | PENDING | Khác |
+|---|---:|---:|---:|---:|---:|
+| AP — Công nợ phải trả | 1 | 1 | 0 | 0 | 0 |
+| AR — Công nợ phải thu | 3 | 3 | 0 | 0 | 0 |
+| CA — Tiền mặt & Ngân hàng | 1 | 1 | 0 | 0 | 0 |
+| GL — Sổ cái tổng hợp | 1 | 1 | 0 | 0 | 0 |
+| IN — Tồn kho | 3 | 3 | 0 | 0 | 0 |
+| PO — Đơn hàng mua | 3 | 3 | 0 | 0 | 0 |
+| SI — System Integration | 2 | 2 | 0 | 0 | 0 |
+| SO — Đơn hàng bán | 3 | 3 | 0 | 0 | 0 |
+| System — Framework & cross-link | 1 | 0 | 1 | 0 | 0 |
+| **Tổng** | **18** | **17** | **1** | **0** | **0** |
+
+> **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.
 
 ## AP — Công nợ phải trả
 
@@ -92,5 +94,5 @@ sửa lỗi phát sinh trong quá trình vận hành Portal.
 
 | ID | File | DLL | Status |
 |---|---|---|---|
-| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | DONE |
+| 358 | `358-simba-menu-route-metadata-suffix-format.md` |  | SHELL_ONLY |
 

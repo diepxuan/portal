@@ -7,6 +7,7 @@ Chuyen doi chuc nang bao cao bang ke hoa don phai tra tu .NET sang PHP Laravel.
 
 ## Chi tiet
 - **DLL:** APRptBK01.dll, APRptBK02.dll, APRptBK03.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Bang ke chi tiet cac hoa don phai tra theo nhieu tieu chi loc
 - **Loai:** Report (RPT)
 - **Assembly Title:** Bảng kê hóa đơn phải trả

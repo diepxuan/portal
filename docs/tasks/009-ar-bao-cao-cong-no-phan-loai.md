@@ -7,6 +7,7 @@ Chuyen doi chuc nang bao cao tong hop cong no theo phan loai khach hang tu .NET 
 
 ## Chi tiet
 - **DLL:** ARRptBCCN02.dll, ARRptBCCN03.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Tong hop cong no theo cac tieu chi phan loai khach hang (PL1, PL2, PL3) - chi tiet va tong hop
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise

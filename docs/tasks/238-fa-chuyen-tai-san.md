@@ -186,6 +186,6 @@ class ChuyenTaisan extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `fa.vch.chuyents` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.vch.chuyents`
 - **Note:** Shell/voucher; write blocked until payload audit.

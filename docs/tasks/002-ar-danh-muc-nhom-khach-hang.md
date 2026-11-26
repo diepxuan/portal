@@ -7,6 +7,7 @@ Chuyen doi chuc nang danh muc nhom khach hang tu .NET sang PHP Laravel, dat ket 
 
 ## Chi tiet
 - **DLL:** ARDMNHKH.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Quan ly danh muc nhom khach hang
 - **Loai:** Danh muc (DM)
 - **Assembly Title:** Asia Enterprise

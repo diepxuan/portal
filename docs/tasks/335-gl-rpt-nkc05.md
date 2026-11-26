@@ -169,5 +169,5 @@ Route::get('/catalog/gl/socai/nkc05', [Nkc05::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
-- **Route:** `gl.task.335`
+- **Status:** SHELL_ONLY — route `gl.task.335` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `gl.rpt.glrptnkc05`

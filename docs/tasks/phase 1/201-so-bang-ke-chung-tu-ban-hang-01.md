@@ -279,6 +279,7 @@ URL thực tế:
 ## Portal implementation status
 
 - **Status:** DONE (2026-11-17 — verify bằng browser thật)
+- **Route:** `so.rpt.sorptbk01` (+ `so.rpt.sorptbk01062002`) — component `So\Rpt\Sorptbk01`, đã verify browser 2026-11-23
 - **Verify 2026-11-17** (`http://portal.diepxuan.corp/simba/so/rpt/sorptbk01`, Playwright + Chromium):
   + HTTP **200**, title `Bảng kê bán hàng [SimbaERP]`, 9 Livewire component, có table, **0 console error**.
   + Route name `so.rpt.sorptbk01`; component `So\Rpt\Sorptbk01`; SP `asSORptBK01` (wrapper `AsSORptBK01`).

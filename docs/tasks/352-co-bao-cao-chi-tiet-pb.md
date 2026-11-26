@@ -187,5 +187,5 @@ Route::get('/co/bao-cao-chi-tiet-pb', [Baoctpbcp::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `task.352` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `task.352`

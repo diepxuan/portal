@@ -7,6 +7,7 @@ Chuyen doi chuc nang bao cao cong no theo nhom khach hang va chi tiet tu .NET sa
 
 ## Chi tiet
 - **DLL:** ARRptBCCN04.dll
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Bao cao ket hop giua tong hop theo nhom khach hang va chi tiet tung khach hang trong nhom, co drill-down
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise

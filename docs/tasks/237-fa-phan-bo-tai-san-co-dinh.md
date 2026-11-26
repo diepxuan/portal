@@ -181,6 +181,6 @@ class PhanBoTaisan extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `fa.transfer.ts2gl` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.transfer.ts2gl`
 - **Note:** Shell/voucher; write blocked until payload audit.

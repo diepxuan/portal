@@ -85,6 +85,6 @@ class ButtoanPhanboTudong extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (read-only shell)
+- **Status:** SHELL_ONLY — route `co.rpt.codmpb` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `co.rpt.codmpb` via generic report/list shell
 - **Note:** Dictionary metadata PB thiếu/lệch carry fields nên chưa mở CRUD execute.

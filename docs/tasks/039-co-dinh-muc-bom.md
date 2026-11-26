@@ -105,7 +105,7 @@ class Dinhmuclom extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (read-only BOM screen)
+- **Status:** SHELL_ONLY — route `co.dmbom` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `co.dmbom` (`/co/danhmuc/dinh-muc-bom`)
 - **SP:** `asCOGetDMCoBomPH`, `asCOGetDMCoBomCT`
 - **Note:** Chỉ đọc header/detail, chưa insert/update/delete vì BOM có business rule vật tư chính và recursive BOM cần audit payload đầy đủ.

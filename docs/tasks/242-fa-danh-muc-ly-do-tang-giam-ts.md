@@ -166,6 +166,6 @@ class LyDoTsEdit extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `fa.dict.ldtg` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.dict.ldtg`
 - **Note:** Shell/voucher; write blocked until payload audit.

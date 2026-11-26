@@ -113,6 +113,6 @@ Route::get('/bao-cao-phan-tich-05', [Baocaophantich05::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE (route/report shell)
+- **Status:** SHELL_ONLY — route `fa.rpt shell` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.rpt shell`
 - **Note:** Calculation/transfer/voucher shell chưa execute side-effect khi chưa audit payload.

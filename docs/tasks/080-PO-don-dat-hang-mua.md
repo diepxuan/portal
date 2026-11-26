@@ -291,6 +291,6 @@ Route::prefix('catalog/po/voucher')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `muahang.po7` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `muahang.po7`
 - **Note:** Shell/voucher route đã có; không execute write ngoài payload đã audit.

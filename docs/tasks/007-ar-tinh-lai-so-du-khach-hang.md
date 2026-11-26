@@ -405,6 +405,6 @@ Route::prefix('catalog/ar/tools')
 
 ## Portal implementation status
 
-- **Status:** DONE (task shell route)
-- **Route:** `task.shell.007`
+- **Status:** SHELL_ONLY — route `task.shell.007` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `so.vch.arrecalcustbalance`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

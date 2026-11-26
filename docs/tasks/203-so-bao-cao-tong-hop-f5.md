@@ -320,6 +320,6 @@ Route::prefix('catalog/so')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `so.rpt F5 shell` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `so.rpt F5 shell`
 - **Note:** Voucher/report/dictionary route shell; write execute chỉ mở khi payload audit đủ.

@@ -448,6 +448,6 @@ Route::prefix('catalog/ap/danhmuc')
 
 ## Portal implementation status
 
-- **Status:** DONE (task shell route)
-- **Route:** `task.shell.018`
+- **Status:** SHELL_ONLY — route `task.shell.018` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `po.proc.aptt`
 - **Note:** Process/voucher/report shell; write/transfer blocked until payload audit.

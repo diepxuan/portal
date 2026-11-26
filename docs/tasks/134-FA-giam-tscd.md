@@ -168,6 +168,6 @@ Route::prefix('catalog/fa')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell coverage)
+- **Status:** SHELL_ONLY — route `fa.vch.giamts` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `fa.vch.giamts`
 - **Note:** Không execute side-effect khi chưa audit payload.

@@ -187,5 +187,5 @@ class Danhgiatygia extends Component
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
-- **Route:** `gl.task.257`
+- **Status:** SHELL_ONLY — route `gl.task.257` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `gl.dict.gldmdgtg`

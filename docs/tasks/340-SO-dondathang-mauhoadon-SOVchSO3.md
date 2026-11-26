@@ -496,5 +496,5 @@ Route::prefix('catalog/so/voucher')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
-- **Route:** `task.55`
+- **Status:** DONE (component exists) — `So\Vch\Sovchso3` + `Sovchso3Edit`, route `so.vch.sovchso3` (+create/edit) đã verify browser 2026-11-23
+- **Route:** `so.vch.sovchso3` (create/edit: `so.vch.sovchso3.create` / `.edit`)

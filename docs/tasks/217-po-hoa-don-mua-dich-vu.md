@@ -403,6 +403,6 @@ Route::prefix('catalog/po')
 
 ## Portal implementation status
 
-- **Status:** DONE (route/shell exists)
+- **Status:** SHELL_ONLY — route `muahang.po6` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `muahang.po6`
 - **Note:** Shell hoặc route hiện hữu; side-effect blocked nếu chưa audit payload.

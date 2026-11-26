@@ -123,5 +123,5 @@ class BCTCCTMVI02a extends Model
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
+- **Status:** SHELL_ONLY — route `gl.task.272` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
 - **Route:** `gl.task.272`

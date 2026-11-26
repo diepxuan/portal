@@ -1,5 +1,7 @@
 # Task 021: CA - Danh muc khe uoc
 
+- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
+
 ## Thong tin co ban
 
 | Thuoc tinh | Gia tri |

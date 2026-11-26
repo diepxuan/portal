@@ -192,5 +192,5 @@ resources/views/catalog/gl/danhmuc/
 
 ## Portal implementation status
 
-- **Status:** DONE (GL route/report shell)
-- **Route:** `gl.task.256`
+- **Status:** SHELL_ONLY — route `gl.task.256` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Route:** `gl.rpt.gldmctgs`
