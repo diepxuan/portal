@@ -84,5 +84,40 @@ class BCPT02ReportService
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.288` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `Gl\Rpt\Glrptbcpt02` + route `gl.rpt.glrptbcpt02`, verify browser 2026-11-25
 - **Route:** `gl.rpt.glrptbcpt02`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbcpt02` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt02.blade.php` + filter `gl/rpt/filters/glrptbcpt02.blade.php`
+- **Route:** `gl.rpt.glrptbcpt02` (auto-registration)
+- **SP:** `asGLRptBCPT02` qua wrapper `AsGLRptBCPT02`
+- **Menu:** `02.60.05` — "Bảng cân đối phát sinh một TK theo ngày"
+
+### ⚠️ procedures.md ghi SP "Không có tham số" — SAI
+
+`simba-docs/procedures/GL/procedures.md` mục `asGLRptBCPT02` ghi:
+
+> | *Không có* | - | - | - |
+
+Nhưng **form gốc + wrapper đều có 5 tham số**. Em lấy từ `frmGLRptBCPT02.LoadData()`:
+
+| Tham số SP | Nguồn từ form gốc |
+|---|---|
+| `pMa_Cty` | `CompanyInformations.CompanyID` |
+| `pTk` | `txtTk.Text` |
+| `pNgay1` / `pNgay2` | `txtNgay1/2.Value` |
+| `pMa_Nt` | `txtMa_Nt.Text` |
+
+→ **Bài học:** `procedures.md` có thể ghi thiếu/sai. Form gốc decompiled là nguồn đáng tin hơn khi docs mâu thuẫn.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbcpt02` | **HTTP 200**, title "Bảng cân đối phát sinh một TK theo ngày [SimbaERP]" |
+| Số field lọc | **4** |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` (kể cả kỳ rộng 2010-2026, TK 1111) |
+| Số dòng | **0** |
+| Page error | **0** |
