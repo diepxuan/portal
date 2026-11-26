@@ -154,6 +154,21 @@ Route::prefix('catalog/in/baocao')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `In\Rpt\Inrptbkx04` + route `in.rpt.inrptbkx04`, verify browser 2026-11-25: **1 dòng / 31 cột**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptbkx04` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `in.rpt.inrptbkx04`
+- **SP:** `asINRptBKX04` — đã bỏ system params (`pSysMsg*`, `ParamDefines`) + biến thể trùng
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::in.rpt.inrptbkx04` render thật |
+| Dữ liệu | **1 dòng / 31 cột** |
+| Page error | **0** |
