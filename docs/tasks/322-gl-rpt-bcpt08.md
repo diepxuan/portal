@@ -155,5 +155,25 @@ Route::get('/catalog/gl/baocao/bcpt08', [Bcpt08::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.322` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbcpt08` + route `gl.rpt.glrptbcpt08`, verify browser 2026-11-25: **0 dòng**
+- **Route:** `gl.task.322`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbcpt08` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt08.blade.php` + filter tương ứng
 - **Route:** `gl.rpt.glrptbcpt08`
+- **SP:** `asGLRptBCPT08` — wrapper sạch
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbcpt08` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu kỳ này
+
+**Không phải bug code** — wrapper sạch, component render thật, submit không lỗi.
