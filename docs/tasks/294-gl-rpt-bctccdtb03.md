@@ -84,6 +84,26 @@ class CCDTB03ReportService
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctccdtb03` + route `gl.rpt.glrptbctccdtb03`, verify browser 2026-11-25: **0 dòng**, không lỗi
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtb03` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `gl.rpt.glrptbctccdtb03`
+- **SP:** `asGLRptBCTCCDTb03` — **5 tham số**
+- **Hạng B2:** SP không có trong `procedures.md` — tham số lấy từ wrapper
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctccdtb03` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng
+
+Không có dữ liệu kỳ này. **Không phải bug code** — component + wrapper đều không lỗi.
