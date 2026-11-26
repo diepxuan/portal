@@ -150,5 +150,29 @@ Route::get('/catalog/gl/baocao/bct05', [Bct05::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.320` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `Gl\Rpt\Glrptbct05` + route `gl.rpt.glrptbct05`, verify browser 2026-11-25
 - **Route:** `gl.rpt.glrptbct05`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbct05` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbct05.blade.php` + filter `gl/rpt/filters/glrptbct05.blade.php`
+- **Route:** `gl.rpt.glrptbct05` (auto-registration)
+- **SP:** `asGLRptBCT05` qua wrapper `AsGLRptBCT05`
+- **Menu:** `02.40.17` — Tờ khai quyết toán thuế TNDN
+
+### Đối chiếu SP
+
+Wrapper **4 tham số**: `pMa_Cty`, `pNgay1`, `pNgay2`, `pMau` (khớp procedures.md).
+
+> DLL `BCT05` không có trong `simba-docs/decompiled/` → không đối chiếu được
+> `LoadData()`. Tham số lấy từ wrapper + procedures.md.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct05` | **HTTP 200**, title "Tờ khai quyết toán thuế TNDN [SimbaERP]" |
+| Số field | **3** |
+| Submit | SP gọi thành công, không `errorMessage` |
+| Page error | **0** |
