@@ -375,20 +375,64 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
 
                 foreach (glob($moduleDir . '/*.php') ?: [] as $file) {
                     $class = basename($file, '.php');
-                    // Bo qua form/helper: chi nhan component khong co hau to dac biet.
-                    if (preg_match('/(Form|Edit|List|Page|Rename)$/', $class)) {
+
+                    // Component chinh: {PascalSlug}.php  -> route {module}.{kind}.{slug}
+                    // Form/Edit:       {PascalSlug}Form.php hoac {PascalSlug}Edit.php
+                    //                  -> route {module}.{kind}.{slug}.create + .edit
+                    //
+                    // Nho vay moi man hinh CRUD chi can THEM FILE, khong phai sua
+                    // $sourceRoutes. Xem docs/PROJECT_CONVENTIONS.md muc 2.2.
+                    $isForm = (bool) preg_match('/(Form|Edit)$/', $class);
+
+                    // Helper khac (List/Page/Rename) van bo qua.
+                    if (!$isForm && preg_match('/(List|Page|Rename)$/', $class)) {
                         continue;
                     }
 
-                    $slug = strtolower($class);
-                    $routeName = "{$module}.{$kind}.{$slug}";
-
-                    if (in_array($routeName, $registeredNames, true)) {
-                        continue;
-                    }
+                    $baseClass = $isForm ? preg_replace('/(Form|Edit)$/', '', $class) : $class;
+                    $slug = strtolower($baseClass);
 
                     $fqcn = 'Diepxuan\\Catalog\\Http\\Livewire\\' . ucfirst($module) . '\\' . $kindDir . '\\' . $class;
                     if (!class_exists($fqcn)) {
+                        continue;
+                    }
+
+                    if ($isForm) {
+                        // create: uri {module}/{kind}/{slug}/create
+                        $createName = "{$module}.{$kind}.{$slug}.create";
+                        if (!in_array($createName, $registeredNames, true)) {
+                            Route::get("{$module}/{$kind}/{$slug}/create", $fqcn)
+                                ->defaults('module', $module)
+                                ->defaults('kind', $kind)
+                                ->defaults('slug', $slug)
+                                ->defaults('component', $fqcn)
+                                ->defaults('action', 'create')
+                                ->name($createName)
+                            ;
+                            $registeredNames[] = $createName;
+                        }
+
+                        // edit: uri {module}/{kind}/{slug}/{id}/edit
+                        $editName = "{$module}.{$kind}.{$slug}.edit";
+                        if (!in_array($editName, $registeredNames, true)) {
+                            Route::get("{$module}/{$kind}/{$slug}/{id}/edit", $fqcn)
+                                ->defaults('module', $module)
+                                ->defaults('kind', $kind)
+                                ->defaults('slug', $slug)
+                                ->defaults('component', $fqcn)
+                                ->defaults('action', 'edit')
+                                ->where('id', '[^/]+')
+                                ->name($editName)
+                            ;
+                            $registeredNames[] = $editName;
+                        }
+
+                        continue;
+                    }
+
+                    $routeName = "{$module}.{$kind}.{$slug}";
+
+                    if (in_array($routeName, $registeredNames, true)) {
                         continue;
                     }
 
