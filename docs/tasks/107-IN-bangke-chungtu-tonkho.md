@@ -154,6 +154,49 @@ Route::get('/bang-ke-chung-tu-ton-kho', [Bangkechungtutonkho::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `In\Rpt\Inrptbk01` + route `in.rpt.inrptbk01`, verify browser 2026-11-25 (component render thật)
+- **Route:** `in.rpt.inrptbk01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptbk01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptbk01.blade.php` + filter `in/rpt/filters/inrptbk01.blade.php`
+- **Route:** `in.rpt.inrptbk01` (1 menu duy nhất → không suffix)
+- **SP:** `asINRptBK01` qua wrapper `AsINRptBK01` (5 tham số)
+- **Menu:** `14.20.26` — "Thông tin tính giá NTXT / Bảng kê chứng từ tồn kho"
+
+### 🐛 BUG WRAPPER đã sửa: tham số trùng tên khác hoa thường
+
+Wrapper `AsINRptBK01` cũ gửi **6 tham số** trong đó có cả:
+
+```php
+'pma_cty' => ...,   // theo docs
+'pMa_cty' => ...,   // ← TRÙNG, khác hoa thường
+```
+
+SQL Server coi `pma_cty` và `pMa_cty` là **2 tham số khác nhau** → báo:
+
+```
+SQLSTATE[42000]: Procedure or function asINRptBK01 has too many arguments specified
+```
+
+**Triệu chứng:** năm hiện tại (2026) không lỗi nhưng đổi sang 2025/2024/2010 thì lỗi
+(khác nhau ở đường cache/param binding của SQLSRV).
+
+**Fix:** bỏ dòng `'pMa_cty'` trùng, giữ `'pma_cty'` theo `procedures.md`.
+
+→ Sau fix: submit không lỗi với **mọi năm** (2026, 2025, 2024, 2010).
+
+### Verify browser thật — component render
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/in/rpt/inrptbk01` | **HTTP 200** |
+| **Livewire component** | ✅ `catalog::in.rpt.inrptbk01` **render thật** |
+| Sub-component | ✅ `catalog::component.input-indmvt`, `input-indmkho` |
+| Tab + nút "Thực hiện" | ✅ có |
+| Submit năm 2026/2025/2024/2010 | ✅ **không lỗi** (sau fix wrapper) |
+| Số dòng | 0 — công ty 001 không có dữ liệu tồn kho kỳ này |
+| Page error | **0** |
