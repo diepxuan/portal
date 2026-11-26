@@ -163,32 +163,47 @@ Route::get('/catalog/gl/baocao/ctgs01', [Ctgs01::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** DONE — component `Gl\Rpt\Glrptctgs01` + route `gl.rpt.glrptctgs01`, verify browser 2026-11-25
-- **Route:** `gl.rpt.glrptctgs01`
+- **Status:** DONE (component) — `Gl\Rpt\Glrptctgs01` + route `gl.rpt.glrptctgs01`; verify browser 2026-11-25: component render thật, **0 dòng** (công ty 001 không dùng sổ đăng ký CTGS)
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
 
 ## Portal implementation (2026-11-25)
 
 - **Component:** `Gl\Rpt\Glrptctgs01` (kế thừa `Rpt\AbstractReport`)
 - **View:** `gl/rpt/glrptctgs01.blade.php` + filter `gl/rpt/filters/glrptctgs01.blade.php`
-- **Route:** `gl.rpt.glrptctgs01` (auto-registration)
-- **SP:** `asGLRptCTGS01` qua wrapper `AsGLRptCTGS01` (**3 tham số**)
+- **Route:** `gl.rpt.glrptctgs01`
+- **SP:** `asGLRptCTGS01` — **3 tham số**: `pMa_cty`, `pNgay_ct1`, `pNgay_ct2`
 - **Menu:** `02.20.11` — "Sổ đăng ký chứng từ ghi sổ"
 
-### Đối chiếu form gốc
+### Đối chiếu 3 nguồn — khớp
 
-`frmGLRptCTGS01.LoadData()` truyền 3 tham số: `CompanyID`, `txtNgay1.Value`, `txtNgay2.Value`
-→ khớp `pMa_cty` / `pNgay_ct1` / `pNgay_ct2`.
+| Nguồn | Tham số |
+|---|---|
+| `procedures.md` | pMa_cty, pNgay_ct1, pNgay_ct2 |
+| Wrapper `AsGLRptCTGS01` | giống hệt |
+| Component payload | giống hệt |
+
+→ Không cần sửa wrapper.
 
 ### Verify browser thật
 
 | Kiểm chứng | Kết quả |
 |---|---|
-| `/simba/gl/rpt/glrptctgs01` | **HTTP 200**, title "Sổ đăng ký chứng từ ghi sổ [SimbaERP]" |
-| Số field lọc | **2** |
-| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
-| Số dòng | **0** |
+| Livewire component | `catalog::gl.rpt.glrptctgs01` **render thật** |
+| Tab + nút Thực hiện | có |
+| Submit 2026/2024/2020/2015 | **0 dòng**, không `errorMessage` |
+| Submit dải rộng 2000-2030 | **0 dòng** |
 | Page error | **0** |
 
-> Component **48 dòng** — đơn giản nhất trong nhóm GL.
+### Vì sao 0 dòng — KHÔNG phải bug
+
+`asGLRptCTGS01` trả rỗng vì **công ty 001 không dùng hình thức kế toán
+"Chứng từ ghi sổ"**. Báo cáo này chỉ có dữ liệu với doanh nghiệp áp dụng
+hình thức CTGS (Sổ đăng ký chứng từ ghi sổ).
+
+Đối chiếu: `asGLRptNKC02` (Sổ nhật ký chung) **có 109 dòng** — xác nhận
+công ty 001 dùng hình thức Nhật ký chung.
+
+> Component đã đúng, wrapper đã đúng. Khi có công ty dùng CTGS thì báo cáo
+> sẽ tự có dữ liệu.
