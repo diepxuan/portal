@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 00:27:52
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\AR\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\So\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMNHKH;
@@ -26,7 +26,7 @@ use Livewire\WithPagination;
 /**
  * Component Nhomkhachhang - Danh sách nhóm khách hàng.
  */
-class Nhomkhachhang extends Component
+class Ardmnhkh extends Component
 {
     use WithPagination;
 
@@ -45,7 +45,7 @@ class Nhomkhachhang extends Component
 
     public function render(): View
     {
-        return view('catalog::ar.danhmuc.nhomkhachhang', [
+        return view('catalog::so.dict.ardmnhkh', [
             'nhomkhachhangs' => $this->getNhomKhachHangsPaginated(),
         ])->layout('catalog::layouts.app');
     }
