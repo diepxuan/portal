@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:07
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Co\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Co\Proc;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsGetCOdd;
@@ -22,7 +22,7 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Dinhmucchitiet extends Component
+class Codd1 extends Component
 {
     use WithPagination;
 
@@ -47,7 +47,7 @@ class Dinhmucchitiet extends Component
 
     public function render(): View
     {
-        return view('catalog::co.danhmuc.dinhmucchitiet', ['items' => $this->getItemsPaginated()])
+        return view('catalog::co.proc.codd1', ['items' => $this->getItemsPaginated()])
             ->layout('catalog::layouts.app')
         ;
     }

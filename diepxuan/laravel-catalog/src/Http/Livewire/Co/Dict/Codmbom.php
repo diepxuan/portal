@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 09:35:08
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\Co\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\Co\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsCOGetDMCoBomCT;
@@ -24,7 +24,7 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Dmbom extends Component
+class Codmbom extends Component
 {
     use WithPagination;
 
@@ -46,7 +46,7 @@ class Dmbom extends Component
 
     public function render(): View
     {
-        return view('catalog::co.danhmuc.dmbom', [
+        return view('catalog::co.dict.codmbom', [
             'headers' => $this->getHeadersPaginated(),
             'details' => $this->getDetails(),
         ])->layout('catalog::layouts.app');

@@ -17,7 +17,7 @@ use Diepxuan\Catalog\Models\Simba\GlCt;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Tienmat extends Component
+class Carpttmnh01 extends Component
 {
     public $pTk    = '111';
     public $pMa_Nt = 'VND';

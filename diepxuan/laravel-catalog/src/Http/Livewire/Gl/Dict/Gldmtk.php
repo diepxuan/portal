@@ -13,18 +13,18 @@ declare(strict_types=1);
 
 namespace Diepxuan\Catalog\Http\Livewire\Gl\Dict;
 
-use Diepxuan\Catalog\Models\Simba\GlDmTk;
+use Diepxuan\Catalog\Models\Simba\GlDmTk as GlDmTkModel;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Taikhoan extends Component
+class Gldmtk extends Component
 {
     public $glDmTks;
 
     public function mount(): void
     {
         // \Debugbar::info($this->timer);
-        $this->glDmTks = GlDmTk::all();
+        $this->glDmTks = GlDmTkModel::all();
     }
 
     public function updated($property): void

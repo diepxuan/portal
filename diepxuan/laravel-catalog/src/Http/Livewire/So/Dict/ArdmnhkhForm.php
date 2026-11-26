@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @lastupdate 2026-05-16 00:27:53
  */
 
-namespace Diepxuan\Catalog\Http\Livewire\AR\Danhmuc;
+namespace Diepxuan\Catalog\Http\Livewire\So\Dict;
 
 use Diepxuan\Simba\SModel\SModel;
 use Diepxuan\Simba\StoredProcedures\AsARGetDMNHKH;
@@ -23,7 +23,7 @@ use Livewire\Component;
 /**
  * Component NhomkhachhangEdit - Thêm/Sửa nhóm khách hàng.
  */
-class NhomkhachhangEdit extends Component
+class ArdmnhkhForm extends Component
 {
     public ?string $pMa_Nhkh = null;
     public string $pTen_Nhkh = '';
@@ -108,7 +108,7 @@ class NhomkhachhangEdit extends Component
 
     public function render(): View
     {
-        return view('catalog::ar.danhmuc.nhomkhachhang-edit', [
+        return view('catalog::so.dict.ardmnhkh-form', [
             'mode' => $this->pMode,
         ])->layout('catalog::layouts.app');
     }
