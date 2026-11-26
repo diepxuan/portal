@@ -155,6 +155,55 @@ resources/views/catalog/in/reports/
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `In\Rpt\Inrptthx01` + route `in.rpt.inrptthx01`, verify browser 2026-11-25 (**1130 dòng dữ liệu thật**)
+- **Route:** `in.rpt.inrptthx01`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptthx01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptthx01.blade.php` + filter tương ứng
+- **Route:** `in.rpt.inrptthx01` — không suffix
+- **SP:** `asINRptTHX01` — **21 tham số** (theo form gốc, không phải 23 như docs)
+- **Menu:** `14.20.23` — "Tổng hợp hàng xuất"
+
+### Bài học quan trọng: form gốc > `procedures.md`
+
+`procedures.md` ghi **23 tham số**, wrapper cũ gửi 23 + 5 tham số hệ thống = 28
+→ SP báo `has too many arguments specified`.
+
+Em đọc **`frmINRptTHX01.LoadData()`** (decompiled) — form gốc gửi **21 tham số**:
+
+| # | Nguồn từ form gốc |
+|---:|---|
+| 1-3 | `CompanyInformations.CompanyID`, `txtNgay1.Value`, `txtNgay2.Value` |
+| 4-5 | `txtSo_Ct1.Text`, `txtSo_Ct2.Text` |
+| 6 | `cboLoai_px.SelectedIndex` |
+| 7-11 | `txtMa_Kh`, `txtMa_Hd`, `txtMa_NX`, `txtMa_kho_xuat`, `txtMa_Kho_nhap` |
+| 12-14 | `txtMa_lo`, `txtMa_vt`, `txtMa_nhvt` |
+| 15-16 | `txtTk_vt`, `txtMa_Bp` |
+| 17 | `ChkPsdc.TextValue` |
+| 18-19 | `txtMa_Nt`, `txtTk_Du` |
+| 20-21 | `"0"`, `"1"` (giá trị cứng — tương ứng `pNgoai_te`, `pDVT`) |
+
+→ Docs liệt kê thêm `pMa_phi`, `pMa_spct` mà form **không gửi**.
+
+**Quy tắc:** khi wrapper báo "too many arguments", đọc `LoadData()` của form gốc
+trong `simba-docs/decompiled/asia/<DLL>/` để lấy **đúng tham số form thật gửi**.
+
+### Verify browser thật
+
+| Kỳ test | Số dòng | Số cột |
+|---|---:|---:|
+| **2026-01-01 → 2026-12-31** | **1.005** | **14** |
+| 2020-01-01 → 2020-12-31 | **1.130** | 14 |
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | `catalog::in.rpt.inrptthx01` render thật |
+| Sub-component | `input-khachhang`, `input-indmvt`, `input-indmkho` x2 |
+| Tab + nút Thực hiện | có |
+| Page error | **0** |
+
+> Component 21 tham số, ~105 dòng nhờ `AbstractReport`.
