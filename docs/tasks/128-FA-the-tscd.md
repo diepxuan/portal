@@ -79,6 +79,22 @@ Chuyen doi chuc nang the tai san (bao cao bien dong) tu .NET sang PHP Laravel.
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Fa\Rpt\Farptbcts01` + route `fa.rpt.farptbcts01`, verify browser 2026-11-25: **0 dòng**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Fa\Rpt\Farptbcts01` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `fa.rpt.farptbcts01`
+- **SP:** `asFARptBCTS01` — 4 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::fa.rpt.farptbcts01` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
