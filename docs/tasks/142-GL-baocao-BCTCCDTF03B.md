@@ -286,6 +286,22 @@ Route::prefix('gl/reports')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.142` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.rpt.glrptbctccdtf03b` hoặc GL report dynamic registry nếu có metadata.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctccdtf03b` + route `gl.rpt.glrptbctccdtf03b`, verify browser 2026-11-25: **0 dòng**
+- **Route:** `gl.task.142` hoặc GL report dynamic registry nếu có metadata.
 - **Note:** Shell/read-only; process/write không execute khi chưa audit payload.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtf03b` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `gl.rpt.glrptbctccdtf03b`
+- **SP:** `asGLRptBCTCCDTf03B` — 10 tham số
+- **Hạng B2:** SP không có trong `procedures.md`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctccdtf03b` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
