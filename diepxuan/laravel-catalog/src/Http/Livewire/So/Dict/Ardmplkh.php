@@ -24,7 +24,7 @@ use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Phanloaikhachhang extends Component
+class Ardmplkh extends Component
 {
     use WithPagination;
 

@@ -20,7 +20,7 @@ use Diepxuan\Simba\StoredProcedures\AsARUpdDMPLKH;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class PhanloaikhachhangEdit extends Component
+class ArdmplkhEdit extends Component
 {
     public ?string $pMa_Plkh = null;
     public string $pTen_Plkh = '';

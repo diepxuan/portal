@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @author     Tran Ngoc Duc <ductn@diepxuan.com>
  * @author     Tran Ngoc Duc <caothu91@gmail.com>
  *
- * @lastupdate 2025-06-20 15:03:01
+ * @lastupdate 2025-06-20 14:44:55
  */
 
 namespace Diepxuan\Catalog\Http\Livewire\Ca\Vch;
@@ -17,10 +17,10 @@ use Diepxuan\Catalog\Models\Simba\GlCt;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Phieuthu extends Component
+class Cavchca2 extends Component
 {
-    public $pTk_List   = '111';
-    public $pTkdu_List = '';
+    public $pTk_List   = '';
+    public $pTkdu_List = '111';
     public $pMa_Nt     = 'VND';
     public $pMa_Bp;
     protected $glCts;
@@ -50,8 +50,8 @@ class Phieuthu extends Component
      */
     public function render()
     {
-        // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuthu.blade.php
-        return view('catalog::ca.vch.cavchca1', [
+        // diepxuan/laravel-catalog/resources/views/cash/tienmat/phieuchi.blade.php
+        return view('catalog::ca.vch.cavchca2', [
             'glCts' => $this->glCts,
         ])->layout('catalog::layouts.app');
     }

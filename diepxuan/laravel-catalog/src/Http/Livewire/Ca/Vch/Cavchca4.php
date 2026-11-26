@@ -19,7 +19,7 @@ use Diepxuan\Simba\StoredProcedures\AsProcessCT;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class Baono extends Component
+class Cavchca4 extends Component
 {
     public $pTk_List   = '';
     public $pTkdu_List = '112';

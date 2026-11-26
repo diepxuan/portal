@@ -28,25 +28,15 @@ use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Chi as CaRptChi;
 use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Nganhang as CaRptNganhang;
 use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Thu as CaRptThu;
 use Diepxuan\Catalog\Http\Livewire\Ca\Rpt\Tienmat as CaRptTienmat;
-use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Baoco;
-use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Baono;
-use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Phieuchi;
-use Diepxuan\Catalog\Http\Livewire\Ca\Vch\Phieuthu;
-use Diepxuan\Catalog\Http\Livewire\Gl\Dict\Taikhoan;
 use Diepxuan\Catalog\Http\Livewire\Home\Dashboard as DashboardLivewire;
 use Diepxuan\Catalog\Http\Controllers\YearController;
-use Diepxuan\Catalog\Http\Livewire\In\Dict\IndmvtPage;
-use Diepxuan\Catalog\Http\Livewire\In\Dict\Dmkho;
-use Diepxuan\Catalog\Http\Livewire\In\Dict\Dmnhvt;
 use Diepxuan\Catalog\Http\Livewire\In\Rpt\Inrptcd02;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Podmcp;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as PoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\YearSelector;
-use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01Sl as SoArrptbccn01Sl;
-use Diepxuan\Catalog\Http\Livewire\So\Rpt\Sorptbk01;
 use Diepxuan\Catalog\Http\Livewire\So\Vch\Sovchso3;
 use Diepxuan\Catalog\Http\Livewire\So\Vch\Sovchso3Edit;
 use Diepxuan\Catalog\Http\Livewire\Po\Rpt\Arrptbccn01 as PoArrptbccn01;
@@ -91,9 +81,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         ;
 
         $sourceRoutes = [
-            ['uri' => 'ca/dict/ardmkh', 'name' => 'ca.dict.ardmkh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkh::class],
-            ['uri' => 'ca/dict/ardmkh/create', 'name' => 'ca.dict.ardmkh.create', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
-            ['uri' => 'ca/dict/ardmkh/{id}/edit', 'name' => 'ca.dict.ardmkh.edit', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => CaArdmkhForm::class],
             // ['uri' => 'ca/dict/cadmku', ...] — KHÔNG NỐI ĐƯỢC: menu 04.90.02 (CADMKU) có active=0 trong sysMenu
             // Component đã chuẩn hóa namespace (Ca\Dict\Kheuoc) và sẵn sàng; cần bật menu trong sysMenu trước.
             // ['uri' => 'ca/dict/sidmngh', 'name' => 'ca.dict.sidmngh', 'module' => 'ca', 'kind' => 'dict', 'slug' => 'sidmngh', 'component' => SimbaPage::class],
@@ -104,11 +91,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'ca/rpt/carpttmnh06', 'name' => 'ca.rpt.carpttmnh06', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'carpttmnh06', 'component' => SimbaPage::class],
             // ['uri' => 'ca/rpt/glrptbk01', 'name' => 'ca.rpt.glrptbk01', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'glrptbk01', 'component' => SimbaPage::class],
             // ['uri' => 'ca/rpt/glrptnkc03', 'name' => 'ca.rpt.glrptnkc03', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'glrptnkc03', 'component' => SimbaPage::class],
-            ['uri' => 'ca/vch/cavchca1', 'name' => 'ca.vch.cavchca1', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca1', 'component' => Phieuthu::class],
-            ['uri' => 'ca/vch/cavchca2', 'name' => 'ca.vch.cavchca2', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca2', 'component' => Phieuchi::class],
-            ['uri' => 'ca/vch/cavchca3', 'name' => 'ca.vch.cavchca3', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca3', 'component' => Baoco::class],
-            ['uri' => 'ca/vch/cavchca4', 'name' => 'ca.vch.cavchca4', 'module' => 'ca', 'kind' => 'vch', 'slug' => 'cavchca4', 'component' => Baono::class],
-            ['uri' => 'ca/rpt/carpttmnh01', 'name' => 'ca.rpt.carpttmnh01', 'module' => 'ca', 'kind' => 'rpt', 'slug' => 'carpttmnh01', 'component' => CaRptTienmat::class],
             // ['uri' => 'ca/rpt/carpttmnh02', ...] — TẠM HOÃN: AsCARptTMNH02 gọi SP thiếu tham số @pNgay1 (bug package simba, xem docs/PROJECT_CONVENTIONS.md)
             // ['uri' => 'ca/rpt/carpttmnh06', ...] — component tự đăng ký qua convention (Ca\Rpt\Carpttmnh06)
             // ['uri' => 'ca/rpt/carpttmnh03', ...] — KHÔNG NỐI ĐƯỢC: menu 04.20.20 (CARptTMNH03) có active=0 trong sysMenu, SimbaMenuRouteMetadata không sinh route
@@ -171,7 +153,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'fa/vch/fapostts2gl', 'name' => 'fa.vch.fapostts2gl', 'module' => 'fa', 'kind' => 'vch', 'slug' => 'fapostts2gl', 'component' => SimbaPage::class],
             // ['uri' => 'fa/vch/fathoikhts', 'name' => 'fa.vch.fathoikhts', 'module' => 'fa', 'kind' => 'vch', 'slug' => 'fathoikhts', 'component' => SimbaPage::class],
             // ['uri' => 'gl/dict/gldmkc', 'name' => 'gl.dict.gldmkc', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'gldmkc', 'component' => SimbaPage::class],
-            ['uri' => 'gl/dict/gldmtk', 'name' => 'gl.dict.gldmtk', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'gldmtk', 'component' => Taikhoan::class],
             // ['uri' => 'gl/dict/sidmbp', 'name' => 'gl.dict.sidmbp', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'sidmbp', 'component' => SimbaPage::class],
             // ['uri' => 'gl/dict/sidmphi', 'name' => 'gl.dict.sidmphi', 'module' => 'gl', 'kind' => 'dict', 'slug' => 'sidmphi', 'component' => SimbaPage::class],
             // ['uri' => 'gl/proc/glcdtk', 'name' => 'gl.proc.glcdtk', 'module' => 'gl', 'kind' => 'proc', 'slug' => 'glcdtk', 'component' => SimbaPage::class],
@@ -220,10 +201,7 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'gl/vch/glvchgl1', 'name' => 'gl.vch.glvchgl1', 'module' => 'gl', 'kind' => 'vch', 'slug' => 'glvchgl1', 'component' => SimbaPage::class],
             // ['uri' => 'in/dict/codmspct', 'name' => 'in.dict.codmspct', 'module' => 'in', 'kind' => 'dict', 'slug' => 'codmspct', 'component' => SimbaPage::class],
             // ['uri' => 'in/dict/fadmbpsd', 'name' => 'in.dict.fadmbpsd', 'module' => 'in', 'kind' => 'dict', 'slug' => 'fadmbpsd', 'component' => SimbaPage::class],
-            ['uri' => 'in/dict/indmkho', 'name' => 'in.dict.indmkho', 'module' => 'in', 'kind' => 'dict', 'slug' => 'indmkho', 'component' => Dmkho::class],
             // ['uri' => 'in/dict/indmlo', 'name' => 'in.dict.indmlo', 'module' => 'in', 'kind' => 'dict', 'slug' => 'indmlo', 'component' => SimbaPage::class],
-            ['uri' => 'in/dict/indmnhvt', 'name' => 'in.dict.indmnhvt', 'module' => 'in', 'kind' => 'dict', 'slug' => 'indmnhvt', 'component' => Dmnhvt::class],
-            ['uri' => 'in/dict/indmvt', 'name' => 'in.dict.indmvt', 'module' => 'in', 'kind' => 'dict', 'slug' => 'indmvt', 'component' => IndmvtPage::class],
             // ['uri' => 'in/dict/sidmhd', 'name' => 'in.dict.sidmhd', 'module' => 'in', 'kind' => 'dict', 'slug' => 'sidmhd', 'component' => SimbaPage::class],
             // ['uri' => 'in/dict/sidmnhhd', 'name' => 'in.dict.sidmnhhd', 'module' => 'in', 'kind' => 'dict', 'slug' => 'sidmnhhd', 'component' => SimbaPage::class],
             // ['uri' => 'in/dict/sisysvars', 'name' => 'in.dict.sisysvars', 'module' => 'in', 'kind' => 'dict', 'slug' => 'sisysvars', 'component' => SimbaPage::class],
@@ -249,7 +227,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'in/vch/invchin3', 'name' => 'in.vch.invchin3', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin3', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin5', 'name' => 'in.vch.invchin5', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin5', 'component' => SimbaPage::class],
             // ['uri' => 'in/vch/invchin6', 'name' => 'in.vch.invchin6', 'module' => 'in', 'kind' => 'vch', 'slug' => 'invchin6', 'component' => SimbaPage::class],
-            ['uri' => 'po/dict/ardmkh', 'name' => 'po.dict.ardmkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => PoArdmkh::class],
             // ['uri' => 'po/dict/ardmplkh', 'name' => 'po.dict.ardmplkh', 'module' => 'po', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => SimbaPage::class],
             // ['uri' => 'po/dict/podmgiamua', 'name' => 'po.dict.podmgiamua', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmgiamua', 'component' => SimbaPage::class],
             // ['uri' => 'po/dict/podmhttt', 'name' => 'po.dict.podmhttt', 'module' => 'po', 'kind' => 'dict', 'slug' => 'podmhttt', 'component' => SimbaPage::class],
@@ -259,8 +236,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'po/dict/sisysvars', 'name' => 'po.dict.sisysvars', 'module' => 'po', 'kind' => 'dict', 'slug' => 'sisysvars', 'component' => SimbaPage::class],
             // ['uri' => 'po/proc/arcdkh', 'name' => 'po.proc.arcdkh', 'module' => 'po', 'kind' => 'proc', 'slug' => 'arcdkh', 'component' => SimbaPage::class],
             // ['uri' => 'po/rpt/aprptbk01', 'name' => 'po.rpt.aprptbk01', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'aprptbk01', 'component' => SimbaPage::class],
-            ['uri' => 'po/rpt/arrptbccn01103011', 'name' => 'po.rpt.arrptbccn01103011', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'arrptbccn01103011', 'component' => PoArrptbccn01::class],
-            ['uri' => 'po/rpt/arrptbccn01103023', 'name' => 'po.rpt.arrptbccn01103023', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'arrptbccn01103023', 'component' => PoArrptbccn01Sl::class],
             // ['uri' => 'po/rpt/arrptbccn01', 'name' => 'po.rpt.arrptbccn01', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'arrptbccn01', 'component' => SimbaPage::class],
             // ['uri' => 'po/rpt/arrptbccn01a', 'name' => 'po.rpt.arrptbccn01a', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'arrptbccn01a', 'component' => SimbaPage::class],
             // ['uri' => 'po/rpt/arrptbccn02', 'name' => 'po.rpt.arrptbccn02', 'module' => 'po', 'kind' => 'rpt', 'slug' => 'arrptbccn02', 'component' => SimbaPage::class],
@@ -283,12 +258,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'po/vch/povchpo6', 'name' => 'po.vch.povchpo6', 'module' => 'po', 'kind' => 'vch', 'slug' => 'povchpo6', 'component' => SimbaPage::class],
             // ['uri' => 'po/vch/povchpo7', 'name' => 'po.vch.povchpo7', 'module' => 'po', 'kind' => 'vch', 'slug' => 'povchpo7', 'component' => SimbaPage::class],
             ['uri' => 'si/vch/year', 'name' => 'si.vch.year', 'module' => 'si', 'kind' => 'vch', 'slug' => 'year', 'component' => YearSelector::class],
-            ['uri' => 'so/dict/ardmkh', 'name' => 'so.dict.ardmkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkh::class],
-            ['uri' => 'so/dict/ardmkh/create', 'name' => 'so.dict.ardmkh.create', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
-            ['uri' => 'so/dict/ardmkh/{id}/edit', 'name' => 'so.dict.ardmkh.edit', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmkh', 'component' => SoArdmkhForm::class],
-            ['uri' => 'so/dict/ardmplkh', 'name' => 'so.dict.ardmplkh', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => Phanloaikhachhang::class],
-            ['uri' => 'so/dict/ardmplkh/create', 'name' => 'so.dict.ardmplkh.create', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => PhanloaikhachhangEdit::class],
-            ['uri' => 'so/dict/ardmplkh/{maPlkh}/edit', 'name' => 'so.dict.ardmplkh.edit', 'module' => 'so', 'kind' => 'dict', 'slug' => 'ardmplkh', 'component' => PhanloaikhachhangEdit::class],
             // ['uri' => 'so/dict/sidmbp', 'name' => 'so.dict.sidmbp', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmbp', 'component' => SimbaPage::class],
             // ['uri' => 'so/dict/sidmhd', 'name' => 'so.dict.sidmhd', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmhd', 'component' => SimbaPage::class],
             // ['uri' => 'so/dict/sidmnhhd', 'name' => 'so.dict.sidmnhhd', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sidmnhhd', 'component' => SimbaPage::class],
@@ -298,9 +267,6 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             // ['uri' => 'so/dict/sodmnvkd', 'name' => 'so.dict.sodmnvkd', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sodmnvkd', 'component' => SimbaPage::class],
             // ['uri' => 'so/dict/sodmts', 'name' => 'so.dict.sodmts', 'module' => 'so', 'kind' => 'dict', 'slug' => 'sodmts', 'component' => SimbaPage::class],
             // ['uri' => 'so/proc/arcdkh', 'name' => 'so.proc.arcdkh', 'module' => 'so', 'kind' => 'proc', 'slug' => 'arcdkh', 'component' => SimbaPage::class],
-            ['uri' => 'so/rpt/arrptbccn01063014', 'name' => 'so.rpt.arrptbccn01063014', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01063014', 'component' => Arrptbccn01::class],
-            ['uri' => 'so/rpt/arrptbccn01063038', 'name' => 'so.rpt.arrptbccn01063038', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01063038', 'component' => SoArrptbccn01Sl::class],
-            ['uri' => 'so/rpt/sorptbk01062002', 'name' => 'so.rpt.sorptbk01062002', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'sorptbk01062002', 'component' => Sorptbk01::class],
             // ['uri' => 'so/rpt/arrptbccn01a', 'name' => 'so.rpt.arrptbccn01a', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn01a', 'component' => SimbaPage::class],
             // ['uri' => 'so/rpt/arrptbccn02', 'name' => 'so.rpt.arrptbccn02', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn02', 'component' => SimbaPage::class],
             // ['uri' => 'so/rpt/arrptbccn03', 'name' => 'so.rpt.arrptbccn03', 'module' => 'so', 'kind' => 'rpt', 'slug' => 'arrptbccn03', 'component' => SimbaPage::class],
