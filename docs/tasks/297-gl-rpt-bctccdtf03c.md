@@ -170,5 +170,25 @@ Route::get('/catalog/gl/baocao/bctccdtf03c', [Bctccdtf03c::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.297` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctccdtf03c` + route `gl.rpt.glrptbctccdtf03c`, verify browser 2026-11-25: **0 dòng**, không lỗi
+- **Route:** `gl.task.297`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctccdtf03c` (kế thừa `Rpt\AbstractReport`)
 - **Route:** `gl.rpt.glrptbctccdtf03c`
+- **SP:** `asGLRptBCTCCDTf03C` — **4 tham số**
+- **Hạng B2:** SP không có trong `procedures.md` — tham số lấy từ wrapper
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctccdtf03c` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng
+
+Không có dữ liệu kỳ này. **Không phải bug code** — component + wrapper đều không lỗi.
