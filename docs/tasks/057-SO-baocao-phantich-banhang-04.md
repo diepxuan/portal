@@ -393,6 +393,25 @@ Route::prefix('catalog/so/reports')
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `So\Rpt\Sorptbcpt04062023` + route `so.rpt.sorptbcpt04062023`, verify browser 2026-11-25: **0 dòng**
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Sorptbcpt04062023` (kế thừa `Rpt\AbstractReport`)
+- **Route:** `so.rpt.sorptbcpt04062023`
+- **SP:** `asSORptBCPT04` — đã bỏ system params (`pSysMsg*`, `ParamDefines`) + biến thể trùng
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.sorptbcpt04062023` render thật |
+| Dữ liệu | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu
+
+Module SO không có dữ liệu kỳ này. **Không phải bug code.**
