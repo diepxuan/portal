@@ -165,5 +165,46 @@ Route::get('/catalog/gl/socai/nkc03', [Nkc03::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.333` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
-- **Route:** `gl.rpt.glrptnkc03`
+- **Status:** DONE — `Gl\Rpt\Glrptnkc03022508` + route `gl.rpt.glrptnkc03022508`, verify browser 2026-11-25 (**55 dòng, 22 cột**)
+- **Route:** `gl.task.333`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptnkc03022508` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptnkc03022508.blade.php` + filter tương ứng
+- **Route:** `gl.rpt.glrptnkc03022508` — **có suffix `022508`**
+- **SP:** `asGLRptNKC03` — 7 tham số
+- **Menu:** `02.25.08` — "Sổ nhật ký thu tiền"
+
+### ⚠️ Route có suffix + xuất hiện ở 2 module
+
+`GLRptNKC03` xuất hiện ở **4 menu active** thuộc **2 module**:
+
+| MenuID | Module | Title |
+|---|---|---|
+| `02.25.08` | GL | Sổ nhật ký thu tiền |
+| `02.25.11` | GL | Sổ nhật ký chi tiền |
+| `04.20.08` | CA | Sổ nhật ký thu tiền |
+| `04.20.11` | CA | Sổ nhật ký chi tiền |
+
+→ Route phải có suffix để phân biệt: `glrptnkc03**022508**`, `glrptnkc03**022511**`, `carptnkc03...`
+
+Đây là trường hợp **đặc biệt**: 1 DLL nhưng 2 chức năng khác nhau (thu/chi) × 2 module.
+
+### Đối chiếu tham số
+
+Wrapper `AsGLRptNKC03` — **7 tham số**: `pMa_Cty`, `pNgay_Ct1`, `pNgay_Ct2`,
+`pTk_List`, `pTkdu_List`, `pMa_Bp`, `pMa_Nt`
+
+> `procedures.md` **không có** `asGLRptNKC03` (chỉ có `asGLRptNKC031` — báo cáo khác).
+> Tham số lấy từ wrapper + kiểm chứng bằng browser.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptnkc03022508` render thật |
+| Submit | **55 dòng, 22 cột** |
+| 22 cột | `bold`, `has_sysmsg`, `ngay_ct`, `ngay_lct`, `so_ct`, ... |
+| Page error | **0** |
