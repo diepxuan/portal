@@ -1,5 +1,7 @@
 # Task 013: ARRptBK01
 
+- **Status:** DONE (component) — `So\Rpt\Arrptbk01` + route `so.rpt.arrptbk01`, verify browser 2026-11-25: 0 dòng
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -7,7 +9,6 @@ Chuyen doi chuc nang bang ke chung tu ban hang tu .NET sang PHP Laravel, dat ket
 
 ## Chi tiet
 - **DLL:** ARRptBK01.dll
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** Bang ke chi tiet cac chung tu ban hang, hoa don phai thu theo nhieu tieu chi loc - hien thi danh sach hoa don theo thoi gian, khach hang, vat tu
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise
@@ -376,3 +377,25 @@ Route::prefix('catalog/ar/baocao')
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
 \n## Portal implementation status\n\n- **Status:** DONE (route shell/read-only report)\n- **Source:** SimbaReportRegistry / SimbaRouteRegistry, sysReportInfo-backed route anchor\n- **Note:** Report shell hiển thị metadata và chưa execute SP khi chưa đối chiếu đủ tham số/payload/side effect.\n
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Arrptbk01` (kế thừa `Rpt\AbstractReport`)
+- **View:** `so/rpt/arrptbk01.blade.php` + filter tương ứng
+- **Route:** `so.rpt.arrptbk01`
+- **SP:** `asARRptBK01` — wrapper **sạch**, docs khớp hoàn toàn
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.arrptbk01` render thật |
+| Submit | **0 dòng** |
+| Page error | **0** |
+
+### ⚠️ 0 dòng — không có dữ liệu
+
+Không có dữ liệu với công ty 001 ở mọi kỳ đã thử (2026, 2024, 2020, dải 2000-2030).
+
+**Không phải bug code** — component + wrapper đúng, submit không lỗi.

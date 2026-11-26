@@ -1,5 +1,7 @@
 # Task 011: ARRptBCCN05
 
+- **Status:** DONE (component) — `So\Rpt\Arrptbccn05063026` + route `so.rpt.arrptbccn05063026`, verify browser 2026-11-25: 1 dòng / 20 cột
+
 ## Nhom: AR (Accounts Receivable - Cong no phai thu)
 
 ## Muc tieu
@@ -7,7 +9,6 @@ Chuyen doi chuc nang in giay doi chieu cong no gui khach hang xac nhan tu .NET s
 
 ## Chi tiet
 - **DLL:** ARRptBCCN05.dll
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell; chua port Livewire component
 - **Chuc nang:** In giay doi chieu cong no gui khach hang xac nhan - theo doi cong no giua so sach cong ty va xac nhan cua khach hang
 - **Loai:** Bao cao (Report)
 - **Assembly Title:** Asia Enterprise
@@ -378,3 +379,19 @@ Route::prefix('catalog/ar/baocao')
 - **Ngày audit:** 2026-05-10
 - **Kết quả:** PENDING — spec đầy đủ, chưa implement
 \n## Portal implementation status\n\n- **Status:** DONE (route shell/read-only report)\n- **Source:** SimbaReportRegistry / SimbaRouteRegistry, sysReportInfo-backed route anchor\n- **Note:** Report shell hiển thị metadata và chưa execute SP khi chưa đối chiếu đủ tham số/payload/side effect.\n
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `So\Rpt\Arrptbccn05063026` (kế thừa `Rpt\AbstractReport`)
+- **View:** `so/rpt/arrptbccn05063026.blade.php` + filter tương ứng
+- **Route:** `so.rpt.arrptbccn05063026`
+- **SP:** `asARRptBCCN05` — wrapper **sạch**, docs khớp hoàn toàn
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::so.rpt.arrptbccn05063026` render thật |
+| Submit | **1 dòng / 20 cột** |
+| Page error | **0** |
