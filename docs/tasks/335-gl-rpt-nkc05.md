@@ -169,5 +169,20 @@ Route::get('/catalog/gl/socai/nkc05', [Nkc05::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.335` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptnkc05` + route `gl.rpt.glrptnkc05`, verify browser 2026-11-25: **1 dòng / 30 cột**
+- **Route:** `gl.task.335`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptnkc05` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptnkc05.blade.php` + filter tương ứng
 - **Route:** `gl.rpt.glrptnkc05`
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptnkc05` render thật |
+| Dữ liệu | **1 dòng / 30 cột** |
+| Page error | **0** |
