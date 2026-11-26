@@ -233,6 +233,50 @@ Route::get('/catalog/in/baocao/bang-ke-phieu-nhap', [BangKePhieuNhap::class, 're
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — khong khai bao route, chi co metadata shell. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `In\Rpt\Inrptbkn04` + route `in.rpt.inrptbkn04`, verify browser 2026-11-25
+- **Route:** `in.rpt.inrptbkn04`
 - **Source:** `docs/project/simba-router-menu-matrix.md`, `SimbaRouteRegistry` / registry tương ứng.
 - **Note:** Không code lại route đã có; execute SP/write vẫn chỉ mở khi metadata payload đã audit đủ.
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `In\Rpt\Inrptbkn04` (kế thừa `Rpt\AbstractReport`)
+- **View:** `in/rpt/inrptbkn04.blade.php` + filter tương ứng
+- **Route:** `in.rpt.inrptbkn04` — không suffix
+- **SP:** `asINRptBKN04` — **23 tham số** theo form gốc
+- **Menu:** `14.20.14` — "Bảng kê phiếu nhập"
+
+### Áp dụng quy tắc "form gốc > docs"
+
+Đọc `frmINRptBKN04.LoadData()` trong `simba-docs/decompiled/asia/INRptBKN04.dll/`:
+
+Form gốc gửi **23 tham số**:
+```
+CompanyID, Ngay1, Ngay2, So_Ct1, So_Ct2, Loai_pn, Ma_hd, Ma_kh, Ma_vt,
+Ma_kho, Ma_vtri, Ma_bp, Ma_d_nx, Ma_TKVT, TK_du, Ma_nhvt, Ma_lo, Ma_Phi,
+Ma_spct, Ma_Nt, Theo_dvt, Theo_nhom, Loai_gd
+```
+
+Wrapper cũ gửi **31 tham số** (thừa 8: `pSysMsg1`, `pSysMsg2`, `pMa_nt`,
+`pMa_hd`, `ParamDefines`, `pMa_Cty`, `pTK_vt`, `pTK_du`) → SP báo
+`has too many arguments specified`.
+
+**Fix:** viết lại `call()` với đúng 23 tham số theo thứ tự form gốc.
+
+### Verify browser thật
+
+| Kỳ test | Số dòng |
+|---|---:|
+| **2026-01-01 → 2026-12-31** | **1** |
+| 2020-01-01 → 2020-12-31 | 0 |
+| 2015-01-01 → 2015-12-31 | 0 |
+
+| Kiểm chứng khác | Kết quả |
+|---|---|
+| Livewire component | `catalog::in.rpt.inrptbkn04` render thật |
+| Sub-component | `input-khachhang`, `input-indmvt`, `input-indmnhvt`, `input-indmkho` |
+| Tab + nút Thực hiện | có |
+| Page error | **0** |
+
+> Dữ liệu ít (1 dòng) nhưng **không lỗi** — chứng tỏ wrapper đúng.
+> Công ty 001 có ít phiếu nhập trong kỳ này.
