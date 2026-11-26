@@ -150,5 +150,29 @@ Route::get('/catalog/gl/baocao/bct06', [Bct06::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.321` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `Gl\Rpt\Glrptbct06` + route `gl.rpt.glrptbct06`, verify browser 2026-11-25
 - **Route:** `gl.rpt.glrptbct06`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbct06` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbct06.blade.php` + filter `gl/rpt/filters/glrptbct06.blade.php`
+- **Route:** `gl.rpt.glrptbct06` (auto-registration)
+- **SP:** `asGLRptBCT06` qua wrapper `AsGLRptBCT06`
+- **Menu:** `02.40.20` — Phụ lục kết quả HĐSXKD
+
+### Đối chiếu SP
+
+Wrapper **4 tham số**: `pMa_Cty`, `pNgay1`, `pNgay2`, `pMau` (khớp procedures.md).
+
+> DLL `BCT06` không có trong `simba-docs/decompiled/` → không đối chiếu được
+> `LoadData()`. Tham số lấy từ wrapper + procedures.md.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbct06` | **HTTP 200**, title "Phụ lục kết quả HĐSXKD [SimbaERP]" |
+| Số field | **3** |
+| Submit | SP gọi thành công, không `errorMessage` |
+| Page error | **0** |
