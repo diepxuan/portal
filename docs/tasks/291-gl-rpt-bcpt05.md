@@ -84,5 +84,48 @@ class BCPT05ReportService
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.291` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE — component `Gl\Rpt\Glrptbcpt05` + route `gl.rpt.glrptbcpt05`, verify browser 2026-11-25
 - **Route:** `gl.rpt.glrptbcpt05`
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Diepxuan\Catalog\Http\Livewire\Gl\Rpt\Glrptbcpt05` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbcpt05.blade.php` + filter `gl/rpt/filters/glrptbcpt05.blade.php`
+- **Route:** `gl.rpt.glrptbcpt05` (auto-registration)
+- **SP:** `asGLRptBCPT05` qua wrapper `AsGLRptBCPT05` (**12 tham số** khớp docs)
+- **Menu:** `02.60.14` — "So sánh tình hình thực hiện ngân sách"
+
+### Đối chiếu form gốc `frmGLRptBCPT05.LoadData()`
+
+| Tham số SP | Nguồn từ form gốc |
+|---|---|
+| `pMa_cty` | `CompanyInformations.CompanyID` |
+| `pNam` | `DateAndTime.Year(txtNgay1.Value)` — **năm lấy từ ngày bắt đầu** |
+| `pTK` | `txtTk.Text` |
+| `pMa_phi` | `txtMa_phi.Text` |
+| `pMa_BP` | `txtMa_bp.Text` |
+| `pMa_spct` | `txtMa_spct.Text` |
+| `pNgay1` / `pNgay2` | `txtNgay1.Value` / `txtNgay2.Value` |
+| `pGroup1..pGroup4` | 4 combo nhóm cấp (`cboNhom_cap1..4` → `.SelectedItem.Key`) |
+
+### Combo nhóm cấp — đúng `DataSource4CBO` gốc
+
+| Key | Nhãn |
+|---|---|
+| `''` | Tất cả |
+| `TK` | Tài khoản |
+| `ma_bo` | Mã bộ phận |
+| `ma_phi` | Mã phí |
+| `ma_spct` | Mã sản phẩm công trình |
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| `/simba/gl/rpt/glrptbcpt05` | **HTTP 200**, title "So sánh tình hình thực hiện ngân sách [SimbaERP]" |
+| Số field lọc | **10** (2 ngày + 4 mã + 4 nhóm cấp) |
+| Combo nhóm cấp | 5 option **khớp form gốc** |
+| Bấm "Thực hiện" | SP gọi **thành công**, không `errorMessage` |
+| Số dòng | **0** — công ty 001 không có dữ liệu kế toán |
+
+> Component **85 dòng** nhờ `AbstractReport`.
