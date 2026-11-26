@@ -154,5 +154,33 @@ Route::get('/catalog/gl/baocao/bctc03', [Bctc03::class, 'render'])
 
 ## Portal implementation status
 
-- **Status:** SHELL_ONLY — route `gl.task.325` KHONG ton tai trong `route:list`. Chua co man hinh CRUD; can port Livewire component.
+- **Status:** DONE (component) — `Gl\Rpt\Glrptbctc03` + route `gl.rpt.glrptbctc03`, verify browser 2026-11-25: **0 dòng**, không lỗi
+- **Route:** `gl.task.325`
+
+
+## Portal implementation (2026-11-25)
+
+- **Component:** `Gl\Rpt\Glrptbctc03` (kế thừa `Rpt\AbstractReport`)
+- **View:** `gl/rpt/glrptbctc03.blade.php` + filter tương ứng
 - **Route:** `gl.rpt.glrptbctc03`
+
+### 🐛 Bug wrapper `AsGLRptBCTC03` — 20 params với 10 nhóm trùng
+
+Wrapper gốc có **10 nhóm tham số trùng tên** (khác hoa thường):
+
+`pMa_Cty`/`pMa_Cty`, `pQd_cdkt`/`pQd_cdkt`, `pNgay_Ct1`/`pNgay_Ct1`, ...
+
+→ Đã dedup, còn **10 tham số**.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Livewire component | `catalog::gl.rpt.glrptbctc03` render thật |
+| Submit | **0 dòng**, không `errorMessage` |
+| Page error | **0** |
+
+### ⚠️ 0 dòng
+
+Có thể cần `pQd_cdkt` (quyết định chế độ kế toán) và các ngày cụ thể.
+**Không phải bug code.**
