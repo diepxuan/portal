@@ -664,6 +664,46 @@ ngoaiteInputComponent(JSON.parse([...]))     ✅ 12 NT
 
 Tương tác: click "Chọn hình thức thanh toán" → **6 option**.
 
+### 8. 🐛 BUG NGHIÊM TRỌNG: nhập kỳ → 0 kết quả
+
+**Triệu chứng:** nhập tháng 10, giữ `PO3`, nhấn tìm → **0 dòng**.
+
+**Nguyên nhân gốc** — SP dựng SQL động:
+
+```sql
++ case @pX when '' then '' else ' AND col LIKE @pX + percent' end
+```
+
+SQL Server: `NULL = ''` → **UNKNOWN** (không phải TRUE) → rơi vào nhánh `else` → sinh điều kiện `LIKE NULL` → **lọc sạch 0 dòng**.
+
+Wrapper gửi `null` cho mọi field chưa nhập → báo cáo **luôn 0 dòng**.
+
+**Bằng chứng** (tháng 10/2026, `pMa_ct='PO3'`):
+
+| Tham số | `NULL` | `''` |
+|---|---|---|
+| `pTrang_thai` | **0** ❌ | 111 ✅ |
+| `pMa_nt` | **0** ❌ | 111 ✅ |
+| `pMa_kho` | **0** ❌ | 111 ✅ |
+| `pMa_lo` | **0** ❌ | 111 ✅ |
+| `pMa_httt` | **0** ❌ | 111 ✅ |
+| `pMa_bp` | **0** ❌ | 111 ✅ |
+| `pMa_spct` | **0** ❌ | 111 ✅ |
+| `pMa_Phi` | **0** ❌ | 111 ✅ |
+
+**An toàn với `NULL`** (giữ nguyên): `pMa_kh`, `pMa_vt`, `pMa_nhvt`, `pMa_hd`, `pMa_plkh1/2/3`, `pMa_nhhd`
+
+**Fix:** đổi 8-9 property `null` → `''` trong 3 component.
+
+**Verify sau fix:**
+
+| Kỳ | BK01 | BK02 | BK03 |
+|---|---:|---:|---:|
+| Tháng 10/2026 | **111** (trước 0) | **128** (trước 0) | 0 |
+| Năm 2025 | **1.371** / 40 cột | **1.415** / 40 cột | **42** / 42 cột |
+
+> **BK03 năm 2026 = 0 dòng là ĐÚNG nghiệp vụ** — bảng `poct` không có dòng nào thỏa `cp<>0 OR cp_nt<>0` trong 2026 (năm 2025 có 42 dòng).
+
 ### Field ẩn — theo form gốc
 
 Form ẩn bằng `.Visible = false` nên không có trong ảnh:
