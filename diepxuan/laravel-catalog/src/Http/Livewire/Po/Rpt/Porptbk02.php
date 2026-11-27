@@ -112,6 +112,21 @@ class Porptbk02 extends AbstractReport
         ];
     }
 
+    public function mount(?string $module = null, ?string $kind = null, ?string $slug = null): void
+    {
+        parent::mount($module, $kind, $slug);
+
+        $this->syncTimer();
+    }
+
+    private function syncTimer(): void
+    {
+        $timer = \CatalogService::timer();
+
+        $this->pNgay1 = (string) ($timer['from'] ?? now()->startOfMonth()->toDateString());
+        $this->pNgay2 = (string) ($timer['to'] ?? now()->toDateString());
+    }
+
     public function render(): View
     {
         return view('catalog::po.rpt.porptbk02', [
