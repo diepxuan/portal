@@ -13,11 +13,28 @@ use Illuminate\Contracts\View\View;
  */
 class Porptbk01 extends AbstractReport
 {
+
+    /*
+     * LUU Y QUAN TRONG ve gia tri mac dinh:
+     *
+     * SP asPORptBK01/02/03 dung SQL dong voi pattern:
+     *   case @pX when '' then '' else ' AND col LIKE @pX + percent' end
+     *
+     * Trong SQL Server: NULL = '' -> UNKNOWN (khong phai TRUE) -> roi vao
+     * nhanh else -> sinh dieu kien LIKE NULL -> loc sach 0 dong.
+     *
+     * Vi vay cac tham so sau BAT BUOC mac dinh '' (khong duoc null):
+     *   pTrang_thai, pMa_nt, pMa_kho, pMa_lo, pMa_httt, pMa_bp,
+     *   pMa_spct, pMa_Phi, pGroupType
+     *
+     * Cac tham so con lai (pMa_kh, pMa_vt, pMa_nhvt, pMa_hd, pMa_plkh1..3,
+     * pMa_nhhd) an toan voi ca null va '' (SP dung LIKE tren cot khac).
+     */
     public ?string $pNgay1 = null;
 
     public ?string $pNgay2 = null;
 
-    public ?string $pTrang_thai = null;
+    public ?string $pTrang_thai = '';
 
     public ?string $pSoct1 = null;
 
@@ -31,13 +48,13 @@ class Porptbk01 extends AbstractReport
 
     public ?string $pMa_nhvt = null;
 
-    public ?string $pMa_kho = null;
+    public ?string $pMa_kho = '';
 
     public ?string $pMa_vitri = null;
 
     public ?string $pMa_nvkd = null;
 
-    public ?string $pMa_nt = null;
+    public ?string $pMa_nt = '';
 
     public ?string $pMa_hd = null;
 
@@ -56,15 +73,15 @@ class Porptbk01 extends AbstractReport
      */
     public ?string $pMa_ct = 'PO3';
 
-    public ?string $pMa_lo = null;
+    public ?string $pMa_lo = '';
 
-    public ?string $pMa_httt = null;
+    public ?string $pMa_httt = '';
 
     public ?string $pMa_TT = null;
 
-    public ?string $pMa_bp = null;
+    public ?string $pMa_bp = '';
 
-    public ?string $pMa_spct = null;
+    public ?string $pMa_spct = '';
 
     public ?string $pMa_plvt1 = null;
 
@@ -74,7 +91,7 @@ class Porptbk01 extends AbstractReport
 
     public ?string $pMa_nhhd = null;
 
-    public ?string $pMa_Phi = null;
+    public ?string $pMa_Phi = '';
 
     protected function spClass(): string
     {
