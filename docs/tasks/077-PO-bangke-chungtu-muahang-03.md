@@ -860,3 +860,77 @@ $currency = $this->isForeignCurrency() ? 'NT' : 'VND';
 | Sau PR #428 | **11/14** | ⚠️ **tạm sử dụng được** |
 | Bằng trang chuẩn | 14/14 | cần task riêng cho 5.1 + 5.2 |
 
+### 8. Đối chiếu lại sau khi fix §2.9 (2026-11-27, PR `feat/report-shell-label-cot`)
+
+Sau PR #428, 3 mục ❌ còn lại đã được fix bằng cách sửa **`AbstractReport` +
+`report-shell`** (dùng chung), không sửa từng view.
+
+| # | Hạng mục | `sorptbk01` | `porptbk03` trước | `porptbk03` sau |
+|---|---|---|---|---|
+| 5 | **Label cột tiếng Việt** | ✅ | ❌ `ma_cty`, `stt_rec` | ✅ **Ngày CT, Số CT, Mã CT, Mã KH, Tên KH, Diễn giải** |
+| 10 | Format số | ✅ | ⚠️ | ✅ `number_format` sẵn |
+| 11 | Tiền theo loại tệ | ✅ | ❌ | ⚠️ cột `_nt` ẩn khi VND (đúng `formated_col_list`) |
+| — | Số cột hiển thị | 8 | **41** (lẫn cột kỹ thuật) | **15** |
+
+**Bằng chứng DOM thật:**
+
+```
+TRUOC: # | ma_cty | stt_rec | stt_rec0 | ma_ct | ma_kh | ten_kh   (41 cot)
+SAU  : # | Ngay CT | So CT | Ma CT | Ma KH | Ten KH | Dien giai   (15 cot)
+```
+
+### 9. Cơ chế fix — `sysReportResx.formated_col_list`
+
+**Nguồn:** bảng `sysReportResx`, cột `formated_col_list` (language `vi-VN`).
+
+Định dạng: `ten_cot:H=<header>:F=<format>:W=<width>,...`
+
+Ví dụ menu `10.20.02` / mẫu `04`:
+
+```
+ngay_ct:H=Ngày CT:F=dd/MM/yyyy:W=75,
+so_ct:H=Số CT:W=62,
+ma_ct:H=Mã CT:W=64,
+ma_kh:H=Mã KH:W=65,
+ten_kh:H=Tên KH:W=155,
+dien_giai:H=Diễn giải:W=210,
+...
+```
+
+**Service mới:** `Diepxuan\Catalog\Services\ReportColumnLabels`
+
+| Method | Trả về |
+|---|---|
+| `for($menuId, $maMau)` | `[cot => label]` |
+| `visibleColumns($menuId, $maMau)` | `[cot, ...]` đúng thứ tự |
+| `allLabels()` | map toàn cục ~700 label (fallback) |
+| `parse()`, `parseColumns()` | parse thuần, có unit test |
+
+**Tích hợp `AbstractReport`:**
+
+| Method | Việc |
+|---|---|
+| `columnLabel($col)` | 4 tầng: override → Resx → allLabels → tên thô |
+| `resolveColumns($row)` | lọc cột theo `formated_col_list`, fallback toàn bộ |
+| `reportMenuContext()` | lấy `menuid` + `ma_mau` từ `SimbaMenuRouteMetadata` |
+
+**Vì sao ẩn cột:** SP `asPORptBK01` trả **40 cột**, `formated_col_list` định nghĩa **14 cột**.
+Cột `ma_cty`/`stt_rec`/`stt_rec0` là kỹ thuật — SimbaERP không hiển thị.
+
+**An toàn:** nếu báo cáo không có `formated_col_list` → hiện **toàn bộ** cột (không giấu dữ liệu).
+
+### 10. Verify không phá vỡ báo cáo khác
+
+`report-shell` dùng chung **74 view** → đã verify:
+
+| Báo cáo | Kết quả |
+|---|---|
+| `po/rpt/porptbk01` | 1.371 dòng / 15 cột, label VN ✅ |
+| `po/rpt/porptbk02` | 1.415 dòng / 17 cột, label VN ✅ |
+| `po/rpt/porptbk03` | 42 dòng / 19 cột, label VN ✅ |
+| `so/rpt/sorptbk01` | không đổi (tự build columns) ✅ |
+| `gl/rpt/glrptbct01` | 1 dòng / 13 cột, `err: null` ✅ |
+| `co/rpt/corptgt01` | 6 dòng / 15 cột, `err: null` ✅ |
+
+Unit test: `ReportColumnLabelsTest` — **9 tests / 20 assertions PASS**.
+

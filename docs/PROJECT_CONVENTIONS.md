@@ -551,6 +551,114 @@ $currency = $this->isForeignCurrency() ? 'NT' : 'VND';
 
 **Kết luận:** 11/14 ✅, **3 mục cần fix** (5, 10, 11) — ghi vào task riêng.
 
+## 2.9. `report-shell` — quy tắc chung cho MỌI báo cáo
+
+`report-shell` (`catalog::rpt.report-shell`) là shell dùng chung cho **74 view báo cáo**.
+Sửa nó = ảnh hưởng tất cả → phải hiểu rõ cơ chế trước khi đụng.
+
+### 2.9.1. Cách dùng
+
+```blade
+{{-- Cách 1: chỉ định view filter --}}
+@include('catalog::rpt.report-shell', ['filterView' => 'catalog::po.rpt.filters.porptbk01'])
+
+{{-- Cách 2: dùng slot --}}
+<x-report-shell>
+    <x-slot:filter> ...field lọc... </x-slot:filter>
+</x-report-shell>
+```
+
+### 2.9.2. Label cột — 3 tầng ưu tiên
+
+`AbstractReport::columnLabel($column)` resolve theo thứ tự:
+
+| Tầng | Nguồn | Ai dùng |
+|---|---|---|
+| 1 | `reportColumnLabels()` override trong component | báo cáo cần label đặc biệt |
+| 2 | `sysReportResx.formated_col_list` theo `menuid` + `ma_mau` | **mặc định — đúng SimbaERP** |
+| 3 | `ReportColumnLabels::allLabels()` (gộp toàn bộ 465 dòng Resx → ~700 label) | cột phụ |
+| 4 | Tên cột thô | fallback cuối |
+
+**Cấm** tự đặt label khi đã có trong `sysReportResx`.
+
+### 2.9.3. Cột hiển thị — lấy từ `formated_col_list`
+
+`AbstractReport::resolveColumns()` lọc cột theo `sysReportResx.formated_col_list`.
+
+**Vì sao cần:** SP thường trả **nhiều cột hơn** cần hiển thị.
+
+Ví dụ `asPORptBK01`: SP trả **40 cột**, `formated_col_list` chỉ định nghĩa **14 cột**.
+
+| Loại cột | Ví dụ | Xử lý |
+|---|---|---|
+| Cột kỹ thuật | `ma_cty`, `stt_rec`, `stt_rec0` | **ẩn** |
+| Cột `_nt` khi là VND | `gia_nt0`, `tien_nt0`, `tt_nt` | ẩn theo `formated_col_list` |
+| Cột hiển thị | `ngay_ct`, `so_ct`, `ma_kh`, `ten_kh` | hiện, đúng thứ tự Resx |
+
+**An toàn:** nếu `formated_col_list` rỗng hoặc không khớp cột nào → hiện **toàn bộ**
+cột SP trả (không giấu dữ liệu).
+
+### 2.9.4. Cấu trúc `formated_col_list`
+
+```
+ten_cot:H=<header>:F=<format>:W=<width>,ten_cot2:H=...
+```
+
+| Trường | Nghĩa | Ví dụ |
+|---|---|---|
+| (đầu) | tên cột | `ngay_ct` |
+| `H=` | header hiển thị | `H=Ngày CT` |
+| `F=` | format | `dd/MM/yyyy`, `QT` (số lượng), `OA` (tiền) |
+| `W=` | width (px) | `W=75` |
+
+Service `ReportColumnLabels`:
+- `for($menuId, $maMau)` → `[cot => label]`
+- `visibleColumns($menuId, $maMau)` → `[cot, ...]` giữ thứ tự
+- `allLabels()` → map toàn cục (fallback)
+- `parse()`, `parseColumns()` → parse thuần (có unit test)
+
+### 2.9.5. Bảng Resx — 2 loại danh sách cột
+
+| Cột | Dùng cho |
+|---|---|
+| `formated_col_list` | bảng **master** (danh sách phiếu) |
+| `ct_formated_col_list` | bảng **chi tiết** (Master-Detail) |
+| `formated_col_list_nt` | master khi là **ngoại tệ** |
+| `ct_formated_col_list_nt` | chi tiết khi là ngoại tệ |
+
+Báo cáo Master-Detail (như `sorptbk01`) dùng cả 2; báo cáo 1 bảng chỉ dùng `formated_col_list`.
+
+### 2.9.6. Độ phủ thực tế (kiểm 2026-11-27)
+
+| Chỉ số | Số lượng |
+|---|---:|
+| `sysReportResx` (vi-VN) | 465 dòng |
+| Có `formated_col_list` | 366 dòng |
+| Report route có `ma_mau` | 131/134 |
+| Label gộp toàn cục | ~700 |
+
+→ Đa số báo cáo có định nghĩa cột; số còn lại fallback hiện toàn bộ cột.
+
+### 2.9.7. Quy trình sửa `report-shell` — BẮT BUỘC
+
+Vì ảnh hưởng 74 view, mỗi lần sửa phải:
+
+```
+1. Sửa AbstractReport (logic) hoặc report-shell (hiển thị) — KHÔNG sửa từng view
+2. Verify tối thiểu 4 báo cáo thuộc 4 module khác nhau
+3. Verify báo cáo có Master-Detail (sorptbk01) không bị ảnh hưởng
+4. Verify báo cáo KHÔNG có formated_col_list vẫn hiện đủ cột
+5. Chạy unit test ReportColumnLabelsTest
+```
+
+### 2.9.8. Ví dụ đạt chuẩn — `porptbk01` sau khi áp dụng
+
+| | Trước | Sau |
+|---|---|---|
+| Số cột hiện | **41** (gồm `ma_cty`, `stt_rec`, `stt_rec0`) | **15** |
+| Header | `ma_cty`, `stt_rec`, `ma_ct`, `ma_kh` | `#`, **Ngày CT**, **Số CT**, **Mã CT**, **Mã KH**, **Tên KH**, **Diễn giải** |
+| Nguồn label | không có | `sysReportResx` `10.20.02`/`04` |
+
 ## 3. ARDMKH Save: default không được `NULL`
 
 Theo `simba-docs/tables/ArDmKh.md`, hầu hết cột `NOT NULL` có default:
