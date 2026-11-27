@@ -96,6 +96,48 @@ FROM sysReportInfo WHERE menuid = '{menuid}' AND isdefault = 1;
 
 ---
 
+---
+
+## Đối chiếu trang chuẩn (§2.8)
+
+**Trang chuẩn cùng loại:** `/simba/so/rpt/sorptbk01` _(hoặc route khác cùng loại)_
+
+| # | Hạng mục | Trang chuẩn | Trang của mình | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render thật | ✅ | ⬜ | |
+| 2 | Route 200 | ✅ | ⬜ | |
+| 3 | Submit dữ liệu đúng kỳ | ✅ | ⬜ | |
+| 4 | Bộ chọn kỳ (`component.timer`) | ✅ | ⬜ | |
+| 5 | **Label cột tiếng Việt** | ✅ | ⬜ | **quan trọng** |
+| 6 | Sticky header | ✅ | ⬜ | |
+| 7 | Cột `#` số thứ tự | ✅ | ⬜ | |
+| 8 | Màu/nền hover dòng | ✅ | ⬜ | |
+| 9 | Click dòng → panel chi tiết | ✅ | ⬜ | Master-Detail |
+| 10 | Format số `vi-VN` | ✅ | ⬜ | |
+| 11 | Số tiền theo loại tiền tệ | ✅ | ⬜ | VND/NT |
+| 12 | Xuất Excel | ✅ | ⬜ | |
+| 13 | Empty state khi 0 dòng | ✅ | ⬜ | |
+| 14 | Hiển thị `errorMessage` | ✅ | ⬜ | |
+
+> Hạng mục nào ❌ phải ghi lý do chấp nhận hoặc task riêng. Không bỏ trống.
+
+### Tự trả lời 7 câu (§2.8.7)
+
+1. Trang chuẩn cùng loại: _..._
+2. Đã mở cả 2 trang trên browser: _có/không_
+3. Hạng mục trang mình thiếu: _..._
+4. 5 cột đầu hiện label gì: _..._
+5. Số tiền định dạng thế nào: _..._
+6. Khi 0 dòng người dùng thấy gì: _..._
+7. Đã so số dòng/cột với SQL trực tiếp: _..._
+
+---
+
+## Label cột kết quả
+
+| Cột SP | Label tiếng Việt | Nguồn |
+|---|---|---|
+
 ## Bug đã fix
 
 ### Bug 1: {tên}

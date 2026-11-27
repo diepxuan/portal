@@ -414,6 +414,143 @@ Task doc đạt chuẩn phải có:
 
 ---
 
+## 2.8. Tự kiểm tra — đối chiếu với trang chuẩn (không dừng ở checklist)
+
+§2.7 là **danh sách tối thiểu**. Để đạt mức **hoàn thiện như trang chuẩn**, agent phải
+**tự đối chiếu** với một màn hình đã được công nhận tốt — không chỉ tick đủ ô.
+
+### 2.8.1. Trang chuẩn tham chiếu
+
+**`/simba/so/rpt/sorptbk01`** (Sổ chi tiết công nợ khách hàng) — được xem là
+**mức hoàn thiện tương đối** để so sánh.
+
+Lý do: có Master-Detail, label cột tiếng Việt, xử lý số tiền theo loại tiền tệ,
+empty state, sticky header, xuất Excel, và đã verify với dữ liệu thật.
+
+Khi làm task mới **cùng loại** (bảng kê / báo cáo), phải tự hỏi:
+
+> Trang chuẩn có gì mà trang của mình **chưa có**? Vì sao thiếu? Có chấp nhận được không?
+
+### 2.8.2. Bảng đối chiếu bắt buộc — 12 hạng mục
+
+Agent phải tự điền bảng này vào task doc:
+
+| # | Hạng mục | Trang chuẩn `sorptbk01` | Trang của mình | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render thật | ✅ | ? | |
+| 2 | Route 200 | ✅ | ? | |
+| 3 | Submit dữ liệu đúng kỳ | ✅ | ? | |
+| 4 | Bộ chọn kỳ (`component.timer`) | ✅ | ? | |
+| 5 | **Label cột tiếng Việt** | ✅ `'label' => 'Loại phiếu'` | ? | **quan trọng** |
+| 6 | Sticky header | ✅ | ? | |
+| 7 | Cột số thứ tự `#` | ✅ | ? | |
+| 8 | Màu/nền theo loại dòng | ✅ | ? | |
+| 9 | Click dòng → panel chi tiết | ✅ | ? | Master-Detail |
+| 10 | Định dạng số theo `vi-VN` | ✅ | ? | |
+| 11 | Số tiền theo loại tiền tệ (VND/NT) | ✅ | ? | |
+| 12 | Xuất Excel | ✅ | ? | |
+| 13 | Empty state khi 0 dòng | ✅ | ? | |
+| 14 | Hiển thị `errorMessage` | ✅ | ? | |
+
+**Quy tắc:** hạng mục nào đánh `❌` phải ghi rõ **lý do chấp nhận** hoặc **task riêng
+sẽ làm**. Không được bỏ trống.
+
+### 2.8.3. Label cột — khác biệt lớn nhất
+
+`report-shell` hiện `$column` thô (`ma_cty`, `stt_rec`, `ma_kh`).
+Trang chuẩn map sang label tiếng Việt:
+
+```php
+$columns = [
+    ['key' => 'ma_ct',   'label' => 'Loại phiếu', 'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'ngay_ct', 'label' => 'Ngày CT',    'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'so_ct',   'label' => 'Số CT',      'class' => 'text-left whitespace-nowrap font-mono'],
+    ['key' => 'ma_kh',   'label' => 'Mã KH',      'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'ten_kh',  'label' => 'Khách hàng', 'class' => 'text-left'],
+];
+```
+
+**Pattern cần áp dụng cho report dùng `report-shell`:**
+
+1. Component khai báo `columnLabels(): array` map `key => label`
+2. Truyền vào view: `'columnLabels' => $this->columnLabels()`
+3. `report-shell` dùng `$columnLabels[$column] ?? $column`
+
+Với cột động (SP trả nhiều cột), thêm fallback `appendDynamicColumns()`:
+cột quen → label tay, cột lạ → dùng tên cột.
+
+### 2.8.4. Nguồn label cột — lấy từ đâu
+
+| Nguồn | Ưu tiên | Ghi chú |
+|---|---|---|
+| **Form decompiled** (`lbl*.Text`) | 1 | chính xác nhất |
+| **`sysReportResx`** trong DB | 2 | bản dịch chính thức SimbaERP |
+| **RPT file** (Crystal Report) | 3 | nếu có decompiled |
+| Tự đặt | ❌ | **cấm** |
+
+Query `sysReportResx`:
+
+```sql
+SELECT * FROM sysReportResx WHERE menuid = '{menuid}' ORDER BY ctlname;
+```
+
+### 2.8.5. Định dạng số — theo `vi-VN` và loại tiền tệ
+
+Trang chuẩn xử lý:
+
+```php
+$currency = $this->isForeignCurrency() ? 'NT' : 'VND';
+
+['key' => 'tien2', 'label' => 'Tiền ' . $currency, ...]
+```
+
+- `1.234.567` (dấu chấm ngăn nghìn, không thập phân cho VND)
+- Ngoại tệ: hiện thêm cột `_nt`
+- Ô tiền trống: `'—'` trên UI, `''` khi xuất CSV
+
+### 2.8.6. Quy trình tự đối chiếu — 5 bước
+
+```
+1. Chọn trang chuẩn CÙNG LOẠI (bảng kê / báo cáo / phiếu / danh mục)
+2. Mở cả 2 trang trên browser, chụp lại cấu trúc
+3. Điền bảng đối chiếu 14 hạng mục (§2.8.2)
+4. Với mỗi ❌: quyết định "làm ngay" / "task riêng + lý do"
+5. Ghi kết quả vào task doc — KHÔNG chỉ ghi ✅
+```
+
+### 2.8.7. Câu hỏi tự kiểm tra (bắt buộc trả lời trong task doc)
+
+1. **Trang chuẩn cùng loại là gì?** (route cụ thể)
+2. **Đã mở cả 2 trang trên browser chưa?** (có/không)
+3. **Hạng mục nào trang mình thiếu so với chuẩn?** (liệt kê)
+4. **Cột kết quả hiện label gì?** (chụp 5 cột đầu)
+5. **Số tiền định dạng thế nào?** (ví dụ thực)
+6. **Nếu 0 dòng, người dùng thấy gì?** (empty state)
+7. **Đã so số dòng/cột với query SQL trực tiếp chưa?** (số cụ thể)
+
+**Không trả lời được 7 câu này = chưa đủ điều kiện báo xong.**
+
+### 2.8.8. Ví dụ — đối chiếu 071/073/077 với `sorptbk01`
+
+| # | Hạng mục | `sorptbk01` | `porptbk01` | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render | ✅ | ✅ | |
+| 2 | Route 200 | ✅ | ✅ | |
+| 3 | Submit dữ liệu | ✅ | ✅ 111 / 1.371 dòng | |
+| 4 | Bộ chọn kỳ | ✅ | ✅ | |
+| 5 | **Label cột tiếng Việt** | ✅ | ❌ **`ma_cty`, `stt_rec`** | **cần fix** |
+| 6 | Sticky header | ✅ | ✅ | |
+| 7 | Cột `#` | ✅ | ✅ | |
+| 8 | Màu dòng hover | ✅ | ✅ | |
+| 9 | Click dòng → chi tiết | ✅ | ✅ (`selectedRow`) | |
+| 10 | Format số `vi-VN` | ✅ | ⚠️ `number_format` | chưa có locale |
+| 11 | Số tiền theo tiền tệ | ✅ | ❌ | cần biết cột tiền |
+| 12 | Xuất Excel | ✅ | ✅ | |
+| 13 | Empty state | ✅ | ✅ | |
+| 14 | `errorMessage` | ✅ | ✅ | |
+
+**Kết luận:** 11/14 ✅, **3 mục cần fix** (5, 10, 11) — ghi vào task riêng.
+
 ## 3. ARDMKH Save: default không được `NULL`
 
 Theo `simba-docs/tables/ArDmKh.md`, hầu hết cột `NOT NULL` có default:

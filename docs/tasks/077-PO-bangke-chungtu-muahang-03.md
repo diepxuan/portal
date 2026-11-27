@@ -777,3 +777,86 @@ Vẫn giữ trong payload (SP cần đủ tham số), chỉ không hiện UI.
 - **Title (sysMenu.short_name):** Bảng kê chi phí mua hàng
 - **Title hiện trên UI:** lấy từ `sysMenu.bar` (form gốc `AssemblyTitle`) — khác `short_name`
 
+## Đối chiếu trang chuẩn `sorptbk01` (§2.8)
+
+**Trang chuẩn:** `/simba/so/rpt/sorptbk01` — Sổ chi tiết công nợ KH (được xem là mức hoàn thiện tương đối).
+
+Đã mở **cả 2 trang** trên browser, thu thập bằng chứng thật (2026-11-27):
+
+### Bảng đối chiếu 14 hạng mục
+
+| # | Hạng mục | `sorptbk01` | `porptbk03` | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render thật | ✅ | ✅ | |
+| 2 | Route 200 | ✅ | ✅ | |
+| 3 | Submit dữ liệu đúng kỳ | ✅ | ✅ | 2025 → 1.371 dòng |
+| 4 | Bộ chọn kỳ | ✅ | ✅ | `component.timer` |
+| 5 | **Label cột tiếng Việt** | ✅ | ❌ | **xem 5.1** |
+| 6 | Sticky header | ✅ | ✅ | |
+| 7 | Cột `#` số thứ tự | ✅ | ✅ | |
+| 8 | Màu hover dòng | ✅ | ✅ | `hover:bg-sky-50` |
+| 9 | Click dòng → panel chi tiết | ✅ | ✅ | `selectRow` |
+| 10 | Format số `vi-VN` | ✅ | ⚠️ | `number_format` chưa locale |
+| 11 | Số tiền theo loại tiền tệ | ✅ | ❌ | **xem 5.2** |
+| 12 | Xuất Excel | ✅ | ✅ | |
+| 13 | Empty state 0 dòng | ✅ | ✅ | |
+| 14 | Hiển thị `errorMessage` | ✅ | ✅ | |
+
+**Kết quả: 11/14 ✅, 3 mục cần cải thiện.**
+
+### 5.1. ❌ Label cột — bằng chứng cụ thể
+
+| | Header thực tế (DOM) |
+|---|---|
+| `sorptbk01` | `#`, **Loại phiếu**, **Ngày CT**, **Số CT**, **Mã KH**, **Khách hàng**, **Tiền VND** |
+| `porptbk03` | `#`, `ma_cty`, `stt_rec`, `stt_rec0`, `ma_ct`, `ma_kh`, `ten_kh` |
+
+**Nguyên nhân:** `report-shell.blade.php` render `{{ $column }}` thô. `sorptbk01` map qua `buildPhieuColumns()`:
+
+```php
+['key' => 'ma_ct',   'label' => 'Loại phiếu', 'class' => 'text-left whitespace-nowrap'],
+['key' => 'ngay_ct', 'label' => 'Ngày CT',    'class' => 'text-left whitespace-nowrap'],
+['key' => 'so_ct',   'label' => 'Số CT',      'class' => 'text-left whitespace-nowrap font-mono'],
+```
+
+**Đề xuất fix (task riêng):** thêm `columnLabels(): array` vào `AbstractReport`, truyền vào `report-shell`, dùng `$columnLabels[$column] ?? $column`.
+
+**Lý do chưa làm trong PR #428:** sửa `report-shell` ảnh hưởng **mọi báo cáo** đang dùng nó (~50 component) → cần PR riêng + verify toàn bộ.
+
+### 5.2. ❌ Số tiền theo loại tiền tệ
+
+`sorptbk01` đổi label theo `pMa_nt`:
+
+```php
+$currency = $this->isForeignCurrency() ? 'NT' : 'VND';
+['key' => 'tien2', 'label' => 'Tiền ' . $currency, ...]
+```
+
+`porptbk03` chỉ hiện tên cột SP (`tien_nt`, `tt_nt`) → khó đọc.
+
+**Đề xuất:** cùng task với 5.1 — khi có `columnLabels()` thì map cột tiền theo `pMa_nt`.
+
+### 5.3. ⚠️ Format số
+
+`report-shell` dùng `number_format(count($rows))` (chỉ đếm dòng), còn **ô dữ liệu** dùng `displayValue()` — cần kiểm tra có format `vi-VN` chưa.
+
+### 6. Trả lời 7 câu tự kiểm tra (§2.8.7)
+
+| # | Câu hỏi | Trả lời |
+|---|---|---|
+| 1 | Trang chuẩn cùng loại | `/simba/so/rpt/sorptbk01` |
+| 2 | Đã mở cả 2 trên browser | **Có** |
+| 3 | Hạng mục thiếu so chuẩn | #5 label cột, #10 format số, #11 tiền tệ |
+| 4 | 5 cột đầu hiện label gì | `#`, `ma_cty`, `stt_rec`, `stt_rec0`, `ma_ct` ❌ |
+| 5 | Số tiền định dạng | chưa format locale |
+| 6 | 0 dòng thấy gì | "Chưa có dữ liệu. Nhập điều kiện lọc rồi bấm Thực hiện." ✅ |
+| 7 | So số dòng/cột với SQL | **có** — 2025: 1.371 dòng / 41 cột |
+
+### 7. Kết luận mức hoàn thiện
+
+| Mức | Số mục | Đánh giá |
+|---|---:|---|
+| Trước PR #428 | 2/14 | ❌ không dùng được |
+| Sau PR #428 | **11/14** | ⚠️ **tạm sử dụng được** |
+| Bằng trang chuẩn | 14/14 | cần task riêng cho 5.1 + 5.2 |
+
