@@ -946,3 +946,49 @@ Cột `ma_cty`/`stt_rec`/`stt_rec0` là kỹ thuật — SimbaERP không hiển 
 
 Unit test: `ReportColumnLabelsTest` — **9 tests / 20 assertions PASS**.
 
+### 11. Master-Detail — bảng chi tiết bên dưới (chuẩn `sorptbk01`)
+
+**Yêu cầu Sếp:** chọn dòng → hiện **"Chi tiết phiếu #3"** **bên dưới**, dạng **bảng**, giống bảng kê bán hàng. Không hiện panel `<dl>` bên trên.
+
+**Phát hiện:** SP `asPORptBK01` trả **2 result set** (chưa từng dùng):
+
+| Result set | Dòng | Cột | Vai trò |
+|---|---:|---:|---|
+| RS1 | **1.371** | 40 | chi tiết (có `ma_vt`, `so_luong`, `gia0`, `tien0`...) |
+| RS2 | **366** | 27 | danh sách phiếu (mỗi `stt_rec` 1 dòng) |
+
+Liên kết: `RS1.stt_rec = RS2.stt_rec` — **366/366** stt_rec của RS2 có trong RS1.
+
+**Đã làm:**
+
+1. `AsPORptBK01::callWithDataSets()` — đọc cả 2 result set (theo pattern `AsSORptBK01`)
+2. `AbstractReport` — thêm `$detailRows`, `$detailColumns`, `$detailKey` + 5 method:
+   `usesDataSets()`, `hasDetail()`, `selectedDetailRows()`,
+   `detailColumnLabel()`, `resolveDetailColumns()`
+3. `Porptbk01::usesDataSets()` → `true`
+4. `report-shell` — panel chi tiết chuyển từ **trên** (`<dl>`) xuống **dưới** (**bảng**),
+   header riêng từ `sysReportResx.ct_formated_col_list`
+5. `ReportColumnLabels::forDetail()` + `visibleDetailColumns()`
+
+**Kết quả browser:**
+
+```
+Bảng trên : 366 phiếu | # Ngày CT Số CT Mã CT Mã KH Tên KH Diễn giải
+Click dòng 3 → "Chi tiết phiếu #3" + HDMH00116
+Bảng dưới : 5 dòng | # Mã VT Tên VT ĐVT Số lượng Giá mua Tiền mua
+```
+
+**Không ảnh hưởng báo cáo 1 bảng:**
+
+| Báo cáo | Kết quả |
+|---|---|
+| `porptbk02` | 1.415 dòng, `detail: 0` — không bật Master-Detail (SP chỉ 1 result set) ✅ |
+| `porptbk03` | 42 dòng, `detail: 0` ✅ |
+| `gl/rpt/glrptbct01` | 1 dòng, `detail: 0` ✅ |
+| `so/rpt/sorptbk01` | không đổi ✅ |
+
+**Tương thích ngược:** báo cáo 1 bảng vẫn dùng panel `<dl>` cũ nếu không có `detailRows`
+(nhánh `@elseif` trong `report-shell`).
+
+Unit test: **12 tests / 28 assertions PASS**.
+

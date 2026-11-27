@@ -659,6 +659,96 @@ Vì ảnh hưởng 74 view, mỗi lần sửa phải:
 | Header | `ma_cty`, `stt_rec`, `ma_ct`, `ma_kh` | `#`, **Ngày CT**, **Số CT**, **Mã CT**, **Mã KH**, **Tên KH**, **Diễn giải** |
 | Nguồn label | không có | `sysReportResx` `10.20.02`/`04` |
 
+### 2.9.9. Master-Detail — bảng chi tiết BÊN DƯỚI (chuẩn)
+
+**Chuẩn tham chiếu:** `/simba/so/rpt/sorptbk01` — chọn dòng → panel **"Chi tiết phiếu #N"** hiện **bên dưới** bảng master, dạng **bảng** có header riêng.
+
+**Cấm:** hiện panel chi tiết **bên trên** dạng `<dl>` (định dạng cũ) — sai vị trí và khó đọc.
+
+#### a) Điều kiện: SP phải trả 2 result set
+
+Kiểm tra trước khi bật:
+
+```
+RS1 = chi tiết  (nhiều dòng / phiếu, có ma_vt, so_luong, gia, tien...)
+RS2 = master    (mỗi stt_rec 1 dòng)
+Lien ket: RS1.stt_rec = RS2.stt_rec
+```
+
+Ví dụ đã kiểm chứng `asPORptBK01` (kỳ 2025):
+
+| Result set | Dòng | Cột | Vai trò |
+|---|---:|---:|---|
+| RS1 | **1.371** | 40 | chi tiết |
+| RS2 | **366** | 27 | danh sách phiếu |
+
+`366/366` stt_rec của RS2 đều có trong RS1.
+
+**SP chỉ trả 1 result set** (`asPORptBK02`, `asPORptBK03`) → **không** bật Master-Detail,
+giữ bảng đơn.
+
+#### b) Bật Master-Detail trong component
+
+```php
+// 1. Wrapper SP phai co callWithDataSets() — xem AsPORptBK01
+// 2. Component override:
+protected function usesDataSets(): bool
+{
+    return true;
+}
+```
+
+`AbstractReport::submit()` tự động:
+- gọi `$sp::callWithDataSets($payload)` thay vì `$sp::call()`
+- `$rows` = `ph` (master), `$detailRows` = `ct` (chi tiết)
+- `$detailColumns` lấy từ `sysReportResx.ct_formated_col_list`
+
+#### c) Method có sẵn trong `AbstractReport`
+
+| Method | Việc |
+|---|---|
+| `usesDataSets()` | override → `true` để bật |
+| `hasDetail()` | có dữ liệu chi tiết để hiện không |
+| `selectedDetailRows()` | các dòng chi tiết của phiếu đang chọn (lọc theo `detailKey`) |
+| `detailColumnLabel($col)` | label cột chi tiết (4 tầng như `columnLabel`) |
+| `resolveDetailColumns($row)` | lọc cột chi tiết theo `ct_formated_col_list` |
+
+**Property mới:** `$detailRows`, `$detailColumns`, `$detailColumnLabelMap`, `$detailKey` (mặc định `stt_rec`).
+
+#### d) `report-shell` render 2 bảng
+
+```
+[bảng master — 366 phiếu]
+   ↓ click dòng
+[Chi tiết phiếu #3]                    ← tiêu đề + so_ct
+[bảng chi tiết — 5 dòng]               ← header riêng từ ct_formated_col_list
+[N dòng chi tiết]
+```
+
+Cơ chế: `@if ($this->hasDetail())` → hiện bảng chi tiết **dưới**;
+`@elseif ([] !== $selectedRow)` → báo cáo 1 bảng giữ panel `<dl>` cũ (tương thích ngược).
+
+#### e) Bảng Resx cho Master-Detail
+
+| Cột Resx | Dùng cho | Method |
+|---|---|---|
+| `formated_col_list` | bảng master | `visibleColumns()` |
+| `ct_formated_col_list` | bảng chi tiết | `visibleDetailColumns()` |
+| `formated_col_list_nt` | master khi ngoại tệ | (chưa dùng) |
+| `ct_formated_col_list_nt` | chi tiết khi ngoại tệ | (chưa dùng) |
+
+Nhãn: `for($menuId,$maMau)` cho master, `forDetail($menuId,$maMau)` cho chi tiết.
+
+#### f) Ví dụ đạt chuẩn — `porptbk01`
+
+| | Trước | Sau |
+|---|---|---|
+| Bảng trên | 366 phiếu (sau khi lọc cột) | 366 phiếu |
+| Panel chi tiết | **bên trên**, dạng `<dl>` | **bên dưới**, dạng **bảng** |
+| Tiêu đề | "Chi tiết dòng 23" | **"Chi tiết phiếu #3"** + `so_ct` |
+| Header chi tiết | tên cột thô | **Mã VT, Tên VT, ĐVT, Số lượng, Giá mua, Tiền mua** |
+| Số dòng chi tiết | 40 cột flat | **5 dòng** của riêng phiếu đó |
+
 ## 3. ARDMKH Save: default không được `NULL`
 
 Theo `simba-docs/tables/ArDmKh.md`, hầu hết cột `NOT NULL` có default:
