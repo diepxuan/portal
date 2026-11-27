@@ -54,7 +54,20 @@ class Porptbk01 extends AbstractReport
 
     public ?string $pMa_nvkd = null;
 
-    public ?string $pMa_nt = '';
+
+    /**
+     * Ma ngoai te mac dinh = VND.
+     *
+     * Bang chung tu Framework.dll (base class frmReport):
+     *   optVND.Checked = true;   // dong 59828
+     *   optVND.Text = "VND";
+     *   optNt.Text = "Ngoai te";
+     * Va sysReportInfo.hasNT='1' cho ca 3 menu -> nhom ngoai te phai hien.
+     *
+     * SP loc: AND p.ma_nt LIKE @pMa_nt + '%'
+     *   '' -> tat ca ngoai te | 'VND' -> chi VND (dung mac dinh SimbaERP).
+     */
+    public ?string $pMa_nt = 'VND';
 
     public ?string $pMa_hd = null;
 
