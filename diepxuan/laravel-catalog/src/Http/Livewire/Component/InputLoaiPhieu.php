@@ -87,6 +87,17 @@ class InputLoaiPhieu extends Component
         }
     }
 
+    /**
+     * Khi parent truyen san gia tri qua wire:model (vd pMa_ct='PO3'),
+     * mount() khong nhan duoc -> phai sync o hydrate.
+     */
+    public function hydrate(): void
+    {
+        if (null !== $this->value && '' !== trim((string) $this->value) && '' === trim($this->search)) {
+            $this->refreshSearchFromValue();
+        }
+    }
+
     public function updatedValue(mixed $newValue): void
     {
         $val = null === $newValue ? '' : trim((string) $newValue);
@@ -141,6 +152,11 @@ class InputLoaiPhieu extends Component
 
     public function render(): View
     {
+        // Dam bao search luon phan anh dung value hien tai (ke ca lan render dau).
+        if (null !== $this->value && '' !== trim((string) $this->value) && '' === trim($this->search)) {
+            $this->refreshSearchFromValue();
+        }
+
         return view('catalog::components.input-loai-phieu', [
             'loaiPhieuList' => $this->ctOptions(),
         ]);

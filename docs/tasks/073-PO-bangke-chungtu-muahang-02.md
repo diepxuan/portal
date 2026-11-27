@@ -498,6 +498,41 @@ Dùng:
 | `vi` | 0 |
 | `''` | 2 |
 
+#### 5. Tự động chọn "Hoá đơn mua hàng trong nước"
+
+**Nguồn:** bảng `sysReportInfo` (chính là `MyReportInfo` trong form gốc).
+
+Form gốc `frmPORptBK01.InitOtherComponents()`:
+```csharp
+// sau khi nap asSIGetDmSo_ct:
+((ListControl)cboLoaiPhieu).SelectedValue = base.MyReportInfo.par0;
+```
+
+Query DB xác nhận:
+
+| Menu | ma_mau | isdefault | par0 |
+|---|---|---|---|
+| `10.20.02` | 04 | **1** | **`PO3`** |
+| `10.20.05` | 04 | **1** | **`PO3`** |
+| `10.20.20` | 01 | **1** | `''` (Tất cả) |
+
+**Kết quả áp dụng:**
+
+| Task | `pMa_ct` mặc định | Hiển thị |
+|---|---|---|
+| **071** (BK01) | `'PO3'` | Hoá đơn mua hàng trong nước |
+| **073** (BK02) | `'PO3'` | Hoá đơn mua hàng trong nước |
+| **077** (BK03) | `null` | (Tất cả — đúng `par0=''`) |
+
+**Fix kỹ thuật:** `mount()` không nhận value qua `wire:model` -> thêm `hydrate()` + sync trong `render()` để input hiện **tên** thay vì mã `PO3`.
+
+**Verify browser:**
+```
+wireValue=PO3 | wireSearch="Hoá đơn mua hàng trong nước"
+payload: pMa_ct=PO3, pNgay1=2026-11-01, pNgay2=2026-11-30
+submit: n=0, err=null
+```
+
 ### Field ẩn — theo form gốc
 
 Form ẩn bằng `.Visible = false` nên không có trong ảnh:

@@ -47,7 +47,14 @@ class Porptbk01 extends AbstractReport
 
     public ?string $pMa_plkh3 = null;
 
-    public ?string $pMa_ct = null;
+    /**
+     * Loai phieu mac dinh — lay tu sysReportInfo.par0 cua mau isdefault=1.
+     *
+     * Menu 10.20.02 (BK01) va 10.20.05 (BK02): mau 04 isdefault=1, par0='PO3'
+     * -> tu dong chon "Hoa don mua hang trong nuoc".
+     * Menu 10.20.20 (BK03): par0='' -> giu null (Tat ca).
+     */
+    public ?string $pMa_ct = 'PO3';
 
     public ?string $pMa_lo = null;
 
