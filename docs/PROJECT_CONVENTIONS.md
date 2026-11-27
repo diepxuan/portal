@@ -82,6 +82,17 @@ php artisan route:list --path={module}
 Mọi route/namespace ghi trong task doc **phải** khớp output của `route:list`. Tài liệu task
 có thể đã lỗi thời — **`route:list` là nguồn sự thật cuối cùng**.
 
+> ⚠️ **Route 200 + component render CHƯA ĐỦ để gọi DONE.**
+>
+> Đó chỉ là **2/9 mục** của định nghĩa DONE. Với bảng kê/báo cáo, phải kiểm thêm:
+> submit có dữ liệu đúng kỳ, bộ chọn kỳ, label tiếng Việt, dropdown, giá trị mặc định,
+> tham số rỗng `''` (không `null`).
+>
+> Xem **mục 2.7** — bắt buộc đọc trước khi đánh `DONE` cho bất kỳ bảng kê/báo cáo nào.
+>
+> *Bài học PR #428: task 071/073/077 từng được đánh DONE khi chỉ đạt 2/9 mục →
+> thực tế nhập kỳ ra **0 dòng**, dùng không được.*
+
 ### 2.5. Ví dụ đúng (toàn bộ loại)
 
 | Loại | Route | Namespace component | View |
@@ -107,6 +118,438 @@ có thể đã lỗi thời — **`route:list` là nguồn sự thật cuối c�
 | CA - Form | `Ca\Dict\ArdmkhForm` | `ca/dict/ardmkh-form.blade.php` | `ca.dict.ardmkh.create/edit` |
 
 - Hành động xóa danh mục ARDMKH dùng method `deleteDoiTuong`, không dùng `deleteKhachHang`.
+
+## 2.7. Định nghĩa DONE — bảng kê / báo cáo (bài học PR #428)
+
+> **Bối cảnh:** Task 071/073/077 (3 bảng kê mua hàng PO) từng được đánh dấu `DONE`
+> khi mới chỉ có *component render được + route 200*. Thực tế **không dùng được**:
+> nhập kỳ → **0 dòng**, label hiện tên tham số thô (`pTrang_thai`, `pMa_kh`),
+> thiếu bộ chọn kỳ, dropdown không có dữ liệu.
+>
+> PR #428 mới đưa 3 màn về mức **dùng được thật**. Section này chốt lại tiêu chí
+> để các task sau **không dừng ở mức cũ**.
+
+### 2.7.1. Checklist bắt buộc — 9 mục
+
+Một task bảng kê/báo cáo **chỉ được đánh `DONE`** khi qua đủ 9 mục:
+
+| # | Hạng mục | Cách kiểm chứng | Mức cũ | Mức #428 |
+|---|---|---|---|---|
+| 1 | Component render thật (không phải shell) | `window.Livewire.all()` có `catalog::{module}.{kind}.{slug}` | ✅ | ✅ |
+| 2 | Route trả 200 | `curl -o /dev/null -w "%{http_code}"` | ✅ | ✅ |
+| 3 | **Submit có dữ liệu đúng kỳ** | Nhập kỳ có phát sinh → `rows.length > 0` | ❌ | ✅ |
+| 4 | **Không lỗi `errorMessage`** | `$wire.get('errorMessage') === null` | ⚠️ | ✅ |
+| 5 | **Bộ chọn kỳ** (`component.timer`) | `@livewire('catalog::component.timer')` trong filter | ❌ | ✅ |
+| 6 | **Label tiếng Việt** | Lấy từ `grep 'lbl*.Text = "..."'` form gốc | ❌ | ✅ |
+| 7 | **Dropdown cho field có danh mục** | field nào SP có danh mục → dùng `input-*` component | ❌ | ✅ |
+| 8 | **Giá trị mặc định đúng** | Đọc `sysReportInfo.par0` / form gốc | ❌ | ✅ |
+| 9 | **Tham số rỗng = `''` không `null`** | Xem 2.7.3 | ❌ | ✅ |
+
+**"Mức cũ" = chỉ mục 1-2.** Đây **KHÔNG đủ** để gọi DONE.
+
+### 2.7.2. Bộ chọn kỳ — luôn dùng `component.timer`
+
+Bảng kê/báo cáo **bắt buộc** có bộ chọn kỳ giống SimbaERP:
+
+```blade
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Kỳ báo cáo</label>
+    <div class="col-span-2">
+        @livewire('catalog::component.timer', key('{slug}-timer'))
+        <x-input-error for="pNgay1" class="mt-1" />
+        <x-input-error for="pNgay2" class="mt-1" />
+    </div>
+</div>
+```
+
+```php
+public function mount(?string $module = null, ?string $kind = null, ?string $slug = null): void
+{
+    parent::mount($module, $kind, $slug);
+
+    $this->syncTimer();
+}
+
+private function syncTimer(): void
+{
+    $timer = \CatalogService::timer();
+
+    $this->pNgay1 = (string) ($timer['from'] ?? now()->startOfMonth()->toDateString());
+    $this->pNgay2 = (string) ($timer['to'] ?? now()->toDateString());
+}
+```
+
+**Không dùng `now()` trực tiếp** — `pNgay2` sẽ là *hôm nay* thay vì *cuối kỳ*
+→ lệch số liệu so với SimbaERP.
+
+### 2.7.3. 🔴 Tham số rỗng PHẢI là `''`, KHÔNG được `null`
+
+**Đây là bug nghiêm trọng nhất của PR #428.**
+
+Nhiều SP dựng SQL động:
+
+```sql
++ case @pX when '' then '' else ' AND col LIKE @pX + ''%''' end
+```
+
+Trong SQL Server: **`NULL = ''` → `UNKNOWN`** (không phải `TRUE`)
+→ rơi vào nhánh `else` → sinh `AND col LIKE NULL + '%'` → **lọc sạch 0 dòng**.
+
+**Triệu chứng:** nhập kỳ có dữ liệu nhưng báo cáo **luôn 0 dòng, không lỗi**.
+Không có error message → rất khó phát hiện.
+
+**Quy tắc:**
+
+```php
+// SAI — gây 0 dòng âm thầm
+public ?string $pMa_nt = null;
+
+// ĐÚNG
+public ?string $pMa_nt = '';
+```
+
+**Cách xác định field nào bắt buộc `''`:** test từng tham số với `NULL` và `''`,
+so số dòng. Field nào `NULL` → 0 dòng thì **phải** `''`.
+
+Ví dụ đã kiểm chứng (`asPORptBK01`, tháng 10/2026, `pMa_ct='PO3'`):
+
+| Tham số | `NULL` | `''` | Kết luận |
+|---|---|---|---|
+| `pTrang_thai` | **0** | 111 | bắt buộc `''` |
+| `pMa_nt` | **0** | 111 | bắt buộc `''` |
+| `pMa_kho` | **0** | 111 | bắt buộc `''` |
+| `pMa_lo` | **0** | 111 | bắt buộc `''` |
+| `pMa_httt` | **0** | 111 | bắt buộc `''` |
+| `pMa_bp` | **0** | 111 | bắt buộc `''` |
+| `pMa_spct` | **0** | 111 | bắt buộc `''` |
+| `pMa_Phi` | **0** | 111 | bắt buộc `''` |
+| `pMa_kh` | 111 | 111 | an toàn cả 2 |
+| `pMa_vt` | 111 | 111 | an toàn cả 2 |
+| `pMa_hd` | 111 | 111 | an toàn cả 2 |
+
+> **Lưu ý:** không có quy tắc chung "mọi field `''`" — phải **test từng SP**.
+> Nhưng mặc định an toàn là `''` (khớp default SimbaERP `= ''` trong khai báo SP).
+
+### 2.7.4. Label tiếng Việt — lấy từ form gốc, không tự đặt
+
+```bash
+# Lay label that tu form decompiled
+grep -oE 'lbl[A-Za-z_0-9]+\.Text = "[^"]+"' \
+  simba-docs/decompiled/asia/{DLL}.dll/AsiaERP.UserInterface/frm{DLL}.cs
+```
+
+| Field | Label (từ form gốc) |
+|---|---|
+| `pSoct1` | Chứng từ số |
+| `pSoct2` | Đến số |
+| `pMa_ct` | Loại phiếu |
+| `pMa_kh` | Mã NCC / Mã nhà cung cấp |
+| `pMa_plkh1/2/3` | P loại NCC1/2/3 |
+| `pMa_hd` | Mã hợp đồng |
+| `pMa_nhhd` | Nhóm hợp đồng |
+| `pMa_httt` | Hình thức TT |
+| `pMa_kho` | Mã kho |
+| `pMa_lo` | Mã lô |
+| `pMa_Phi` | Mã phí |
+| `pMa_spct` | Mã SPCT |
+| `pMa_vt` | Mã vật tư |
+| `pMa_nhvt` | Mã nhóm vật tư |
+| `pMa_nt` | Mã ngoại tệ |
+| `pGroupType` | Nhóm theo |
+
+**Cấm** hiển thị thẳng tên tham số SP (`pMa_kh`, `pSoct1`...) trên UI.
+
+### 2.7.5. Field ẩn — theo `.Visible = false` của form gốc
+
+Form gốc ẩn nhiều field. **Không hiện trên UI nhưng vẫn gửi trong payload**
+(SP cần đủ tham số).
+
+```bash
+grep -E "\.Visible = false" frmXXX.cs | grep -oE "[A-Za-z_0-9]+\)\.Visible" | sed 's/)\.Visible//'
+```
+
+Ví dụ `PORptBK01/02/03` ẩn:
+
+```
+pTrang_thai, pMa_nhkh, pMa_vitri, pMa_nvkd,
+pMa_plvt1/2/3, pMa_TT, pMa_bp
+```
+
+### 2.7.6. Giá trị mặc định — đọc `sysReportInfo`
+
+**Nguồn:** bảng `sysReportInfo` (= `MyReportInfo` trong form C#).
+
+```sql
+SELECT menuid, ma_mau, isdefault, par0, hasNT
+FROM sysReportInfo
+WHERE menuid = '{menuid}' AND isdefault = 1
+```
+
+Form gốc gán:
+
+```csharp
+((ListControl)cboLoaiPhieu).SelectedValue = base.MyReportInfo.par0;
+```
+
+Ví dụ:
+
+| Menu | `par0` | Ý nghĩa |
+|---|---|---|
+| `10.20.02` (BK01) | `PO3` | Hoá đơn mua hàng trong nước |
+| `10.20.05` (BK02) | `PO3` | Hoá đơn mua hàng trong nước |
+| `10.20.20` (BK03) | `''` | Tất cả |
+
+Ngoại tệ mặc định: `Framework.dll` dòng `optVND.Checked = true` → **`'VND'`**.
+
+### 2.7.7. Dropdown — dùng component có sẵn, không viết mới
+
+Trước khi viết component mới, **kiểm tra `src/Http/Livewire/Component/`**:
+
+| Field | Component | Ghi chú |
+|---|---|---|
+| Loại phiếu | `input-loai-phieu` | `phan-he="{PO\|SO\|CA...}"` |
+| Khách hàng / NCC / NV | `input-khachhang` | `mode="{khachhang\|nhacungcap\|nhanvien}"` |
+| Hình thức TT | `input-httt` | **bắt buộc `module-id`** |
+| Kho | `input-indmkho` | |
+| Vật tư | `input-indmvt` | |
+| Nhóm vật tư | `input-indmnhvt` | dùng `<datalist>` |
+| Ngoại tệ | `input-ngoaite` | |
+| Tài khoản | `input-taikhoan` | |
+| Kỳ báo cáo | `component.timer` | |
+
+**Field không có danh mục** (giữ `input type="text"`):
+`pMa_hd`, `pMa_nhhd`, `pMa_lo`, `pMa_Phi`, `pMa_spct`, `pGroupType`...
+
+### 2.7.8. Bug thường gặp khi dùng component autocomplete
+
+#### a) `mount()` không nhận `wire:model` value
+
+Parent set default (`pMa_nt='VND'`) nhưng `mount($value)` **không nhận được**
+→ input hiện **rỗng**.
+
+**Fix — thêm `hydrate()` + sync trong `render()`:**
+
+```php
+public function hydrate(): void
+{
+    if (null !== $this->value && '' !== trim((string) $this->value) && '' === trim($this->search)) {
+        $this->refreshSearchFromValue();
+    }
+}
+
+public function render(): View
+{
+    if (null !== $this->value && '' !== trim((string) $this->value) && '' === trim($this->search)) {
+        $this->refreshSearchFromValue();
+    }
+
+    return view('...', [...]);
+}
+```
+
+#### b) `pLanguageId` — không dùng `app()->getLocale()`
+
+`asSIGetDmSo_ct` cần culture **`vi-VN`**. `app()->getLocale()` trả `'en'`
+→ SP trả **0 dòng**.
+
+| `pLanguageId` | Dòng |
+|---|---:|
+| `vi-VN` | **6** ✅ |
+| `en` | 0 |
+| `vi` | 0 |
+| `''` | 2 |
+
+#### c) `InputHttt` bắt buộc `module-id`
+
+| `pModuleid` | Dòng |
+|---|---:|
+| `null` / `''` | **0** |
+| `PO` | **6** ✅ |
+| `SO` | 7 |
+
+### 2.7.9. Quy trình kiểm chứng — 6 bước
+
+```
+1. Tham số:  query INFORMATION_SCHEMA.PARAMETERS → wrapper phải khớp CHÍNH XÁC
+2. NULL test: từng field NULL vs '' → field nào 0 dòng thì đổi sang ''
+3. Label:    grep 'lbl*.Text' trong frmXXX.cs → không tự đặt tên
+4. Default:  sysReportInfo.par0 (isdefault=1) + Framework.dll optVND.Checked
+5. Browser:  mở trang → kiểm DOM component → nhập kỳ CÓ DỮ LIỆU → submit
+6. So sánh:  số dòng + số cột với query SQL trực tiếp
+```
+
+**Bước 5 là quan trọng nhất** — phải nhập kỳ **có phát sinh thật**, không dùng
+kỳ mặc định (dễ trúng kỳ rỗng → tưởng bug).
+
+### 2.7.10. Task doc — phải ghi đủ
+
+> **Template:** `docs/templates/task-report-template.md` — copy ra
+> `docs/tasks/{ID}-{ten}.md` rồi điền. Template đã có sẵn 9 mục checklist.
+
+Task doc đạt chuẩn phải có:
+
+- **9 mục checklist** ở 2.7.1, mỗi mục ghi ✅/❌
+- **Bảng chứng** cho từng mục (query DB, DOM, số dòng)
+- **Nguồn** đã tra: `procedures.md` / form gốc / `sysReportInfo` / `INFORMATION_SCHEMA`
+- **Bug đã fix** (nếu có) với triệu chứng + nguyên nhân + cách fix
+- **Ảnh hưởng các báo cáo khác** (nếu bug mang tính hệ thống)
+
+### 2.7.11. Ví dụ đạt chuẩn — task 071/073/077 sau PR #428
+
+| Mục | Trước #428 | Sau #428 |
+|---|---|---|
+| Component render | ✅ | ✅ |
+| Route 200 | ✅ | ✅ |
+| Submit kỳ 10/2026 | **0 dòng** ❌ | **111 dòng** ✅ |
+| `errorMessage` | null | null |
+| Bộ chọn kỳ | ❌ | ✅ `component.timer` |
+| Label tiếng Việt | ❌ thô | ✅ 22-23 label |
+| Dropdown | ❌ | ✅ 7 field |
+| Default | ❌ | ✅ `PO3` + `VND` |
+| Param `''` | ❌ `null` | ✅ `''` |
+
+**Trước #428 = 2/9 mục. Sau #428 = 9/9 mục.**
+
+Đây là mức tối thiểu để gọi `DONE`.
+
+---
+
+## 2.8. Tự kiểm tra — đối chiếu với trang chuẩn (không dừng ở checklist)
+
+§2.7 là **danh sách tối thiểu**. Để đạt mức **hoàn thiện như trang chuẩn**, agent phải
+**tự đối chiếu** với một màn hình đã được công nhận tốt — không chỉ tick đủ ô.
+
+### 2.8.1. Trang chuẩn tham chiếu
+
+**`/simba/so/rpt/sorptbk01`** (Sổ chi tiết công nợ khách hàng) — được xem là
+**mức hoàn thiện tương đối** để so sánh.
+
+Lý do: có Master-Detail, label cột tiếng Việt, xử lý số tiền theo loại tiền tệ,
+empty state, sticky header, xuất Excel, và đã verify với dữ liệu thật.
+
+Khi làm task mới **cùng loại** (bảng kê / báo cáo), phải tự hỏi:
+
+> Trang chuẩn có gì mà trang của mình **chưa có**? Vì sao thiếu? Có chấp nhận được không?
+
+### 2.8.2. Bảng đối chiếu bắt buộc — 12 hạng mục
+
+Agent phải tự điền bảng này vào task doc:
+
+| # | Hạng mục | Trang chuẩn `sorptbk01` | Trang của mình | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render thật | ✅ | ? | |
+| 2 | Route 200 | ✅ | ? | |
+| 3 | Submit dữ liệu đúng kỳ | ✅ | ? | |
+| 4 | Bộ chọn kỳ (`component.timer`) | ✅ | ? | |
+| 5 | **Label cột tiếng Việt** | ✅ `'label' => 'Loại phiếu'` | ? | **quan trọng** |
+| 6 | Sticky header | ✅ | ? | |
+| 7 | Cột số thứ tự `#` | ✅ | ? | |
+| 8 | Màu/nền theo loại dòng | ✅ | ? | |
+| 9 | Click dòng → panel chi tiết | ✅ | ? | Master-Detail |
+| 10 | Định dạng số theo `vi-VN` | ✅ | ? | |
+| 11 | Số tiền theo loại tiền tệ (VND/NT) | ✅ | ? | |
+| 12 | Xuất Excel | ✅ | ? | |
+| 13 | Empty state khi 0 dòng | ✅ | ? | |
+| 14 | Hiển thị `errorMessage` | ✅ | ? | |
+
+**Quy tắc:** hạng mục nào đánh `❌` phải ghi rõ **lý do chấp nhận** hoặc **task riêng
+sẽ làm**. Không được bỏ trống.
+
+### 2.8.3. Label cột — khác biệt lớn nhất
+
+`report-shell` hiện `$column` thô (`ma_cty`, `stt_rec`, `ma_kh`).
+Trang chuẩn map sang label tiếng Việt:
+
+```php
+$columns = [
+    ['key' => 'ma_ct',   'label' => 'Loại phiếu', 'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'ngay_ct', 'label' => 'Ngày CT',    'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'so_ct',   'label' => 'Số CT',      'class' => 'text-left whitespace-nowrap font-mono'],
+    ['key' => 'ma_kh',   'label' => 'Mã KH',      'class' => 'text-left whitespace-nowrap'],
+    ['key' => 'ten_kh',  'label' => 'Khách hàng', 'class' => 'text-left'],
+];
+```
+
+**Pattern cần áp dụng cho report dùng `report-shell`:**
+
+1. Component khai báo `columnLabels(): array` map `key => label`
+2. Truyền vào view: `'columnLabels' => $this->columnLabels()`
+3. `report-shell` dùng `$columnLabels[$column] ?? $column`
+
+Với cột động (SP trả nhiều cột), thêm fallback `appendDynamicColumns()`:
+cột quen → label tay, cột lạ → dùng tên cột.
+
+### 2.8.4. Nguồn label cột — lấy từ đâu
+
+| Nguồn | Ưu tiên | Ghi chú |
+|---|---|---|
+| **Form decompiled** (`lbl*.Text`) | 1 | chính xác nhất |
+| **`sysReportResx`** trong DB | 2 | bản dịch chính thức SimbaERP |
+| **RPT file** (Crystal Report) | 3 | nếu có decompiled |
+| Tự đặt | ❌ | **cấm** |
+
+Query `sysReportResx`:
+
+```sql
+SELECT * FROM sysReportResx WHERE menuid = '{menuid}' ORDER BY ctlname;
+```
+
+### 2.8.5. Định dạng số — theo `vi-VN` và loại tiền tệ
+
+Trang chuẩn xử lý:
+
+```php
+$currency = $this->isForeignCurrency() ? 'NT' : 'VND';
+
+['key' => 'tien2', 'label' => 'Tiền ' . $currency, ...]
+```
+
+- `1.234.567` (dấu chấm ngăn nghìn, không thập phân cho VND)
+- Ngoại tệ: hiện thêm cột `_nt`
+- Ô tiền trống: `'—'` trên UI, `''` khi xuất CSV
+
+### 2.8.6. Quy trình tự đối chiếu — 5 bước
+
+```
+1. Chọn trang chuẩn CÙNG LOẠI (bảng kê / báo cáo / phiếu / danh mục)
+2. Mở cả 2 trang trên browser, chụp lại cấu trúc
+3. Điền bảng đối chiếu 14 hạng mục (§2.8.2)
+4. Với mỗi ❌: quyết định "làm ngay" / "task riêng + lý do"
+5. Ghi kết quả vào task doc — KHÔNG chỉ ghi ✅
+```
+
+### 2.8.7. Câu hỏi tự kiểm tra (bắt buộc trả lời trong task doc)
+
+1. **Trang chuẩn cùng loại là gì?** (route cụ thể)
+2. **Đã mở cả 2 trang trên browser chưa?** (có/không)
+3. **Hạng mục nào trang mình thiếu so với chuẩn?** (liệt kê)
+4. **Cột kết quả hiện label gì?** (chụp 5 cột đầu)
+5. **Số tiền định dạng thế nào?** (ví dụ thực)
+6. **Nếu 0 dòng, người dùng thấy gì?** (empty state)
+7. **Đã so số dòng/cột với query SQL trực tiếp chưa?** (số cụ thể)
+
+**Không trả lời được 7 câu này = chưa đủ điều kiện báo xong.**
+
+### 2.8.8. Ví dụ — đối chiếu 071/073/077 với `sorptbk01`
+
+| # | Hạng mục | `sorptbk01` | `porptbk01` | Ghi chú |
+|---|---|---|---|---|
+| 1 | Component render | ✅ | ✅ | |
+| 2 | Route 200 | ✅ | ✅ | |
+| 3 | Submit dữ liệu | ✅ | ✅ 111 / 1.371 dòng | |
+| 4 | Bộ chọn kỳ | ✅ | ✅ | |
+| 5 | **Label cột tiếng Việt** | ✅ | ❌ **`ma_cty`, `stt_rec`** | **cần fix** |
+| 6 | Sticky header | ✅ | ✅ | |
+| 7 | Cột `#` | ✅ | ✅ | |
+| 8 | Màu dòng hover | ✅ | ✅ | |
+| 9 | Click dòng → chi tiết | ✅ | ✅ (`selectedRow`) | |
+| 10 | Format số `vi-VN` | ✅ | ⚠️ `number_format` | chưa có locale |
+| 11 | Số tiền theo tiền tệ | ✅ | ❌ | cần biết cột tiền |
+| 12 | Xuất Excel | ✅ | ✅ | |
+| 13 | Empty state | ✅ | ✅ | |
+| 14 | `errorMessage` | ✅ | ✅ | |
+
+**Kết luận:** 11/14 ✅, **3 mục cần fix** (5, 10, 11) — ghi vào task riêng.
 
 ## 3. ARDMKH Save: default không được `NULL`
 
