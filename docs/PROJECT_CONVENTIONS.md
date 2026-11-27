@@ -665,6 +665,14 @@ Vì ảnh hưởng 74 view, mỗi lần sửa phải:
 
 **Cấm:** hiện panel chi tiết **bên trên** dạng `<dl>` (định dạng cũ) — sai vị trí và khó đọc.
 
+> ⚠️ **MERGE, KHÔNG THAY THẾ.** Khi bật Master-Detail, phải hiện **CẢ HAI**:
+> 1. **Thông tin** — `<dl>` các field của dòng đang chọn (bảng cũ, giữ nguyên)
+> 2. **Các dòng chi tiết** — bảng chi tiết từ RS1
+>
+> Không được bỏ phần "Thông tin" khi thêm bảng chi tiết.
+> *Bài học: lần đầu implement đã thay thế `<dl>` bằng bảng chi tiết → Sếp phải nhắc
+> "bảng thông tin cũ đâu rồi? anh bảo merge với nhau chứ có bảo thay thế đâu".*
+
 #### a) Điều kiện: SP phải trả 2 result set
 
 Kiểm tra trước khi bật:
@@ -720,13 +728,23 @@ protected function usesDataSets(): bool
 ```
 [bảng master — 366 phiếu]
    ↓ click dòng
-[Chi tiết phiếu #3]                    ← tiêu đề + so_ct
-[bảng chi tiết — 5 dòng]               ← header riêng từ ct_formated_col_list
-[N dòng chi tiết]
+┌─ Chi tiết phiếu #3 ─────────────────── HDMH00115 ─┐
+│ THÔNG TIN                                          │
+│   <dl> 27 field của dòng đang chọn (bảng cũ)       │
+│ CÁC DÒNG CHI TIẾT                                  │
+│   <table> 5 dòng, header từ ct_formated_col_list   │
+│   5 dòng chi tiết                                  │
+└────────────────────────────────────────────────────┘
 ```
 
-Cơ chế: `@if ($this->hasDetail())` → hiện bảng chi tiết **dưới**;
-`@elseif ([] !== $selectedRow)` → báo cáo 1 bảng giữ panel `<dl>` cũ (tương thích ngược).
+**Cơ chế:** một khối duy nhất `@if ([] !== $selectedRow)`:
+
+| Phần | Điều kiện | Nội dung |
+|---|---|---|
+| **Thông tin** | luôn hiện khi có dòng chọn | `<dl>` từ `$selectedRow` |
+| **Các dòng chi tiết** | `@if ($this->hasDetail())` | `<table>` từ `$detailRows` |
+
+Báo cáo 1 bảng → chỉ hiện phần **Thông tin** (không có tiêu đề "Các dòng chi tiết").
 
 #### e) Bảng Resx cho Master-Detail
 
@@ -744,7 +762,7 @@ Nhãn: `for($menuId,$maMau)` cho master, `forDetail($menuId,$maMau)` cho chi ti�
 | | Trước | Sau |
 |---|---|---|
 | Bảng trên | 366 phiếu (sau khi lọc cột) | 366 phiếu |
-| Panel chi tiết | **bên trên**, dạng `<dl>` | **bên dưới**, dạng **bảng** |
+| Panel chi tiết | **bên trên**, chỉ `<dl>` | **bên dưới**, **merge**: `<dl>` Thông tin + bảng Các dòng chi tiết |
 | Tiêu đề | "Chi tiết dòng 23" | **"Chi tiết phiếu #3"** + `so_ct` |
 | Header chi tiết | tên cột thô | **Mã VT, Tên VT, ĐVT, Số lượng, Giá mua, Tiền mua** |
 | Số dòng chi tiết | 40 cột flat | **5 dòng** của riêng phiếu đó |

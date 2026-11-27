@@ -21,6 +21,7 @@ Các lần gần đây Sếp phải nhắc đi nhắc lại những điều **l�
 | "field nào ko có dữ liệu dropdown thì để nguyên" | Tự kiểm tra nguồn dữ liệu từng field |
 | "đối chiếu với `/simba/so/rpt/sorptbk01`" | Tự chọn trang chuẩn cùng loại để so |
 | "vừa làm vừa đồng bộ tài liệu" | Cập nhật doc **trong lúc làm**, không để cuối |
+| **"bảng thông tin cũ đâu rồi? anh bảo merge với nhau chứ có bảo thay thế đâu"** | **"Merge" = gộp, GIỮ CẢ HAI. "Thay thế" = bỏ cái cũ. Phải phân biệt rõ 2 từ này** |
 
 **Gốc rễ:** agent dừng ở mức "chạy được" thay vì "đúng như SimbaERP".
 
@@ -168,6 +169,21 @@ thay vì thử mò.
 | Sếp nói "khoan merge" | dừng, không merge |
 | Sếp nói "merge đi" | `gh pr merge --squash --delete-branch`, verify `MERGED` |
 | Sếp chỉ ra lỗi | tìm nguyên nhân gốc, không vá mù |
+
+### Phân biệt "merge" vs "thay thế" — BẮT BUỘC
+
+Đây là lỗi ngôn ngữ nghiêm trọng, agent đã mắc:
+
+| Sếp nói | Nghĩa ĐÚNG | Agent từng làm SAI |
+|---|---|---|
+| **"merge 2 bảng với nhau"** | gộp lại, **GIỮ CẢ HAI**, sắp xếp cùng khu vực | bỏ bảng cũ, chỉ hiện bảng mới |
+| **"gộp"** | như merge | |
+| **"thay thế"** | bỏ cái cũ, chỉ dùng cái mới | |
+| **"chuyển xuống dưới"** | đổi **vị trí**, giữ **nội dung** | đổi vị trí + đổi cả nội dung |
+| **"sắp xếp lại"** | đổi **thứ tự**, giữ nguyên field | thêm/bớt field |
+
+**Quy tắc:** khi Sếp nói "merge"/"gộp" → **liệt kê những gì sẽ giữ lại** trước khi code.
+Nếu định bỏ bất kỳ thành phần nào → **phải hỏi**.
 
 ### Khi Sếp phải nhắc 2 lần cùng một điều
 

@@ -948,7 +948,11 @@ Unit test: `ReportColumnLabelsTest` — **9 tests / 20 assertions PASS**.
 
 ### 11. Master-Detail — bảng chi tiết bên dưới (chuẩn `sorptbk01`)
 
-**Yêu cầu Sếp:** chọn dòng → hiện **"Chi tiết phiếu #3"** **bên dưới**, dạng **bảng**, giống bảng kê bán hàng. Không hiện panel `<dl>` bên trên.
+**Yêu cầu Sếp:** chọn dòng → hiện **"Chi tiết phiếu #3"** **bên dưới**, dạng **bảng**, giống bảng kê bán hàng. **MERGE với bảng thông tin cũ, KHÔNG thay thế.**
+
+> ⚠️ **Bài học:** lần đầu em đã **thay thế** `<dl>` bằng bảng chi tiết → Sếp nhắc
+> *"bảng thông tin cũ đâu rồi? anh bảo merge với nhau chứ có bảo thay thế đâu"*.
+> Đã sửa: khối chi tiết bên dưới gồm **2 phần** — Thông tin (`<dl>`) + Các dòng chi tiết (`<table>`).
 
 **Phát hiện:** SP `asPORptBK01` trả **2 result set** (chưa từng dùng):
 
@@ -970,12 +974,13 @@ Liên kết: `RS1.stt_rec = RS2.stt_rec` — **366/366** stt_rec của RS2 có t
    header riêng từ `sysReportResx.ct_formated_col_list`
 5. `ReportColumnLabels::forDetail()` + `visibleDetailColumns()`
 
-**Kết quả browser:**
+**Kết quả browser (đã merge 2 phần):**
 
 ```
 Bảng trên : 366 phiếu | # Ngày CT Số CT Mã CT Mã KH Tên KH Diễn giải
-Click dòng 3 → "Chi tiết phiếu #3" + HDMH00116
-Bảng dưới : 5 dòng | # Mã VT Tên VT ĐVT Số lượng Giá mua Tiền mua
+Click dòng 3 → "Chi tiết phiếu #3" + HDMH00115
+  ├─ THÔNG TIN        : 27 field (<dl>, bảng cũ giữ nguyên)
+  └─ CÁC DÒNG CHI TIẾT: 5 dòng | # Mã VT Tên VT ĐVT Số lượng Giá mua Tiền mua
 ```
 
 **Không ảnh hưởng báo cáo 1 bảng:**
