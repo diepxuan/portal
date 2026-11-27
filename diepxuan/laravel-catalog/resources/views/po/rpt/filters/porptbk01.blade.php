@@ -32,11 +32,36 @@
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">P loại NCC3</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_plkh3" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã hợp đồng</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_hd" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Nhóm hợp đồng</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_nhhd" /></div></div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Hình thức TT</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_httt" /></div></div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã kho</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_kho" /></div></div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Hình thức TT</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-httt module-id="PO" wire:model="pMa_httt" placeholder="Chọn hình thức thanh toán" />
+    </div>
+</div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Mã kho</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-indmkho wire:model="pMa_kho" />
+    </div>
+</div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã lô</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_lo" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã phí</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_Phi" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã SPCT</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_spct" /></div></div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã vật tư</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_vt" /></div></div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã nhóm vật tư</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_nhvt" /></div></div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã ngoại tệ</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_nt" /></div></div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Mã vật tư</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-indmvt wire:model="pMa_vt" />
+    </div>
+</div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Mã nhóm vật tư</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-indmnhvt wire:model="pMa_nhvt" />
+    </div>
+</div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Mã ngoại tệ</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-ngoaite wire:model="pMa_nt" />
+    </div>
+</div>

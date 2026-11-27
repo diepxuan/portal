@@ -562,6 +562,60 @@ go "zinus"       -> 1 ket qua: "Cong ty TNHH Zinus Viet Nam"
 trong HTML       -> 96 NCC entries
 ```
 
+#### 7. Autocomplete cho 5 field còn lại — dùng component có sẵn
+
+Kiểm tra từng field, **field nào có nguồn dropdown thì nạp, không có thì để nguyên**.
+
+| Field | Component dùng | Nguồn dữ liệu | Số dòng |
+|---|---|---|---:|
+| `pMa_httt` | `input-httt` (có `module-id="PO"`) | `AsGetDMHTTT` | **6** |
+| `pMa_kho` | `input-indmkho` | `AsINGetDMKHO` | **19** |
+| `pMa_vt` | `input-indmvt` | `AsINGetDMVT` | **3.660** |
+| `pMa_nhvt` | `input-indmnhvt` | `AsINGetDMNHVT` | **106** |
+| `pMa_nt` | `input-ngoaite` | `AsSIGetDMNT` | **12** |
+
+**Field KHÔNG có dropdown — giữ nguyên input text:**
+
+| Field | Lý do |
+|---|---|
+| `pMa_hd` (Mã hợp đồng) | không có danh mục trong sysMenu |
+| `pMa_nhhd` (Nhóm hợp đồng) | không có danh mục |
+| `pMa_lo` (Mã lô) | không có danh mục |
+| `pMa_Phi` (Mã phí) | không có danh mục |
+| `pMa_spct` (Mã SPCT) | không có danh mục |
+| `pGroupType` (Nhóm theo) | tham số điều khiển, không phải danh mục |
+
+### 🐛 Bug phát hiện: `InputHttt` cần `pModuleid`
+
+`InputHttt` **bắt buộc** phải truyền `module-id`, nếu null/'' thì SP trả **0 dòng**:
+
+| `pModuleid` | Dòng |
+|---|---:|
+| `null` | **0** |
+| `''` | **0** |
+| **`PO`** | **6** ✅ |
+| `SO` | 7 |
+| `AR` | 0 |
+
+Fix: thêm `module-id="PO"` (giống `povchpo3-edit` đã làm).
+
+### Verify browser thật
+
+```html
+<!-- 6 component Alpine có dữ liệu -->
+loaiPhieuInputComponent(JSON.parse([...]))   ✅
+khInputComponent(JSON.parse([...]))          ✅ 96 NCC
+htttInputComponent(JSON.parse([...]))        ✅ 6 HTTT
+khoInputComponent(JSON.parse([...]))         ✅ 19 kho
+vtInputComponent(JSON.parse([...]))          ✅ 3660 VT
+ngoaiteInputComponent(JSON.parse([...]))     ✅ 12 NT
+
+<!-- 1 component datalist -->
+<datalist id="InDmNhvt-suggestions">        ✅ 106 option
+```
+
+Tương tác: click "Chọn hình thức thanh toán" → **6 option**.
+
 ### Field ẩn — theo form gốc
 
 Form ẩn bằng `.Visible = false` nên không có trong ảnh:
