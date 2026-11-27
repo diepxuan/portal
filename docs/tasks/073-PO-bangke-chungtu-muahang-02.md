@@ -414,6 +414,53 @@ Wrapper gốc có thêm `ParamDefines` + các biến thể trùng tên (khác ho
 
 Nhất quán với task 066, 067. **Không phải bug code.**
 
+## Checklist DONE — 9/9 mục (sau PR #428)
+
+Theo `docs/PROJECT_CONVENTIONS.md` §2.7.
+
+| # | Mục | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Component render thật | ✅ | `window.Livewire.all()` → `catalog::po.rpt.porptbk01` |
+| 2 | Route 200 | ✅ | `GET /simba/po/rpt/porptbk01` → **200** |
+| 3 | Submit có dữ liệu đúng kỳ | ✅ | kỳ 10/2026 → **111 dòng**; kỳ 2025 → **1.371 dòng / 40 cột** |
+| 4 | Không `errorMessage` | ✅ | `err: null` |
+| 5 | Bộ chọn kỳ (`component.timer`) | ✅ | filter view, `pNgay2=2026-10-31` |
+| 6 | Label tiếng Việt | ✅ | 22 label từ `frmPORptBK01.cs` |
+| 7 | Dropdown field có danh mục | ✅ | **7** field (xem bảng dưới) |
+| 8 | Giá trị mặc định | ✅ | `pMa_ct='PO3'` (`sysReportInfo.par0`), `pMa_nt='VND'` |
+| 9 | Tham số rỗng = `''` | ✅ | **8** field đổi `null`→`''` |
+
+**Trước PR #428: 2/9 mục — không dùng được. Sau PR #428: 9/9 mục.**
+
+### Chi tiết mục 7 — dropdown
+
+| Field | Component | Props | Dữ liệu |
+|---|---|---|---|
+| `pMa_ct` | `input-loai-phieu` (MỚI) | `phan-he="PO"` | 6 loại phiếu + Tất cả |
+| `pMa_kh` | `input-khachhang` | `mode="nhacungcap"` | 96 NCC |
+| `pMa_httt` | `input-httt` | `module-id="PO"` | 6 HTTT |
+| `pMa_kho` | `input-indmkho` | — | 19 kho |
+| `pMa_vt` | `input-indmvt` | — | 3.660 VT |
+| `pMa_nhvt` | `input-indmnhvt` | — | 106 nhóm VT |
+| `pMa_nt` | `input-ngoaite` | — | 12 NT |
+
+**Giữ nguyên input text** (không có danh mục): `pMa_hd`, `pMa_nhhd`, `pMa_lo`, `pMa_Phi`, `pMa_spct`.
+
+### Chi tiết mục 9 — tham số phải `''`
+
+| Tham số | `NULL` | `''` |
+|---|---:|---:|
+| `pTrang_thai` | **0** ❌ | 111 ✅ |
+| `pMa_nt` | **0** ❌ | 111 ✅ |
+| `pMa_kho` | **0** ❌ | 111 ✅ |
+| `pMa_lo` | **0** ❌ | 111 ✅ |
+| `pMa_httt` | **0** ❌ | 111 ✅ |
+| `pMa_bp` | **0** ❌ | 111 ✅ |
+| `pMa_spct` | **0** ❌ | 111 ✅ |
+| `pMa_Phi` | **0** ❌ | 111 ✅ |
+
+**An toàn cả 2:** `pMa_kh`, `pMa_vt`, `pMa_nhvt`, `pMa_hd`, `pMa_plkh1/2/3`, `pMa_nhhd`
+
 ## PR #428 — đối chiếu ảnh SimbaERP gốc (2026-11-27)
 
 > Task này **đang được làm tiếp** trong **PR #428** (`feat/po-bangke-timer`).
