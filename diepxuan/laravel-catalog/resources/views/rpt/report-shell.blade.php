@@ -96,7 +96,7 @@
                                             <td class="border-b px-3 py-1 text-right text-xs text-gray-400">{{ $index + 1 }}</td>
                                             @foreach ($columns as $column)
                                                 <td class="border-b px-3 py-1 text-xs text-gray-700 {{ $this->isNumericColumn($column) ? 'text-right font-mono' : 'text-left' }}">
-                                                    {{ $this->displayValue($row[$column] ?? null) }}
+                                                    {{ $this->displayValue($row[$column] ?? null, $column) }}
                                                 </td>
                                             @endforeach
                                         </tr>
@@ -114,7 +114,7 @@
                                     Chi tiết phiếu #{{ ($selectedRowIndex ?? 0) + 1 }}
                                 </span>
                                 <span class="flex items-center gap-2 font-mono text-xs text-gray-500">
-                                    {{ $this->displayValue($selectedRow['so_ct'] ?? '') }}
+                                    {{ $this->displayValue($selectedRow['so_ct'] ?? '', 'so_ct') }}
                                     <button type="button" class="rounded px-1 text-gray-400 hover:text-gray-700"
                                         title="Bỏ chọn" wire:click="clearSelectedRow">&times;</button>
                                 </span>
@@ -129,7 +129,7 @@
                                     @foreach ($selectedRow as $column => $value)
                                         <div class="grid grid-cols-[120px_minmax(0,1fr)] gap-2">
                                             <dt class="truncate text-xs text-gray-500" title="{{ $column }}">{{ $this->columnLabel($column) }}</dt>
-                                            <dd class="break-words font-mono text-xs text-gray-800">{{ $this->displayValue($value) }}</dd>
+                                            <dd class="break-words font-mono text-xs text-gray-800">{{ $this->displayValue($value, $column) }}</dd>
                                         </div>
                                     @endforeach
                                 </dl>
@@ -165,7 +165,7 @@
                                                             <td class="border-b px-3 py-1 text-right text-xs text-gray-400">{{ $detailIndex + 1 }}</td>
                                                             @foreach ($detailColumns as $column)
                                                                 <td class="border-b px-3 py-1 text-xs text-gray-700 {{ $this->isNumericColumn($column) ? 'text-right font-mono' : 'text-left' }}">
-                                                                    {{ $this->displayValue($detailRow[$column] ?? null) }}
+                                                                    {{ $this->displayDetailValue($detailRow[$column] ?? null, $column) }}
                                                                 </td>
                                                             @endforeach
                                                         </tr>

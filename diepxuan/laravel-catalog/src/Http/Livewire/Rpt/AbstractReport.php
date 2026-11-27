@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\Rpt;
 
 use Diepxuan\Catalog\Services\ReportColumnLabels;
+use Diepxuan\Catalog\Services\SimbaNumberFormat;
 use Diepxuan\Catalog\Services\SimbaMenuRouteMetadata;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -88,6 +89,20 @@ abstract class AbstractReport extends Component
      * Ten cot dung de noi master <-> detail (thuong la stt_rec).
      */
     public string $detailKey = 'stt_rec';
+
+    /**
+     * Map [ten_cot => ma format] cua bang master, tu sysReportResx F=...
+     *
+     * @var null|array<string, string>
+     */
+    public ?array $columnFormatMap = null;
+
+    /**
+     * Map [ten_cot => ma format] cua bang chi tiet.
+     *
+     * @var null|array<string, string>
+     */
+    public ?array $detailColumnFormatMap = null;
 
     /**
      * Tên class SP wrapper, vd: AsGLRptBCT01::class.
@@ -180,6 +195,8 @@ abstract class AbstractReport extends Component
 
         // Chi tiet: chi nap khi bao cao khai bao Master-Detail.
         $this->detailColumnLabelMap = null;
+        $this->columnFormatMap = null;
+        $this->detailColumnFormatMap = null;
         $this->detailRows = null !== $detailSource
             ? $detailSource->map(fn (mixed $row): array => $this->rowToArray($row))->values()->all()
             : [];
@@ -512,9 +529,82 @@ abstract class AbstractReport extends Component
         return $this->columnLabelMap = ReportColumnLabels::for($menuId, $maMau);
     }
 
-    public function displayValue(mixed $value): string
+    /**
+     * Gia tri hien thi cua 1 o — dung dinh dang SimbaERP.
+     *
+     * Format lay tu sysReportResx F=... roi anh xa sang cau hinh SiSetup
+     * (QT/OA/FP/FA/OP) hoac pattern .NET truc tiep (dd/MM/yyyy, ### ### ###).
+     *
+     * Khong truyen $column -> tra gia tri tho (dung cho csvValue / debug).
+     */
+    public function displayValue(mixed $value, ?string $column = null): string
     {
+        if (null === $column) {
+            return self::csvValue($value);
+        }
+
+        return $this->formatCellValue($value, $this->columnFormatMap()[$column] ?? null);
+    }
+
+    /**
+     * Gia tri hien thi cua 1 o bang CHI TIET.
+     */
+    public function displayDetailValue(mixed $value, ?string $column = null): string
+    {
+        if (null === $column) {
+            return self::csvValue($value);
+        }
+
+        return $this->formatCellValue($value, $this->detailColumnFormatMap()
+            [mb_strtolower((string) $column)] ?? null);
+    }
+
+    /**
+     * Ap dung dinh dang theo ma F= cua SimbaERP.
+     */
+    protected function formatCellValue(mixed $value, ?string $code): string
+    {
+        if (null === $code || '' === trim($code)) {
+            return self::csvValue($value);
+        }
+
+        if (preg_match('/^[dMyHhms\/\-: ]+$/', $code) && preg_match('/[dMy]/', $code)) {
+            return SimbaNumberFormat::formatDate($value, $code);
+        }
+
+        if (is_numeric($value) || (\is_string($value) && '' !== trim($value) && is_numeric(trim($value)))) {
+            return SimbaNumberFormat::format($value, $code);
+        }
+
         return self::csvValue($value);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function columnFormatMap(): array
+    {
+        if (null !== $this->columnFormatMap) {
+            return $this->columnFormatMap;
+        }
+
+        [$menuId, $maMau] = $this->reportMenuContext();
+
+        return $this->columnFormatMap = ReportColumnLabels::formats($menuId, $maMau);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function detailColumnFormatMap(): array
+    {
+        if (null !== $this->detailColumnFormatMap) {
+            return $this->detailColumnFormatMap;
+        }
+
+        [$menuId, $maMau] = $this->reportMenuContext();
+
+        return $this->detailColumnFormatMap = ReportColumnLabels::detailFormats($menuId, $maMau);
     }
 
     public static function csvValue(mixed $value): string

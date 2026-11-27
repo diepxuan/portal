@@ -1033,3 +1033,53 @@ Click dòng 3 → "Chi tiết phiếu #3" + HDMH00115
 
 Unit test: **12 tests / 28 assertions PASS**.
 
+
+### 12. Định dạng số & ngày theo SimbaERP
+
+**Vấn đề:** bảng kê hiện số thô `4400000.0000`, `.0000`, ngày `2025-01-03 00:00:00`.
+
+**Nguồn sự thật 2 tầng:**
+
+1. `sysReportResx` trường `F=<mã>` trong `formated_col_list`
+2. Mã → cột cấu hình `SiSetup` (theo `Framework.dll` class `frmReport`)
+
+| Mã | Cột `SiSetup` | Giá trị thực (cty 001) |
+|---|---|---|
+| `QT` | `Qty_Input_Format` | `### ### ###.##` |
+| `OA` / `FP` | `Amount_Input_Format` | `### ### ### ### ###` |
+| `FA` | `FCAmount_Input_Format` | `### ### ### ##0.#0` |
+| `OP` | `Price_Input_Format` | `### ### ### ###` |
+
+⚠️ **SimbaERP dùng DẤU CÁCH ngăn cách nghìn**: `4 400 000` — không phải `4.400.000`.
+
+**Service mới:** `Diepxuan\Catalog\Services\SimbaNumberFormat`
+
+| Method | Việc |
+|---|---|
+| `config()` | đọc 5 format từ `SiSetup` |
+| `format($value, $code)` | theo mã `QT`/`OA`/`FP`/`FA`/`OP` hoặc pattern trực tiếp |
+| `applyPattern($number, $pattern)` | áp pattern .NET (`#` bỏ trống, `0` bắt buộc) |
+| `formatDate($value, 'dd/MM/yyyy')` | đổi .NET date format |
+
+**Tích hợp:** `AbstractReport::displayValue($value, $column)` +
+`displayDetailValue()` + `columnFormatMap()` + `detailColumnFormatMap()`.
+
+**Kết quả `porptbk01` kỳ 2025:**
+
+| Cột | Trước | Sau |
+|---|---|---|
+| Ngày CT | `2025-01-03 00:00:00` | **`03/01/2025`** |
+| Số lượng | `3.0000` | **`3`** |
+| Thành tiền | `4400000.0000` | **`4 400 000`** |
+| Thuế GTGT | `.0000` | **`0`** |
+| Tổng tiền | `4400000.0000` | **`4 400 000`** |
+| Tỷ giá | `1.0000` | **`1`** |
+
+**Chi tiết:** Số lượng `67.0000` → **`67`**; Giá mua `420000.0000` → **`420 000`**.
+
+**Lưu ý:**
+- CSV export giữ số **thô** (Excel tự format, tránh mất dữ liệu)
+- Cột không có `F=` → giữ nguyên giá trị gốc
+- `CatalogServiceTimerTest` có **9 error có sẵn trên `main`** — không liên quan
+
+Unit test: `SimbaNumberFormatTest` — **11 tests / 23 assertions PASS**.

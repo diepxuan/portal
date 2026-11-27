@@ -767,6 +767,113 @@ Nhãn: `for($menuId,$maMau)` cho master, `forDetail($menuId,$maMau)` cho chi ti�
 | Header chi tiết | tên cột thô | **Mã VT, Tên VT, ĐVT, Số lượng, Giá mua, Tiền mua** |
 | Số dòng chi tiết | 40 cột flat | **5 dòng** của riêng phiếu đó |
 
+### 2.9.10. Định dạng số & ngày — `SimbaNumberFormat`
+
+**Vấn đề:** bảng kê hiện số thô từ SQL Server: `4400000.0000`, `.0000`, `2025-01-03 00:00:00`.
+
+**Nguồn sự thật — 2 tầng:**
+
+#### a) Mã format trong `sysReportResx`
+
+`formated_col_list` có trường `F=<mã>`:
+
+```
+ngay_ct:H=Ngày CT:F=dd/MM/yyyy:W=75,
+so_luong:H=Số lượng:F=QT:W=55,
+tien:H=Thành tiền:F=OA:W=80,
+thue_gtgt:H=Thuế GTGT:F=OA:W=74,
+tt:H=Tổng tiền:F=OA:W=77,
+ty_gia:H=Tỷ giá:F=OA:W=61
+```
+
+Thống kê mã `F=` trong toàn bộ Resx:
+
+| Mã | Số lần | Nghĩa |
+|---|---:|---|
+| `### ### ###` | 223 | pattern tiền trực tiếp |
+| `dd/MM/yyyy` | 208 | ngày |
+| `QT` | 144 | số lượng |
+| `FA` | 29 | tiền ngoại tệ |
+| `OP` | 28 | đơn giá |
+| `###.##`, `##0.####`... | 20 | pattern trực tiếp |
+
+#### b) Ánh xạ mã → cột cấu hình `SiSetup`
+
+Theo `Framework.dll` (class `frmReport`, hàm đọc `formated_col_list`):
+
+```csharp
+switch (text.Left(2)) {
+  case "QT": Format = SiSetup.Qty_Input_Format;       break;
+  case "OA": Format = SiSetup.Amount_Input_Format;    break;
+  case "FP": Format = SiSetup.Amount_Input_Format;    break;
+  case "FA": Format = SiSetup.FCAmount_Input_Format;  break;
+  case "OP": Format = SiSetup.Price_Input_Format;     break;
+  case "##": Format = text;  // pattern truc tiep
+}
+```
+
+Giá trị thực trong DB (cty `001`):
+
+| Cột `SiSetup` | Giá trị |
+|---|---|
+| `Qty_Input_Format` | `### ### ###.##` |
+| `Price_Input_Format` | `### ### ### ###` |
+| `Amount_Input_Format` | `### ### ### ### ###` |
+| `FCAmount_Input_Format` | `### ### ### ##0.#0` |
+
+#### c) Quy tắc pattern .NET
+
+| Ký tự | Nghĩa |
+|---|---|
+| `#` | chữ số **hoặc bỏ trống** (không hiện số 0 thừa) |
+| `0` | chữ số **bắt buộc** (luôn hiện) |
+| `.` | dấu thập phân |
+| dấu cách trong phần nguyên | **dấu ngăn cách nghìn** |
+
+⚠️ **SimbaERP dùng DẤU CÁCH ngăn cách nghìn**, không phải dấu chấm:
+`4 400 000` — **không** phải `4.400.000`.
+
+#### d) Service `SimbaNumberFormat`
+
+| Method | Việc |
+|---|---|
+| `config()` | đọc 5 cột format từ `SiSetup`, cache theo request |
+| `format($value, $code)` | `QT`/`OA`/`FP`/`FA`/`OP` hoặc pattern trực tiếp |
+| `applyPattern($number, $pattern)` | áp dụng pattern .NET lên số |
+| `formatDate($value, 'dd/MM/yyyy')` | đổi .NET date format → PHP |
+
+#### e) Tích hợp `AbstractReport`
+
+| Method | Việc |
+|---|---|
+| `displayValue($value, $column)` | format ô bảng master theo `F=` |
+| `displayDetailValue($value, $column)` | format ô bảng chi tiết |
+| `columnFormatMap()` | map `[cột => F=]` từ Resx |
+| `detailColumnFormatMap()` | map của `ct_formated_col_list` |
+
+`ReportColumnLabels::formats()` / `detailFormats()` / `parseFormats()` đọc mã `F=`.
+
+`report-shell` truyền `$column` vào `displayValue($value, $column)`.
+
+#### f) Kết quả — `porptbk01` kỳ 2025
+
+| Cột | Trước | Sau |
+|---|---|---|
+| Ngày CT | `2025-01-03 00:00:00` | **`03/01/2025`** |
+| Số lượng | `3.0000` | **`3`** |
+| Thành tiền | `4400000.0000` | **`4 400 000`** |
+| Thuế GTGT | `.0000` | **`0`** |
+| Tổng tiền | `4400000.0000` | **`4 400 000`** |
+| Tỷ giá | `1.0000` | **`1`** |
+| Chi tiết — Số lượng | `67.0000` | **`67`** |
+| Chi tiết — Giá mua | `420000.0000` | **`420 000`** |
+
+#### g) Lưu ý
+
+- **CSV export giữ số thô** (`csvValue`) — để Excel tự format, tránh mất dữ liệu khi tính toán.
+- Cột không có `F=` → giữ nguyên giá trị gốc (không tự đoán định dạng).
+- `CatalogServiceTimerTest` có **9 error có sẵn trên `main`** — không liên quan module báo cáo.
+
 ## 3. ARDMKH Save: default không được `NULL`
 
 Theo `simba-docs/tables/ArDmKh.md`, hầu hết cột `NOT NULL` có default:
