@@ -16,7 +16,8 @@ Mỗi session PHẢI đọc theo đúng thứ tự dưới đây. KHÔNG đượ
 6. **memory/<hôm-qua>.md** - daily context hôm qua (nếu có)
 7. **MEMORY.md** - long-term memory (chỉ MAIN SESSION)
 8. **docs/DESIGN.md** - nếu task có chạm UI/Blade/Livewire/Alpine: design tokens (color/typography/radius/spacing/components) chuẩn Google Labs `design.md` spec
-9. **docs/PROJECT_CONVENTIONS.md** - quy ước dự án bắt buộc: `ksd`, canonical ARDMKH/dictionary, ARDMKH save defaults
+9. **docs/AGENT-THINKING-PROTOCOL.md** - **BẮT BUỘC**: phương thức suy nghĩ & thực hiện (không tự đặt tên, luôn tra nguồn, đối chiếu trang chuẩn, verify bằng dữ liệu thật, cập nhật doc ngay). Đọc TRƯỚC khi nhận bất kỳ task nào.
+10. **docs/PROJECT_CONVENTIONS.md** - quy ước dự án bắt buộc: `ksd`, canonical ARDMKH/dictionary, ARDMKH save defaults, **§2.7 định nghĩa DONE 9 mục**, **§2.8 đối chiếu trang chuẩn 14 mục**, **§2.9 quy tắc chung report-shell**
 
 Nếu có xung đột giữa các tài liệu, ưu tiên: chỉ dẫn mới nhất của Sếp → SOUL.md → USER.md → IDENTITY.md → AGENTS.md → tài liệu dự án còn lại.
 
