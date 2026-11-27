@@ -21,7 +21,12 @@
         <livewire:catalog::component.input-loai-phieu wire:model="pMa_ct" phan-he="PO" :include-all="true" />
     </div>
 </div>
-<div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">Mã nhà cung cấp</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_kh" /></div></div>
+<div class="grid grid-cols-3 items-center gap-4">
+    <label class="text-right text-sm text-gray-700">Mã NCC</label>
+    <div class="col-span-2">
+        <livewire:catalog::component.input-khachhang mode="nhacungcap" wire:model="pMa_kh" />
+    </div>
+</div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">P loại NCC1</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_plkh1" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">P loại NCC2</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_plkh2" /></div></div>
 <div class="grid grid-cols-3 items-center gap-4"><label class="text-right text-sm text-gray-700">P loại NCC3</label><div class="col-span-2"><input type="text" class="w-full max-w-[260px] rounded-md border-gray-300 px-2 py-1 text-sm" wire:model="pMa_plkh3" /></div></div>

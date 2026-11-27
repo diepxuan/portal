@@ -569,6 +569,47 @@ payload: pMa_ct=PO3, pNgay1=2026-11-01, pNgay2=2026-11-30
 submit: n=0, err=null
 ```
 
+#### 6. Autocomplete "Mã NCC" — dùng lại component có sẵn
+
+**Không viết component mới** — đã có `InputKhachhang` hỗ trợ multi-mode.
+
+Kiểm tra code:
+```php
+// Component/InputKhachhang.php
+'mode' => 'khachhang' | 'nhacungcap' | 'nhanvien'
+// map: 'nhacungcap' => pModuleId 'AP'
+```
+
+Kiểm tra SP `asARGetDMKH` (4 tham số): `@pMa_cty`, `@pMa_kh`, `@pStruct`, `@pModuleId`
+
+Test `pModuleId`:
+
+| `pModuleId` | Dòng | NCC (`isncc=1`) |
+|---|---:|---:|
+| `null` / `''` | 761 | 96 |
+| **`AP`** | **96** | **96** |
+| `PO` | 96 | 96 |
+| `AR` | 665 | 4 |
+| `CA` | 27 | 1 |
+
+→ `pModuleId='AP'` (hoặc `PO`) trả đúng danh sách NCC.
+
+**Áp dụng (giống `arrptbccn01sl` đã làm):**
+
+```blade
+<livewire:catalog::component.input-khachhang
+    mode="nhacungcap" wire:model="pMa_kh" />
+```
+
+**Verify browser:**
+```
+input placeholder = "Chọn nhà cung cấp..."
+mode = "nhacungcap"
+mo dropdown      -> 20 NCC
+go "zinus"       -> 1 ket qua: "Cong ty TNHH Zinus Viet Nam"
+trong HTML       -> 96 NCC entries
+```
+
 ### Field ẩn — theo form gốc
 
 Form ẩn bằng `.Visible = false` nên không có trong ảnh:
