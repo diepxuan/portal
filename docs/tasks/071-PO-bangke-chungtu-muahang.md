@@ -449,3 +449,128 @@ Wrapper gốc có thêm `ParamDefines` + các biến thể trùng tên (khác ho
 ### ⚠️ 0 dòng — module PO không có dữ liệu
 
 Nhất quán với task 066, 067. **Không phải bug code.**
+
+## PR #428 — đối chiếu ảnh SimbaERP gốc (2026-11-27)
+
+> Task này **đang được làm tiếp** trong **PR #428** (`feat/po-bangke-timer`).
+> Trạng thái: **PR mở, chưa merge** — chờ Sếp duyệt.
+
+### Đã làm (trong PR #428)
+
+#### 1. Bộ chọn kỳ báo cáo — giống `po.rpt.arrptbccn01103023`
+
+| | Trước | Sau |
+|---|---|---|
+| Bộ chọn kỳ | ❌ không có | ✅ `<livewire('catalog::component.timer')>` |
+| `pNgay1` | 2026-11-01 | 2026-11-01 |
+| `pNgay2` | **2026-11-27** (hôm nay) | **2026-11-30** (cuối kỳ) |
+
+Thêm `mount()` + `syncTimer()` dùng `CatalogService::timer()`.
+
+#### 2. Label tiếng Việt — thay field name thô
+
+Trước hiển thị `pTrang_thai`, `pSoct1`, `pMa_kh`…
+
+Sau lấy đúng từ `frmPORptBK01.cs` (`grep 'lbl*.Text = "..."'`):
+
+| Field | Label | Field | Label |
+|---|---|---|---|
+| `pSoct1` | Chứng từ số | `pSoct2` | Đến số |
+| `pMa_ct` | Loại phiếu | `pMa_kh` | Mã NCC |
+| `pMa_plkh1/2/3` | P loại NCC1/2/3 | `pMa_hd` | Mã hợp đồng |
+| `pMa_nhhd` | Nhóm hợp đồng | `pMa_httt` | Hình thức TT |
+| `pMa_kho` | Mã kho | `pMa_lo` | Mã lô |
+| `pMa_Phi` | Mã phí | `pMa_spct` | Mã SPCT |
+| `pMa_vt` | Mã vật tư | `pMa_nhvt` | Mã nhóm vật tư |
+| `pMa_nt` | Mã ngoại tệ | `pGroupType` | Nhóm theo |
+
+#### 3. Thứ tự field — theo ảnh SimbaERP 14.2
+
+```
+ 1. Kỳ báo cáo          -> component.timer
+ 2. Chứng từ số — Đến số -> pSoct1 | pSoct2  (CÙNG 1 DÒNG, có dấu '-')
+ 3. Loại phiếu          -> pMa_ct  (autocomplete)
+ 4. Mã NCC              -> pMa_kh
+ 5. P loại NCC1         -> pMa_plkh1
+ 6. P loại NCC2         -> pMa_plkh2
+ 7. P loại NCC3         -> pMa_plkh3
+ 8. Mã hợp đồng         -> pMa_hd
+ 9. Nhóm hợp đồng       -> pMa_nhhd
+10. Hình thức TT        -> pMa_httt
+11. Mã kho              -> pMa_kho
+12. Mã lô               -> pMa_lo
+13. Mã phí              -> pMa_Phi
+14. Mã SPCT             -> pMa_spct
+15. Mã vật tư           -> pMa_vt
+16. Mã nhóm vật tư      -> pMa_nhvt
+17. Mã ngoại tệ         -> pMa_nt
+```
+
+#### 4. Autocomplete "Loại phiếu" — component dùng lại được
+
+**Component mới (dùng chung):**
+
+```
+src/Http/Livewire/Component/InputLoaiPhieu.php
+resources/views/components/input-loai-phieu.blade.php
+```
+
+Dùng:
+```blade
+<livewire:catalog::component.input-loai-phieu
+    wire:model="pMa_ct" phan-he="PO" :include-all="true" />
+```
+
+**Nguồn:** SP `asSIGetDmSo_ct` (4 tham số thật):
+`@pMa_cty`, `@pPhan_he`, `@pStruct`, `@pLanguageId`
+
+**Bug đã fix:** `app()->getLocale()` = `'en'` → SP trả **0 dòng**. Phải dùng `'vi-VN'`:
+
+| `pLanguageId` | Dòng |
+|---|---:|
+| `vi-VN` | **6** ✅ |
+| `en-US` | 6 |
+| `en` | 0 |
+| `vi` | 0 |
+| `''` | 2 |
+
+### Field ẩn — theo form gốc
+
+Form ẩn bằng `.Visible = false` nên không có trong ảnh:
+
+```
+pTrang_thai, pMa_nhkh, pMa_vitri, pMa_nvkd,
+pMa_plvt1/2/3, pMa_TT, pMa_bp
+```
+
+Vẫn giữ trong payload (SP cần đủ tham số), chỉ không hiện UI.
+
+### Verify browser thật (2026-11-27)
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Route `po/rpt/porptbk01` | **200** |
+| `component.timer` | ✅ load |
+| `component.input-loai-phieu` | ✅ load |
+| `ctOptions` | **7 dòng** (6 loại phiếu + "Tất cả") |
+| Gõ `hoa don` | 3 kết quả: PO3, PO6, PO7 |
+| Số label | 22 label tiếng Việt đúng thứ tự ảnh |
+| Submit | `err: null` (**0 dòng** — module PO không có dữ liệu kỳ 11/2026) |
+
+### Đang làm / Sẽ làm
+
+| Việc | Trạng thái |
+|---|---|
+| Chờ Sếp duyệt PR #428 | ⏳ **đang chờ** |
+| Merge PR #428 | ⏳ sau khi duyệt |
+| Verify sau merge trên `main` | ⏳ chưa |
+| Kiểm tra dữ liệu thật khi PO có phát sinh | ⏳ chưa có kỳ nào có dữ liệu |
+
+> **Chưa thể verify dữ liệu:** module PO hiện không có phát sinh trong kỳ 11/2026 → SP trả 0 dòng. Cần kỳ có dữ liệu để xác nhận số liệu đúng.
+
+### Menu & title
+
+- **Menu:** `10.20.02`
+- **Title (sysMenu.short_name):** Bảng kê hóa đơn mua hàng trong nước
+- **Title hiện trên UI:** lấy từ `sysMenu.bar` (form gốc `AssemblyTitle`) — khác `short_name`
+
