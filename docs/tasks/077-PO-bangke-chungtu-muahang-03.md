@@ -656,6 +656,40 @@ Wrapper gửi `null` cho mọi field chưa nhập → báo cáo **luôn 0 dòng*
 
 > **BK03 năm 2026 = 0 dòng là ĐÚNG nghiệp vụ** — bảng `poct` không có dòng nào thỏa `cp<>0 OR cp_nt<>0` trong 2026 (năm 2025 có 42 dòng).
 
+### 9. Mã ngoại tệ mặc định = VND
+
+**Bằng chứng** từ `Framework.dll` (base class `frmReport`):
+
+```csharp
+// dong 59828
+optVND.Checked = true;      // VND chon mac dinh
+optVND.Text = "VND";
+optNt.Text  = "Ngoai te";
+```
+
+`sysReportInfo.hasNT = '1'` cho cả 3 menu (`10.20.02`, `10.20.05`, `10.20.20`) → nhóm ngoại tệ **phải hiện** và mặc định **VND**.
+
+**Tác động lên SP:**
+
+```sql
+AND p.ma_nt LIKE @pMa_nt + '%'
+```
+
+| `pMa_nt` | Kết quả |
+|---|---|
+| `''` | tất cả ngoại tệ (VND + CNY + CAD...) |
+| **`'VND'`** | **chỉ VND** — đúng mặc định SimbaERP |
+
+Dữ liệu `PoPh3` có 8 dòng CNY + 1 dòng CAD → nếu để `''` sẽ lẫn ngoại tệ vào báo cáo VND.
+
+**Fix:** `pMa_nt` `''` → `'VND'` ở cả 3 component.
+
+**Fix thêm — `InputNgoaite` không hiện tên khi có giá trị sẵn:**
+
+`mount()` không nhận value từ `wire:model` → input hiện rỗng dù `pMa_nt='VND'`. Thêm `hydrate()` + sync trong `render()` (giống `InputLoaiPhieu`).
+
+**Verify:** `pMa_nt='VND'`, input hiện **"đồng"** (tên của VND), tháng 10/2026 = **111 dòng** / **128 dòng**, `err=null`.
+
 ### Field ẩn — theo form gốc
 
 Form ẩn bằng `.Visible = false` nên không có trong ảnh:
