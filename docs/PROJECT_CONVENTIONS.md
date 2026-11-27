@@ -659,6 +659,221 @@ Vì ảnh hưởng 74 view, mỗi lần sửa phải:
 | Header | `ma_cty`, `stt_rec`, `ma_ct`, `ma_kh` | `#`, **Ngày CT**, **Số CT**, **Mã CT**, **Mã KH**, **Tên KH**, **Diễn giải** |
 | Nguồn label | không có | `sysReportResx` `10.20.02`/`04` |
 
+### 2.9.9. Master-Detail — bảng chi tiết BÊN DƯỚI (chuẩn)
+
+**Chuẩn tham chiếu:** `/simba/so/rpt/sorptbk01` — chọn dòng → panel **"Chi tiết phiếu #N"** hiện **bên dưới** bảng master, dạng **bảng** có header riêng.
+
+**Cấm:** hiện panel chi tiết **bên trên** dạng `<dl>` (định dạng cũ) — sai vị trí và khó đọc.
+
+> ⚠️ **MERGE, KHÔNG THAY THẾ.** Khi bật Master-Detail, phải hiện **CẢ HAI**:
+> 1. **Thông tin** — `<dl>` các field của dòng đang chọn (bảng cũ, giữ nguyên)
+> 2. **Các dòng chi tiết** — bảng chi tiết từ RS1
+>
+> Không được bỏ phần "Thông tin" khi thêm bảng chi tiết.
+> *Bài học: lần đầu implement đã thay thế `<dl>` bằng bảng chi tiết → Sếp phải nhắc
+> "bảng thông tin cũ đâu rồi? anh bảo merge với nhau chứ có bảo thay thế đâu".*
+
+#### a) Điều kiện: SP phải trả 2 result set
+
+Kiểm tra trước khi bật:
+
+```
+RS1 = chi tiết  (nhiều dòng / phiếu, có ma_vt, so_luong, gia, tien...)
+RS2 = master    (mỗi stt_rec 1 dòng)
+Lien ket: RS1.stt_rec = RS2.stt_rec
+```
+
+Ví dụ đã kiểm chứng `asPORptBK01` (kỳ 2025):
+
+| Result set | Dòng | Cột | Vai trò |
+|---|---:|---:|---|
+| RS1 | **1.371** | 40 | chi tiết |
+| RS2 | **366** | 27 | danh sách phiếu |
+
+`366/366` stt_rec của RS2 đều có trong RS1.
+
+**SP chỉ trả 1 result set** (`asPORptBK02`, `asPORptBK03`) → **không** bật Master-Detail,
+giữ bảng đơn.
+
+#### b) Bật Master-Detail trong component
+
+```php
+// 1. Wrapper SP phai co callWithDataSets() — xem AsPORptBK01
+// 2. Component override:
+protected function usesDataSets(): bool
+{
+    return true;
+}
+```
+
+`AbstractReport::submit()` tự động:
+- gọi `$sp::callWithDataSets($payload)` thay vì `$sp::call()`
+- `$rows` = `ph` (master), `$detailRows` = `ct` (chi tiết)
+- `$detailColumns` lấy từ `sysReportResx.ct_formated_col_list`
+
+#### c) Method có sẵn trong `AbstractReport`
+
+| Method | Việc |
+|---|---|
+| `usesDataSets()` | override → `true` để bật |
+| `hasDetail()` | có dữ liệu chi tiết để hiện không |
+| `selectedDetailRows()` | các dòng chi tiết của phiếu đang chọn (lọc theo `detailKey`) |
+| `detailColumnLabel($col)` | label cột chi tiết (4 tầng như `columnLabel`) |
+| `resolveDetailColumns($row)` | lọc cột chi tiết theo `ct_formated_col_list` |
+
+**Property mới:** `$detailRows`, `$detailColumns`, `$detailColumnLabelMap`, `$detailKey` (mặc định `stt_rec`).
+
+#### d) `report-shell` render 2 bảng
+
+```
+[bảng master — 366 phiếu]
+   ↓ click dòng
+┌─ Chi tiết phiếu #3 ─────────────────── HDMH00115 ─┐
+│ THÔNG TIN                                          │
+│   <dl> 27 field của dòng đang chọn (bảng cũ)       │
+│ CÁC DÒNG CHI TIẾT                                  │
+│   <table> 5 dòng, header từ ct_formated_col_list   │
+│   5 dòng chi tiết                                  │
+└────────────────────────────────────────────────────┘
+```
+
+**Cơ chế:** một khối duy nhất `@if ([] !== $selectedRow)`:
+
+| Phần | Điều kiện | Nội dung |
+|---|---|---|
+| **Thông tin** | luôn hiện khi có dòng chọn | `<dl>` từ `$selectedRow` |
+| **Các dòng chi tiết** | `@if ($this->hasDetail())` | `<table>` từ `$detailRows` |
+
+Báo cáo 1 bảng → chỉ hiện phần **Thông tin** (không có tiêu đề "Các dòng chi tiết").
+
+#### e) Bảng Resx cho Master-Detail
+
+| Cột Resx | Dùng cho | Method |
+|---|---|---|
+| `formated_col_list` | bảng master | `visibleColumns()` |
+| `ct_formated_col_list` | bảng chi tiết | `visibleDetailColumns()` |
+| `formated_col_list_nt` | master khi ngoại tệ | (chưa dùng) |
+| `ct_formated_col_list_nt` | chi tiết khi ngoại tệ | (chưa dùng) |
+
+Nhãn: `for($menuId,$maMau)` cho master, `forDetail($menuId,$maMau)` cho chi tiết.
+
+#### f) Ví dụ đạt chuẩn — `porptbk01`
+
+| | Trước | Sau |
+|---|---|---|
+| Bảng trên | 366 phiếu (sau khi lọc cột) | 366 phiếu |
+| Panel chi tiết | **bên trên**, chỉ `<dl>` | **bên dưới**, **merge**: `<dl>` Thông tin + bảng Các dòng chi tiết |
+| Tiêu đề | "Chi tiết dòng 23" | **"Chi tiết phiếu #3"** + `so_ct` |
+| Header chi tiết | tên cột thô | **Mã VT, Tên VT, ĐVT, Số lượng, Giá mua, Tiền mua** |
+| Số dòng chi tiết | 40 cột flat | **5 dòng** của riêng phiếu đó |
+
+### 2.9.10. Định dạng số & ngày — `SimbaNumberFormat`
+
+**Vấn đề:** bảng kê hiện số thô từ SQL Server: `4400000.0000`, `.0000`, `2025-01-03 00:00:00`.
+
+**Nguồn sự thật — 2 tầng:**
+
+#### a) Mã format trong `sysReportResx`
+
+`formated_col_list` có trường `F=<mã>`:
+
+```
+ngay_ct:H=Ngày CT:F=dd/MM/yyyy:W=75,
+so_luong:H=Số lượng:F=QT:W=55,
+tien:H=Thành tiền:F=OA:W=80,
+thue_gtgt:H=Thuế GTGT:F=OA:W=74,
+tt:H=Tổng tiền:F=OA:W=77,
+ty_gia:H=Tỷ giá:F=OA:W=61
+```
+
+Thống kê mã `F=` trong toàn bộ Resx:
+
+| Mã | Số lần | Nghĩa |
+|---|---:|---|
+| `### ### ###` | 223 | pattern tiền trực tiếp |
+| `dd/MM/yyyy` | 208 | ngày |
+| `QT` | 144 | số lượng |
+| `FA` | 29 | tiền ngoại tệ |
+| `OP` | 28 | đơn giá |
+| `###.##`, `##0.####`... | 20 | pattern trực tiếp |
+
+#### b) Ánh xạ mã → cột cấu hình `SiSetup`
+
+Theo `Framework.dll` (class `frmReport`, hàm đọc `formated_col_list`):
+
+```csharp
+switch (text.Left(2)) {
+  case "QT": Format = SiSetup.Qty_Input_Format;       break;
+  case "OA": Format = SiSetup.Amount_Input_Format;    break;
+  case "FP": Format = SiSetup.Amount_Input_Format;    break;
+  case "FA": Format = SiSetup.FCAmount_Input_Format;  break;
+  case "OP": Format = SiSetup.Price_Input_Format;     break;
+  case "##": Format = text;  // pattern truc tiep
+}
+```
+
+Giá trị thực trong DB (cty `001`):
+
+| Cột `SiSetup` | Giá trị |
+|---|---|
+| `Qty_Input_Format` | `### ### ###.##` |
+| `Price_Input_Format` | `### ### ### ###` |
+| `Amount_Input_Format` | `### ### ### ### ###` |
+| `FCAmount_Input_Format` | `### ### ### ##0.#0` |
+
+#### c) Quy tắc pattern .NET
+
+| Ký tự | Nghĩa |
+|---|---|
+| `#` | chữ số **hoặc bỏ trống** (không hiện số 0 thừa) |
+| `0` | chữ số **bắt buộc** (luôn hiện) |
+| `.` | dấu thập phân |
+| dấu cách trong phần nguyên | **dấu ngăn cách nghìn** |
+
+⚠️ **SimbaERP dùng DẤU CÁCH ngăn cách nghìn**, không phải dấu chấm:
+`4 400 000` — **không** phải `4.400.000`.
+
+#### d) Service `SimbaNumberFormat`
+
+| Method | Việc |
+|---|---|
+| `config()` | đọc 5 cột format từ `SiSetup`, cache theo request |
+| `format($value, $code)` | `QT`/`OA`/`FP`/`FA`/`OP` hoặc pattern trực tiếp |
+| `applyPattern($number, $pattern)` | áp dụng pattern .NET lên số |
+| `formatDate($value, 'dd/MM/yyyy')` | đổi .NET date format → PHP |
+
+#### e) Tích hợp `AbstractReport`
+
+| Method | Việc |
+|---|---|
+| `displayValue($value, $column)` | format ô bảng master theo `F=` |
+| `displayDetailValue($value, $column)` | format ô bảng chi tiết |
+| `columnFormatMap()` | map `[cột => F=]` từ Resx |
+| `detailColumnFormatMap()` | map của `ct_formated_col_list` |
+
+`ReportColumnLabels::formats()` / `detailFormats()` / `parseFormats()` đọc mã `F=`.
+
+`report-shell` truyền `$column` vào `displayValue($value, $column)`.
+
+#### f) Kết quả — `porptbk01` kỳ 2025
+
+| Cột | Trước | Sau |
+|---|---|---|
+| Ngày CT | `2025-01-03 00:00:00` | **`03/01/2025`** |
+| Số lượng | `3.0000` | **`3`** |
+| Thành tiền | `4400000.0000` | **`4 400 000`** |
+| Thuế GTGT | `.0000` | **`0`** |
+| Tổng tiền | `4400000.0000` | **`4 400 000`** |
+| Tỷ giá | `1.0000` | **`1`** |
+| Chi tiết — Số lượng | `67.0000` | **`67`** |
+| Chi tiết — Giá mua | `420000.0000` | **`420 000`** |
+
+#### g) Lưu ý
+
+- **CSV export giữ số thô** (`csvValue`) — để Excel tự format, tránh mất dữ liệu khi tính toán.
+- Cột không có `F=` → giữ nguyên giá trị gốc (không tự đoán định dạng).
+- `CatalogServiceTimerTest` có **9 error có sẵn trên `main`** — không liên quan module báo cáo.
+
 ## 3. ARDMKH Save: default không được `NULL`
 
 Theo `simba-docs/tables/ArDmKh.md`, hầu hết cột `NOT NULL` có default:

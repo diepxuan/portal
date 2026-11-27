@@ -982,3 +982,104 @@ Cột `ma_cty`/`stt_rec`/`stt_rec0` là kỹ thuật — SimbaERP không hiển 
 
 Unit test: `ReportColumnLabelsTest` — **9 tests / 20 assertions PASS**.
 
+### 11. Master-Detail — bảng chi tiết bên dưới (chuẩn `sorptbk01`)
+
+**Yêu cầu Sếp:** chọn dòng → hiện **"Chi tiết phiếu #3"** **bên dưới**, dạng **bảng**, giống bảng kê bán hàng. **MERGE với bảng thông tin cũ, KHÔNG thay thế.**
+
+> ⚠️ **Bài học:** lần đầu em đã **thay thế** `<dl>` bằng bảng chi tiết → Sếp nhắc
+> *"bảng thông tin cũ đâu rồi? anh bảo merge với nhau chứ có bảo thay thế đâu"*.
+> Đã sửa: khối chi tiết bên dưới gồm **2 phần** — Thông tin (`<dl>`) + Các dòng chi tiết (`<table>`).
+
+**Phát hiện:** SP `asPORptBK01` trả **2 result set** (chưa từng dùng):
+
+| Result set | Dòng | Cột | Vai trò |
+|---|---:|---:|---|
+| RS1 | **1.371** | 40 | chi tiết (có `ma_vt`, `so_luong`, `gia0`, `tien0`...) |
+| RS2 | **366** | 27 | danh sách phiếu (mỗi `stt_rec` 1 dòng) |
+
+Liên kết: `RS1.stt_rec = RS2.stt_rec` — **366/366** stt_rec của RS2 có trong RS1.
+
+**Đã làm:**
+
+1. `AsPORptBK01::callWithDataSets()` — đọc cả 2 result set (theo pattern `AsSORptBK01`)
+2. `AbstractReport` — thêm `$detailRows`, `$detailColumns`, `$detailKey` + 5 method:
+   `usesDataSets()`, `hasDetail()`, `selectedDetailRows()`,
+   `detailColumnLabel()`, `resolveDetailColumns()`
+3. `Porptbk01::usesDataSets()` → `true`
+4. `report-shell` — panel chi tiết chuyển từ **trên** (`<dl>`) xuống **dưới** (**bảng**),
+   header riêng từ `sysReportResx.ct_formated_col_list`
+5. `ReportColumnLabels::forDetail()` + `visibleDetailColumns()`
+
+**Kết quả browser (đã merge 2 phần):**
+
+```
+Bảng trên : 366 phiếu | # Ngày CT Số CT Mã CT Mã KH Tên KH Diễn giải
+Click dòng 3 → "Chi tiết phiếu #3" + HDMH00115
+  ├─ THÔNG TIN        : 27 field (<dl>, bảng cũ giữ nguyên)
+  └─ CÁC DÒNG CHI TIẾT: 5 dòng | # Mã VT Tên VT ĐVT Số lượng Giá mua Tiền mua
+```
+
+**Không ảnh hưởng báo cáo 1 bảng:**
+
+| Báo cáo | Kết quả |
+|---|---|
+| `porptbk02` | 1.415 dòng, `detail: 0` — không bật Master-Detail (SP chỉ 1 result set) ✅ |
+| `porptbk03` | 42 dòng, `detail: 0` ✅ |
+| `gl/rpt/glrptbct01` | 1 dòng, `detail: 0` ✅ |
+| `so/rpt/sorptbk01` | không đổi ✅ |
+
+**Tương thích ngược:** báo cáo 1 bảng vẫn dùng panel `<dl>` cũ nếu không có `detailRows`
+(nhánh `@elseif` trong `report-shell`).
+
+Unit test: **12 tests / 28 assertions PASS**.
+
+
+### 12. Định dạng số & ngày theo SimbaERP
+
+**Vấn đề:** bảng kê hiện số thô `4400000.0000`, `.0000`, ngày `2025-01-03 00:00:00`.
+
+**Nguồn sự thật 2 tầng:**
+
+1. `sysReportResx` trường `F=<mã>` trong `formated_col_list`
+2. Mã → cột cấu hình `SiSetup` (theo `Framework.dll` class `frmReport`)
+
+| Mã | Cột `SiSetup` | Giá trị thực (cty 001) |
+|---|---|---|
+| `QT` | `Qty_Input_Format` | `### ### ###.##` |
+| `OA` / `FP` | `Amount_Input_Format` | `### ### ### ### ###` |
+| `FA` | `FCAmount_Input_Format` | `### ### ### ##0.#0` |
+| `OP` | `Price_Input_Format` | `### ### ### ###` |
+
+⚠️ **SimbaERP dùng DẤU CÁCH ngăn cách nghìn**: `4 400 000` — không phải `4.400.000`.
+
+**Service mới:** `Diepxuan\Catalog\Services\SimbaNumberFormat`
+
+| Method | Việc |
+|---|---|
+| `config()` | đọc 5 format từ `SiSetup` |
+| `format($value, $code)` | theo mã `QT`/`OA`/`FP`/`FA`/`OP` hoặc pattern trực tiếp |
+| `applyPattern($number, $pattern)` | áp pattern .NET (`#` bỏ trống, `0` bắt buộc) |
+| `formatDate($value, 'dd/MM/yyyy')` | đổi .NET date format |
+
+**Tích hợp:** `AbstractReport::displayValue($value, $column)` +
+`displayDetailValue()` + `columnFormatMap()` + `detailColumnFormatMap()`.
+
+**Kết quả `porptbk01` kỳ 2025:**
+
+| Cột | Trước | Sau |
+|---|---|---|
+| Ngày CT | `2025-01-03 00:00:00` | **`03/01/2025`** |
+| Số lượng | `3.0000` | **`3`** |
+| Thành tiền | `4400000.0000` | **`4 400 000`** |
+| Thuế GTGT | `.0000` | **`0`** |
+| Tổng tiền | `4400000.0000` | **`4 400 000`** |
+| Tỷ giá | `1.0000` | **`1`** |
+
+**Chi tiết:** Số lượng `67.0000` → **`67`**; Giá mua `420000.0000` → **`420 000`**.
+
+**Lưu ý:**
+- CSV export giữ số **thô** (Excel tự format, tránh mất dữ liệu)
+- Cột không có `F=` → giữ nguyên giá trị gốc
+- `CatalogServiceTimerTest` có **9 error có sẵn trên `main`** — không liên quan
+
+Unit test: `SimbaNumberFormatTest` — **11 tests / 23 assertions PASS**.
