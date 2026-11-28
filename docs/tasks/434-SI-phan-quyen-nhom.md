@@ -341,3 +341,65 @@ Thêm `Rights` vào danh sách skip để không sinh route rác `si.vch.sigroup
 
 > Test `SourceRouteCoverageTest` đã cập nhật: cho phép component có route con
 > (`{base}.{action}`) và thêm `si.vch.sigroupinfo.rights` vào danh sách route khai báo tay.
+
+### 5. Nút "Phân quyền" — chuyển sang THANH CÔNG CỤ (theo SimbaERP)
+
+**Sếp chỉ ra:** SimbaERP có nút **"Phân quyền"** ở thanh công cụ, tác động lên **dòng đang chọn** —
+không phải link riêng từng dòng như em làm ban đầu.
+
+**Đã sửa:**
+
+| Trước | Sau |
+|---|---|
+| link "Phân quyền" ở **từng dòng** (13 link) | nút ở **thanh công cụ**, cạnh Mới/Sửa/Xoá |
+| bấm là vào ngay | phải **chọn dòng trước**, nút mới bật |
+| không có trạng thái chọn | dòng được chọn **tô nền xanh**, có nhãn "đang chọn `<mã>`" |
+
+**Cơ chế mới:**
+
+```php
+public ?string $selectedGroupName = null;   // dong dang chon
+
+public function selectGroup(string $groupName): void
+{
+    $this->selectedGroupName = $groupName;
+}
+
+public function selectedRightsUrl(): ?string
+{
+    return url('/simba/si/vch/sigroupinfo/' . rawurlencode($this->selectedGroupName) . '/rights');
+}
+```
+
+View dòng: `wire:click="selectGroup(...)"` + `@class(['bg-sky-100' => $selectedGroupName === ...])`.
+
+**Nút Sửa / Xoá / Phân quyền** đều `@disabled(null === $selectedGroupName)` → mờ khi chưa chọn.
+
+**Verify:**
+
+| Trạng thái | Nút "Phân quyền" | Sửa/Xoá |
+|---|---|---|
+| Ban đầu | `<span>` mờ, không link | **disabled** |
+| Chọn LEADER | `<a href=".../LEADER/rights">` | **enabled** |
+| Bấm nút sau khi chọn PO | vào `/simba/si/vch/sigroupinfo/PO%20/rights`, `group="PO "`, 13 phân hệ | ✅ |
+
+### ⚠️ Dữ liệu gốc có dấu cách: nhóm `PO `
+
+Kiểm `sysGroupInfo`:
+
+```
+[PO ] len=2 bytes=6     <- co 1 dau cach cuoi
+[AP]  len=2 bytes=4
+[SI]  len=2 bytes=4
+```
+
+→ Nhóm `PO` trong DB SimbaERP **lưu kèm dấu cách cuối**. Đây là **dữ liệu gốc**, không sửa.
+
+**Xử lý:**
+
+- So sánh dùng `trim()` (không sửa giá trị)
+- URL dùng `rawurlencode()` → `/PO%20/rights`
+- Route `where('group', '[^/]+')` chấp nhận `%20`
+- Verify: `/simba/si/vch/sigroupinfo/PO%20/rights` → 200, `group="PO "`, 571 quyền
+
+> Đây là **quirk dữ liệu cần biết** khi làm các màn khác đọc `sysGroupInfo`.

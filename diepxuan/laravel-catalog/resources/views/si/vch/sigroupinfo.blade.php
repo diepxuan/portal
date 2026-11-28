@@ -33,7 +33,37 @@
             Mới
         </button>
 
-        <span class="text-xs text-gray-500">{{ $groups->total() }} nhóm</span>
+        {{-- 3 nut thao tac len DONG DANG CHON (giong thanh cong cu SimbaERP) --}}
+        <button type="button" wire:click="openEdit('{{ $selectedGroupName }}')"
+            @disabled(null === $selectedGroupName)
+            class="rounded-md bg-gray-600 px-3 py-1.5 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40">
+            Sửa
+        </button>
+
+        <button type="button" wire:click="delete('{{ $selectedGroupName }}')"
+            wire:confirm="Xoá nhóm {{ $selectedGroupName }}?"
+            @disabled(null === $selectedGroupName)
+            class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40">
+            Xoá
+        </button>
+
+        @if (null !== $this->selectedRightsUrl())
+            <a href="{{ $this->selectedRightsUrl() }}"
+                class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-700">
+                Phân quyền
+            </a>
+        @else
+            <span class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white opacity-40">
+                Phân quyền
+            </span>
+        @endif
+
+        <span class="text-xs text-gray-500">
+            {{ $groups->total() }} nhóm
+            @if (null !== $selectedGroupName)
+                · đang chọn <span class="font-mono font-medium text-gray-700">{{ $selectedGroupName }}</span>
+            @endif
+        </span>
     </div>
 
     {{-- Form them/sua --}}
@@ -109,7 +139,12 @@
             </thead>
             <tbody>
                 @forelse ($groups as $index => $group)
-                    <tr class="hover:bg-sky-50" wire:key="si-groupinfo-{{ $group['groupname'] }}">
+                    <tr wire:key="si-groupinfo-{{ $group['groupname'] }}"
+                        wire:click="selectGroup('{{ $group['groupname'] }}')"
+                        @class([
+                            'cursor-pointer hover:bg-sky-50',
+                            'bg-sky-100' => $selectedGroupName === $group['groupname'],
+                        ])>
                         <td class="border-b border-gray-100 px-3 py-2 text-gray-500">
                             {{ $groups->firstItem() + $index }}
                         </td>
@@ -124,16 +159,13 @@
                             {{ $group['ksd'] ? 'x' : '' }}
                         </td>
                         <td class="border-b border-gray-100 px-3 py-2 text-right">
-                            <a href="{{ url('/simba/si/vch/sigroupinfo/' . $group['groupname'] . '/rights') }}"
-                                class="rounded px-2 py-0.5 text-xs text-emerald-600 hover:bg-emerald-50">
-                                Phân quyền
-                            </a>
-                            <button type="button" wire:click="openEdit('{{ $group['groupname'] }}')"
+                            <button type="button"
+                                wire:click.stop="openEdit('{{ $group['groupname'] }}')"
                                 class="rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50">
                                 Sửa
                             </button>
                             <button type="button"
-                                wire:click="delete('{{ $group['groupname'] }}')"
+                                wire:click.stop="delete('{{ $group['groupname'] }}')"
                                 wire:confirm="Xoá nhóm {{ $group['groupname'] }}?"
                                 class="rounded px-2 py-0.5 text-xs text-red-600 hover:bg-red-50">
                                 Xoá

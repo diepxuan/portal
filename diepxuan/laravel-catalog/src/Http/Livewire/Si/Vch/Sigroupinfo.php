@@ -57,6 +57,12 @@ class Sigroupinfo extends Component
     /** Dang sua (true) hay them moi (false). */
     public bool $isEdit = false;
 
+    /**
+     * Nhom dang CHON trong bang (de bat nut Sua/Xoa/Phan quyen o thanh cong cu).
+     * Giong SimbaERP: bam vao dong -> chon; nut thao tac len dong dang chon.
+     */
+    public ?string $selectedGroupName = null;
+
     public ?string $groupName = null;
 
     public string $fullName = '';
@@ -83,6 +89,27 @@ class Sigroupinfo extends Component
         $this->resetPage();
     }
 
+    /**
+     * Bam vao dong -> chon nhom (giong DataGridView cua SimbaERP).
+     */
+    public function selectGroup(string $groupName): void
+    {
+        $this->selectedGroupName = $groupName;
+        $this->errorMessage = null;
+    }
+
+    /**
+     * URL man phan quyen cua nhom dang chon (null neu chua chon).
+     */
+    public function selectedRightsUrl(): ?string
+    {
+        if (null === $this->selectedGroupName || '' === $this->selectedGroupName) {
+            return null;
+        }
+
+        return url('/simba/si/vch/sigroupinfo/' . rawurlencode($this->selectedGroupName) . '/rights');
+    }
+
     public function openCreate(): void
     {
         $this->errorMessage = null;
@@ -96,6 +123,7 @@ class Sigroupinfo extends Component
     {
         $this->errorMessage = null;
         $this->successMessage = null;
+        $this->selectedGroupName = $groupName;
         $this->resetForm();
 
         $row = $this->findGroup($groupName);
@@ -180,6 +208,10 @@ class Sigroupinfo extends Component
             return;
         }
 
+        if ($this->selectedGroupName === $groupName) {
+            $this->selectedGroupName = null;
+        }
+
         $this->resetForm();
     }
 
@@ -247,7 +279,9 @@ class Sigroupinfo extends Component
         $rows = AsGetGroupInfo::call(['pGroupName' => $groupName])->all();
 
         foreach ($this->normalizeRows($rows) as $row) {
-            if (mb_strtolower($row['groupname']) === mb_strtolower($groupName)) {
+            // So sanh da trim: DB SimbaERP co nhom luu kem dau cach cuoi
+            // (vd 'PO ' bytes=6 thay vi 'PO' bytes=4) — du lieu goc, khong sua.
+            if (mb_strtolower(trim($row['groupname'])) === mb_strtolower(trim($groupName))) {
                 return $row;
             }
         }
