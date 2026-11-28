@@ -361,7 +361,7 @@ ban ghi test con lai: 0
 
 | Việc | Trạng thái |
 |---|---|
-| **Phân quyền** (`frmSiSetRights` + 4 SP right) | ⏳ chưa port — cần task riêng |
+| **Phân quyền** (`frmSiSetRights`) | ⏳ **task 434** (`434-SI-phan-quyen-nhom.md`) — đã khảo sát đầy đủ |
 | Nút "Thoát" | ⏳ không cần (điều hướng sidebar) |
 
 SP cho phân quyền đã tra sẵn: `asGetMenuBar(1)`, `asGetMenuDetail(1)`,
