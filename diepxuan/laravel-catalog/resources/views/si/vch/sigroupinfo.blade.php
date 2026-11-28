@@ -134,7 +134,6 @@
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">Tên đầy đủ</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">Phân lại quyền</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">KSD</th>
-                    <th class="border-b border-gray-200 px-3 py-2 text-right font-medium text-gray-500">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,23 +157,10 @@
                         <td class="border-b border-gray-100 px-3 py-2 text-center">
                             {{ $group['ksd'] ? 'x' : '' }}
                         </td>
-                        <td class="border-b border-gray-100 px-3 py-2 text-right">
-                            <button type="button"
-                                wire:click.stop="openEdit('{{ $group['groupname'] }}')"
-                                class="rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50">
-                                Sửa
-                            </button>
-                            <button type="button"
-                                wire:click.stop="delete('{{ $group['groupname'] }}')"
-                                wire:confirm="Xoá nhóm {{ $group['groupname'] }}?"
-                                class="rounded px-2 py-0.5 text-xs text-red-600 hover:bg-red-50">
-                                Xoá
-                            </button>
-                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-3 py-8 text-center text-gray-500">
+                        <td colspan="5" class="px-3 py-8 text-center text-gray-500">
                             Không tìm thấy nhóm nào.
                         </td>
                     </tr>

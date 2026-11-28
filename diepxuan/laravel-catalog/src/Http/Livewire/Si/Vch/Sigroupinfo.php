@@ -123,6 +123,14 @@ class Sigroupinfo extends Component
     {
         $this->errorMessage = null;
         $this->successMessage = null;
+
+        // Nut Sua o thanh cong cu truyen $selectedGroupName — co the null/rong.
+        if ('' === trim($groupName)) {
+            $this->errorMessage = 'Chưa chọn nhóm để sửa.';
+
+            return;
+        }
+
         $this->selectedGroupName = $groupName;
         $this->resetForm();
 
@@ -194,6 +202,13 @@ class Sigroupinfo extends Component
     {
         $this->errorMessage = null;
         $this->successMessage = null;
+
+        // Nut Xoa o thanh cong cu truyen $selectedGroupName — co the null/rong.
+        if ('' === trim($groupName)) {
+            $this->errorMessage = 'Chưa chọn nhóm để xoá.';
+
+            return;
+        }
 
         try {
             AsSiDelGroupInfo::call([

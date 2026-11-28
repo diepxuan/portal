@@ -403,3 +403,48 @@ Kiểm `sysGroupInfo`:
 - Verify: `/simba/si/vch/sigroupinfo/PO%20/rights` → 200, `group="PO "`, 571 quyền
 
 > Đây là **quirk dữ liệu cần biết** khi làm các màn khác đọc `sysGroupInfo`.
+
+### 6. Bỏ 2 nút ở từng dòng — chỉ dùng thanh công cụ
+
+**Sếp chỉ ra:** để cả 2 nút Sửa/Xoá ở thanh công cụ **luôn**, bỏ khỏi từng dòng.
+
+**Trước:**
+
+| Vị trí | Nút |
+|---|---|
+| Thanh công cụ | Mới, Sửa, Xoá, Phân quyền |
+| Từng dòng (cột "Thao tác") | Sửa, Xoá |
+
+**Sau:**
+
+| Vị trí | Nút |
+|---|---|
+| Thanh công cụ | **Mới, Sửa, Xoá, Phân quyền** (duy nhất) |
+| Từng dòng | **không có nút nào** — chỉ click để chọn |
+
+Cột "Thao tác" đã bỏ khỏi header → bảng còn 5 cột:
+`# / Tên nhóm / Tên đầy đủ / Phân lại quyền / KSD`
+
+**Guard bổ sung:** `delete()` và `openEdit()` giờ kiểm tra rỗng trước khi chạy
+(vì nút toolbar truyền `$selectedGroupName` có thể `null`):
+
+```php
+if ('' === trim($groupName)) {
+    $this->errorMessage = 'Chưa chọn nhóm để xoá.';   // hoac '... de sua.'
+    return;
+}
+```
+
+**Verify:**
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Header bảng | `# / Tên nhóm / Tên đầy đủ / Phân lại quyền / KSD` — không còn "Thao tác" ✅ |
+| Nút trong dòng | **0** ✅ |
+| Toolbar ban đầu | Mới ✅ / Sửa ❌ / Xoá ❌ / Phân quyền (span mờ) ✅ |
+| Chọn LEADER | Mới / **Sửa** / **Xoá** / **Phân quyền** (có href) ✅ |
+| Bấm "Sửa" từ toolbar (nhóm AR) | form mở, `isEdit=true`, `groupName=AR`, `nameDisabled=true` ✅ |
+| Gọi `delete('')` | `"Chưa chọn nhóm để xoá."`, **không xoá gì** ✅ |
+| Gọi `openEdit('')` | `"Chưa chọn nhóm để sửa."`, form không mở ✅ |
+
+**DB sau test:** `sysGroupInfo` 13 dòng, `sysGroupRight` 0 dòng — đúng baseline.
