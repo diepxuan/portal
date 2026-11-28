@@ -201,13 +201,23 @@ final class SimbaMenuRouteMetadata
     /**
      * @return iterable<int, SysMenu>
      */
+    /**
+     * Toàn bộ menu lá cần sinh route metadata.
+     *
+     * Dùng `allMenus()` thay `activeMenus()` để menu `active = 0` vẫn có URL
+     * trong sidebar `SimbaERP Menus` — Sếp cần bấm vào được để xem trước
+     * màn hình, dù menu đang tắt trên SimbaERP gốc.
+     *
+     * Trước đây chỉ menu `active = 1` mới có metadata -> 304 menu tắt hiển thị
+     * dạng text không bấm được.
+     */
     private function activeLeafMenus(): iterable
     {
         if (null !== $this->testMenus) {
             return $this->testMenus;
         }
 
-        return ($this->menus ?? new SimbaMenuRepository())->activeMenus();
+        return ($this->menus ?? new SimbaMenuRepository())->allMenus();
     }
 
     private function sourceTypeFor(SysMenu $menu): ?string
