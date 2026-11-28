@@ -58,8 +58,11 @@ class Sigroupinfo extends Component
     public bool $isEdit = false;
 
     /**
-     * Nhom dang CHON trong bang (de bat nut Sua/Xoa/Phan quyen o thanh cong cu).
-     * Giong SimbaERP: bam vao dong -> chon; nut thao tac len dong dang chon.
+     * Nhom dang CHON trong bang.
+     *
+     * SELECTION DO CLIENT (Alpine) QUAN LY — khong round-trip server moi lan
+     * click. Property nay chi dung de giu trang thai sau khi server action
+     * (save/delete) re-render, va de tuong thich voi code cu.
      */
     public ?string $selectedGroupName = null;
 
@@ -227,6 +230,55 @@ class Sigroupinfo extends Component
             $this->selectedGroupName = null;
         }
 
+        $this->resetForm();
+    }
+
+    /**
+     * Xoa NHIEU nhom cung luc (multiselect tu thanh cong cu).
+     *
+     * @param array<int, string>|string $groupNames
+     */
+    public function deleteMany(array|string $groupNames): void
+    {
+        $this->errorMessage = null;
+        $this->successMessage = null;
+
+        $names = array_values(array_filter(
+            array_map(static fn ($n): string => trim((string) $n), (array) $groupNames),
+            static fn (string $n): bool => '' !== $n
+        ));
+
+        if ([] === $names) {
+            $this->errorMessage = 'Chưa chọn nhóm để xoá.';
+
+            return;
+        }
+
+        $deleted = [];
+        $failed = [];
+
+        foreach ($names as $name) {
+            try {
+                AsSiDelGroupInfo::call([
+                    'pGroupname' => $name,
+                    'pRet'       => 0,
+                ]);
+                $deleted[] = $name;
+            } catch (\Throwable $exception) {
+                report($exception);
+                $failed[] = $name;
+            }
+        }
+
+        if ([] !== $failed) {
+            $this->errorMessage = 'Không xoá được nhóm: ' . implode(', ', $failed) . '.';
+        }
+
+        if ([] !== $deleted) {
+            $this->successMessage = 'Đã xoá ' . \count($deleted) . ' nhóm: ' . implode(', ', $deleted) . '.';
+        }
+
+        $this->selectedGroupName = null;
         $this->resetForm();
     }
 

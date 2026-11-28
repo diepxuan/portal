@@ -1,4 +1,6 @@
-<div class="w-full">
+<div class="w-full"
+    x-data="sigroupinfoList(@js($groups->pluck('groupname')->values()))"
+    x-init="init()">
     <x-head-title>{{ 'Quản lý nhóm người sử dụng - Hệ thống' }}</x-head-title>
 
     <x-slot name="header">
@@ -33,36 +35,31 @@
             Mới
         </button>
 
-        {{-- 3 nut thao tac len DONG DANG CHON (giong thanh cong cu SimbaERP) --}}
-        <button type="button" wire:click="openEdit('{{ $selectedGroupName }}')"
-            @disabled(null === $selectedGroupName)
+        {{-- 3 nut thao tac — DUA TREN SELECTION CUA CLIENT (Alpine) --}}
+        <button type="button" @click="editSelected()" :disabled="!isSingleSelected()"
             class="rounded-md bg-gray-600 px-3 py-1.5 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40">
             Sửa
         </button>
 
-        <button type="button" wire:click="delete('{{ $selectedGroupName }}')"
-            wire:confirm="Xoá nhóm {{ $selectedGroupName }}?"
-            @disabled(null === $selectedGroupName)
+        <button type="button" @click="deleteSelected($wire)" :disabled="selected.length === 0"
             class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40">
             Xoá
         </button>
 
-        @if (null !== $this->selectedRightsUrl())
-            <a href="{{ $this->selectedRightsUrl() }}"
-                class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-700">
-                Phân quyền
-            </a>
-        @else
-            <span class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white opacity-40">
-                Phân quyền
-            </span>
-        @endif
+        <a :href="rightsUrl()" x-show="isSingleSelected()"
+            class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-700">
+            Phân quyền
+        </a>
+        <span x-show="!isSingleSelected()"
+            class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white opacity-40">
+            Phân quyền
+        </span>
 
         <span class="text-xs text-gray-500">
             {{ $groups->total() }} nhóm
-            @if (null !== $selectedGroupName)
-                · đang chọn <span class="font-mono font-medium text-gray-700">{{ $selectedGroupName }}</span>
-            @endif
+            <span x-show="selected.length > 0" class="font-medium text-gray-700">
+                · đã chọn <span x-text="selected.length"></span>
+            </span>
         </span>
     </div>
 
@@ -129,6 +126,13 @@
         <table class="w-full text-sm">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="w-10 border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">
+                        <input type="checkbox"
+                            @change="toggleAll($event.target.checked, @js($groups->pluck('groupname')->values()))"
+                            :checked="allSelected()"
+                            title="Chọn tất cả trang này"
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                    </th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">#</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">Tên nhóm</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">Tên đầy đủ</th>
@@ -139,11 +143,14 @@
             <tbody>
                 @forelse ($groups as $index => $group)
                     <tr wire:key="si-groupinfo-{{ $group['groupname'] }}"
-                        wire:click="selectGroup('{{ $group['groupname'] }}')"
-                        @class([
-                            'cursor-pointer hover:bg-sky-50',
-                            'bg-sky-100' => $selectedGroupName === $group['groupname'],
-                        ])>
+                        @click="toggleRow(@js($group['groupname']))"
+                        :class="isSelected(@js($group['groupname'])) ? 'bg-sky-100' : 'cursor-pointer hover:bg-sky-50'">
+                        <td class="border-b border-gray-100 px-3 py-2 text-center">
+                            <input type="checkbox"
+                                @click.stop="toggleRow(@js($group['groupname']))"
+                                :checked="isSelected(@js($group['groupname']))"
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        </td>
                         <td class="border-b border-gray-100 px-3 py-2 text-gray-500">
                             {{ $groups->firstItem() + $index }}
                         </td>
@@ -160,7 +167,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-3 py-8 text-center text-gray-500">
+                        <td colspan="6" class="px-3 py-8 text-center text-gray-500">
                             Không tìm thấy nhóm nào.
                         </td>
                     </tr>
@@ -173,3 +180,108 @@
         {{ $groups->links() }}
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        (function() {
+            if (typeof window.sigroupinfoList !== 'undefined') {
+                return;
+            }
+
+            /**
+             * Selection NHIEU DONG do CLIENT (Alpine) quan ly.
+             *
+             * Moi lan click KHONG round-trip len server -> chon nhanh, khong giat.
+             * Chi khi bam Sua / Xoa / Phan quyen moi goi $wire.
+             */
+            window.sigroupinfoList = function(pageGroups) {
+                return {
+                    /** @type {string[]} ma cac nhom dang chon */
+                    selected: [],
+                    pageGroups: (pageGroups || []).map((g) => String(g)),
+
+                    init() {
+                        // Khi Livewire re-render (sau save/delete), bo chon nhung
+                        // nhom khong con tren trang.
+                        this.$watch('pageGroups', () => {
+                            this.selected = this.selected.filter((g) => this.pageGroups.includes(g));
+                        });
+                    },
+
+                    isSelected(name) {
+                        return this.selected.includes(String(name));
+                    },
+
+                    toggleRow(name) {
+                        const key = String(name);
+                        const i = this.selected.indexOf(key);
+
+                        if (i >= 0) {
+                            this.selected.splice(i, 1);
+                        } else {
+                            this.selected.push(key);
+                        }
+                    },
+
+                    toggleAll(checked, names) {
+                        const list = (names || []).map((n) => String(n));
+
+                        if (checked) {
+                            // Gop them, khong mat lua chon cu
+                            const merged = new Set([...this.selected, ...list]);
+                            this.selected = Array.from(merged);
+                        } else {
+                            this.selected = this.selected.filter((n) => !list.includes(n));
+                        }
+                    },
+
+                    allSelected() {
+                        return this.pageGroups.length > 0
+                            && this.pageGroups.every((n) => this.selected.includes(n));
+                    },
+
+                    isSingleSelected() {
+                        return this.selected.length === 1;
+                    },
+
+                    /** Chi cho Sua khi chon dung 1 dong (giong SimbaERP). */
+                    editSelected() {
+                        if (this.selected.length !== 1) {
+                            return;
+                        }
+
+                        this.$wire.call('openEdit', this.selected[0]);
+                    },
+
+                    /** Xoa 1 hoac nhieu dong — qua confirm cua trinh duyet. */
+                    deleteSelected(wire) {
+                        if (this.selected.length === 0) {
+                            return;
+                        }
+
+                        const names = [...this.selected];
+                        const msg = 1 === names.length
+                            ? 'Xoá nhóm ' + names[0] + '?'
+                            : 'Xoá ' + names.length + ' nhóm: ' + names.join(', ') + '?';
+
+                        if (!window.confirm(msg)) {
+                            return;
+                        }
+
+                        wire.call('deleteMany', names);
+                        this.selected = [];
+                    },
+
+                    /** URL man phan quyen — chi khi chon dung 1 dong. */
+                    rightsUrl() {
+                        if (this.selected.length !== 1) {
+                            return '#';
+                        }
+
+                        return '/simba/si/vch/sigroupinfo/' + encodeURIComponent(this.selected[0]) + '/rights';
+                    },
+                };
+            };
+        })();
+    </script>
+@endpush

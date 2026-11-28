@@ -448,3 +448,80 @@ if ('' === trim($groupName)) {
 | Gọi `openEdit('')` | `"Chưa chọn nhóm để sửa."`, form không mở ✅ |
 
 **DB sau test:** `sysGroupInfo` 13 dòng, `sysGroupRight` 0 dòng — đúng baseline.
+
+### 7. Multiselect — selection trên CLIENT (Alpine), không round-trip
+
+**Sếp yêu cầu:** thêm multiselect, và chuyển selection từ Livewire sang **client-side**.
+
+**Trước (Livewire):**
+
+```blade
+<tr wire:click="selectGroup('{{ $group['groupname'] }}')">
+```
+
+Mỗi click = **1 request Livewire** → chậm, giật khi chọn nhiều dòng.
+Chỉ chọn được **1 dòng**.
+
+**Sau (Alpine):**
+
+```blade
+<div class="w-full" x-data="sigroupinfoList(@js($groups->pluck('groupname')->values()))" x-init="init()">
+```
+
+```js
+window.sigroupinfoList = function(pageGroups) {
+    return {
+        selected: [],                        // mang ma nhom dang chon
+        pageGroups: pageGroups.map(String),
+
+        isSelected(name),                    // kiem tra 1 dong
+        toggleRow(name),                     // bat/tat 1 dong
+        toggleAll(checked, names),           // chon bo / bo chon ca trang
+        allSelected(),                       // da chon het trang?
+        isSingleSelected(),                  // chon dung 1 dong?
+        editSelected(),                      // $wire.call('openEdit', ...)
+        deleteSelected(wire),                // confirm + $wire.call('deleteMany', [...])
+        rightsUrl(),                         // URL man phan quyen
+    };
+};
+```
+
+**Chỉ round-trip server khi bấm nút:** Sửa (1 dòng) / Xoá (1..n) / Phân quyền (1 dòng).
+
+### Multiselect
+
+| Tính năng | Chi tiết |
+|---|---|
+| Checkbox mỗi dòng | bấm vào ô hoặc cả dòng đều toggle |
+| Checkbox header | chọn / bỏ chọn **tất cả trang hiện tại** |
+| Chọn nhiều dòng | tô nền xanh, nhãn "đã chọn N" |
+| Nút **Sửa** | chỉ bật khi chọn **đúng 1** dòng |
+| Nút **Xoá** | bật khi chọn **≥1** dòng, confirm `"Xoá N nhóm: A, B, ...?"` |
+| Nút **Phân quyền** | chỉ hiện link khi chọn **đúng 1** dòng |
+
+### Thêm `deleteMany()`
+
+```php
+public function deleteMany(array|string $groupNames): void
+{
+    // loc rong, trim
+    // xoa tung nhom bang asSiDelGroupInfo
+    // bao success / error theo ket qua tung nhom
+}
+```
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Cột header | `"" (checkbox) / # / Tên nhóm / Tên đầy đủ / Phân lại quyền / KSD` — **không còn "Thao tác"** ✅ |
+| Checkbox mỗi dòng | 13 ✅ |
+| Click 3 dòng thật | `["AP","AR","CO"]`, 3 dòng tô xanh, "đã chọn 3" ✅ |
+| **Livewire request khi click** | **0** — selection hoàn toàn client ✅ |
+| Chọn 3 dòng | Sửa **disabled**, Xoá **enabled** ✅ |
+| Chọn 1 dòng (`LEADER`) | `isSingleSelected=true`, `rightsUrl=/simba/si/vch/sigroupinfo/LEADER/rights` ✅ |
+| Select all (header) | **13** dòng, `allSelected=true` ✅ |
+| Bấm Xoá (2 dòng) | confirm `"Xoá 2 nhóm: CA, CO?"`; **Huỷ** → không xoá ✅ |
+| `deleteMany([])` | `"Chưa chọn nhóm để xoá."` — không xoá gì ✅ |
+
+**DB sau test:** `sysGroupInfo` 13 dòng, `sysGroupRight` 0 dòng — đúng baseline.
