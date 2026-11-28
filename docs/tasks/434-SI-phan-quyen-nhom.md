@@ -525,3 +525,50 @@ public function deleteMany(array|string $groupNames): void
 | `deleteMany([])` | `"Chưa chọn nhóm để xoá."` — không xoá gì ✅ |
 
 **DB sau test:** `sysGroupInfo` 13 dòng, `sysGroupRight` 0 dòng — đúng baseline.
+
+### 8. 🐛 BUG: nút "Phân quyền" vô hình — class Tailwind không tồn tại trong CSS build
+
+**Sếp báo:** "anh vẫn chưa thấy nút phân quyền".
+
+**Chẩn đoán:** nút **có trong DOM, đúng toạ độ** (`x=1064, y=79, w=97, h=32`),
+`display: block`, `elementFromPoint` trả về chính nó — nhưng **mắt không thấy**.
+
+**Nguyên nhân:** class `bg-emerald-600` **KHÔNG có trong CSS build**.
+
+```
+grep "bg-emerald-600" public/build/assets/*.css   -> 0 ket qua
+grep "bg-blue-600"    public/build/assets/*.css   -> co
+grep "bg-green-600"   public/build/assets/*.css   -> co
+```
+
+`tailwind.config.js` chỉ scan `diepxuan/*/resources/views/**`, nhưng Tailwind **purge**
+class không được dùng ở bất kỳ file nào **tại thời điểm build**. `emerald-600` chưa
+từng dùng → không vào CSS → chữ trắng trên **nền trắng** = vô hình.
+
+**Fix:** đổi `emerald` → `green` (đã có trong build):
+
+```blade
+- class="... bg-emerald-600 ... hover:bg-emerald-700"
++ class="... bg-green-600 ... hover:bg-green-700"
+```
+
+**Verify sau fix:**
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Nút hiển thị | nền **xanh lá**, chữ trắng — thấy rõ ✅ |
+| Bấm nút (chọn LEADER) | vào `/simba/si/vch/sigroupinfo/LEADER/rights` ✅ |
+| Component | `catalog::si.vch.sigroupinfo-rights`, `group=LEADER` ✅ |
+| Combos | **13** phân hệ, **9** số liệu ✅ |
+| Quyền | **571** dòng, `err=null` ✅ |
+
+### 📌 Bài học — Tailwind purge
+
+> Khi thêm class Tailwind **mới** (màu/spacing chưa dùng ở đâu), phải **rebuild CSS**
+> (`npm run build`) — nếu không class không tồn tại và element **vô hình/không style**
+> dù DOM hoàn toàn đúng.
+>
+> Cách phát hiện: `grep "<class>" public/build/assets/*.css`
+> — nếu không có kết quả thì class chưa được build.
+>
+> **Ưu tiên dùng class đã có** trong build để tránh phải rebuild.

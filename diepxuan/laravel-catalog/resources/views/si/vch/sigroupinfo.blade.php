@@ -47,11 +47,11 @@
         </button>
 
         <a :href="rightsUrl()" x-show="isSingleSelected()"
-            class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white hover:bg-emerald-700">
+            class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700">
             Phân quyền
         </a>
         <span x-show="!isSingleSelected()"
-            class="rounded-md bg-emerald-600 px-3 py-1.5 text-sm text-white opacity-40">
+            class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white opacity-40">
             Phân quyền
         </span>
 
