@@ -19,11 +19,11 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | FA — Tài sản cố định | 40 | 7 | 32 | 1 | 0 |
 | GL — Sổ cái tổng hợp | 107 | 38 | 67 | 2 | 0 |
 | IN — Tồn kho | 31 | 11 | 19 | 1 | 0 |
-| PO — Đơn hàng mua | 18 | 7 | 10 | 1 | 0 |
-| SI — System Integration | 34 | 1 | 25 | 5 | 3 |
+| PO — Đơn hàng mua | 19 | 7 | 10 | 1 | 1 |
+| SI — System Integration | 36 | 3 | 24 | 5 | 4 |
 | SO — Đơn hàng bán | 45 | 6 | 37 | 2 | 0 |
-| System — Framework & cross-link | 6 | 2 | 0 | 3 | 1 |
-| **Tổng** | **340** | **87** | **231** | **17** | **5** |
+| System — Framework & cross-link | 7 | 3 | 0 | 3 | 1 |
+| **Tổng** | **344** | **90** | **230** | **17** | **7** |
 
 > **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.
 
@@ -321,6 +321,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 080 | `080-PO-don-dat-hang-mua.md` | POVchPO7.dll | SHELL_ONLY |
 | 217 | `217-po-hoa-don-mua-dich-vu.md` | PoVchPO6.dll | SHELL_ONLY |
 | 386 | `386-po-menu-dang-tat.md` |  | PENDING |
+| 431 | `431-PO-danhmuc-giamua.md` | `PODMGIAMUA.dll` (không có decompiled — suy từ bảng + SP) | TODO — chưa có component |
 
 ## SI — System Integration
 
@@ -333,7 +334,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 085 | `085-SI-khaibao-thamso-hethong.md` | SISysvars.dll | SHELL_ONLY |
 | 086 | `086-SI-baotri-hethong.md` | SIMaintain.dll | SHELL_ONLY |
 | 087 | `087-SI-danhmuc-ngoaite.md` | SIDMNT.dll | SHELL_ONLY |
-| 088 | `088-SI-danhmuc-nhom-hopdong.md` | SIGroupInfo.dll | DONE (component) — `si.vch.sigroupinfo` |
+| 088 | `088-SI-danhmuc-nhom-hopdong.md` | SIGroupInfo.dll | DONE |
 | 089 | `089-SI-danhmuc-tygia-ngoaite.md` | SIDMTGNT.dll | SHELL_ONLY |
 | 090 | `090-SI-cauhinh-theme-giaodien.md` | SITheme.dll | SHELL_ONLY |
 | 091 | `091-SI-danhmuc-nhapxuat.md` | SIDMNHHD.dll | SHELL_ONLY |
@@ -360,6 +361,8 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 376 | `376-simba-wrapper-duplicate-params.md` |  | DONE |
 | 383 | `383-audit-route-component-sai.md` |  | PARTIAL — phát hiện 2 trường hợp sai, đã fix 1 |
 | 389 | `389-si-menu-dang-tat.md` |  | PENDING |
+| 430 | `430-SI-danhmuc-bophan.md` | `SIDMBP.dll` (không có decompiled — suy từ bảng + SP) | TODO — chưa có component |
+| 432 | `432-SI-chon-nam-lam-viec.md` | `SiChangeFY.dll` | DONE |
 
 ## SO — Đơn hàng bán
 
@@ -421,4 +424,5 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 385 | `385-hr-menu-dang-tat.md` |  | PENDING |
 | 388 | `388-sa-menu-dang-tat.md` |  | PENDING |
 | 391 | `391-mm-menu-dang-tat.md` |  | PENDING |
+| 433 | `433-SYSTEM-nhap-chuyen-so-du.md` |  | DONE |
 
