@@ -1049,6 +1049,38 @@ Vì vậy mọi form ARDMKH **phải** gửi đủ các cột sau (đã áp dụ
 Helper dùng chung trong `Po\Dict\ArdmkhForm`: `stringValue()` (null → `''`) và
 `numberValue()` (null/`''` → `0`). Đây chính là quy tắc §3 áp dụng cho đầy đủ payload.
 
+## 10. Sidebar `SimbaERP Menus` — trạng thái `active`
+
+### Quy tắc hiển thị
+
+Sidebar `SimbaERP Menus` (component `System\SimbaErpMenus`, hiển thị tại `/simba`) **hiển thị
+TOÀN BỘ menu** trong `sysMenu`, gồm cả menu `active = 0`. Mỗi dòng có **chấm tròn trạng thái
+ngay sau icon**:
+
+| Chấm | Ý nghĩa | Nguồn |
+|---|---|---|
+| 🟢 **xanh** (`bg-emerald-500`) | `active = 1` — menu đang hoạt động trên SimbaERP gốc | `sysMenu.active` |
+| 🔴 **đỏ** (`bg-red-500`) | `active = 0` — menu đang **tắt** trên SimbaERP gốc | `sysMenu.active` |
+
+- Tên menu `active = 0` hiển thị màu xám nhạt (`text-gray-400`) để phân biệt trực quan.
+- Header và footer hiển thị số liệu: `{activeCount} bật` / `{disabledCount} tắt`.
+
+### Lý do hiển thị cả menu tắt
+
+- Thấy được **toàn cảnh** module SimbaERP so với phần Portal đã port.
+- Phát hiện menu bị tắt do **chưa mua license/chưa triển khai** (vd HR 48/48, SA 22/22,
+  MM 17/17 đều `active = 0`) thay vì tưởng Portal thiếu.
+- Chấm đỏ **không phải lỗi Portal** — Portal đọc đúng giá trị `active` từ `sysMenu`.
+
+### Bắt buộc
+
+- **KHÔNG** sửa `active` trực tiếp qua Portal. Muốn bật/tắt phải cập nhật trên **SimbaERP gốc**.
+- `SimbaMenuRepository::activeMenus()` vẫn là API lọc `active = 1` cho các nơi cần menu hoạt động
+  (navigation, đếm menu). Chỉ `SimbaErpMenus` dùng `allMenus()` để hiển thị đầy đủ.
+- Sau khi đổi `active` trên DB, cần refresh cache `SimbaMetadataService` để sidebar nhận thay đổi.
+- Mỗi nhóm menu `active = 0` có task riêng trong `docs/tasks/` (task 384–394, gom theo module)
+  ghi danh sách menuid cần dựng màn hình khi được bật.
+
 ## Liên quan
 
 - `docs/README.md` — documentation index
