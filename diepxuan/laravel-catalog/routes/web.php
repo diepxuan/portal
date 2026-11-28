@@ -36,6 +36,7 @@ use Diepxuan\Catalog\Http\Livewire\Po\Dict\Ardmkh as PoArdmkh;
 use Diepxuan\Catalog\Http\Livewire\Po\Dict\ArdmkhForm;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\Smks;
 use Diepxuan\Catalog\Http\Livewire\Si\Vch\YearSelector;
+use Diepxuan\Catalog\Http\Livewire\Si\Vch\SigroupinfoRights;
 use Diepxuan\Catalog\Http\Livewire\So\Rpt\Arrptbccn01Sl as SoArrptbccn01Sl;
 use Diepxuan\Catalog\Http\Livewire\So\Vch\Sovchso3;
 use Diepxuan\Catalog\Http\Livewire\So\Vch\Sovchso3Edit;
@@ -83,6 +84,11 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
         $sourceRoutes = [
             // Component đã chuẩn hóa namespace (Ca\Dict\Kheuoc) và sẵn sàng; cần bật menu trong sysMenu trước.
             ['uri' => 'si/vch/year', 'name' => 'si.vch.year', 'module' => 'si', 'kind' => 'vch', 'slug' => 'year', 'component' => YearSelector::class],
+            // Man phan quyen nhom: co tham so {group} nen khong auto-register duoc
+            // (auto-register chi sinh route khong tham so). Xem task 434.
+            // Man phan quyen: KHONG co tham so — tu chon nhom bang dropdown trong form
+            // (Sep yeu cau: "form phan quyen khong can truyen gi ca").
+            ['uri' => 'si/vch/sigroupinfo/rights', 'name' => 'si.vch.sigroupinfo.rights', 'module' => 'si', 'kind' => 'vch', 'slug' => 'sigroupinfo', 'component' => SigroupinfoRights::class],
         ];
 
         // Cache route da khai bao de tranh trung name khi dang ky theo convention.
@@ -98,6 +104,8 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 // that hay chua. Thieu key nay -> SimbaPage LUON render shell
                 // metadata du component da ton tai. Xem task 105.
                 ->defaults('component', $sourceRoute['component'])
+                // Tham so {group} cua man phan quyen: ma nhom khong chua dau '/'.
+                ->where('group', '[^/]+')
                 ->name($sourceRoute['name'])
             ;
         }
@@ -134,8 +142,10 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                     // $sourceRoutes. Xem docs/PROJECT_CONVENTIONS.md muc 2.2.
                     $isForm = (bool) preg_match('/(Form|Edit)$/', $class);
 
-                    // Helper khac (List/Page/Rename) van bo qua.
-                    if (!$isForm && preg_match('/(List|Page|Rename)$/', $class)) {
+                    // Helper khac bo qua:
+                    //   List/Page/Rename - helper noi bo
+                    //   Rights           - man con co tham so, khai bao tay trong $sourceRoutes
+                    if (!$isForm && preg_match('/(List|Page|Rename|Rights)$/', $class)) {
                         continue;
                     }
 
@@ -237,6 +247,29 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
                 'id'     => '[^/]+',
             ])
             ->name('edit')
+        ;
+        // Man con KHONG co tham so: /{slug}/{action} (vd: /si/vch/sigroupinfo/rights).
+        Route::get('/{module}/{kind}/{slug}/{action}', SimbaPage::class)
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+                'action' => '[a-z0-9-]+',
+            ])
+            ->name('sub-action')
+        ;
+
+        // Man con dang /{slug}/{id}/{action} (vd: /si/vch/sigroupinfo/LEADER/rights).
+        // SimbaPage doc defaults['action'] de biet mo man nao.
+        Route::get('/{module}/{kind}/{slug}/{id}/{action}', SimbaPage::class)
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+                'id'     => '[^/]+',
+                'action' => '[a-z0-9-]+',
+            ])
+            ->name('sub')
         ;
     });
 

@@ -59,6 +59,18 @@ final class SourceRouteCoverageTest extends TestCase
                 ? ["{$module}.{$kind}.{$slug}.create", "{$module}.{$kind}.{$slug}.edit"]
                 : ["{$module}.{$kind}.{$slug}"];
 
+            // Man con (vd SigroupinfoRights) khong co route riêng theo ten class ma
+            // duoc khai bao tay duoi dang {base}.{action} (si.vch.sigroupinfo.rights).
+            // Chi can TON TAI mot route tro dung component la dat.
+            if (!$isForm) {
+                $hasSubRoute = collect(Route::getRoutes()->getRoutes())
+                    ->contains(fn ($r): bool => $r->getActionName() === $fqcn);
+
+                if ($hasSubRoute) {
+                    continue;
+                }
+            }
+
             foreach ($expected as $routeName) {
                 $registered = Route::getRoutes()->getByName($routeName);
 
@@ -88,8 +100,10 @@ final class SourceRouteCoverageTest extends TestCase
 
         preg_match_all("/^\s+\['uri' => '([^']+)', 'name' => '([^']+)'/m", $src, $m);
 
-        // Chi con si.vch.year (helper co route POST rieng cho doi nam lam viec).
-        $allowed = ['si.vch.year'];
+        // Cac route CO THAM SO hoac co route POST rieng phai khai bao tay:
+        //   si.vch.year                - helper doi nam, co POST /select rieng
+        //   si.vch.sigroupinfo.rights  - man con co tham so {group}
+        $allowed = ['si.vch.year', 'si.vch.sigroupinfo.rights'];
         $unexpected = array_values(array_diff($m[2], $allowed));
 
         self::assertSame(

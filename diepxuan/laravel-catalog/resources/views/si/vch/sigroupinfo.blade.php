@@ -1,4 +1,6 @@
-<div class="w-full">
+<div class="w-full"
+    x-data="sigroupinfoList(@js($groups->pluck('groupname')->values()))"
+    x-init="init()">
     <x-head-title>{{ 'Quản lý nhóm người sử dụng - Hệ thống' }}</x-head-title>
 
     <x-slot name="header">
@@ -22,18 +24,42 @@
         </div>
     @endif
 
-    {{-- Thanh cong cu: tim kiem + nut theo form goc --}}
-    <div class="mt-4 flex flex-wrap items-center gap-3">
-        <input type="text" wire:model.live.debounce.300ms="search"
-            placeholder="Tìm theo tên nhóm, tên đầy đủ..."
-            class="w-full max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+    {{-- Thanh cong cu: [search + dem nho] ... [Moi Sua Xoa Phan quyen] --}}
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        {{-- TRAI: search + dem nho (nho, ngay sau search) --}}
+        <div class="flex items-center gap-2">
+            <input type="text" wire:model.live.debounce.300ms="search"
+                placeholder="Tìm theo tên nhóm, tên đầy đủ..."
+                class="w-full max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
 
-        <button type="button" wire:click="openCreate"
-            class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
-            Mới
-        </button>
+            <span class="whitespace-nowrap text-xs text-gray-500">
+                {{ $groups->total() }} nhóm<span x-show="selected.length > 0"> · đã chọn <span x-text="selected.length"></span></span>
+            </span>
+        </div>
 
-        <span class="text-xs text-gray-500">{{ $groups->total() }} nhóm</span>
+        {{-- PHAI: cac nut thao tac, Phan quyen CUOI CUNG --}}
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" wire:click="openCreate"
+                class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
+                Mới
+            </button>
+
+            <button type="button" @click="editSelected()" :disabled="!isSingleSelected()"
+                class="rounded-md bg-gray-600 px-3 py-1.5 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40">
+                Sửa
+            </button>
+
+            <button type="button" @click="deleteSelected($wire)" :disabled="selected.length === 0"
+                class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40">
+                Xoá
+            </button>
+
+            {{-- Phan quyen: LUON bam duoc, khong can chon dong --}}
+            <a href="{{ url('/simba/si/vch/sigroupinfo/rights') }}"
+                class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700">
+                Phân quyền
+            </a>
+        </div>
     </div>
 
     {{-- Form them/sua --}}
@@ -99,17 +125,31 @@
         <table class="w-full text-sm">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="w-10 border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">
+                        <input type="checkbox"
+                            @change="toggleAll($event.target.checked, @js($groups->pluck('groupname')->values()))"
+                            :checked="allSelected()"
+                            title="Chọn tất cả trang này"
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                    </th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">#</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">Tên nhóm</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-left font-medium text-gray-500">Tên đầy đủ</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">Phân lại quyền</th>
                     <th class="border-b border-gray-200 px-3 py-2 text-center font-medium text-gray-500">KSD</th>
-                    <th class="border-b border-gray-200 px-3 py-2 text-right font-medium text-gray-500">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($groups as $index => $group)
-                    <tr class="hover:bg-sky-50" wire:key="si-groupinfo-{{ $group['groupname'] }}">
+                    <tr wire:key="si-groupinfo-{{ $group['groupname'] }}"
+                        @click="toggleRow(@js($group['groupname']))"
+                        :class="isSelected(@js($group['groupname'])) ? 'bg-sky-100' : 'cursor-pointer hover:bg-sky-50'">
+                        <td class="border-b border-gray-100 px-3 py-2 text-center">
+                            <input type="checkbox"
+                                @click.stop="toggleRow(@js($group['groupname']))"
+                                :checked="isSelected(@js($group['groupname']))"
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        </td>
                         <td class="border-b border-gray-100 px-3 py-2 text-gray-500">
                             {{ $groups->firstItem() + $index }}
                         </td>
@@ -122,18 +162,6 @@
                         </td>
                         <td class="border-b border-gray-100 px-3 py-2 text-center">
                             {{ $group['ksd'] ? 'x' : '' }}
-                        </td>
-                        <td class="border-b border-gray-100 px-3 py-2 text-right">
-                            <button type="button" wire:click="openEdit('{{ $group['groupname'] }}')"
-                                class="rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50">
-                                Sửa
-                            </button>
-                            <button type="button"
-                                wire:click="delete('{{ $group['groupname'] }}')"
-                                wire:confirm="Xoá nhóm {{ $group['groupname'] }}?"
-                                class="rounded px-2 py-0.5 text-xs text-red-600 hover:bg-red-50">
-                                Xoá
-                            </button>
                         </td>
                     </tr>
                 @empty
@@ -151,3 +179,100 @@
         {{ $groups->links() }}
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        (function() {
+            if (typeof window.sigroupinfoList !== 'undefined') {
+                return;
+            }
+
+            /**
+             * Selection NHIEU DONG do CLIENT (Alpine) quan ly.
+             *
+             * Moi lan click KHONG round-trip len server -> chon nhanh, khong giat.
+             * Chi khi bam Sua / Xoa / Phan quyen moi goi $wire.
+             */
+            window.sigroupinfoList = function(pageGroups) {
+                return {
+                    /** @type {string[]} ma cac nhom dang chon */
+                    selected: [],
+                    pageGroups: (pageGroups || []).map((g) => String(g)),
+
+                    init() {
+                        // Khi Livewire re-render (sau save/delete), bo chon nhung
+                        // nhom khong con tren trang.
+                        this.$watch('pageGroups', () => {
+                            this.selected = this.selected.filter((g) => this.pageGroups.includes(g));
+                        });
+                    },
+
+                    isSelected(name) {
+                        return this.selected.includes(String(name));
+                    },
+
+                    toggleRow(name) {
+                        const key = String(name);
+                        const i = this.selected.indexOf(key);
+
+                        if (i >= 0) {
+                            this.selected.splice(i, 1);
+                        } else {
+                            this.selected.push(key);
+                        }
+                    },
+
+                    toggleAll(checked, names) {
+                        const list = (names || []).map((n) => String(n));
+
+                        if (checked) {
+                            // Gop them, khong mat lua chon cu
+                            const merged = new Set([...this.selected, ...list]);
+                            this.selected = Array.from(merged);
+                        } else {
+                            this.selected = this.selected.filter((n) => !list.includes(n));
+                        }
+                    },
+
+                    allSelected() {
+                        return this.pageGroups.length > 0
+                            && this.pageGroups.every((n) => this.selected.includes(n));
+                    },
+
+                    isSingleSelected() {
+                        return this.selected.length === 1;
+                    },
+
+                    /** Chi cho Sua khi chon dung 1 dong (giong SimbaERP). */
+                    editSelected() {
+                        if (this.selected.length !== 1) {
+                            return;
+                        }
+
+                        this.$wire.call('openEdit', this.selected[0]);
+                    },
+
+                    /** Xoa 1 hoac nhieu dong — qua confirm cua trinh duyet. */
+                    deleteSelected(wire) {
+                        if (this.selected.length === 0) {
+                            return;
+                        }
+
+                        const names = [...this.selected];
+                        const msg = 1 === names.length
+                            ? 'Xoá nhóm ' + names[0] + '?'
+                            : 'Xoá ' + names.length + ' nhóm: ' + names.join(', ') + '?';
+
+                        if (!window.confirm(msg)) {
+                            return;
+                        }
+
+                        wire.call('deleteMany', names);
+                        this.selected = [];
+                    },
+
+                };
+            };
+        })();
+    </script>
+@endpush

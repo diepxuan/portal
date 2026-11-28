@@ -57,6 +57,15 @@ class Sigroupinfo extends Component
     /** Dang sua (true) hay them moi (false). */
     public bool $isEdit = false;
 
+    /**
+     * Nhom dang CHON trong bang.
+     *
+     * SELECTION DO CLIENT (Alpine) QUAN LY — khong round-trip server moi lan
+     * click. Property nay chi dung de giu trang thai sau khi server action
+     * (save/delete) re-render, va de tuong thich voi code cu.
+     */
+    public ?string $selectedGroupName = null;
+
     public ?string $groupName = null;
 
     public string $fullName = '';
@@ -83,6 +92,27 @@ class Sigroupinfo extends Component
         $this->resetPage();
     }
 
+    /**
+     * Bam vao dong -> chon nhom (giong DataGridView cua SimbaERP).
+     */
+    public function selectGroup(string $groupName): void
+    {
+        $this->selectedGroupName = $groupName;
+        $this->errorMessage = null;
+    }
+
+    /**
+     * URL man phan quyen cua nhom dang chon (null neu chua chon).
+     */
+    public function selectedRightsUrl(): ?string
+    {
+        if (null === $this->selectedGroupName || '' === $this->selectedGroupName) {
+            return null;
+        }
+
+        return url('/simba/si/vch/sigroupinfo/' . rawurlencode($this->selectedGroupName) . '/rights');
+    }
+
     public function openCreate(): void
     {
         $this->errorMessage = null;
@@ -96,6 +126,15 @@ class Sigroupinfo extends Component
     {
         $this->errorMessage = null;
         $this->successMessage = null;
+
+        // Nut Sua o thanh cong cu truyen $selectedGroupName — co the null/rong.
+        if ('' === trim($groupName)) {
+            $this->errorMessage = 'Chưa chọn nhóm để sửa.';
+
+            return;
+        }
+
+        $this->selectedGroupName = $groupName;
         $this->resetForm();
 
         $row = $this->findGroup($groupName);
@@ -167,6 +206,13 @@ class Sigroupinfo extends Component
         $this->errorMessage = null;
         $this->successMessage = null;
 
+        // Nut Xoa o thanh cong cu truyen $selectedGroupName — co the null/rong.
+        if ('' === trim($groupName)) {
+            $this->errorMessage = 'Chưa chọn nhóm để xoá.';
+
+            return;
+        }
+
         try {
             AsSiDelGroupInfo::call([
                 'pGroupname' => $groupName,
@@ -180,6 +226,59 @@ class Sigroupinfo extends Component
             return;
         }
 
+        if ($this->selectedGroupName === $groupName) {
+            $this->selectedGroupName = null;
+        }
+
+        $this->resetForm();
+    }
+
+    /**
+     * Xoa NHIEU nhom cung luc (multiselect tu thanh cong cu).
+     *
+     * @param array<int, string>|string $groupNames
+     */
+    public function deleteMany(array|string $groupNames): void
+    {
+        $this->errorMessage = null;
+        $this->successMessage = null;
+
+        $names = array_values(array_filter(
+            array_map(static fn ($n): string => trim((string) $n), (array) $groupNames),
+            static fn (string $n): bool => '' !== $n
+        ));
+
+        if ([] === $names) {
+            $this->errorMessage = 'Chưa chọn nhóm để xoá.';
+
+            return;
+        }
+
+        $deleted = [];
+        $failed = [];
+
+        foreach ($names as $name) {
+            try {
+                AsSiDelGroupInfo::call([
+                    'pGroupname' => $name,
+                    'pRet'       => 0,
+                ]);
+                $deleted[] = $name;
+            } catch (\Throwable $exception) {
+                report($exception);
+                $failed[] = $name;
+            }
+        }
+
+        if ([] !== $failed) {
+            $this->errorMessage = 'Không xoá được nhóm: ' . implode(', ', $failed) . '.';
+        }
+
+        if ([] !== $deleted) {
+            $this->successMessage = 'Đã xoá ' . \count($deleted) . ' nhóm: ' . implode(', ', $deleted) . '.';
+        }
+
+        $this->selectedGroupName = null;
         $this->resetForm();
     }
 
@@ -247,7 +346,9 @@ class Sigroupinfo extends Component
         $rows = AsGetGroupInfo::call(['pGroupName' => $groupName])->all();
 
         foreach ($this->normalizeRows($rows) as $row) {
-            if (mb_strtolower($row['groupname']) === mb_strtolower($groupName)) {
+            // So sanh da trim: DB SimbaERP co nhom luu kem dau cach cuoi
+            // (vd 'PO ' bytes=6 thay vi 'PO' bytes=4) — du lieu goc, khong sua.
+            if (mb_strtolower(trim($row['groupname'])) === mb_strtolower(trim($groupName))) {
                 return $row;
             }
         }

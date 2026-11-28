@@ -1087,3 +1087,54 @@ ngay sau icon**:
 - `docs/SIMBA-DOCS.md` — hướng dẫn simba-docs
 - `docs/DESIGN.md` — design tokens UI
 - `docs/DEVELOPMENT.md` — setup dev
+
+## 11. Tailwind CSS — dùng bình thường, không cần build tay
+
+### 11.1. Tailwind là CSS chính thức của dự án
+
+Mọi view Blade **dùng Tailwind utility class trực tiếp**. Không viết CSS thuần.
+
+```blade
+<div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+    <button type="button" class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
+        Mới
+    </button>
+</div>
+```
+
+- Config: `tailwind.config.js`, quét `./diepxuan/*/resources/views/**/*.blade.php` + `./resources/views/**`
+- Entry: `resources/css/app.css` (`@tailwind base/components/utilities`), nạp qua `@vite` trong layout
+- **Tailwind build đúng mọi class có trong Blade** — kể cả class mới chưa từng dùng
+
+### 11.2. Service watch đã chạy — KHÔNG cần `npm run build` thủ công
+
+Dự án **đã có service watch** rebuild CSS/JS tự động khi Blade thay đổi.
+
+> ✅ **Cứ viết class Tailwind mới bình thường.** Không cần:
+> - chạy `npm run build`
+> - kiểm tra `grep "<class>" public/build/assets/*.css`
+> - đổi sang class "đã có sẵn" để tránh rebuild
+
+**Cấm** kết luận "class không tồn tại" khi thấy element không style. Nếu gặp element
+vô hình/không style, kiểm tra **logic hiển thị** (Alpine `x-show`, `@disabled`,
+điều kiện Blade) trước — không đổ cho Tailwind.
+
+### 11.3. Bài học — kết luận sai đã mắc
+
+Khi nút "Phân quyền" vô hình, agent kết luận **sai** là "Tailwind purge class
+`bg-emerald-600`" rồi khuyên "ưu tiên class có sẵn trong build".
+
+**Sai ở đâu:** lúc đó `public/build/assets/app-*.css` được build **09:22**, còn Blade
+sửa **13:58** — CSS cũ 4.5 giờ. Nguyên nhân là **CSS chưa rebuild**, không phải purge.
+
+**Sếp chất vấn:** *"vì sao không có ml-auto? khi có css sẽ tự build mà?"* — đúng.
+
+**Quy tắc rút ra:**
+
+| ❌ Không làm | ✅ Làm |
+|---|---|
+| Kết luận Tailwind purge | Kiểm tra CSS có rebuild chưa (mtime) |
+| Khuyên đổi sang class "có sẵn" | Giữ class đúng thiết kế |
+| Chạy `npm run build` thủ công | Tin service watch đã chạy |
+| Đổ lỗi cho CSS khi element vô hình | Kiểm tra `x-show` / `@disabled` / `@if` trước |
+
