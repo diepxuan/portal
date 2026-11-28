@@ -333,7 +333,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 085 | `085-SI-khaibao-thamso-hethong.md` | SISysvars.dll | SHELL_ONLY |
 | 086 | `086-SI-baotri-hethong.md` | SIMaintain.dll | SHELL_ONLY |
 | 087 | `087-SI-danhmuc-ngoaite.md` | SIDMNT.dll | SHELL_ONLY |
-| 088 | `088-SI-danhmuc-nhom-hopdong.md` | SIGroupInfo.dll | SHELL_ONLY |
+| 088 | `088-SI-danhmuc-nhom-hopdong.md` | SIGroupInfo.dll | DONE (component) — `si.vch.sigroupinfo` |
 | 089 | `089-SI-danhmuc-tygia-ngoaite.md` | SIDMTGNT.dll | SHELL_ONLY |
 | 090 | `090-SI-cauhinh-theme-giaodien.md` | SITheme.dll | SHELL_ONLY |
 | 091 | `091-SI-danhmuc-nhapxuat.md` | SIDMNHHD.dll | SHELL_ONLY |
