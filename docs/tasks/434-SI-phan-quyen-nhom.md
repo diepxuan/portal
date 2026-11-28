@@ -562,16 +562,42 @@ từng dùng → không vào CSS → chữ trắng trên **nền trắng** = vô
 | Combos | **13** phân hệ, **9** số liệu ✅ |
 | Quyền | **571** dòng, `err=null` ✅ |
 
-### 📌 Bài học — Tailwind purge
+### 📌 Bài học ĐÚNG — CSS build CŨ, KHÔNG phải Tailwind purge
 
-> Khi thêm class Tailwind **mới** (màu/spacing chưa dùng ở đâu), phải **rebuild CSS**
-> (`npm run build`) — nếu không class không tồn tại và element **vô hình/không style**
-> dù DOM hoàn toàn đúng.
->
-> Cách phát hiện: `grep "<class>" public/build/assets/*.css`
-> — nếu không có kết quả thì class chưa được build.
->
-> **Ưu tiên dùng class đã có** trong build để tránh phải rebuild.
+> ⚠️ **Đính chính:** lần đầu em kết luận sai là "Tailwind purge class không dùng".
+> Sếp đã chất vấn: *"vì sao không có ml-auto? khi có css sẽ tự build mà?"* — **Sếp đúng.**
+
+**Kiểm chứng thực tế:**
+
+| Test | Kết quả |
+|---|---|
+| Thêm `ml-auto` vào blade → `npm run build` | `ml-auto` **CÓ** trong CSS ✅ |
+| Thêm `bg-emerald-600` vào blade → `npm run build` | `bg-emerald-600` **CÓ** trong CSS ✅ |
+
+→ Tailwind **build đúng** mọi class dùng trong blade. `content` config quét
+`./diepxuan/*/resources/views/**/*.blade.php` — chính xác.
+
+**Nguyên nhân thật:**
+
+```
+public/build/assets/app-CDBFmOKS.css   2026-11-28 09:22:49
+sigroupinfo.blade.php                  2026-11-28 13:58:12   ← sua SAU 4.5 gio
+```
+
+CSS build **09:22**, file blade sửa **13:58** → class mới viết **sau** khi CSS đã build
+→ chưa vào CSS → nút vô hình.
+
+`public/build` bị **gitignore** (`.gitignore:3`) nên **không ai rebuild tự động** khi pull.
+
+**Quy tắc đúng:**
+
+1. Thêm class Tailwind mới → **chạy `npm run build`** (hoặc `npm run dev`/`watch`)
+2. Kiểm tra: `grep "\.<class>" public/build/assets/*.css`
+3. Nếu `KHONG` → **build lại**, KHÔNG phải đổi class khác
+4. Không cần "ưu tiên class có sẵn" — class mới vẫn build được
+
+**Cách phòng tránh:** bật `npm run dev` (watch) khi đang phát triển UI, hoặc nhớ
+`npm run build` sau mỗi lần sửa blade có class mới.
 
 ### 9. Bố cục toolbar + form phân quyền không cần tham số (theo Sếp)
 
@@ -616,14 +642,18 @@ Phân hệ   [Tổng hợp                                       ▼]
 Số liệu   [Số liệu                                        ▼]
 ```
 
-### ⚠️ 2 class Tailwind không có trong build
+### 2 class Tailwind chưa có trong CSS build lúc đó
 
-| Class dùng | Có trong build? | Thay bằng |
-|---|---|---|
-| `ml-auto` | ❌ **0 kết quả** | `justify-between` (có sẵn) |
-| `w-72` | ❌ **0 kết quả** | `w-full max-w-md` (có sẵn) |
+| Class dùng | Có trong build? | Thay bằng | Ghi chú |
+|---|---|---|---|
+| `ml-auto` | ❌ (CSS cũ) | `justify-between` | build lại thì **có** |
+| `w-72` | ❌ (CSS cũ) | `w-full max-w-md` | build lại thì **có** |
 
-→ Đây là **lần thứ 2** gặp lỗi này (lần trước `bg-emerald-600`). Xem §8 bài học Tailwind purge.
+> ⚠️ **Đính chính:** không phải "Tailwind purge" — do **CSS build cũ** (09:22 vs blade 13:58).
+> Đã kiểm chứng: build lại thì cả 2 class đều xuất hiện. Xem §8 bài học ĐÚNG.
+>
+> Cách thay thế vẫn **giữ nguyên** (dùng `justify-between` + `w-full max-w-md`) vì
+> đang hoạt động tốt, không cần đổi lại.
 
 ### Verify browser thật
 
