@@ -237,9 +237,21 @@ php artisan serve --port=8000
 docker-compose up -d
 ```
 
-### 5.3. Chạy Vite dev server (frontend) - nếu dùng cách 3
+### 5.3. Vite / Tailwind — service watch đã chạy sẵn
+
+Dự án **đã có service watch** rebuild CSS/JS tự động khi Blade thay đổi.
+
+> ✅ **Cứ viết class Tailwind mới bình thường.** Không cần:
+> - chạy `npm run build` thủ công
+> - `grep` tìm class trong `public/build/assets/*.css`
+> - đổi sang class "đã có sẵn"
+>
+> Tailwind build đúng **mọi** class có trong Blade. Xem `PROJECT_CONVENTIONS.md` §11.
+
+Chỉ chạy tay khi Sếp yêu cầu rõ:
 ```bash
-npm run dev
+npm run dev      # Vite dev server
+npm run build    # build production (không cần khi phát triển)
 ```
 
 **Lưu ý:** Cách 1 và 2 (serve:dev commands) tự động chạy cả PHP server và Vite server.
