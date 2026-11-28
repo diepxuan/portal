@@ -151,8 +151,8 @@
                     {{ $this->portalRouteCount }} menu có Portal / {{ $this->unmappedContainerCount }} nhóm
                 </p>
                 <p class="mt-0.5 flex items-center gap-2 text-[10px] text-gray-500">
-                    <span class="inline-flex items-center gap-1"><span class="h-[3px] w-[3px] rounded-full bg-emerald-500"></span>{{ $this->activeCount }} bật</span>
-                    <span class="inline-flex items-center gap-1"><span class="h-[3px] w-[3px] rounded-full bg-red-500"></span>{{ $this->disabledCount }} tắt</span>
+                    <span class="inline-flex items-center gap-1"><span class="h-[2px] w-[2px] rounded-full bg-emerald-500"></span>{{ $this->activeCount }} bật</span>
+                    <span class="inline-flex items-center gap-1"><span class="h-[2px] w-[2px] rounded-full bg-red-500"></span>{{ $this->disabledCount }} tắt</span>
                 </p>
             </div>
             @if ($this->total > 0)
@@ -232,7 +232,7 @@
 
                 {{-- Chấm trạng thái active trên SimbaERP gốc: xanh = đang bật, đỏ = đang tắt (active = 0).
                      Kích thước rất nhỏ (3px) — đủ để nhận biết mà không làm rối danh sách menu. --}}
-                <span class="h-[3px] w-[3px] flex-shrink-0 rounded-full {{ $item->isActive ? 'bg-emerald-500' : 'bg-red-500' }}"
+                <span class="h-[2px] w-[2px] flex-shrink-0 rounded-full {{ $item->isActive ? 'bg-emerald-500' : 'bg-red-500' }}"
                       title="{{ $item->isActive ? 'Đang hoạt động (active = 1)' : 'Đang tắt trên SimbaERP (active = 0)' }}"
                       aria-label="{{ $item->isActive ? 'active' : 'disabled' }}"></span>
 
