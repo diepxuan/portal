@@ -151,7 +151,10 @@ class SimbaMenuTargetResolver
      */
     public function resolveActionPath(string $module, string $kind, string $slug, string $action, mixed $id = null): ?array
     {
-        if (!in_array($action, ['create', 'edit'], true)) {
+        // 'create' va 'edit' la action chuan cua CRUD; ngoai ra cho phep action
+        // con tuy y (vd 'rights' — man phan quyen cua task 434) mien la route
+        // {module}.{kind}.{slug}.{action} ton tai.
+        if (!preg_match('/^[a-z0-9-]+$/', $action)) {
             return null;
         }
 
@@ -174,10 +177,39 @@ class SimbaMenuTargetResolver
         $target['url'] = $this->simbaUrl($routeName, $id);
 
         if (null !== $id) {
-            $target['params']['id'] = $id;
+            // Gan $id vao DUNG ten tham so cua route (khong phai luon la 'id').
+            // Vd route .../sigroupinfo/{group}/rights -> params['group'] = $id
+            // de mount(string $group) cua component nhan duoc.
+            $paramName = $this->dynamicParamName($route) ?? 'id';
+            $target['params'][$paramName] = $id;
+
+            // Giu them 'id' de tuong thich nguoc voi component cu dung $id.
+            if ('id' !== $paramName) {
+                $target['params']['id'] = $id;
+            }
         }
 
         return $target;
+    }
+
+    /**
+     * Ten tham so dong cua route (phan trong {}), bo qua cac tham so tinh.
+     *
+     * Vd: 'si/vch/sigroupinfo/{group}/rights' -> 'group'
+     */
+    private function dynamicParamName(?LaravelRoute $route): ?string
+    {
+        if (null === $route) {
+            return null;
+        }
+
+        foreach ($route->parameterNames() as $name) {
+            if (!\in_array($name, ['module', 'kind', 'slug', 'action'], true)) {
+                return $name;
+            }
+        }
+
+        return null;
     }
 
     private function firstParameter(mixed $parameters): mixed

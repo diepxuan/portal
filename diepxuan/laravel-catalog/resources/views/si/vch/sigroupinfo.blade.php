@@ -124,6 +124,10 @@
                             {{ $group['ksd'] ? 'x' : '' }}
                         </td>
                         <td class="border-b border-gray-100 px-3 py-2 text-right">
+                            <a href="{{ url('/simba/si/vch/sigroupinfo/' . $group['groupname'] . '/rights') }}"
+                                class="rounded px-2 py-0.5 text-xs text-emerald-600 hover:bg-emerald-50">
+                                Phân quyền
+                            </a>
                             <button type="button" wire:click="openEdit('{{ $group['groupname'] }}')"
                                 class="rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50">
                                 Sửa

@@ -20,10 +20,10 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | GL — Sổ cái tổng hợp | 107 | 38 | 67 | 2 | 0 |
 | IN — Tồn kho | 31 | 11 | 19 | 1 | 0 |
 | PO — Đơn hàng mua | 19 | 7 | 10 | 1 | 1 |
-| SI — System Integration | 37 | 3 | 24 | 5 | 5 |
+| SI — System Integration | 37 | 4 | 24 | 5 | 4 |
 | SO — Đơn hàng bán | 45 | 6 | 37 | 2 | 0 |
 | System — Framework & cross-link | 7 | 3 | 0 | 3 | 1 |
-| **Tổng** | **345** | **90** | **230** | **17** | **8** |
+| **Tổng** | **345** | **91** | **230** | **17** | **7** |
 
 > **SHELL_ONLY** = có route anchor/metadata shell nhưng **chưa có màn hình CRUD**, không tính là DONE.
 
@@ -363,7 +363,7 @@ Task **hạ tầng/công cụ nội bộ Portal** (đăng nhập, dashboard, tas
 | 389 | `389-si-menu-dang-tat.md` |  | PENDING |
 | 430 | `430-SI-danhmuc-bophan.md` | `SIDMBP.dll` (không có decompiled — suy từ bảng + SP) | TODO — chưa có component |
 | 432 | `432-SI-chon-nam-lam-viec.md` | `SiChangeFY.dll` | DONE |
-| 434 | `434-SI-phan-quyen-nhom.md` | `SIGroupInfo.dll` | TODO — chưa có component |
+| 434 | `434-SI-phan-quyen-nhom.md` | `SIGroupInfo.dll` | DONE |
 
 ## SO — Đơn hàng bán
 

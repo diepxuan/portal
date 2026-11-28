@@ -4,11 +4,11 @@
 
 ## Trạng thái
 
-- **Status:** TODO — chưa có component
+- **Status:** ✅ **DONE (component)** — verify browser thật 2026-11-28
 - **DLL:** `SIGroupInfo.dll`
 - **Form gốc:** `AsiaErp.UserInterface.frmSiSetRights` (801 dòng)
-- **Route dự kiến:** `si.vch.sigroupinfo.rights` → `/simba/si/vch/sigroupinfo/{group}/rights`
-- **Component dự kiến:** `Si\Vch\SigroupinfoRights`
+- **Route:** `si.vch.sigroupinfo.rights` → `/simba/si/vch/sigroupinfo/{group}/rights`
+- **Component:** `Si\Vch\SigroupinfoRights`
 - **View:** `si/vch/sigroupinfo-rights.blade.php`
 - **Mở từ:** task 088 (`Si\Vch\Sigroupinfo`) — nút **"Phân quyền"**
 
@@ -21,15 +21,15 @@
 
 | # | Mục | Kết quả |
 |---|---|---|
-| 1 | Component render thật | ⬜ |
-| 2 | Route 200 | ⬜ |
-| 3 | Hiển thị đúng 571 chức năng | ⬜ |
-| 4 | Không `errorMessage` | ⬜ |
+| 1 | Component render thật | ✅ `catalog::si.vch.sigroupinfo-rights` |
+| 2 | Route 200 | ✅ `/simba/si/vch/sigroupinfo/LEADER/rights` |
+| 3 | Hiển thị đúng 571 chức năng | ✅ 571 dòng |
+| 4 | Không `errorMessage` | ✅ `err=null` |
 | 5 | Bộ chọn kỳ | — **không cần** (phân quyền, không theo kỳ) |
-| 6 | Label tiếng Việt | ⬜ (lấy từ form gốc — xem bảng) |
-| 7 | Dropdown Phân hệ + Số liệu | ⬜ (2 combo, xem §Cấu trúc UI) |
-| 8 | Giá trị mặc định | ⬜ (phân hệ đầu tiên) |
-| 9 | Tham số rỗng = `''` | ⬜ (kiểm theo bảng SP) |
+| 6 | Label tiếng Việt | ✅ Phân hệ/Số liệu/Chức năng/Xem/Thêm/Sửa/Xoá |
+| 7 | Dropdown Phân hệ + Số liệu | ✅ 13 + 9 (lọc theo phân hệ) |
+| 8 | Giá trị mặc định | ✅ `02.00.00` → `02.10.00` |
+| 9 | Tham số rỗng = `''` | ✅ đã test |
 
 ---
 
@@ -250,3 +250,94 @@ nhưng **lọc client-side** để chuyển combo mượt — không gọi lại
 - **Task 088** — `Si\Vch\Sigroupinfo` (CRUD nhóm, đã DONE) — nút "Phân quyền" mở màn này
 - SP đã có wrapper sẵn: `AsGetMenuBar`, `AsGetMenuDetail`, `AsSiGetAllGroupRights`,
   `AsInsGroupRight`, `AsUpdGroupRight`, `AsDelGroupRight`, `AsGroupCheckGrand`
+
+---
+
+## Portal implementation — DONE (2026-11-28)
+
+### Verify browser thật
+
+**URL:** `/simba/si/vch/sigroupinfo/LEADER/rights`
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Component | `catalog::si.vch.sigroupinfo-rights` ✅ |
+| `groupName` | **LEADER** (nhận từ tham số `{group}`) ✅ |
+| Combo "Phân hệ" | **13** option, mặc định "Tổng hợp" (`02.00.00`) ✅ |
+| Combo "Số liệu" | **9** option, mặc định "Số liệu" (`02.10.00`) ✅ |
+| Bảng chức năng | **9 dòng**: Phiếu kế toán `02.10.02`, Kết chuyển tự động `02.10.05`, ... ✅ |
+| Header bảng | `# / Chức năng / Xem / Thêm / Sửa / Xoá` ✅ |
+| `errorMessage` | `null` ✅ |
+
+### Test lọc
+
+| Thao tác | Kết quả |
+|---|---|
+| Chọn "Mua hàng" (`10.00.00`) | 5 số liệu, tự chọn `10.10.00`, bảng hiện **22 chức năng** `10.10.xx` ✅ |
+
+### Test lưu quyền
+
+Baseline `sysGroupRight`: **0 dòng**
+
+| Bước | Kết quả |
+|---|---|
+| Tick "Xem" chức năng `02.10.02` | `viewRight = true` |
+| Bấm "Lưu" | message **"Đã lưu phân quyền cho nhóm LEADER."** |
+| Kiểm DB | **1 dòng**: `LEADER \| 02.10.02 \| view=1 ins=0 upd=0 del=0` — **`ViewRight` tự bật `true`** đúng form gốc ✅ |
+| Bỏ tick + Lưu | `sysGroupRight` về **0 dòng** ✅ (chỉ Delete, không Insert) |
+
+**Sau test — DB sạch baseline:**
+
+```
+sysGroupRight: 0 dong  (baseline 0)
+sysGroupInfo : 13 dong (khong dung)
+```
+
+### Điều hướng
+
+| Từ | Đến |
+|---|---|
+| Nút "Phân quyền" ở danh sách (13 nút) | `/simba/si/vch/sigroupinfo/{group}/rights` ✅ |
+| Nút "Thoát" | `/simba/si/vch/sigroupinfo` ✅ |
+
+### 3 thay đổi hạ tầng kèm theo
+
+#### 1. Shell route `/{module}/{kind}/{slug}/{id}/{action}`
+
+Trước: shell chỉ có `/create` và `/{id}/edit`. Route `.../sigroupinfo/{group}/rights` trả **404**.
+
+Thêm vào `routes/web.php`:
+
+```php
+Route::get('/{module}/{kind}/{slug}/{id}/{action}', SimbaPage::class)
+    ->where([... 'action' => '[a-z0-9-]+'])
+    ->name('sub');
+```
+
+#### 2. `SimbaMenuTargetResolver::resolveActionPath()` — cho phép action tuỳ ý
+
+Trước: chỉ nhận `create` / `edit`, action khác → `return null` → 404.
+
+Sau: nhận mọi action khớp `[a-z0-9-]+` nếu route `{module}.{kind}.{slug}.{action}` tồn tại.
+
+#### 3. Map `$id` vào ĐÚNG tên tham số route
+
+Trước: luôn gán `params['id'] = $id` → `mount(string $group)` nhận rỗng.
+
+Sau: thêm `dynamicParamName($route)` → `params['group'] = $id` cho route `{group}`,
+vẫn giữ thêm `params['id']` để tương thích ngược.
+
+#### 4. Auto-register bỏ qua class `*Rights`
+
+Route có tham số không auto được → khai báo tay trong `$sourceRoutes`.
+Thêm `Rights` vào danh sách skip để không sinh route rác `si.vch.sigroupinforights`.
+
+### Test
+
+| Test | Kết quả |
+|---|---|
+| `SourceRouteCoverageTest` | **11 tests / 46 assertions PASS** |
+| `SimbaMenuRouteMetadataTest` | **13 tests / 29 assertions PASS** |
+
+> Test `SourceRouteCoverageTest` đã cập nhật: cho phép component có route con
+> (`{base}.{action}`) và thêm `si.vch.sigroupinfo.rights` vào danh sách route khai báo tay.
