@@ -572,3 +572,77 @@ từng dùng → không vào CSS → chữ trắng trên **nền trắng** = vô
 > — nếu không có kết quả thì class chưa được build.
 >
 > **Ưu tiên dùng class đã có** trong build để tránh phải rebuild.
+
+### 9. Bố cục toolbar + form phân quyền không cần tham số (theo Sếp)
+
+**4 yêu cầu của Sếp:**
+
+| # | Yêu cầu | Đã làm |
+|---|---|---|
+| 1 | Nút Phân quyền ra **sau cùng** | ✅ nằm cuối nhóm nút |
+| 2 | Dòng "13 nhóm · đã chọn N" **nhỏ lại**, ra **sau search box** | ✅ `text-xs`, sát ngay sau input |
+| 3 | Nút Phân quyền **căn phải** | ✅ `justify-between` → cách mép phải **0px** |
+| 4 | Form phân quyền **không cần truyền gì**, không bắt buộc chọn dòng | ✅ route bỏ `{group}`, form tự chọn nhóm |
+
+### Bố cục mới
+
+```
+[ Tìm kiếm... ] 13 nhóm · đã chọn 2              [Mới] [Sửa] [Xoá] [Phân quyền]
+                                                                     ↑ cuối, sát phải
+```
+
+### Route đổi: bỏ tham số `{group}`
+
+```diff
+- si/vch/sigroupinfo/{group}/rights    → /simba/si/vch/sigroupinfo/LEADER/rights
++ si/vch/sigroupinfo/rights            → /simba/si/vch/sigroupinfo/rights
+```
+
+`SigroupinfoRights::mount()` giờ:
+1. Nạp **danh sách nhóm** (`AsGetGroupInfo('')` → 13 nhóm)
+2. Nếu có `?group=` trên URL và hợp lệ → dùng
+3. Không thì **chọn nhóm đầu tiên**
+4. Nạp quyền + menu
+
+`updatedGroupName()` → đổi nhóm thì nạp lại quyền ngay.
+
+### View: thêm dropdown "Nhóm"
+
+3 combo thay vì 2:
+
+```
+Nhóm      [LEADER — Lãnh đạo doanh nghiệp (CEO,CFO...)  ▼]
+Phân hệ   [Tổng hợp                                       ▼]
+Số liệu   [Số liệu                                        ▼]
+```
+
+### ⚠️ 2 class Tailwind không có trong build
+
+| Class dùng | Có trong build? | Thay bằng |
+|---|---|---|
+| `ml-auto` | ❌ **0 kết quả** | `justify-between` (có sẵn) |
+| `w-72` | ❌ **0 kết quả** | `w-full max-w-md` (có sẵn) |
+
+→ Đây là **lần thứ 2** gặp lỗi này (lần trước `bg-emerald-600`). Xem §8 bài học Tailwind purge.
+
+### Verify browser thật
+
+| Kiểm chứng | Kết quả |
+|---|---|
+| Nút Phân quyền khi **chưa chọn dòng** | `href` đúng, `disabled=false` ✅ |
+| Bấm nút (chưa chọn) | vào `/simba/si/vch/sigroupinfo/rights` ✅ |
+| Form tự chọn nhóm | dropdown **13 nhóm**, mặc định `AP — Phải trả` ✅ |
+| Đổi nhóm sang LEADER | `group=LEADER`, **571** quyền, `err=null` ✅ |
+| Toolbar | `gapToRight = 0` — Phân quyền sát mép phải ✅ |
+| Đếm nhóm | `text-xs`, ngay sau search ✅ |
+
+### Shell route mới: `/{module}/{kind}/{slug}/{action}`
+
+Route `/simba/si/vch/sigroupinfo/rights` (4 đoạn) trước trả **404** — shell chỉ có
+3 đoạn hoặc 5-6 đoạn. Đã thêm:
+
+```php
+Route::get('/{module}/{kind}/{slug}/{action}', SimbaPage::class)
+    ->where(['action' => '[a-z0-9-]+'])
+    ->name('sub-action');
+```

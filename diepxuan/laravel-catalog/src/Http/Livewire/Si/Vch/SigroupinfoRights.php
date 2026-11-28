@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Diepxuan\Catalog\Http\Livewire\Si\Vch;
 
 use Diepxuan\Simba\StoredProcedures\AsDelGroupRight;
+use Diepxuan\Simba\StoredProcedures\AsGetGroupInfo;
 use Diepxuan\Simba\StoredProcedures\AsGetMenuBar;
 use Diepxuan\Simba\StoredProcedures\AsGetMenuDetail;
 use Diepxuan\Simba\StoredProcedures\AsInsGroupRight;
@@ -47,7 +48,16 @@ use Livewire\Component;
  */
 class SigroupinfoRights extends Component
 {
+    /**
+     * Nhom dang phan quyen — CHON BANG DROPDOWN trong form.
+     *
+     * Route KHONG co tham so (Sep yeu cau), nen component tu nap danh sach
+     * nhom va cho nguoi dung chon.
+     */
     public string $groupName = '';
+
+    /** Danh sach nhom: [['groupname'=>..,'fullname'=>..], ...] */
+    public array $groups = [];
 
     public ?string $mainMenuId = null;
 
@@ -79,17 +89,73 @@ class SigroupinfoRights extends Component
 
     public function mount(?string $group = null): void
     {
-        $this->groupName = (string) $group;
+        $this->loadGroups();
+        $this->loadMenus();
 
-        if ('' === $this->groupName) {
-            $this->errorMessage = 'Chưa chọn nhóm để phân quyền.';
+        // Neu co ?group= tren URL thi dung, khong thi chon nhom dau tien.
+        $preferred = trim((string) $group);
+
+        if ('' !== $preferred && $this->hasGroup($preferred)) {
+            $this->groupName = $preferred;
+        } elseif ($this->groups !== []) {
+            $this->groupName = (string) $this->groups[0]['groupname'];
+        }
+
+        $this->loadRights();
+        $this->selectFirstMenu();
+    }
+
+    /**
+     * Doi nhom -> nap lai quyen cua nhom moi.
+     */
+    public function updatedGroupName(): void
+    {
+        $this->errorMessage = null;
+        $this->successMessage = null;
+        $this->loadRights();
+    }
+
+    /**
+     * Nap danh sach nhom tu asGetGroupInfo (dung cho dropdown).
+     */
+    protected function loadGroups(): void
+    {
+        try {
+            $rows = AsGetGroupInfo::call(['pGroupName' => ''])->all();
+        } catch (\Throwable $exception) {
+            report($exception);
+            $this->errorMessage = 'Không tải được danh sách nhóm.';
 
             return;
         }
 
-        $this->loadMenus();
-        $this->loadRights();
-        $this->selectFirstMenu();
+        $this->groups = [];
+
+        foreach ($rows as $row) {
+            $data = \is_array($row) ? $row : (array) $row;
+
+            $name = (string) ($data['groupname'] ?? '');
+
+            if ('' === trim($name)) {
+                continue;
+            }
+
+            $this->groups[] = [
+                'groupname' => $name,
+                'fullname'  => (string) ($data['fullname'] ?? ''),
+            ];
+        }
+    }
+
+    protected function hasGroup(string $name): bool
+    {
+        foreach ($this->groups as $g) {
+            if (trim((string) $g['groupname']) === trim($name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -5,7 +5,7 @@
         <div>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">Phân quyền</h2>
             <p class="text-sm text-gray-600">
-                Nhóm <span class="font-mono font-medium">{{ $groupName }}</span> — menu 90.20.05 — frmSiSetRights
+                <span class="font-mono font-medium">{{ '' !== trim($groupName) ? $groupName : '(chưa chọn nhóm)' }}</span> — menu 90.20.05 — frmSiSetRights
             </p>
         </div>
     </x-slot>
@@ -18,8 +18,20 @@
         <div class="mb-3 rounded border border-green-200 bg-green-50 p-3 text-sm text-green-700">{{ $successMessage }}</div>
     @endif
 
-    {{-- 2 combo: Phan he + So lieu (theo form goc) --}}
+    {{-- 3 combo: Nhom + Phan he + So lieu --}}
     <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-[160px_minmax(0,520px)] md:items-center">
+        <label class="text-sm text-gray-700">Nhóm</label>
+        <select wire:model.live="groupName"
+            class="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            @forelse ($groups as $g)
+                <option value="{{ $g['groupname'] }}">
+                    {{ $g['groupname'] }}{{ '' !== trim((string) $g['fullname']) ? ' — ' . $g['fullname'] : '' }}
+                </option>
+            @empty
+                <option value="">— không có nhóm —</option>
+            @endforelse
+        </select>
+
         <label class="text-sm text-gray-700">Phân hệ</label>
         <select wire:model.live="mainMenuId"
             class="w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500">

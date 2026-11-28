@@ -24,43 +24,42 @@
         </div>
     @endif
 
-    {{-- Thanh cong cu: tim kiem + nut theo form goc --}}
-    <div class="mt-4 flex flex-wrap items-center gap-3">
-        <input type="text" wire:model.live.debounce.300ms="search"
-            placeholder="Tìm theo tên nhóm, tên đầy đủ..."
-            class="w-full max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+    {{-- Thanh cong cu: [search + dem nho] ... [Moi Sua Xoa Phan quyen] --}}
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        {{-- TRAI: search + dem nho (nho, ngay sau search) --}}
+        <div class="flex items-center gap-2">
+            <input type="text" wire:model.live.debounce.300ms="search"
+                placeholder="Tìm theo tên nhóm, tên đầy đủ..."
+                class="w-full max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500" />
 
-        <button type="button" wire:click="openCreate"
-            class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
-            Mới
-        </button>
-
-        {{-- 3 nut thao tac — DUA TREN SELECTION CUA CLIENT (Alpine) --}}
-        <button type="button" @click="editSelected()" :disabled="!isSingleSelected()"
-            class="rounded-md bg-gray-600 px-3 py-1.5 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40">
-            Sửa
-        </button>
-
-        <button type="button" @click="deleteSelected($wire)" :disabled="selected.length === 0"
-            class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40">
-            Xoá
-        </button>
-
-        <a :href="rightsUrl()" x-show="isSingleSelected()"
-            class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700">
-            Phân quyền
-        </a>
-        <span x-show="!isSingleSelected()"
-            class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white opacity-40">
-            Phân quyền
-        </span>
-
-        <span class="text-xs text-gray-500">
-            {{ $groups->total() }} nhóm
-            <span x-show="selected.length > 0" class="font-medium text-gray-700">
-                · đã chọn <span x-text="selected.length"></span>
+            <span class="whitespace-nowrap text-xs text-gray-500">
+                {{ $groups->total() }} nhóm<span x-show="selected.length > 0"> · đã chọn <span x-text="selected.length"></span></span>
             </span>
-        </span>
+        </div>
+
+        {{-- PHAI: cac nut thao tac, Phan quyen CUOI CUNG --}}
+        <div class="flex flex-wrap items-center gap-2">
+            <button type="button" wire:click="openCreate"
+                class="rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700">
+                Mới
+            </button>
+
+            <button type="button" @click="editSelected()" :disabled="!isSingleSelected()"
+                class="rounded-md bg-gray-600 px-3 py-1.5 text-sm text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40">
+                Sửa
+            </button>
+
+            <button type="button" @click="deleteSelected($wire)" :disabled="selected.length === 0"
+                class="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40">
+                Xoá
+            </button>
+
+            {{-- Phan quyen: LUON bam duoc, khong can chon dong --}}
+            <a href="{{ url('/simba/si/vch/sigroupinfo/rights') }}"
+                class="rounded-md bg-green-600 px-3 py-1.5 text-sm text-white hover:bg-green-700">
+                Phân quyền
+            </a>
+        </div>
     </div>
 
     {{-- Form them/sua --}}
@@ -272,14 +271,6 @@
                         this.selected = [];
                     },
 
-                    /** URL man phan quyen — chi khi chon dung 1 dong. */
-                    rightsUrl() {
-                        if (this.selected.length !== 1) {
-                            return '#';
-                        }
-
-                        return '/simba/si/vch/sigroupinfo/' + encodeURIComponent(this.selected[0]) + '/rights';
-                    },
                 };
             };
         })();

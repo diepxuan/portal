@@ -86,7 +86,9 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ['uri' => 'si/vch/year', 'name' => 'si.vch.year', 'module' => 'si', 'kind' => 'vch', 'slug' => 'year', 'component' => YearSelector::class],
             // Man phan quyen nhom: co tham so {group} nen khong auto-register duoc
             // (auto-register chi sinh route khong tham so). Xem task 434.
-            ['uri' => 'si/vch/sigroupinfo/{group}/rights', 'name' => 'si.vch.sigroupinfo.rights', 'module' => 'si', 'kind' => 'vch', 'slug' => 'sigroupinfo', 'component' => SigroupinfoRights::class],
+            // Man phan quyen: KHONG co tham so — tu chon nhom bang dropdown trong form
+            // (Sep yeu cau: "form phan quyen khong can truyen gi ca").
+            ['uri' => 'si/vch/sigroupinfo/rights', 'name' => 'si.vch.sigroupinfo.rights', 'module' => 'si', 'kind' => 'vch', 'slug' => 'sigroupinfo', 'component' => SigroupinfoRights::class],
         ];
 
         // Cache route da khai bao de tranh trung name khi dang ky theo convention.
@@ -246,6 +248,17 @@ Route::middleware([CorpAutoLogin::class])->group(static function (): void {
             ])
             ->name('edit')
         ;
+        // Man con KHONG co tham so: /{slug}/{action} (vd: /si/vch/sigroupinfo/rights).
+        Route::get('/{module}/{kind}/{slug}/{action}', SimbaPage::class)
+            ->where([
+                'module' => '[a-z0-9-]+',
+                'kind'   => '[a-z0-9-]+',
+                'slug'   => '[a-z0-9_.-]+',
+                'action' => '[a-z0-9-]+',
+            ])
+            ->name('sub-action')
+        ;
+
         // Man con dang /{slug}/{id}/{action} (vd: /si/vch/sigroupinfo/LEADER/rights).
         // SimbaPage doc defaults['action'] de biet mo man nao.
         Route::get('/{module}/{kind}/{slug}/{id}/{action}', SimbaPage::class)
